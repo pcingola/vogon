@@ -375,25 +375,27 @@ section:first-of-type{border-top:0}
 .pricefoot{font-family:var(--ff-mono);font-size:var(--fs-micro);color:var(--slate);margin-top:20px;letter-spacing:.02em;line-height:1.8}
 
 /* ---------- drug label ---------- */
+/* A package insert is black ink on white paper in any theme, so the
+   label keeps printed colours rather than following the page tokens. */
 .label{
-  border:2px solid var(--ink);border-radius:2px;background:var(--surface);
+  border:1px solid #101820;border-radius:2px;background:#FFFFFF;color:#101820;
   margin-top:36px;overflow:hidden;
 }
 .labelhead{
-  background:var(--ink);color:var(--paper);padding:11px 18px;
+  background:#101820;color:#FBFAF5;padding:11px 18px;
   font-family:var(--ff-mono);font-size:var(--fs-micro);letter-spacing:.16em;text-transform:uppercase;
   display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
 }
 .labelbody{padding:22px 20px 24px;font-size:.9rem;line-height:1.7}
-.labelbody h4{font-family:var(--ff-display);font-weight:800;font-size:.82rem;letter-spacing:.11em;text-transform:uppercase;color:var(--ink);margin-bottom:9px}
-.labelbody .cols{columns:3;column-gap:34px;column-rule:1px solid var(--rule)}
+.labelbody h4{font-family:var(--ff-display);font-weight:800;font-size:.82rem;letter-spacing:.11em;text-transform:uppercase;color:#101820;margin-bottom:9px}
+.labelbody .cols{columns:3;column-gap:34px;column-rule:1px solid #DFDACF}
 @media(max-width:860px){ .labelbody .cols{columns:2} }
 @media(max-width:520px){ .labelbody .cols{columns:1} }
 .labelbody ul{margin:0 0 16px;padding-left:17px}
 .labelbody li{margin-bottom:3px;break-inside:avoid}
-.labelbody .rule{border-top:1px solid var(--rule);margin:4px 0 16px}
-.labelbody .warn{border:1px solid var(--stamp);border-radius:2px;padding:12px 14px;color:var(--ink);margin-top:4px}
-.labelbody .warn b{color:var(--stamp);letter-spacing:.09em;font-family:var(--ff-mono);font-size:var(--fs-micro)}
+.labelbody .rule{border-top:1px solid #DFDACF;margin:4px 0 16px}
+.labelbody .warn{border:1px solid #BF100F;border-radius:2px;padding:12px 14px;color:#101820;margin-top:4px}
+.labelbody .warn b{color:#BF100F;letter-spacing:.09em;font-family:var(--ff-mono);font-size:var(--fs-micro)}
 
 /* ---------- release gate table ---------- */
 .gatetable{width:100%;border-collapse:collapse;margin-top:8px;font-size:.94rem}
