@@ -50,6 +50,14 @@
 >
 > — Developer
 
+> “Our auditor asked to see the system that generates our documentation. VOGON generated documentation about itself. The auditor left satisfied.”
+>
+> — Head of IT Compliance
+
+> “This is a success story we’ll never talk about again. Ever.”
+>
+> — Executive Sponsor
+
 ## Known side effects
 
 Use of VOGON may cause:
