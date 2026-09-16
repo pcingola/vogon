@@ -250,7 +250,7 @@ section:first-of-type{border-top:0}
 }
 
 /* ---------- trust strip ---------- */
-.trust{background:var(--panel)}
+.trust{border-block:1px solid var(--rule)}
 .trust .wrap{padding-block:26px;display:flex;flex-wrap:wrap;align-items:center;gap:16px 34px}
 .trust .lbl{font-family:var(--ff-mono);font-size:var(--fs-micro);letter-spacing:.12em;text-transform:uppercase;color:var(--slate)}
 .redacted{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center}
@@ -259,13 +259,13 @@ section:first-of-type{border-top:0}
 .trust .note{font-family:var(--ff-mono);font-size:var(--fs-micro);color:var(--slate);width:100%;letter-spacing:.02em}
 
 /* ---------- standards register (inside the disclaimer) ---------- */
-.stdreg{display:flex;flex-wrap:wrap;align-items:flex-start;gap:12px 30px;margin:34px 0 0;padding:18px 0;border-block:1px solid var(--dark-ground-rule)}
-.stdreg .lbl{font-family:var(--ff-mono);font-size:var(--fs-micro);letter-spacing:.14em;text-transform:uppercase;color:#77818A}
+.stdreg{display:flex;flex-wrap:wrap;align-items:flex-start;gap:12px 30px;margin:34px 0 0;padding:18px 0;border-block:1px solid var(--rule)}
+.stdreg .lbl{font-family:var(--ff-mono);font-size:var(--fs-micro);letter-spacing:.14em;text-transform:uppercase;color:var(--slate)}
 .certrow{display:flex;flex-wrap:wrap;gap:12px 26px;align-items:flex-start}
 .cert{display:flex;flex-direction:column;gap:2px}
-.cert b{font-family:var(--ff-display);font-weight:700;font-size:.9rem;color:var(--dark-ground-ink);letter-spacing:-.01em}
-.cert i{font-family:var(--ff-mono);font-style:normal;font-size:var(--fs-micro);letter-spacing:.04em;color:#77818A}
-.stdreg .note{font-family:var(--ff-mono);font-size:var(--fs-micro);color:#77818A;width:100%;letter-spacing:.02em;line-height:1.7}
+.cert b{font-family:var(--ff-display);font-weight:700;font-size:.9rem;color:var(--ink);letter-spacing:-.01em}
+.cert i{font-family:var(--ff-mono);font-style:normal;font-size:var(--fs-micro);letter-spacing:.04em;color:var(--slate)}
+.stdreg .note{font-family:var(--ff-mono);font-size:var(--fs-micro);color:var(--slate);width:100%;letter-spacing:.02em;line-height:1.7}
 
 /* ---------- principles ---------- */
 .principles{display:grid;grid-template-columns:repeat(2,1fr);gap:26px 44px;margin-top:40px}
@@ -276,11 +276,6 @@ section:first-of-type{border-top:0}
 .principle p{font-size:.94rem}
 
 /* ---------- dark ground ---------- */
-.band{background:var(--dark-ground);color:var(--dark-ground-slate);border-top:1px solid var(--dark-ground-rule)}
-.band h2,.band h3{color:var(--dark-ground-ink)}
-.band .eyebrow{color:#7E8891}
-.band .eyebrow::after{background:var(--dark-ground-rule)}
-.band .lead{color:#B4BDC4}
 
 /* ---------- split feature ---------- */
 .split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,4.5vw,64px);align-items:center}
@@ -335,24 +330,6 @@ section:first-of-type{border-top:0}
 .plate-fig .cap b{font-family:var(--ff-display);font-weight:700;font-size:1rem;color:var(--ink);letter-spacing:-.01em}
 .plate-fig .cap .ref{font-family:var(--ff-mono);font-size:var(--fs-micro);color:var(--slate);letter-spacing:.06em;text-transform:uppercase}
 .plate-fig .cap p{font-size:.93rem;color:var(--ink-2);margin-top:3px}
-.band .plate-fig{background:#0D1216;border-color:var(--dark-ground-rule)}
-.band .plate-fig > img,.band .plate-fig > .zoomfig > img{border-bottom-color:var(--dark-ground-rule)}
-.band .plate-fig .cap b{color:var(--dark-ground-ink)}
-.band .plate-fig .cap p{color:#A4AEB6}
-.band .plate-fig .cap .ref{color:#77818A}
-
-/* ---------- brand specimen marks ---------- */
-.marks{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:34px}
-@media(max-width:900px){ .marks{grid-template-columns:repeat(2,1fr)} }
-@media(max-width:480px){ .marks{grid-template-columns:1fr} }
-.mark{border:1px solid var(--rule);border-radius:2px;background:var(--surface);overflow:hidden;display:flex;flex-direction:column}
-.mark .frame{height:180px;display:flex;align-items:center;justify-content:center;padding:14px;overflow:hidden;background:var(--panel);border-bottom:1px solid var(--rule)}
-.mark .frame img{height:100%;width:100%;object-fit:contain}
-.mark .cap{padding:12px 14px 15px;display:flex;flex-direction:column;gap:4px}
-.mark .cap b{font-family:var(--ff-display);font-weight:700;font-size:.93rem;color:var(--ink)}
-.mark .cap span{font-family:var(--ff-mono);font-size:var(--fs-micro);color:var(--slate);letter-spacing:.05em}
-.mark .cap .eff{color:var(--ok)}
-.mark .cap .sup{color:var(--stamp);text-decoration:line-through}
 
 /* ---------- pricing ---------- */
 .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:36px}
@@ -375,27 +352,25 @@ section:first-of-type{border-top:0}
 .pricefoot{font-family:var(--ff-mono);font-size:var(--fs-micro);color:var(--slate);margin-top:20px;letter-spacing:.02em;line-height:1.8}
 
 /* ---------- drug label ---------- */
-/* A package insert is black ink on white paper in any theme, so the
-   label keeps printed colours rather than following the page tokens. */
 .label{
-  border:1px solid #101820;border-radius:2px;background:#FFFFFF;color:#101820;
+  border:1px solid var(--rule-strong);border-radius:2px;background:var(--surface);
   margin-top:36px;overflow:hidden;
 }
 .labelhead{
-  background:#101820;color:#FBFAF5;padding:11px 18px;
+  background:var(--panel);color:var(--ink-2);border-bottom:1px solid var(--rule-strong);padding:11px 18px;
   font-family:var(--ff-mono);font-size:var(--fs-micro);letter-spacing:.16em;text-transform:uppercase;
   display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
 }
 .labelbody{padding:22px 20px 24px;font-size:.9rem;line-height:1.7}
-.labelbody h4{font-family:var(--ff-display);font-weight:800;font-size:.82rem;letter-spacing:.11em;text-transform:uppercase;color:#101820;margin-bottom:9px}
-.labelbody .cols{columns:3;column-gap:34px;column-rule:1px solid #DFDACF}
+.labelbody h4{font-family:var(--ff-display);font-weight:800;font-size:.82rem;letter-spacing:.11em;text-transform:uppercase;color:var(--ink);margin-bottom:9px}
+.labelbody .cols{columns:3;column-gap:34px;column-rule:1px solid var(--rule)}
 @media(max-width:860px){ .labelbody .cols{columns:2} }
 @media(max-width:520px){ .labelbody .cols{columns:1} }
 .labelbody ul{margin:0 0 16px;padding-left:17px}
 .labelbody li{margin-bottom:3px;break-inside:avoid}
-.labelbody .rule{border-top:1px solid #DFDACF;margin:4px 0 16px}
-.labelbody .warn{border:1px solid #BF100F;border-radius:2px;padding:12px 14px;color:#101820;margin-top:4px}
-.labelbody .warn b{color:#BF100F;letter-spacing:.09em;font-family:var(--ff-mono);font-size:var(--fs-micro)}
+.labelbody .rule{border-top:1px solid var(--rule);margin:4px 0 16px}
+.labelbody .warn{border:1px solid var(--stamp);border-radius:2px;padding:12px 14px;color:var(--ink);margin-top:4px}
+.labelbody .warn b{color:var(--stamp);letter-spacing:.09em;font-family:var(--ff-mono);font-size:var(--fs-micro)}
 
 /* ---------- release gate table ---------- */
 .gatetable{width:100%;border-collapse:collapse;margin-top:8px;font-size:.94rem}
@@ -424,7 +399,7 @@ section:first-of-type{border-top:0}
 .faq .ans .ref{font-family:var(--ff-mono);font-size:var(--fs-micro);color:var(--slate);display:block;margin-top:8px;letter-spacing:.03em}
 
 /* ---------- CTA band ---------- */
-.cta{background:var(--panel)}
+.cta{border-top:1px solid var(--rule)}
 .ctatop{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(26px,4vw,56px);align-items:center}
 @media(max-width:900px){ .ctatop{grid-template-columns:1fr} }
 .contactrow{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
@@ -453,9 +428,9 @@ footer{background:var(--dark-ground);color:var(--dark-ground-slate);border-top:1
 .fbrand p{font-size:.92rem;color:#8D98A1;margin-top:11px;max-width:34ch}
 .fbrand .stamp-mini{margin-top:18px;max-width:180px;opacity:.85}
 .legal{margin-top:20px}
-.legal p{font-size:.83rem;line-height:1.68;color:#7A848C;max-width:none}
+.legal p{font-size:.83rem;line-height:1.68;color:var(--ink-2);max-width:none}
 .legal p + p{margin-top:8px}
-.legal b{color:#8D98A1;font-weight:600}
+.legal b{color:var(--ink);font-weight:600}
 .colophon{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;border-top:1px solid var(--dark-ground-rule);padding-block:16px 26px;font-family:var(--ff-mono);font-size:var(--fs-micro);color:#5F6971;letter-spacing:.06em;text-transform:uppercase}
 
 /* ---------- consent bar ---------- */
@@ -848,7 +823,7 @@ footer{background:var(--dark-ground);color:var(--dark-ground-slate);border-top:1
 </section>
 
 <!-- ============ COMPLIANCE ============ -->
-<section class="band" id="compliance">
+<section id="compliance">
   <div class="wrap sec">
     <div class="sechead">
       <div class="eyebrow"><span class="clause">§ 6.0</span> Compliance</div>
