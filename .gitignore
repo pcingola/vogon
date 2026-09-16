@@ -2,3 +2,15 @@
 *.log
 .vscode/
 .idea/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+dist/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# NOTE: docs/ is build output but IS committed — GitHub Pages
+# deploy-from-a-branch serves exactly what is in git.

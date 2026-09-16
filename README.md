@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="vogon_assets/images/02-vogon-rejected-logo.png" alt="VOGON — Validated Operations &amp; Governance OrchestratioN" width="420">
+<img src="assets/images/02-vogon-rejected-logo.png" alt="VOGON — Validated Operations &amp; Governance OrchestratioN" width="420">
 
 # VOGON
 
@@ -211,7 +211,7 @@ Installation instructions will be published following approval of the installati
 
 <div align="center">
 
-<img src="vogon_assets/images/08-rejected-stamp.png" alt="REJECTED — VOGON // Controlled Copy" width="460">
+<img src="assets/images/08-rejected-stamp.png" alt="REJECTED — VOGON // Controlled Copy" width="460">
 
 </div>
 
@@ -229,7 +229,7 @@ NEXT STEP: Submit a change request requesting clarification.
 
 <div align="center">
 
-<img src="vogon_assets/images/10-coming-soon.png" alt="VOGON is coming soon — pending final approval" width="720">
+<img src="assets/images/10-coming-soon.png" alt="VOGON is coming soon — pending final approval" width="720">
 
 </div>
 
@@ -282,7 +282,7 @@ Yes, subject to template change control. Template change control is a template.
 
 <div align="center">
 
-<img src="vogon_assets/images/06-vogon-toilet-paperwork.png" alt="Same crap, different format" width="400">
+<img src="assets/images/06-vogon-toilet-paperwork.png" alt="Same crap, different format" width="400">
 
 </div>
 
@@ -317,7 +317,7 @@ VOGON has not been evaluated for use in healthy engineering organizations.
 
 <div align="center">
 
-<img src="vogon_assets/images/09-issue-submission-process.png" alt="VGN-PROC-001 — Issue Submission Process" width="600">
+<img src="assets/images/09-issue-submission-process.png" alt="VGN-PROC-001 — Issue Submission Process" width="600">
 
 </div>
 
@@ -364,7 +364,7 @@ Once authorized:
 
 <div align="center">
 
-<img src="vogon_assets/images/07-pricing-comic.png" alt="VOGON pricing comic" width="800">
+<img src="assets/images/07-pricing-comic.png" alt="VOGON pricing comic" width="800">
 
 </div>
 
@@ -404,7 +404,7 @@ The stamp is the workhorse. Wherever VOGON says no — and VOGON usually says no
         └─────────────────┘
 ```
 
-Full assets live in `vogon_assets/`: `images/` (14 illustrations), `copy.md` (testimonials, side effects, disclaimer, pricing dialogue, process copy), `ascii-art.md` (README and CLI art).
+Full assets live in `assets/`: `images/` (14 illustrations), `copy.md` (testimonials, side effects, disclaimer, pricing dialogue, process copy), `ascii-art.md` (README and CLI art).
 
 ---
 
