@@ -50,9 +50,9 @@
 >
 > — Developer
 
-> “Our auditor asked to see the system that generates our documentation. VOGON generated documentation about itself. The auditor left satisfied.”
+> “Training completion is at 100%. Nobody remembers taking the training.”
 >
-> — Head of IT Compliance
+> — Head of Quality Training
 
 > “This is a success story we’ll never talk about again. Ever.”
 >
