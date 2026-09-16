@@ -37,7 +37,7 @@ vogon/
 │   └── html/        SOURCE — marketing page: index.html, img/, .nojekyll
 ├── docs/            OUTPUT — rendered HTML. generated. never hand-edited.
 ├── tests/
-├── assets/          brand originals, 27 MB. never published.
+├── assets/          brand originals + their dark twins, 46 MB. never published.
 ├── mkdocs.yml       docs_dir: src/docs   site_dir: docs
 ├── Makefile         make site / make clean
 └── pyproject.toml
@@ -47,7 +47,7 @@ Three rules hold this together:
 
 1. **`src/` is source, `docs/` is output.** Never edit anything under `docs/`; `make site` overwrites it. Never put source under `docs/`.
 2. **`src/` is not the Python import root alone** — `src/vogon` is the package, `src/docs` and `src/html` are website source that happens to live beside it. The wheel is limited to `src/vogon` explicitly (see Build & run), so nothing else ships.
-3. **`assets/` is never served.** GitHub Pages roots the site at `docs/`, so anything outside it is unreachable by construction. The 27 MB of full-size PNGs stay for the README and decks.
+3. **`assets/` is never served.** GitHub Pages roots the site at `docs/`, so anything outside it is unreachable by construction. The 46 MB of full-size PNGs stay for the README and decks.
 
 ## Site
 
@@ -55,7 +55,13 @@ Three rules hold this together:
 
 - Type: Archivo (display), Source Sans 3 (body), IBM Plex Mono (document metadata, CLI), Source Serif 4 italic (quotes).
 - Color tokens are sampled from the artwork: paper `#FBFAF5`, ink `#101820`, oxblood `#971A1C`, stamp `#BF100F`, slate `#6E7B82`, rule `#DFDACF`. Light and dark are both defined on `:root`; fixed dark chrome (nav strip, footer, consent bar) uses the `--dark-ground*` tokens so it stays dark in both themes.
-- Images are web-optimized WebP in `src/html/img/` (54 MB of PNG → 2.2 MB), referenced relatively as `img/…` so the paths survive the copy into `docs/`. Regenerate with ImageMagick from `assets/images/` after adding artwork; `emblem.webp` and `stamp-alpha.webp` are transparent cutouts.
+- Images are web-optimized WebP in `src/html/img/` (54 MB of PNG → 2.2 MB), referenced relatively as `img/…` so the paths survive the copy into `docs/`. Regenerate with ImageMagick from `assets/images/` after adding artwork.
+- `emblem.webp` (03) and `stamp-alpha.webp` (08) are transparent cutouts, and both are white-keyed — the vogon's white shirt and the paper inside the stamp frame went with the background. On cream that reads correctly; on dark ground it leaves holes. Their dark counterparts come off the authored dark artwork instead: `emblem_dark.webp` is a circular mask of `03-vogon-icon_dark.png`, `stamp-alpha_dark.webp` takes its alpha from the brightest channel of `08-rejected-stamp_dark.png`. The footer stamp uses the dark one unconditionally because the footer is `--dark-ground` in both themes; the rejection dialog keeps `stamp-alpha.webp`, which is the stronger red on its cream card.
+- Most of the artwork was drawn on white paper, which glares on a dark page, so those figures carry a dark twin — redrawn for dark ground, not derived from the light one. Flood fills and lightness inversions were tried and were not good enough to ship; regenerate the artwork instead. `assets/images/<name>_dark.png` is the original, `src/html/img/<name>_dark.webp` the web copy. 01–09, 12 and 13 have one.
+- A dark twin's `.webp` must be the **same pixel size** as the light `.webp` beside it, because `index.html` carries one `width`/`height` pair for both sources. `magick identify -format '%wx%h' src/html/img/<name>.webp` gives the target; then `magick assets/images/<name>_dark.png -resize '<W>x<H>!' -quality 82 -define webp:method=6 src/html/img/<name>_dark.webp`. Where the aspect ratios differ — 04 is square in dark and 1200×1006 in light — centre-crop to the light ratio first (`-gravity center -crop 1254x1051+0+0 +repage`) rather than squashing.
+- A figure with a dark twin is served through `<picture>` with `media="(prefers-color-scheme: dark)"`, in `index.html` and in the README. There is no theme toggle, so the media query is the whole mechanism.
+- Every figure is click-to-enlarge: wrap it in `<div class="zoomfig" role="button" tabindex="0">` and the lightbox picks it up, captioned from the image's `data-ref`. The footer REJECTED stamp is one of these too.
+- The lightbox fits a figure whole and never enlarges it past its own pixels, so on a wide monitor a 1200px figure stops at 1200px instead of going soft. The exception is a **portrait** figure: VGN-PROC-001 is a tall chart with body text in it, and fitted inside the dialog height it is unreadable, so a figure taller than it is wide is sized to the dialog width instead, capped at 1.5× its own pixels, and the area scrolls. Clicking the figure no longer closes the dialog; only the backdrop does.
 
 ## Publishing
 

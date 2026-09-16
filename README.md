@@ -1,6 +1,9 @@
 <div align="center">
 
-<img src="assets/images/02-vogon-rejected-logo.png" alt="VOGON — Validated Operations &amp; Governance OrchestratioN" width="420">
+<picture>
+  <source srcset="assets/images/02-vogon-rejected-logo_dark.png" media="(prefers-color-scheme: dark)">
+  <img src="assets/images/02-vogon-rejected-logo.png" alt="VOGON — Validated Operations &amp; Governance OrchestratioN" width="420">
+</picture>
 
 # VOGON
 
@@ -211,7 +214,10 @@ Installation instructions will be published following approval of the installati
 
 <div align="center">
 
-<img src="assets/images/08-rejected-stamp.png" alt="REJECTED — VOGON // Controlled Copy" width="460">
+<picture>
+  <source srcset="assets/images/08-rejected-stamp_dark.png" media="(prefers-color-scheme: dark)">
+  <img src="assets/images/08-rejected-stamp.png" alt="REJECTED — VOGON // Controlled Copy" width="460">
+</picture>
 
 </div>
 
@@ -282,7 +288,10 @@ Yes, subject to template change control. Template change control is a template.
 
 <div align="center">
 
-<img src="assets/images/06-vogon-toilet-paperwork.png" alt="Same crap, different format" width="400">
+<picture>
+  <source srcset="assets/images/06-vogon-toilet-paperwork_dark.png" media="(prefers-color-scheme: dark)">
+  <img src="assets/images/06-vogon-toilet-paperwork.png" alt="Same crap, different format" width="400">
+</picture>
 
 </div>
 
@@ -317,7 +326,10 @@ VOGON has not been evaluated for use in healthy engineering organizations.
 
 <div align="center">
 
-<img src="assets/images/09-issue-submission-process.png" alt="VGN-PROC-001 — Issue Submission Process" width="600">
+<picture>
+  <source srcset="assets/images/09-issue-submission-process_dark.png" media="(prefers-color-scheme: dark)">
+  <img src="assets/images/09-issue-submission-process.png" alt="VGN-PROC-001 — Issue Submission Process" width="600">
+</picture>
 
 </div>
 
@@ -364,7 +376,10 @@ Once authorized:
 
 <div align="center">
 
-<img src="assets/images/07-pricing-comic.png" alt="VOGON pricing comic" width="800">
+<picture>
+  <source srcset="assets/images/07-pricing-comic_dark.png" media="(prefers-color-scheme: dark)">
+  <img src="assets/images/07-pricing-comic.png" alt="VOGON pricing comic" width="800">
+</picture>
 
 </div>
 
