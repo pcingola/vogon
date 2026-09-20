@@ -19,5 +19,4 @@ dist/
 .vogon/
 
 # Working notes, not part of the deliverable
-plans/
 tmp/

@@ -13,8 +13,8 @@ writes, and not anything VOGON generates in a user's project.
 ## Writing style
 
 Applies to everything except the marketing page: `CLAUDE.md`, `src/docs/`,
-`gxp/`, `README.md`, CLI output, comments, commit messages and plans, and
-everything VOGON generates. The full statement,
+`gxp/`, `README.md`, CLI output, comments, commit messages and working notes,
+and everything VOGON generates. The full statement,
 including what a checker can enforce, is `src/docs/dev/writing.md`; it is the
 same standard, written for the reader rather than for this file. Standard
 Technical English: plain declarative sentences, precise terms,
@@ -47,7 +47,7 @@ vogon/
 ├── docs/            OUTPUT — rendered HTML. generated. never hand-edited.
 ├── gxp/             RECORDS — VOGON's own requirements, facts, constraints, decisions
 ├── tests/
-├── plans/           INTENT — what we are about to build. gitignored, local only.
+├── tmp/             working notes: plans, brainstorming. gitignored, local only.
 ├── assets/          brand originals + their dark twins, 46 MB. never published.
 ├── .github/         CI: tests and a strict site build on every push
 ├── .githooks/       pre-commit: rebuilds docs/ when site source changes
@@ -106,13 +106,13 @@ model: drafting happens in the coding agent, and VOGON validates the result
 ## Plans
 
 A plan states what we are going to build, before the code is written. It is not
-a record of what exists. One plan per file, `plans/plan_<slug>.md`. `plans/` is
-gitignored; nothing committed may depend on a plan.
+a record of what exists. One plan per file, `tmp/plans/plan_<slug>.md`. `tmp/`
+is gitignored; nothing committed may depend on a plan.
 
 When a plan has been implemented or abandoned it is spent:
-`mv plans/plan_<slug>.md plans/done/`. Files under `plans/done/` are never read
-and never updated. Anything that must stay true afterwards goes to
-`src/docs/dev/` before the plan is retired.
+`mv tmp/plans/plan_<slug>.md tmp/plans/done/`. Files under `tmp/plans/done/`
+are never read and never updated. Anything that must stay true afterwards goes
+to `src/docs/dev/` before the plan is retired.
 
 ## Conventions
 
