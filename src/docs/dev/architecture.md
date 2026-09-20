@@ -1,5 +1,12 @@
 # Architecture
 
+This page is not the architecture. It states scope, the two stores, the
+directory layout in a host project, how the trace runs, and the module names.
+It does not define components, the interfaces between them, data flow, state
+or failure behaviour. Treat nothing here as a settled design; the design is
+written separately and this page will be narrowed to the boundary material
+when it is.
+
 ## What VOGON does
 
 VOGON turns a conversation into the compliance record a regulated change needs,
@@ -51,6 +58,7 @@ VOGON is installed as a library and a command line into a real project.
 │   ├── constraints/CON-NNN.md
 │   ├── decisions/DEC-NNN.md
 │   ├── sources/        held copies of every cited document, dated and flat
+│   ├── plans/          what will be built, before it is. done/ holds the spent ones
 │   └── out/            generated. Never hand-edited
 ├── tests/              test functions carrying requirement markers
 ├── .vogon/             tool state. Gitignored
@@ -67,7 +75,10 @@ and read by people who will never run the tool.
 ## Traceability
 
 The trace runs from the test to the requirement, not from the requirement to
-the test. A marker on the test function names the requirement ids it verifies,
+the test. A commit names the records it implements, which is a separate link:
+the marker says what verifies a record, the commit says what built it. A
+commit message is fixed when it is written, so an id in it cannot drift the
+way a comment in source does. A marker on the test function names the requirement ids it verifies,
 and whoever changes the test changes the marker, in the same commit. Requirement
 ids are not written into the source as comments: they drift and nothing checks
 them.
@@ -121,3 +132,38 @@ over alternatives:
 This is a deliberate narrowing, recorded in `gxp/decisions/DEC-004.md`.
 Supporting a second tracker or a second test manager means an interface, and an
 interface written before the second implementation exists is guesswork.
+
+## What VOGON is made of
+
+Not settled. This is the shape the architecture is expected to take, written
+down so the design discussion has something to work from.
+
+VOGON is a set of skills and rules that a coding agent follows, with a small
+amount of code where the answer has to be the same every time: validating a
+record against the schema, minting the next id, building the index, the marker
+checks, the tracker writes, the result import, and reporting a document whose
+cited records have changed since it was written. Reading a codebase, writing
+prose and judging what a change affects are the agent's work, not the code's.
+
+The lifecycle steps VOGON covers reduce to a set of skills: draft a
+requirement, draft the design specification, draft the risk assessment with the
+values left blank, draft the test specification, review test cases against the
+requirements and mark them, prepare the change control package, prepare the
+periodic review package. The validation plan is out of scope; it is written
+before the build team exists.
+
+Delivery is a Claude Code plugin, which carries skills, commands, subagents,
+hooks and MCP server definitions in one install. Hooks in the project's
+`.claude/settings.json` are early warning rather than control, because a
+developer can edit them; the checks that count run in CI on the pull request.
+A subagent with no read access to the implementation is how test cases get
+drafted from the requirement rather than from the code.
+
+Every external system is named by what it does, not by the product that
+does it: the tracker, the test manager, the repository host, the document
+system, the coding agent. Which product fills each role is decided by the
+company's IT and quality organisation, and VOGON adapts to what is already
+there. It is reached through whatever MCP server that company provides, which
+is often not the vendor's own. What VOGON specifies is the operations it needs
+from each role. Where nothing exists to fill a role, VOGON ships a sensible
+default, and the default is replaceable by configuration.

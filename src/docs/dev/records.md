@@ -69,7 +69,7 @@ Frontmatter common to all four types:
 | `source` | Every held document that states this, as a list of paths. See [below](#source-lists-every-document-that-states-it). Absent on a record the project originated itself |
 | `reviewed_by`, `reviewed_on` | Who read it in detail and when. Absent until someone has |
 | `tags` | Free-form, for searching across modules. Optional |
-| `tracked_as` | The key of this record in the system that governs it — a Jira issue, an Xray test plan. Absent until one exists |
+| `tracked_as` | Where this record is registered outside the repository, as a map from the role of each system to the key the record has in it. One entry is `governs: <role>`, naming the role whose approval state counts. Absent until the record is registered anywhere |
 | `depends_on` | The records this one rests on, by id. Absent on a fact, which rests on nothing |
 | `references` | The documents that say how this is realised, as a list of paths. Absent where no document does. See [below](#references-points-at-the-documentation) |
 
@@ -124,6 +124,28 @@ sections below.
 Paths resolve from the repository root and are checked, so a document moved
 without updating the records that point at it fails.
 
+### `tracked_as` holds every system, and names the one that governs
+
+A project runs more than one system, and the same record can be registered in
+several of them: the tracker that approves it, the test manager that plans
+tests against it, whatever a company's quality organisation adds. `tracked_as`
+records all of them, keyed by role, so a reader can reach any of them from the
+record.
+
+One role is named as governing. Approval state is read from that system and
+from no other, which is what `CON-003` requires: there is one answer to
+whether the record is approved. The other entries are addresses, and VOGON
+checks that each key still resolves without comparing what the systems say to
+each other. Where two systems hold the same statement and disagree, that is
+the project's disagreement to resolve, not something VOGON arbitrates.
+
+```yaml
+tracked_as:
+  governs: tracker
+  tracker: PROJ-412
+  test_manager: TEST-88
+```
+
 ### Status is about the statement, not about the work
 
 Status says whether we are committed to the requirement, not whether anything
@@ -156,6 +178,7 @@ Frontmatter it adds:
 | --- | --- |
 | `verification` | One of `inspection`, `analysis`, `demonstration` or `test` |
 | `gxp_risk` | One of `safety`, `product quality`, `data integrity` or `none`. What a failure of this requirement would damage in a regulated project. It decides how much verification the requirement needs and is expensive to add retrospectively |
+| `acceptance_by`, `acceptance_on` | Who accepted the acceptance block and when. Required where `gxp_risk` is not `none`, and absent until a person has accepted it |
 
 A requirement carries `references` where a document specifies the mechanism it
 is checked against — the schema, the marker format, the tracker rules. A
@@ -170,6 +193,13 @@ Body blocks it adds:
   facts about the files that happen to be on this machine. A criterion written
   around one repository describes a system that can only be demonstrated on
   that repository.
+
+Where a value is expected, the acceptance block states it. It is worked out
+from the requirement and never read off a run of the code, because a value
+taken from the code makes the test that asserts it unable to fail. On a
+requirement carrying risk the block is accepted by a named person before the
+record leaves `proposed`, and a test marker naming a requirement whose block
+has not been accepted fails the run. `DEC-012` has the reasoning.
 
 ### Worked example
 
@@ -241,8 +271,10 @@ path; `references` names our own document and is.
 ## Decision
 
 At `gxp/decisions/DEC-NNN.md`. The body is the architecture decision record:
-context, the options and what each costs, the decision, and the consequences
-including the ones accepted as bad.
+context, the options and what each costs, the decision, the consequences
+including the ones accepted as bad, and an example. The example shows the
+decision playing out in a situation a reader recognises, which is how a
+reader checks they have understood the choice rather than the words.
 
 A decision states the choice, not the mechanism. Where the mechanism is
 written up, the decision carries `references` naming that document, so a

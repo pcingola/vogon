@@ -12,7 +12,7 @@ tags: [jira, drift]
 
 # REQ-TRK-6 — Report a tracked_as key that no longer resolves
 
-**Requirement.** VOGON MUST report every record whose `tracked_as` names an
+**Requirement.** VOGON MUST report every record whose `tracked_as` names, under any role, an
 issue that does not exist, has been deleted, or has been moved to another
 project.
 
@@ -25,6 +25,6 @@ it.
 **Example.** A record tracked as an issue since deleted is reported, naming the
 record and the key.
 
-**Acceptance.** For any set of records carrying `tracked_as`, every key
+**Acceptance.** For any set of records carrying `tracked_as`, every key under every role
 resolves to a reachable issue, or the record is reported with the key and the
 reason it did not resolve.

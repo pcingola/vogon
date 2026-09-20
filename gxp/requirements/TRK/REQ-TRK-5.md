@@ -22,8 +22,8 @@ Left unrecorded, the next run creates a second issue.
 **What this does not require.** Creating issues for records whose status is
 `proposed` or `withdrawn`, and choosing the issue type per record.
 
-**Example.** An accepted constraint with no `tracked_as` produces one issue,
-and the record gains `tracked_as: PROJ-412`.
+**Example.** An accepted constraint with no `tracked_as` produces one issue
+in the governing system, and the record gains that role and key.
 
 **Acceptance.** After a run, every accepted record carries a `tracked_as` that
 resolves to an existing issue, and every issue VOGON created is named by
