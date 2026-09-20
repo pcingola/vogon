@@ -1,31 +1,40 @@
 # VOGON
 
-VOGON (Validated Operations & Governance OrchestratioN) is an AI agent that handles the bureaucratic burden of GxP software development — requirements, validation, risk, traceability, change control, and the evidence needed to survive audits.
+VOGON (Validated Operations & Governance OrchestratioN) is an AI agent for the
+bureaucratic side of GxP software development: requirements, validation, risk,
+traceability, change control, and audit evidence.
 
-Its culture is relentlessly deadpan corporate satire: bureaucracy is sacred, developers are a regrettable implementation detail, every problem can be solved with more process, and good enough is not compliant.
+The marketing page, `src/html/index.html`, is written in corporate satire,
+defined in `assets/brand.md`. Read that file before editing it. That voice
+applies to that page and to nothing else: not the README, not CLI output, not
+the documentation, not a record under `gxp/`, not a tracker field VOGON
+writes, and not anything VOGON generates in a user's project.
 
-## Tone rules for generated content
+## Writing style
 
-- Deadpan. Never wink at the joke, never explain it.
-- The voice is institutional, not personal: forms, revisions, procedures, sign-offs.
-- Tagline: *Because good enough is not compliant.*
-- Banner keywords: COMPLIANCE · TRACEABILITY · RISK MANAGEMENT · A BRIGHTER TOMORROW.
-- Recurring lines: "Same problems. More process." · "It depends." · "Per SOP." · "REJECTED."
-- Roughly 80% of any public-facing text should read as a legitimate GxP tool; the remaining 20% is where it goes wrong. Lead serious, then deteriorate.
-- Assets and copy live in `assets/`. Reuse them rather than inventing new catchphrases.
+Applies to everything except the marketing page: `CLAUDE.md`, `src/docs/`,
+`gxp/`, `README.md`, CLI output, comments, commit messages and plans, and
+everything VOGON generates. The full statement,
+including what a checker can enforce, is `src/docs/dev/writing.md`; it is the
+same standard, written for the reader rather than for this file. Standard
+Technical English: plain declarative sentences, precise terms,
+the shortest wording that is still exact.
 
-## Brand marks
+- A heading names its section. It does not tease it or summarise a conclusion.
+- State the fact and let the reader judge its weight. No "critically",
+  "importantly", "notably", "it is worth noting", "the key insight".
+- No metaphors for importance: nothing is load-bearing, a linchpin, a gate, a
+  forcing function or a north star.
+- No marketing or management vocabulary, and no coined labels. If a label
+  stands in for a plain description, write the plain description.
+- No AI slop: no three-item lists built for rhythm, no "not X, but Y", no
+  em-dash aside used only for emphasis, no rhetorical question answered by the
+  next sentence, no closing line that restates the opening.
+- Do not carry vocabulary across from a document you just read. Translate it.
 
-- Icon: `assets/images/03-vogon-icon.png` — avatars, favicon, bot identity.
-- Hero: `assets/images/02-vogon-rejected-logo.png` — README header, site hero, decks.
-- Secondary mark: `assets/images/08-rejected-stamp.png` — the REJECTED stamp. Use it wherever VOGON says no: PR bot comments, CLI output, error states, CI failures. ASCII reduction for terminals:
-
-```text
-        ┌─────────────────┐
-        │    REJECTED     │
-        │      VOGON      │
-        └─────────────────┘
-```
+A document states what is settled. Never write a section of open questions,
+open issues, TODOs, TBDs or next steps. An unresolved question is raised in
+conversation and answered there; if one is already in a file, delete it.
 
 ## Repo layout
 
@@ -36,98 +45,75 @@ vogon/
 │   ├── docs/        SOURCE — documentation, markdown (user/, dev/)
 │   └── html/        SOURCE — marketing page: index.html, img/, .nojekyll
 ├── docs/            OUTPUT — rendered HTML. generated. never hand-edited.
+├── gxp/             RECORDS — VOGON's own requirements, facts, constraints, decisions
 ├── tests/
+├── plans/           INTENT — what we are about to build. gitignored, local only.
 ├── assets/          brand originals + their dark twins, 46 MB. never published.
+├── .github/         CI: tests and a strict site build on every push
+├── .githooks/       pre-commit: rebuilds docs/ when site source changes
 ├── mkdocs.yml       docs_dir: src/docs   site_dir: docs
 ├── Makefile         make site / make clean
 └── pyproject.toml
 ```
 
-Three rules hold this together:
+`src/` is source and `docs/` is output: never edit `docs/` and never put source
+there. Pages serves `main:/docs`, so the rendered HTML is committed, and the
+`.githooks/pre-commit` hook rebuilds and stages it whenever a commit touches
+the site source. Do not run `make site` by hand before committing. `src/vogon` is the Python package; `src/docs` and `src/html`
+are website source that happens to sit beside it, and the wheel is limited to
+`src/vogon`. `assets/` is unreachable from the web because Pages roots the site
+at `docs/`.
 
-1. **`src/` is source, `docs/` is output.** Never edit anything under `docs/`; `make site` overwrites it. Never put source under `docs/`.
-2. **`src/` is not the Python import root alone** — `src/vogon` is the package, `src/docs` and `src/html` are website source that happens to live beside it. The wheel is limited to `src/vogon` explicitly (see Build & run), so nothing else ships.
-3. **`assets/` is never served.** GitHub Pages roots the site at `docs/`, so anything outside it is unreachable by construction. The 46 MB of full-size PNGs stay for the README and decks.
+`src/docs/dev/` is the current description of the system. Read
+`dev/contributing.md` before changing the build, publishing or packaging,
+`dev/site.md` before editing `src/html/index.html`, `dev/architecture.md`
+before changing what the system does, and `dev/writing.md` before writing any
+prose that ships, including records.
 
-## Site
+## Records
 
-`src/html/index.html` is the marketing page — standalone, no build step, copied verbatim into `docs/`. It reads as an enterprise life-sciences SaaS page that is secretly a controlled document: a persistent document-control strip, SOP clause numbering (§1.0 …), square-cornered hairline panels, and one animated moment — the REJECTED stamp that lands when a change request is submitted.
+`gxp/` holds VOGON's own requirements, domain facts, constraints and decisions,
+in the same format VOGON defines for the projects it is installed into. Four
+kinds of record, four id namespaces, one file per record named for its id, and
+an id that is never reused. `src/docs/dev/vocabulary.md` says what the four
+words mean, `dev/records.md` says how to write one.
 
-- Type: Archivo (display), Source Sans 3 (body), IBM Plex Mono (document metadata, CLI), Source Serif 4 italic (quotes).
-- Color tokens are sampled from the artwork: paper `#FBFAF5`, ink `#101820`, oxblood `#971A1C`, stamp `#BF100F`, slate `#6E7B82`, rule `#DFDACF`. Light and dark are both defined on `:root`; fixed dark chrome (nav strip, footer, consent bar) uses the `--dark-ground*` tokens so it stays dark in both themes.
-- Images are web-optimized WebP in `src/html/img/` (54 MB of PNG → 2.2 MB), referenced relatively as `img/…` so the paths survive the copy into `docs/`. Regenerate with ImageMagick from `assets/images/` after adding artwork.
-- `emblem.webp` (03) and `stamp-alpha.webp` (08) are transparent cutouts, and both are white-keyed — the vogon's white shirt and the paper inside the stamp frame went with the background. On cream that reads correctly; on dark ground it leaves holes. Their dark counterparts come off the authored dark artwork instead: `emblem_dark.webp` is a circular mask of `03-vogon-icon_dark.png`, `stamp-alpha_dark.webp` takes its alpha from the brightest channel of `08-rejected-stamp_dark.png`. The footer stamp uses the dark one unconditionally because the footer is `--dark-ground` in both themes; the rejection dialog keeps `stamp-alpha.webp`, which is the stronger red on its cream card.
-- Most of the artwork was drawn on white paper, which glares on a dark page, so those figures carry a dark twin — redrawn for dark ground, not derived from the light one. Flood fills and lightness inversions were tried and were not good enough to ship; regenerate the artwork instead. `assets/images/<name>_dark.png` is the original, `src/html/img/<name>_dark.webp` the web copy. 01–09, 12 and 13 have one.
-- A dark twin's `.webp` must be the **same pixel size** as the light `.webp` beside it, because `index.html` carries one `width`/`height` pair for both sources. `magick identify -format '%wx%h' src/html/img/<name>.webp` gives the target; then `magick assets/images/<name>_dark.png -resize '<W>x<H>!' -quality 82 -define webp:method=6 src/html/img/<name>_dark.webp`. Where the aspect ratios differ — 04 is square in dark and 1200×1006 in light — centre-crop to the light ratio first (`-gravity center -crop 1254x1051+0+0 +repage`) rather than squashing.
-- A figure with a dark twin is served through `<picture>` with `media="(prefers-color-scheme: dark)"`, in `index.html` and in the README. There is no theme toggle, so the media query is the whole mechanism.
-- Every figure is click-to-enlarge: wrap it in `<div class="zoomfig" role="button" tabindex="0">` and the lightbox picks it up, captioned from the image's `data-ref`. The footer REJECTED stamp is one of these too.
-- The lightbox fits a figure whole and never enlarges it past its own pixels, so on a wide monitor a 1200px figure stops at 1200px instead of going soft. The exception is a **portrait** figure: VGN-PROC-001 is a tall chart with body text in it, and fitted inside the dialog height it is unreadable, so a figure taller than it is wide is sized to the dialog width instead, capped at 1.5× its own pixels, and the area scrolls. Clicking the figure no longer closes the dialog; only the backdrop does.
+The layout inside `gxp/` is the layout VOGON creates in a host project:
+`requirements/<module>/`, `facts/`, `constraints/`, `decisions/`, `sources/`
+for held copies of cited documents, and `out/` for generated output. Records
+are visible rather than hidden under a dot-directory; `.vogon/` holds tool
+state only and is gitignored.
 
-## Publishing
+A statement about the system belongs in `gxp/` when it is a requirement, a
+fact, a constraint or a decision. It belongs in `src/docs/dev/` when it
+explains how the parts fit together. The record says what must hold; the
+documentation says how to read the records.
 
-GitHub Pages, deploy-from-a-branch: **Settings → Pages → Source: "Deploy from a branch", branch `main`, folder `/docs`.** No CI workflow. Pages serves `docs/` exactly as committed, which is why build output is committed to git.
+## Version 0.1 assumes one stack
 
-```
-src/html/index.html            → /
-src/html/img/emblem.webp       → /img/emblem.webp
-src/docs/user/install.md       → /user/install.html
-src/docs/dev/architecture.md   → /dev/architecture.html
-assets/                        → not served
-```
+Python, GitHub, Jira, Xray, and Claude Code as the coding agent. Nothing is
+abstracted over an alternative, and no interface is written before a second
+implementation exists. The reasoning is in `gxp/decisions/DEC-004.md`.
 
-`src/html/.nojekyll` copies through to `docs/.nojekyll` and stops GitHub re-running Jekyll over HTML that mkdocs has already rendered.
+Two consequences hold everywhere. VOGON never performs an approval or a
+signature transition, because a signature requires the signer's own
+credentials (`gxp/constraints/CON-001.md`). VOGON never calls a language
+model: drafting happens in the coding agent, and VOGON validates the result
+(`gxp/decisions/DEC-005.md`).
 
-One name collision to be aware of: mkdocs-material writes its own CSS and JS
-into `docs/assets/`. That is generated theme output and has nothing to do with
-the repo's top-level `assets/`, which holds the brand originals and is never
-published.
+## Plans
 
-## Architecture
+A plan states what we are going to build, before the code is written. It is not
+a record of what exists. One plan per file, `plans/plan_<slug>.md`. `plans/` is
+gitignored; nothing committed may depend on a plan.
 
-`src/vogon/` is a stub: `__init__.py` holds `__version__` (hatchling reads the
-version from it), `cli.py` provides the `vogon` console-script entry point.
-
-## Build & run
-
-```sh
-make site      # src/docs/*.md → docs/, then src/html/ copied over the top
-make serve     # live preview on http://127.0.0.1:8000
-make clean     # rm -rf docs/
-make test      # pytest
-uv sync        # dev environment
-uv build       # wheel + sdist
-```
-
-The docs toolchain (mkdocs + mkdocs-material) is pinned in the `dev`
-dependency group and run through `uv run --group dev`, so `uv.lock` fixes the
-renderer version. Do not call `uvx mkdocs` — it resolves a fresh version on
-every invocation and the rendered output is committed.
-
-Three packaging settings are load-bearing:
-
-- `[tool.hatch.version] path = "src/vogon/__init__.py"` — one source of truth for the version.
-- `[tool.hatch.build.targets.wheel] packages = ["src/vogon"]` — the wheel contains `vogon/` and nothing else.
-- `[tool.hatch.build.targets.sdist] include = [...]` — hatchling's sdist default is "everything git tracks", which would ship `assets/` (27 MB) and the generated `docs/` to anyone installing from source. Patterns are **anchored with a leading `/`**: unanchored `README.md` matches at any depth and drags in `assets/README.md`.
-
-Verify both after changing packaging config:
-
-```sh
-unzip -l dist/*.whl      # expect vogon/ and vogon-*.dist-info/ only
-tar tzf dist/*.tar.gz    # expect src/vogon, tests, README.md, pyproject.toml
-```
-
-## Tests
-
-```sh
-make test
-```
-
-`pytest`, `testpaths = ["tests"]`. Tests import `vogon` from the installed
-(editable) package, not from the working directory — that is what src-layout
-buys, so a file missing from the wheel fails in CI rather than on a user's
-machine.
+When a plan has been implemented or abandoned it is spent:
+`mv plans/plan_<slug>.md plans/done/`. Files under `plans/done/` are never read
+and never updated. Anything that must stay true afterwards goes to
+`src/docs/dev/` before the plan is retired.
 
 ## Conventions
 
-- Documentation is written as markdown in `src/docs/`. Rendered HTML is never authored by hand and never committed from anywhere but `make site`.
-- Directory names don't repeat the project name: `assets/`, not `vogon_assets/`; `img/`, not `assets/images/web/`.
+- Documentation is markdown in `src/docs/`. Rendered HTML is never authored by
+  hand and never committed from anywhere but `make site`.
+- Directory names don't repeat the project name: `assets/`, not `vogon_assets/`.

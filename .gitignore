@@ -14,3 +14,10 @@ dist/
 
 # NOTE: docs/ is build output but IS committed — GitHub Pages
 # deploy-from-a-branch serves exactly what is in git.
+
+# Tool state, not part of the deliverable
+.vogon/
+
+# Working notes, not part of the deliverable
+plans/
+tmp/

@@ -1,0 +1,15 @@
+#!/bin/sh
+# Rebuild docs/ whenever the site source changes, and stage the result.
+# Pages serves main:/docs, so the rendered HTML has to be committed with the
+# source it came from.
+
+set -e
+
+git diff --cached --name-only | grep -qE '^(src/docs/|src/html/|mkdocs\.yml$)' || exit 0
+
+echo "site source changed: rebuilding docs/"
+if ! out=$(make site 2>&1); then
+    echo "$out" >&2
+    exit 1
+fi
+git add docs

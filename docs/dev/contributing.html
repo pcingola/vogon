@@ -6,14 +6,14 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Because good enough is not compliant.">
+        <meta name="description" content="Requirements, traceability and validation evidence for GxP software.">
       
       
       
         <link rel="canonical" href="https://example.github.io/vogon/dev/contributing.html">
       
       
-        <link rel="prev" href="architecture.html">
+        <link rel="prev" href="site.html">
       
       
       
@@ -470,6 +470,118 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="vocabulary.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vocabulary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="records.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Records
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="writing.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Writing standard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="site.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Marketing page
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -544,6 +656,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#development-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Development environment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#building-the-site" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -555,10 +678,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#development-environment" class="md-nav__link">
+  <a href="#ci" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Development environment
+        CI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#publishing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Publishing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#packaging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Packaging
       
     </span>
   </a>
@@ -619,6 +764,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#development-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Development environment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#building-the-site" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -630,10 +786,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#development-environment" class="md-nav__link">
+  <a href="#ci" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Development environment
+        CI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#publishing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Publishing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#packaging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Packaging
       
     </span>
   </a>
@@ -684,6 +862,10 @@
 <td>Build output. Rendered HTML, served by GitHub Pages. Never edit.</td>
 </tr>
 <tr>
+<td><code>gxp/</code></td>
+<td>VOGON's own records: requirements, facts, constraints, decisions.</td>
+</tr>
+<tr>
 <td><code>tests/</code></td>
 <td>Test suite.</td>
 </tr>
@@ -693,18 +875,66 @@
 </tr>
 </tbody>
 </table>
+<h2 id="development-environment">Development environment<a class="headerlink" href="#development-environment" title="Permanent link">&para;</a></h2>
+<pre><code class="language-sh">uv sync
+git config core.hooksPath .githooks
+make test      # pytest, testpaths = [&quot;tests&quot;]
+</code></pre>
+<p><code>core.hooksPath</code> points git at the hooks committed in <code>.githooks/</code>. It is a
+local setting, so it is set once per clone.</p>
+<p>Tests import <code>vogon</code> from the installed editable package rather than the
+working directory, so a file missing from the wheel fails in CI instead of on a
+user's machine.</p>
 <h2 id="building-the-site">Building the site<a class="headerlink" href="#building-the-site" title="Permanent link">&para;</a></h2>
 <pre><code class="language-sh">make site     # src/docs/ -&gt; docs/, then src/html/ copied over the top
 make serve    # live preview on http://127.0.0.1:8000
 make clean    # rm -rf docs/
 </code></pre>
 <p><code>docs/</code> is generated and committed, because GitHub Pages deploy-from-a-branch
-serves exactly what is in git. Do not hand-edit anything inside it; the next
-<code>make site</code> will overwrite your changes without asking.</p>
-<h2 id="development-environment">Development environment<a class="headerlink" href="#development-environment" title="Permanent link">&para;</a></h2>
-<pre><code class="language-sh">uv sync
-uv run pytest
+serves exactly what is in git. You do not run <code>make site</code> for that: the
+<code>.githooks/pre-commit</code> hook rebuilds <code>docs/</code> and stages it whenever a commit
+touches <code>src/docs/</code>, <code>src/html/</code> or <code>mkdocs.yml</code>, so the rendered HTML is
+always the render of the source committed beside it. A failing build aborts
+the commit.</p>
+<p>Do not hand-edit anything inside <code>docs/</code>; the next build overwrites it without
+asking.</p>
+<p>mkdocs and mkdocs-material are pinned in the <code>dev</code> dependency group and run
+through <code>uv run --group dev</code>, so <code>uv.lock</code> fixes the renderer version. Do not
+call <code>uvx mkdocs</code>: it resolves a fresh version each time, and the rendered
+output is committed.</p>
+<h2 id="ci">CI<a class="headerlink" href="#ci" title="Permanent link">&para;</a></h2>
+<p><code>.github/workflows/ci.yml</code> runs the tests and a strict site build on every push
+and pull request. A broken link or a page missing from the navigation fails the
+build, because <code>mkdocs build --strict</code> treats warnings as errors.</p>
+<h2 id="publishing">Publishing<a class="headerlink" href="#publishing" title="Permanent link">&para;</a></h2>
+<p>GitHub Pages, deploy from a branch: Settings → Pages → Source "Deploy from a
+branch", branch <code>main</code>, folder <code>/docs</code>.</p>
+<pre><code>src/html/index.html            → /
+src/html/img/emblem.webp       → /img/emblem.webp
+src/docs/user/install.md       → /user/install.html
+src/docs/dev/architecture.md   → /dev/architecture.html
+assets/                        → not served
 </code></pre>
+<p><code>src/html/.nojekyll</code> copies through to <code>docs/.nojekyll</code> and stops GitHub
+re-running Jekyll over HTML that mkdocs already rendered. mkdocs-material writes
+its theme CSS and JS into <code>docs/assets/</code>, which is unrelated to the top-level
+<code>assets/</code>.</p>
+<h2 id="packaging">Packaging<a class="headerlink" href="#packaging" title="Permanent link">&para;</a></h2>
+<pre><code class="language-sh">uv build
+unzip -l dist/*.whl      # expect vogon/ and vogon-*.dist-info/ only
+tar tzf dist/*.tar.gz    # expect src/vogon, tests, README.md, pyproject.toml
+</code></pre>
+<p>Three settings in <code>pyproject.toml</code> need that output checked after any change:</p>
+<ul>
+<li><code>[tool.hatch.version] path = "src/vogon/__init__.py"</code> — one source of truth
+  for the version.</li>
+<li><code>[tool.hatch.build.targets.wheel] packages = ["src/vogon"]</code> — the wheel
+  contains <code>vogon/</code> and nothing else.</li>
+<li><code>[tool.hatch.build.targets.sdist] include = [...]</code> — hatchling's default is
+  everything git tracks, which would ship <code>assets/</code> (27 MB) and the generated
+  <code>docs/</code>. Patterns are anchored with a leading <code>/</code>; unanchored <code>README.md</code>
+  matches at any depth and drags in <code>assets/README.md</code>.</li>
+</ul>
 
 
 

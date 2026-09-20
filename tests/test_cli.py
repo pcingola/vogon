@@ -11,6 +11,6 @@ def test_version_flag(capsys):
     assert __version__ in capsys.readouterr().out
 
 
-def test_bare_invocation_is_rejected(capsys):
+def test_bare_invocation_prints_usage(capsys):
     assert main([]) == 1
-    assert "REJECTED" in capsys.readouterr().out
+    assert "usage: vogon" in capsys.readouterr().err

@@ -1,0 +1,1084 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Requirements, traceability and validation evidence for GxP software.">
+      
+      
+      
+        <link rel="canonical" href="https://example.github.io/vogon/dev/vocabulary.html">
+      
+      
+        <link rel="prev" href="architecture.html">
+      
+      
+        <link rel="next" href="records.html">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Vocabulary - VOGON</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="red" data-md-color-accent="red">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#vocabulary" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="VOGON" class="md-header__button md-logo" aria-label="VOGON" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            VOGON
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Vocabulary
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="red" data-md-color-accent="red"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="VOGON" class="md-nav__button md-logo" aria-label="VOGON" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    VOGON
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    User guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user/install.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user/cli.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Developer guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="architecture.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vocabulary
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="vocabulary.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vocabulary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-four-kinds-of-record" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The four kinds of record
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verbs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verbs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compliance-terms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compliance terms
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#who-signs-what" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Who signs what
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-these-terms-come-from" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where these terms come from
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="records.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Records
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="writing.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Writing standard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="site.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Marketing page
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="contributing.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-four-kinds-of-record" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The four kinds of record
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verbs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verbs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compliance-terms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compliance terms
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#who-signs-what" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Who signs what
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-these-terms-come-from" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where these terms come from
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="vocabulary">Vocabulary<a class="headerlink" href="#vocabulary" title="Permanent link">&para;</a></h1>
+<p>What the words mean. How to write a record is in <a href="records.html">Records</a>.</p>
+<p>This file exists because projects call four different kinds of statement
+"requirements" and keep them in one list under one numbering scheme. Rows
+stating what the system must do sit next to rows stating how a third-party
+platform behaves, next to a decision not to build something. Most of those rows
+cannot be tested, and a module file reads as a transcript.</p>
+<h2 id="the-four-kinds-of-record">The four kinds of record<a class="headerlink" href="#the-four-kinds-of-record" title="Permanent link">&para;</a></h2>
+<p>Everything written down that the system will be built from is one of four
+things. Each has its own id namespace and its own file.</p>
+<p><strong>Requirement</strong> — something the system must do. Written as a MUST statement
+saying what has to be true rather than how to achieve it, and phrased so that a
+test could fail it. Ids are <code>REQ-&lt;MODULE&gt;-&lt;NUMBER&gt;</code>.</p>
+<p><strong>Domain fact</strong> — something true whether or not this project exists. "An Xray
+test issue is linked to the requirement issue it verifies" is a fact; nobody on
+the project chose it and no test of ours can fail it. Prefix <code>FACT-</code>.</p>
+<p><strong>Constraint</strong> — a limit imposed from outside that design cannot trade away: a
+regulation, a company procedure, or a platform behaviour. "Approval cannot be
+performed by a machine account" is a constraint. Prefix <code>CON-</code>.</p>
+<p><strong>Decision</strong> — a choice made among options, recorded with what the options cost
+and what the choice commits us to. Choosing <em>not</em> to build something is a
+decision. Prefix <code>DEC-</code>.</p>
+<p>A fifth thing, the <strong>elicitation record</strong>, is the meeting summary or source
+document a record came from. It is evidence, cited by records, and never a
+record itself.</p>
+<h2 id="verbs">Verbs<a class="headerlink" href="#verbs" title="Permanent link">&para;</a></h2>
+<p><a href="https://www.rfc-editor.org/rfc/rfc2119">RFC 2119</a> as clarified by
+<a href="https://www.rfc-editor.org/rfc/rfc8174">RFC 8174</a>: only the uppercase form is
+binding, so an ordinary "must" or "should" in prose carries no weight.</p>
+<table>
+<thead>
+<tr>
+<th>Word</th>
+<th>Means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MUST</strong>, <strong>MUST NOT</strong></td>
+<td>A requirement. Binding. The only form a requirement record is written in</td>
+</tr>
+<tr>
+<td><strong>SHOULD</strong>, <strong>SHOULD NOT</strong></td>
+<td>A recommendation. Not binding, and not a requirement</td>
+</tr>
+<tr>
+<td><strong>MAY</strong></td>
+<td>Permission</td>
+</tr>
+<tr>
+<td><em>(no modal verb)</em></td>
+<td>A statement of fact, about the world or about something outside our control</td>
+</tr>
+</tbody>
+</table>
+<p>"Results imported into Xray sometimes arrive without a build identifier" has no
+modal verb, so it is a domain fact. "VOGON MUST reject a result import with no
+build identifier" is the requirement beside it.</p>
+<p>"shall" is not used here. ISO/IEC/IEEE 29148 uses it, and the ISO drafting
+rules it follows forbid "must" as an alternative, but those rules govern how ISO
+standards are written. No regulation in this field, and no part of GAMP 5, EU
+Annex 11 or 21 CFR Part 11, says which modal verb a requirement uses; they
+require that it be unambiguous, testable, uniquely identified and traceable. A
+formal User Requirements Specification in "shall" is generated from these
+records, and the substitution is mechanical.</p>
+<h2 id="compliance-terms">Compliance terms<a class="headerlink" href="#compliance-terms" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GxP</strong></td>
+<td>The umbrella label for regulations covering work a regulator relies on</td>
+</tr>
+<tr>
+<td><strong>ICH</strong></td>
+<td>The body that writes the guidelines the FDA, EMA and others adopt</td>
+</tr>
+<tr>
+<td><strong>ISPE</strong></td>
+<td>A pharmaceutical engineering industry association</td>
+</tr>
+<tr>
+<td><strong>GAMP 5</strong></td>
+<td>ISPE's guide to validating a computerised system so an inspector accepts it. Second Edition, 2022. A guide, not a law</td>
+</tr>
+<tr>
+<td><strong>GAMP category 5</strong></td>
+<td>Custom-written software, the category with the most scrutiny</td>
+</tr>
+<tr>
+<td><strong>21 CFR Part 11</strong></td>
+<td>The US regulation on electronic records and electronic signatures</td>
+</tr>
+<tr>
+<td><strong>EU Annex 11</strong></td>
+<td>The European counterpart to Part 11</td>
+</tr>
+<tr>
+<td><strong>ALCOA+</strong></td>
+<td>A checklist of properties regulated data must have: attributable, legible, contemporaneous, original, accurate, plus complete, consistent, enduring, available</td>
+</tr>
+<tr>
+<td><strong>Validation</strong></td>
+<td>Producing evidence that you specified what the system should do, built to that, and verified it</td>
+</tr>
+<tr>
+<td><strong>CSV / CSA</strong></td>
+<td>The two names for validating software in this industry; CSA is the FDA's more recent risk-based framing</td>
+</tr>
+<tr>
+<td><strong>URS</strong></td>
+<td>User Requirements Specification: the controlled document holding approved requirements</td>
+</tr>
+<tr>
+<td><strong>RTM</strong></td>
+<td>Requirements Traceability Matrix: requirement to design to test to result, for every requirement</td>
+</tr>
+<tr>
+<td><strong>Xray</strong></td>
+<td>A Jira plugin that records test runs and produces requirement coverage and traceability reports</td>
+</tr>
+</tbody>
+</table>
+<h2 id="who-signs-what">Who signs what<a class="headerlink" href="#who-signs-what" title="Permanent link">&para;</a></h2>
+<p>A validated system's documents are signed by roles named in the validation
+plan; a separate approval matrix says which person holds each role.</p>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>What this person normally does</th>
+<th>Formal role in validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>System Owner</strong></td>
+<td>One named person on the IT side. Answers for the software for as long as it runs: available, supported, secure, and changed only through change control</td>
+<td>Signs the technical documents and chairs the change control board. Cannot be empty at release</td>
+</tr>
+<tr>
+<td><strong>Business Process Owner</strong></td>
+<td>One named person from the business side who knows how the work is actually done and answers for that process</td>
+<td>Approves the requirements and decides the finished system is fit to use. Cannot be empty at release</td>
+</tr>
+<tr>
+<td><strong>IT Quality Manager</strong></td>
+<td>One named person outside the build team. Checks that the validation process was followed: documents exist, were approved before use, and agree with each other</td>
+<td>Signs the validation plan and the summary report. Must be independent of the people building the system</td>
+</tr>
+<tr>
+<td><strong>Business Quality Manager</strong></td>
+<td>One named person outside the build team, on the business side. Checks that the process the system supports still complies</td>
+<td>Signs alongside the IT Quality Manager, under the same independence rule</td>
+</tr>
+<tr>
+<td><strong>Change control board</strong></td>
+<td>A standing group that meets after release. For each proposed change it decides whether the change is allowed and what has to be re-tested before it ships</td>
+<td>The mechanism by which a validated system is allowed to change. Required once the system is live</td>
+</tr>
+<tr>
+<td><strong>Validation lead</strong></td>
+<td>One named person who writes the validation plan and the summary report and assembles the evidence into a package someone can audit</td>
+<td>Author, not approver</td>
+</tr>
+<tr>
+<td><strong>Subject Matter Expert</strong></td>
+<td>Anyone who knows the domain or the technology well enough to write or review a document. Not an appointment</td>
+<td>Writes and reviews documents. Never approves them, because an approver may not be the author</td>
+</tr>
+<tr>
+<td><strong>Product Owner</strong></td>
+<td>One named person who owns the backlog and decides what gets built next</td>
+<td>None. Signs nothing in the validation package</td>
+</tr>
+</tbody>
+</table>
+<p>These are not rubber stamps and they are not headcount. A signature names who
+is answerable if the thing turns out to be wrong, which is why the approver of
+a document may not be its author. One person can hold several roles, subject to
+two rules: Quality is independent of the people building the system, and nobody
+approves their own work.</p>
+<p>An electronic signature is not a typed name or a pasted image. The signer
+re-enters their own credentials, and what is stored against that version of
+that record is their printed name, the date and time, and what the signature
+means — authored, reviewed or approved. It cannot be moved onto a later edit.</p>
+<h2 id="where-these-terms-come-from">Where these terms come from<a class="headerlink" href="#where-these-terms-come-from" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>ISO/IEC/IEEE 29148:2018</strong>, the requirements engineering standard:
+  requirement attributes (identifier, statement, rationale, source,
+  verification method, status), the characteristics a well-formed requirement
+  has, and <code>constraint</code> as a defined term. Its "shall" convention is <a href="#verbs">not
+  followed here</a>.</li>
+<li><strong>RFC 2119 and RFC 8174</strong> — MUST, SHOULD and MAY, and the rule that only the
+  uppercase forms are binding.</li>
+<li><strong>ISPE GAMP 5, Second Edition (2022)</strong> — user requirement, the requirements
+  traceability matrix, and per-requirement risk classification.</li>
+<li><strong>The architecture decision record</strong> is a convention from a 2011 post by
+  Michael Nygard, not a standard.</li>
+<li><strong>One file per record, named by id, grouped by id prefix</strong> follows Doorstop,
+  the closest existing tool for keeping requirements in git.</li>
+<li><strong><code>domain fact</code></strong> is local to this project. The nearest standard equivalents
+  are 29148's <em>assumptions and dependencies</em> and the business-analysis term
+  <em>domain knowledge</em>, and neither names what these files hold.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,5 +1,5 @@
 site_name: VOGON
-site_description: Because good enough is not compliant.
+site_description: Requirements, traceability and validation evidence for GxP software.
 site_url: https://example.github.io/vogon/
 
 docs_dir: src/docs
@@ -26,6 +26,10 @@ nav:
   - Developer guide:
       - dev/index.md
       - Architecture: dev/architecture.md
+      - Vocabulary: dev/vocabulary.md
+      - Records: dev/records.md
+      - Writing standard: dev/writing.md
+      - Marketing page: dev/site.md
       - Contributing: dev/contributing.md
 
 markdown_extensions:

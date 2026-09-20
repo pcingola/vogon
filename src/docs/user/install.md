@@ -17,4 +17,5 @@ uv add vogon
 ## Requirements
 
 - Python 3.11 or later.
-- A tolerance for process.
+- Git, for the repository the records live in.
+- Jira with Xray, for requirements under approval and for test coverage.

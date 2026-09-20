@@ -6,11 +6,10 @@ import sys
 
 from . import __version__
 
-REJECTED = """
-        ┌─────────────────┐
-        │    REJECTED     │
-        │      VOGON      │
-        └─────────────────┘
+USAGE = """usage: vogon [-V | --version]
+
+VOGON maintains the requirements, traceability and validation evidence for a
+GxP software project. No commands are implemented yet.
 """
 
 
@@ -20,6 +19,5 @@ def main(argv: list[str] | None = None) -> int:
     if argv and argv[0] in {"-V", "--version"}:
         print(f"vogon {__version__}")
         return 0
-    print(REJECTED)
-    print("No change request on file. Per SOP.")
+    print(USAGE, end="", file=sys.stderr)
     return 1
