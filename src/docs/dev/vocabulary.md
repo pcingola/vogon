@@ -8,6 +8,20 @@ stating what the system must do sit next to rows stating how a third-party
 platform behaves, next to a decision not to build something. Most of those rows
 cannot be tested, and a module file reads as a transcript.
 
+## The two projects
+
+VOGON is one codebase installed into another, and both keep records in `gxp/`
+in the same format, so the two are named apart.
+
+**VOGON project** — this repository. VOGON's own code, documentation and
+records.
+
+**Host project** — a project VOGON is installed into, holding that project's
+own code, tests and records. **User project** means the same thing; host
+project is the term used in the documentation.
+
+A statement about `gxp/` applies to both unless it names one.
+
 ## The four kinds of record
 
 Everything written down that the system will be built from is one of four

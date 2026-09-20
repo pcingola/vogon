@@ -1,114 +1,199 @@
 # Architecture
 
-This page is not the architecture. It states scope, the two stores, the
-directory layout in a host project, how the trace runs, and the module names.
-It does not define components, the interfaces between them, data flow, state
-or failure behaviour. Treat nothing here as a settled design; the design is
-written separately and this page will be narrowed to the boundary material
-when it is.
+## Skills, and a little code
 
-## What VOGON does
+VOGON is a set of skills, slash commands and hooks for Claude Code, installed
+as a library into a host project (`REQ-GEN-1`, `REQ-GEN-4`). The skills are the
+rules, workflows and guidelines for developing software under GxP: what a
+requirement looks like, how a transcript becomes records (`REQ-GEN-6`), how a
+test case is drafted (`REQ-GEN-7`), what has to be true before a change is
+registered in the tracker. They are the system.
 
-VOGON turns a conversation into the compliance record a regulated change needs,
-and keeps that record correct while the code is written.
+The code is small and exists to serve the skills. It is a command line the
+skills call where the answer has to be the same on every run: minting the next
+id (`REQ-REC-7`), validating a record against the schema (`REQ-REC-1`),
+resolving links (`REQ-REC-2`, `REQ-REC-4`), collecting test markers
+(`REQ-TRC-1`), working out what the tracker should hold (`REQ-TRK-3`). An agent
+can do any of those and will do most of them correctly most of the time, which
+is not the standard a validation record is held to.
 
-From a conversation, a transcript or a document, it produces a requirement, the
-tracker items that requirement implies, the link from the tests back to it, and
-the documents a validation package is assembled from. Its users are developers,
-project owners and quality staff.
+Claude Code does the work. VOGON calls no language model of its own, so the
+command line can disagree with a draft because it did not produce it
+(`DEC-005`, `REQ-GEN-3`, `FACT-005`).
 
-The work it removes is transcription: the design specification written from
-finished code, the test specification transcribed from existing tests, the
-traceability matrix, and the structure of the summary report. The work it does
-not remove is the qualified test run, change control, and the judgement in a
-risk assessment. Those are the parts a regulator relies on, and they are the
-parts that cannot be generated.
+What VOGON produces is documents: a requirement, a plan, a design
+specification, a test specification, a risk assessment, a change control
+package. Each is produced complete, and each is a draft until a named person
+approves it (`REQ-GEN-2`). VOGON never performs the approval (`CON-001`,
+`REQ-TRK-1`).
 
-## Two stores, one direction
+## The pipeline
 
-The specification lives twice.
+VOGON covers the development cycle from the material a project starts with to
+the evidence it ends with. Each step is a skill, a command or ordinary agent
+work.
 
-In the project's git repository, as markdown records under `gxp/`. This is
-where the text is written and edited, where a change is reviewed in a pull
-request, and where history is kept. It is cheap to change and it is not
-controlled.
+| # | Step | Produces | Built as |
+| --- | --- | --- | --- |
+| 1 | Install and configure | `vogon/`, `modules.yaml`, `vogon.yaml`, the skills in `.claude/` | Command `vogon init` |
+| 2 | File the source material | Transcripts and documents in `vogon/sources/` (`REQ-GEN-6`, `REQ-REC-9`) | Skill `vogon-intake` |
+| 3 | Draft the records | Requirements, facts, constraints and decisions in `vogon/` (`DEC-007`, `REQ-REC-1`) | Skill `vogon-records` |
+| 4 | Review and accept | The record set checked for records that contradict or duplicate each other, a risk level and its reasoning per requirement, and records moved off `proposed` (`REQ-GEN-8`, `REQ-GEN-2`) | Skills `vogon-review` and `vogon-risk`, then a person |
+| 5 | Register the requirements | Requirement issues in the tracker (`REQ-TRK-5`, `REQ-TRK-3`) | Skill `vogon-push` |
+| 6 | Plan the change | `vogon/plans/plan_<slug>.md`: what will be built and how it will be tested, naming the records it implements (`DEC-014`, `REQ-GEN-10`) | Skill `vogon-plan` |
+| 7 | Write the test cases | Test functions carrying markers (`REQ-TRC-1`, `REQ-TRC-8`) | Skill `vogon-tests`, in a subagent |
+| 8 | Write the code | Source, and a commit naming the records it implements (`REQ-TRC-9`) | Agent work, following the plan |
+| 9 | Run the tests and make them pass | Outcomes keyed to markers (`REQ-TRC-1`, `REQ-TRC-4`) | Command `vogon trace` |
+| 10 | Register the tests and results, draft the documents | Test issues and results in the test manager, and the design and test specifications (`REQ-TRC-5`, `REQ-TRC-6`) | Skills `vogon-push` and `vogon-docs` |
 
-In the tracker — Jira, with Xray for tests — as issues under approval. This is
-where a named person approves a statement by re-entering their credentials, and
-what an auditor is shown. It is expensive to change and it is controlled.
+Making a failing test pass has one direction it may not take. Expected values
+come from the requirement and never from a run of the code, so a test is made
+to pass by changing the code and not by moving the expected value to whatever
+the code produced (`DEC-012`, `REQ-GEN-7`).
 
-VOGON writes from the repository to the tracker and never the other way. It
-reads the tracker's state back to report where the two have diverged: a record
-edited after its issue was approved, a test marker naming a requirement that no
-longer exists, a result imported from a build other than the one released.
+Three hooks, for the things that have to happen without anyone asking for them.
+After a write under `vogon/`, the record checks run on that file. Before a
+commit, a message naming no record is blocked (`REQ-TRC-9`). Before a call to
+the tracker that would move an issue into an approved state, the call is
+blocked (`CON-001`, `REQ-TRK-1`), which is what turns that constraint from an
+instruction into something the agent cannot do by accident.
 
-It never performs the approval. An electronic signature requires the signer to
-re-enter their own credentials, so the approval transition stays a human action
-in the tracker.
+One subagent, the test author at step 7, with no read access to the
+implementation, so the expected values can only come from the requirement.
 
-## Where things sit in a project
+## How VOGON is installed
 
-VOGON is installed as a library and a command line into a real project.
+VOGON is a Python package. A host project installs it with `uv add vogon` or
+`pip install vogon`, and `vogon init` writes the skills, slash commands and
+subagent definition into `.claude/`, adds the hook entries to
+`.claude/settings.json`, and creates `vogon/` and `vogon.yaml`. Those files are
+committed, so a change to them is reviewed like any other.
+
+It is not distributed as a Claude Code plugin. The command line has to be
+installed either way, so a plugin adds a second channel and a second version
+number without removing the first. What this costs is a copy of the skills in
+every host project, and an upgrade that is `uv add -U vogon`, `vogon init` and
+a reviewed diff. `vogon check` reports where the installed files differ from
+the copies in the package.
+
+## Where things sit in a host project
+
+The host project is a project VOGON is installed into, as against the VOGON
+project, which is this repository.
+[Vocabulary](vocabulary.md#the-two-projects) defines both.
 
 ```
-<project>/
-├── gxp/
+<host-project>/
+├── .claude/
+│   ├── skills/vogon-*/   the skills. Claude Code loads them from here
+│   ├── commands/vogon/   slash commands that start them
+│   ├── agents/           subagent definitions
+│   └── settings.json     hooks
+├── vogon/
+│   ├── modules.yaml      the module names the host project uses
 │   ├── requirements/<module>/REQ-<MODULE>-NNN.md
 │   ├── facts/FACT-NNN.md
 │   ├── constraints/CON-NNN.md
 │   ├── decisions/DEC-NNN.md
-│   ├── sources/        held copies of every cited document, dated and flat
-│   ├── plans/          what will be built, before it is. done/ holds the spent ones
-│   └── out/            generated. Never hand-edited
-├── tests/              test functions carrying requirement markers
-├── .vogon/             tool state. Gitignored
-└── pyproject.toml      [tool.vogon]
+│   ├── sources/          held copies of every cited document, dated and flat
+│   ├── plans/            what will be built, before it is. done/ holds the spent ones
+│   └── out/              generated. Never hand-edited
+├── tests/                test functions carrying requirement markers
+└── vogon.yaml            configuration
 ```
 
-All of it is plain text in git. There is no database. Configuration sits in
-`[tool.vogon]` in `pyproject.toml`, and the layout above is the default, so a
-project that accepts the convention configures nothing.
+All of it is plain text in git (`DEC-001`). There is no database.
+Configuration sits in `vogon.yaml` at the host project's root, in the format
+the records already use, and the layout above is the default, so a host project
+that accepts the convention configures nothing (`REQ-CLI-3`).
 
-`gxp/` is visible rather than hidden. The records are reviewed in pull requests
-and read by people who will never run the tool.
+`vogon/` is named for the tool because VOGON creates it, defines the format of
+everything in it, mints the ids and validates it, which is what a directory a
+tool owns in someone else's repository is named for. It is visible rather than
+hidden because the records are reviewed in pull requests and read by people who
+will never run the tool. The skills sit in `.claude/` instead, because that is
+where Claude Code loads them from.
 
-## Traceability
+## Two stores
 
-The trace runs from the test to the requirement, not from the requirement to
-the test. A commit names the records it implements, which is a separate link:
-the marker says what verifies a record, the commit says what built it. A
-commit message is fixed when it is written, so an id in it cannot drift the
-way a comment in source does. A marker on the test function names the requirement ids it verifies,
-and whoever changes the test changes the marker, in the same commit. Requirement
-ids are not written into the source as comments: they drift and nothing checks
-them.
+The specification lives twice.
 
-Coverage and traceability reporting is Xray's. VOGON maintains the link Xray
-reports on — the Xray test issue exists, points at the right requirement issue,
-and can be matched to the test that ran — and imports the results keyed to those
-issues.
+In the host project's git repository, as markdown records under `vogon/`. This
+is where the text is written and edited, where a change is reviewed in a pull
+request, and where history is kept. It is cheap to change and it is not
+controlled.
 
-What VOGON checks locally is what Xray cannot see, because Xray can only report
-on what it was told about: a marker naming an id that does not exist, a marker
-on a withdrawn requirement, a requirement carrying risk with no marker anywhere.
-Those fail the build before anything is pushed. They are build hygiene, not
-evidence.
+In the tracker — Jira, with Xray for tests — as issues under approval
+(`CON-003`, `DEC-015`). This is where a named person approves a statement by
+re-entering their credentials, and what an auditor is shown. It is expensive to
+change and it is controlled. VOGON never performs the approval: an electronic
+signature requires the signer to re-enter their own credentials (`FACT-001`),
+so the transition stays a human action in the tracker (`CON-001`,
+`REQ-TRK-1`).
 
-## Drafting
+In this version the markdown files are the source of truth. VOGON writes from
+the repository to the tracker and reads the tracker's state back only to report
+where the two have diverged: a record edited after its issue was approved
+(`REQ-TRK-2`), a test marker naming a requirement that no longer exists
+(`REQ-TRC-3`), an approval applied by the record's own author (`CON-002`,
+`REQ-TRK-8`), a result imported from a build other than the one released
+(`FACT-004`, `REQ-TRC-6`).
 
-VOGON does not call a language model. Records are drafted by a coding agent
-working in the repository, from the instructions VOGON ships; VOGON validates
-what the agent wrote and refuses what does not hold together.
+A later version may make the tracker the source of truth instead, with the
+markdown dropped or kept as a cache of it. That reverses the direction, and
+nothing is built now to anticipate it.
 
-Keeping generation outside the tool keeps every command deterministic and
-testable, and it keeps the tool able to disagree with the draft. A checker that
-also generates cannot catch a generated record that is internally consistent
-and wrong.
+## Where the link between a test and a requirement is written
 
-A drafted record is `proposed` until a person accepts it, and nothing
-`proposed` is pushed to the tracker.
+A requirement is verified by a test, and that link is written on the test: a
+marker on the test function names the requirement ids it verifies (`DEC-006`,
+`REQ-TRC-1`). Whoever changes a test is looking at the test, so they change the
+marker in the same edit. The same link kept as a list of tests inside the
+requirement file is edited by someone else, later, or not at all, so VOGON does
+not use one.
+
+Requirement ids are not written into the implementation source as comments.
+Nothing checks a comment, so it stays behind when the code it described moves
+or changes.
+
+A commit message is short and names the records the change implements
+(`REQ-TRC-9`). That is a different link from the marker: the marker says what
+verifies a requirement, the commit says what built it.
+
+Xray produces the coverage report and the traceability matrix, and VOGON
+produces neither (`DEC-003`, `FACT-002`, `REQ-TRC-7`). What VOGON does is keep
+the link Xray reports from: the Xray test issue exists, points at the right
+requirement issue, and can be matched to the test that ran (`REQ-TRC-5`), and
+the results are imported against those issues (`REQ-TRC-6`).
+
+Xray can only report on what it holds, so a requirement that was never created
+as an issue does not appear in its report at all. The checks that catch that
+run locally, before anything is pushed: a marker naming an id that does not
+exist (`REQ-TRC-2`), a marker on a withdrawn requirement (`REQ-TRC-3`), a
+requirement carrying risk that no marker names (`REQ-TRC-4`). They fail the
+build. They are not evidence.
+
+## Reaching Jira and Xray
+
+Jira and Xray are reached through the MCP servers the company provides. A
+regulated company mandates both the product and the path to it, and the server
+is often its own rather than the vendor's. The skills call that server's tools.
+
+Every external system is named by the role it fills — the tracker, the test
+manager, the repository host, the document system — and the product filling
+each role is configuration (`DEC-011`). For each role VOGON states the
+operations it needs from it, and a configured server that does not provide one
+of them fails at install rather than at first use (`REQ-CLI-4`).
 
 ## Modules
+
+A module names a part of the system a record belongs to, and appears in the
+record's id. Each host project declares its own names in `vogon/modules.yaml`;
+VOGON enforces only the shape of the name
+(`DEC-016`, `REQ-REC-13`, `REQ-REC-14`). [Records](records.md) has the id
+format.
+
+The VOGON project's own modules:
 
 | Module | Covers |
 | --- | --- |
@@ -127,43 +212,11 @@ over alternatives:
 - GitHub, for the repository and pull requests
 - Jira, for requirements under approval
 - Xray, for tests, runs and coverage reporting
-- Claude Code, as the coding agent that drafts records and writes tests
+- Claude Code, as the coding agent
 
-This is a deliberate narrowing, recorded in `gxp/decisions/DEC-004.md`.
+This is a deliberate narrowing (`DEC-004`).
 Supporting a second tracker or a second test manager means an interface, and an
 interface written before the second implementation exists is guesswork.
 
-## What VOGON is made of
-
-Not settled. This is the shape the architecture is expected to take, written
-down so the design discussion has something to work from.
-
-VOGON is a set of skills and rules that a coding agent follows, with a small
-amount of code where the answer has to be the same every time: validating a
-record against the schema, minting the next id, building the index, the marker
-checks, the tracker writes, the result import, and reporting a document whose
-cited records have changed since it was written. Reading a codebase, writing
-prose and judging what a change affects are the agent's work, not the code's.
-
-The lifecycle steps VOGON covers reduce to a set of skills: draft a
-requirement, draft the design specification, draft the risk assessment with the
-values left blank, draft the test specification, review test cases against the
-requirements and mark them, prepare the change control package, prepare the
-periodic review package. The validation plan is out of scope; it is written
-before the build team exists.
-
-Delivery is a Claude Code plugin, which carries skills, commands, subagents,
-hooks and MCP server definitions in one install. Hooks in the project's
-`.claude/settings.json` are early warning rather than control, because a
-developer can edit them; the checks that count run in CI on the pull request.
-A subagent with no read access to the implementation is how test cases get
-drafted from the requirement rather than from the code.
-
-Every external system is named by what it does, not by the product that
-does it: the tracker, the test manager, the repository host, the document
-system, the coding agent. Which product fills each role is decided by the
-company's IT and quality organisation, and VOGON adapts to what is already
-there. It is reached through whatever MCP server that company provides, which
-is often not the vendor's own. What VOGON specifies is the operations it needs
-from each role. Where nothing exists to fill a role, VOGON ships a sensible
-default, and the default is replaceable by configuration.
+This version is built quickly, used, and then changed. Where a choice is
+between the quick shape and the general one, it takes the quick shape.

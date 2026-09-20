@@ -1072,8 +1072,8 @@ those four words mean is in <a href="vocabulary.html">Vocabulary</a>.</p>
 id grammar and the checks; the host project supplies the module names, the
 records and the documents they cite.</p>
 <h2 id="layout">Layout<a class="headerlink" href="#layout" title="Permanent link">&para;</a></h2>
-<p>Records live in <code>gxp/</code> in the project repository. VOGON keeps its own records
-there too.</p>
+<p>Records live in <code>gxp/</code>, in the host project's repository and in the VOGON
+project's alike.</p>
 <table>
 <thead>
 <tr>
@@ -1380,41 +1380,60 @@ is the signal that the documentation is behind.</p>
 <p>A decision is never edited once accepted. It is superseded by a later decision
 that names it, and both files stay.</p>
 <h2 id="identifiers">Identifiers<a class="headerlink" href="#identifiers" title="Permanent link">&para;</a></h2>
-<p>The first segment of every id is its type, so a single pattern matches any
-record and no id is ambiguous in prose.</p>
+<p>An id is a type, an optional module, and a number:</p>
+<pre><code>&lt;TYPE&gt;-&lt;NUMBER&gt;
+&lt;TYPE&gt;-&lt;MODULE&gt;-&lt;NUMBER&gt;
+</code></pre>
+<p><code>TYPE</code> is three or more uppercase letters and says which of the four kinds of
+record it is: <code>REQ</code>, <code>FACT</code>, <code>CON</code>, <code>DEC</code>. It comes first so that one pattern
+matches any id and no id is ambiguous in prose.</p>
+<p><code>MODULE</code> is optional and names the part of the system the record belongs to.
+Three uppercase letters is the suggested length, because an id is read inside a
+commit message and a test marker, but VOGON enforces only the shape: uppercase
+letters and digits. A project that does not use modules omits the segment.
+Where a record carries a module its <code>modules</code> frontmatter carries it too, and a
+record belonging to several modules still has at most one module in its id.</p>
+<p>The module names a project uses are listed in <code>vogon/modules.yaml</code>, one name to
+a line of description, and a record naming a module that is not in that file is
+reported. The file is committed, so the list is the team's and a new module is
+added in a reviewed change rather than by whoever mints the next id.</p>
+<pre><code class="language-yaml">TRK: Reading and writing the tracker, and reporting divergence
+REC: The record schema, id grammar, validation and indexes
+</code></pre>
+<p><code>NUMBER</code> is one or more digits, compared numerically, so <code>REQ-TRK-2</code> and
+<code>REQ-TRK-02</code> would be the same id and only one of them may exist.</p>
 <table>
 <thead>
 <tr>
-<th>Type</th>
-<th>Form</th>
-<th>Example</th>
+<th>Id</th>
+<th>Reads as</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Requirement</td>
-<td><code>REQ-&lt;MODULE&gt;-&lt;NUMBER&gt;</code></td>
 <td><code>REQ-TRK-2</code></td>
+<td>Requirement 2 of the <code>TRK</code> module</td>
 </tr>
 <tr>
-<td>Domain fact</td>
-<td><code>FACT-&lt;NUMBER&gt;</code></td>
+<td><code>REQ-7</code></td>
+<td>Requirement 7, in a project using no modules</td>
+</tr>
+<tr>
 <td><code>FACT-004</code></td>
+<td>Domain fact 4</td>
 </tr>
 <tr>
-<td>Constraint</td>
-<td><code>CON-&lt;NUMBER&gt;</code></td>
 <td><code>CON-001</code></td>
+<td>Constraint 1</td>
 </tr>
 <tr>
-<td>Decision</td>
-<td><code>DEC-&lt;NUMBER&gt;</code></td>
 <td><code>DEC-007</code></td>
+<td>Decision 7</td>
 </tr>
 </tbody>
 </table>
-<p>Facts, constraints and decisions have no module segment because they routinely
-belong to several; their <code>modules</code> frontmatter carries that instead.</p>
+<p>Numbers are minted per type and module, so <code>REQ-TRK-2</code> and <code>REQ-REC-2</code> are
+different records and both are valid.</p>
 <p>An id is permanent. It is never reused, never renumbered, and never recycled
 after withdrawal. A withdrawn record keeps its file, with status <code>withdrawn</code>
 and the reason in it.</p>

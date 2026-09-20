@@ -9,8 +9,8 @@ records and the documents they cite.
 
 ## Layout
 
-Records live in `gxp/` in the project repository. VOGON keeps its own records
-there too.
+Records live in `gxp/`, in the host project's repository and in the VOGON
+project's alike.
 
 | Path | Holds |
 | --- | --- |
@@ -287,18 +287,48 @@ that names it, and both files stay.
 
 ## Identifiers
 
-The first segment of every id is its type, so a single pattern matches any
-record and no id is ambiguous in prose.
+An id is a type, an optional module, and a number:
 
-| Type | Form | Example |
-| --- | --- | --- |
-| Requirement | `REQ-<MODULE>-<NUMBER>` | `REQ-TRK-2` |
-| Domain fact | `FACT-<NUMBER>` | `FACT-004` |
-| Constraint | `CON-<NUMBER>` | `CON-001` |
-| Decision | `DEC-<NUMBER>` | `DEC-007` |
+```
+<TYPE>-<NUMBER>
+<TYPE>-<MODULE>-<NUMBER>
+```
 
-Facts, constraints and decisions have no module segment because they routinely
-belong to several; their `modules` frontmatter carries that instead.
+`TYPE` is three or more uppercase letters and says which of the four kinds of
+record it is: `REQ`, `FACT`, `CON`, `DEC`. It comes first so that one pattern
+matches any id and no id is ambiguous in prose.
+
+`MODULE` is optional and names the part of the system the record belongs to.
+Three uppercase letters is the suggested length, because an id is read inside a
+commit message and a test marker, but VOGON enforces only the shape: uppercase
+letters and digits. A project that does not use modules omits the segment.
+Where a record carries a module its `modules` frontmatter carries it too, and a
+record belonging to several modules still has at most one module in its id.
+
+The module names a project uses are listed in `vogon/modules.yaml`, one name to
+a line of description, and a record naming a module that is not in that file is
+reported. The file is committed, so the list is the team's and a new module is
+added in a reviewed change rather than by whoever mints the next id.
+
+```yaml
+TRK: Reading and writing the tracker, and reporting divergence
+REC: The record schema, id grammar, validation and indexes
+```
+
+
+`NUMBER` is one or more digits, compared numerically, so `REQ-TRK-2` and
+`REQ-TRK-02` would be the same id and only one of them may exist.
+
+| Id | Reads as |
+| --- | --- |
+| `REQ-TRK-2` | Requirement 2 of the `TRK` module |
+| `REQ-7` | Requirement 7, in a project using no modules |
+| `FACT-004` | Domain fact 4 |
+| `CON-001` | Constraint 1 |
+| `DEC-007` | Decision 7 |
+
+Numbers are minted per type and module, so `REQ-TRK-2` and `REQ-REC-2` are
+different records and both are valid.
 
 An id is permanent. It is never reused, never renumbered, and never recycled
 after withdrawal. A withdrawn record keeps its file, with status `withdrawn`
