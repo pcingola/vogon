@@ -619,6 +619,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#tracked_as-holds-every-system-and-names-the-one-that-governs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tracked_as holds every system, and names the one that governs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#status-is-about-the-statement-not-about-the-work" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -928,6 +939,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#tracked_as-holds-every-system-and-names-the-one-that-governs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tracked_as holds every system, and names the one that governs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#status-is-about-the-statement-not-about-the-work" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1159,7 +1181,7 @@ body is what people read.</p>
 </tr>
 <tr>
 <td><code>tracked_as</code></td>
-<td>The key of this record in the system that governs it — a Jira issue, an Xray test plan. Absent until one exists</td>
+<td>Where this record is registered outside the repository, as a map from the role of each system to the key the record has in it. One entry is <code>governs: &lt;role&gt;</code>, naming the role whose approval state counts. Absent until the record is registered anywhere</td>
 </tr>
 <tr>
 <td><code>depends_on</code></td>
@@ -1210,6 +1232,23 @@ neither, and which of the four types usually carries it is said in the
 sections below.</p>
 <p>Paths resolve from the repository root and are checked, so a document moved
 without updating the records that point at it fails.</p>
+<h3 id="tracked_as-holds-every-system-and-names-the-one-that-governs"><code>tracked_as</code> holds every system, and names the one that governs<a class="headerlink" href="#tracked_as-holds-every-system-and-names-the-one-that-governs" title="Permanent link">&para;</a></h3>
+<p>A project runs more than one system, and the same record can be registered in
+several of them: the tracker that approves it, the test manager that plans
+tests against it, whatever a company's quality organisation adds. <code>tracked_as</code>
+records all of them, keyed by role, so a reader can reach any of them from the
+record.</p>
+<p>One role is named as governing. Approval state is read from that system and
+from no other, which is what <code>CON-003</code> requires: there is one answer to
+whether the record is approved. The other entries are addresses, and VOGON
+checks that each key still resolves without comparing what the systems say to
+each other. Where two systems hold the same statement and disagree, that is
+the project's disagreement to resolve, not something VOGON arbitrates.</p>
+<pre><code class="language-yaml">tracked_as:
+  governs: tracker
+  tracker: PROJ-412
+  test_manager: TEST-88
+</code></pre>
 <h3 id="status-is-about-the-statement-not-about-the-work">Status is about the statement, not about the work<a class="headerlink" href="#status-is-about-the-statement-not-about-the-work" title="Permanent link">&para;</a></h3>
 <p>Status says whether we are committed to the requirement, not whether anything
 has been built. There is deliberately no <code>implemented</code> value: it would be wrong
@@ -1246,6 +1285,10 @@ a requirement yet.</p>
 <td><code>gxp_risk</code></td>
 <td>One of <code>safety</code>, <code>product quality</code>, <code>data integrity</code> or <code>none</code>. What a failure of this requirement would damage in a regulated project. It decides how much verification the requirement needs and is expensive to add retrospectively</td>
 </tr>
+<tr>
+<td><code>acceptance_by</code>, <code>acceptance_on</code></td>
+<td>Who accepted the acceptance block and when. Required where <code>gxp_risk</code> is not <code>none</code>, and absent until a person has accepted it</td>
+</tr>
 </tbody>
 </table>
 <p>A requirement carries <code>references</code> where a document specifies the mechanism it
@@ -1261,6 +1304,12 @@ absence says the mechanism has not been settled.</p>
   around one repository describes a system that can only be demonstrated on
   that repository.</li>
 </ul>
+<p>Where a value is expected, the acceptance block states it. It is worked out
+from the requirement and never read off a run of the code, because a value
+taken from the code makes the test that asserts it unable to fail. On a
+requirement carrying risk the block is accepted by a named person before the
+record leaves <code>proposed</code>, and a test marker naming a requirement whose block
+has not been accepted fails the run. <code>DEC-012</code> has the reasoning.</p>
 <h3 id="worked-example">Worked example<a class="headerlink" href="#worked-example" title="Permanent link">&para;</a></h3>
 <pre><code class="language-markdown">---
 id: REQ-TRK-2
@@ -1319,8 +1368,10 @@ in the design. <code>imposed_by</code> names what put the constraint there and i
 path; <code>references</code> names our own document and is.</p>
 <h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
 <p>At <code>gxp/decisions/DEC-NNN.md</code>. The body is the architecture decision record:
-context, the options and what each costs, the decision, and the consequences
-including the ones accepted as bad.</p>
+context, the options and what each costs, the decision, the consequences
+including the ones accepted as bad, and an example. The example shows the
+decision playing out in a situation a reader recognises, which is how a
+reader checks they have understood the choice rather than the words.</p>
 <p>A decision states the choice, not the mechanism. Where the mechanism is
 written up, the decision carries <code>references</code> naming that document, so a
 reader who wants to know how the choice was realised does not have to search
