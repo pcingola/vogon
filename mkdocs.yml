@@ -28,6 +28,7 @@ nav:
       - Architecture: dev/architecture.md
       - Vocabulary: dev/vocabulary.md
       - Records: dev/records.md
+      - Sources: dev/sources.md
       - Writing standard: dev/writing.md
       - Marketing page: dev/site.md
       - Contributing: dev/contributing.md

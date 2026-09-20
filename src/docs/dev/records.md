@@ -18,7 +18,7 @@ there too.
 | `gxp/facts/` | Every `FACT-` |
 | `gxp/constraints/` | Every `CON-` |
 | `gxp/decisions/` | Every `DEC-` |
-| `gxp/sources/` | Held copies of the documents records cite |
+| `gxp/sources/` | Held copies of the documents records cite. See [Sources](sources.md) |
 | `gxp/out/` | Generated output. Never hand-edited |
 
 Nothing depends on where a file sits. Identity is the id, the queryable
@@ -89,10 +89,13 @@ fact that only a meeting attests to is either badly sourced or not a fact.
 Before writing one, look for the document that states it and cite what you
 find alongside the meeting.
 
-Order the list by authority, strongest first: a controlled procedure or
-standard, then a project document, then a meeting summary, then a transcript.
-The first entry is what a reader checks the record against; the later ones say
-who else confirmed it and where it was elicited.
+Order the list by authority, strongest first, using the `authority` each held
+document declares: `regulation`, `standard`, `procedure`, `project`,
+`informal`. The first entry is what a reader checks the record against; the
+later ones say who else confirmed it and where it was elicited. Where a
+meeting is cited, the transcript comes before its summary and the summary
+never replaces it. [Sources](sources.md) has the rules the held documents
+themselves follow.
 
 Citing a document means having read the passage. A path in `source` asserts
 that the document says this. Do not list a document because its title suggests

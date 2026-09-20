@@ -50,8 +50,7 @@ VOGON is installed as a library and a command line into a real project.
 │   ├── facts/FACT-NNN.md
 │   ├── constraints/CON-NNN.md
 │   ├── decisions/DEC-NNN.md
-│   ├── sources/        held copies of every cited document
-│   ├── meetings/       transcripts and summaries. Evidence, not records
+│   ├── sources/        held copies of every cited document, dated and flat
 │   └── out/            generated. Never hand-edited
 ├── tests/              test functions carrying requirement markers
 ├── .vogon/             tool state. Gitignored

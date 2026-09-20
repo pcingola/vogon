@@ -80,7 +80,9 @@ words mean, `dev/records.md` says how to write one.
 
 The layout inside `gxp/` is the layout VOGON creates in a host project:
 `requirements/<module>/`, `facts/`, `constraints/`, `decisions/`, `sources/`
-for held copies of cited documents, and `out/` for generated output. Records
+for held copies of cited documents, and `out/` for generated output. Held
+documents are flat and named `YYYY-MM-DD_slug.ext` by the document's own date,
+never edited after filing; `dev/sources.md` has the rules. Records
 are visible rather than hidden under a dot-directory; `.vogon/` holds tool
 state only and is gitignored.
 
