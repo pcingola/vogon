@@ -16,8 +16,8 @@ tags: [plans, instructions]
 
 **Requirement.** The instructions VOGON installs MUST require a plan to state
 what will be built and name the records it implements, to be written before
-the code, to live at `gxp/plans/plan_<slug>.md`, and to be moved to
-`gxp/plans/done/` once implemented or abandoned, with anything that must stay
+the code, to live at `vogon/plans/plan_<slug>.md`, and to be moved to
+`vogon/plans/done/` once implemented or abandoned, with anything that must stay
 true written into the documentation first.
 
 A plan that is not retired is read later as though it described the system. A
@@ -27,8 +27,8 @@ plan retired without its lasting content moved out loses that content.
 the documentation was updated before the plan moved.
 
 **Example.** An agent asked to plan a change writes
-`gxp/plans/plan_result-import.md` naming the requirements it implements, and
-moves it to `gxp/plans/done/` when the change merges.
+`vogon/plans/plan_result-import.md` naming the requirements it implements, and
+moves it to `vogon/plans/done/` when the change merges.
 
 **Acceptance.** The installed instructions state all four rules, and the check
 that compares the installed copy to the shipped one passes.

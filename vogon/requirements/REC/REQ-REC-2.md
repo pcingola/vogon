@@ -24,7 +24,7 @@ rather than withdrawn, leaves a record resting on nothing.
 nothing, and following references that appear only in body prose.
 
 **Example.** A requirement carrying `depends_on: [FACT-099]` where
-`gxp/facts/` holds no `FACT-099.md` is reported.
+`vogon/facts/` holds no `FACT-099.md` is reported.
 
 **Acceptance.** For any record, every id referenced in frontmatter resolves to
 a file, or the reference is reported with the referring record and the missing

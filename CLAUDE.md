@@ -7,13 +7,13 @@ traceability, change control, and audit evidence.
 The marketing page, `src/html/index.html`, is written in corporate satire,
 defined in `assets/brand.md`. Read that file before editing it. That voice
 applies to that page and to nothing else: not the README, not CLI output, not
-the documentation, not a record under `gxp/`, not a tracker field VOGON
+the documentation, not a record under `vogon/`, not a tracker field VOGON
 writes, and not anything VOGON generates in a user's project.
 
 ## Writing style
 
 Applies to everything except the marketing page: `CLAUDE.md`, `src/docs/`,
-`gxp/`, `README.md`, CLI output, comments, commit messages and working notes,
+`vogon/`, `README.md`, CLI output, comments, commit messages and working notes,
 and everything VOGON generates. The full statement,
 including what a checker can enforce, is `src/docs/dev/writing.md`; it is the
 same standard, written for the reader rather than for this file. Standard
@@ -45,7 +45,7 @@ vogon/
 │   ├── docs/        SOURCE — documentation, markdown (user/, dev/)
 │   └── html/        SOURCE — marketing page: index.html, img/, .nojekyll
 ├── docs/            OUTPUT — rendered HTML. generated. never hand-edited.
-├── gxp/             RECORDS — VOGON's own requirements, facts, constraints, decisions
+├── vogon/           RECORDS — VOGON's own requirements, facts, constraints, decisions
 ├── tests/
 ├── tmp/             working notes: plans, brainstorming. gitignored, local only.
 ├── assets/          brand originals + their dark twins, 46 MB. never published.
@@ -72,13 +72,13 @@ prose that ships, including records.
 
 ## Records
 
-`gxp/` holds VOGON's own requirements, domain facts, constraints and decisions,
+`vogon/` holds VOGON's own requirements, domain facts, constraints and decisions,
 in the same format VOGON defines for the projects it is installed into. Four
 kinds of record, four id namespaces, one file per record named for its id, and
 an id that is never reused. `src/docs/dev/vocabulary.md` says what the four
 words mean, `dev/records.md` says how to write one.
 
-The layout inside `gxp/` is the layout VOGON creates in a host project:
+The layout inside `vogon/` is the layout VOGON creates in a host project:
 `requirements/<module>/`, `facts/`, `constraints/`, `decisions/`, `sources/`
 for held copies of cited documents, and `out/` for generated output. Held
 documents are flat and named `YYYY-MM-DD_slug.ext` by the document's own date,
@@ -86,7 +86,7 @@ never edited after filing; `dev/sources.md` has the rules. Records
 are visible rather than hidden under a dot-directory; `.vogon/` holds tool
 state only and is gitignored.
 
-A statement about the system belongs in `gxp/` when it is a requirement, a
+A statement about the system belongs in `vogon/` when it is a requirement, a
 fact, a constraint or a decision. It belongs in `src/docs/dev/` when it
 explains how the parts fit together. The record says what must hold; the
 documentation says how to read the records.
@@ -95,13 +95,13 @@ documentation says how to read the records.
 
 Python, GitHub, Jira, Xray, and Claude Code as the coding agent. Nothing is
 abstracted over an alternative, and no interface is written before a second
-implementation exists. The reasoning is in `gxp/decisions/DEC-004.md`.
+implementation exists. The reasoning is in `vogon/decisions/DEC-004.md`.
 
 Two consequences hold everywhere. VOGON never performs an approval or a
 signature transition, because a signature requires the signer's own
-credentials (`gxp/constraints/CON-001.md`). VOGON never calls a language
+credentials (`vogon/constraints/CON-001.md`). VOGON never calls a language
 model: drafting happens in the coding agent, and VOGON validates the result
-(`gxp/decisions/DEC-005.md`).
+(`vogon/decisions/DEC-005.md`).
 
 ## Plans
 

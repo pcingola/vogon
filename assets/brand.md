@@ -2,7 +2,7 @@
 
 The voice of the marketing page, `src/html/index.html`, and of nothing else.
 It does not apply to the README, to CLI output, to the developer
-documentation, to any record under `gxp/`, or to anything VOGON generates in a
+documentation, to any record under `vogon/`, or to anything VOGON generates in a
 user's project. All of those follow the writing standard in
 `src/docs/dev/writing.md`.
 

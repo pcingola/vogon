@@ -1072,7 +1072,7 @@ those four words mean is in <a href="vocabulary.html">Vocabulary</a>.</p>
 id grammar and the checks; the host project supplies the module names, the
 records and the documents they cite.</p>
 <h2 id="layout">Layout<a class="headerlink" href="#layout" title="Permanent link">&para;</a></h2>
-<p>Records live in <code>gxp/</code>, in the host project's repository and in the VOGON
+<p>Records live in <code>vogon/</code>, in the host project's repository and in the VOGON
 project's alike.</p>
 <table>
 <thead>
@@ -1083,27 +1083,27 @@ project's alike.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>gxp/requirements/&lt;module&gt;/</code></td>
+<td><code>vogon/requirements/&lt;module&gt;/</code></td>
 <td>Requirement records, one directory per module</td>
 </tr>
 <tr>
-<td><code>gxp/facts/</code></td>
+<td><code>vogon/facts/</code></td>
 <td>Every <code>FACT-</code></td>
 </tr>
 <tr>
-<td><code>gxp/constraints/</code></td>
+<td><code>vogon/constraints/</code></td>
 <td>Every <code>CON-</code></td>
 </tr>
 <tr>
-<td><code>gxp/decisions/</code></td>
+<td><code>vogon/decisions/</code></td>
 <td>Every <code>DEC-</code></td>
 </tr>
 <tr>
-<td><code>gxp/sources/</code></td>
+<td><code>vogon/sources/</code></td>
 <td>Held copies of the documents records cite. See <a href="sources.html">Sources</a></td>
 </tr>
 <tr>
-<td><code>gxp/out/</code></td>
+<td><code>vogon/out/</code></td>
 <td>Generated output. Never hand-edited</td>
 </tr>
 </tbody>
@@ -1113,7 +1113,7 @@ structure is the frontmatter, and the directory exists so a person can browse.
 Requirements are grouped per module because there are enough of them for that
 to help. Facts, constraints and decisions are flat, because a fact is routinely
 cited by two modules and a constraint by all of them.</p>
-<p><code>gxp/</code> is visible rather than hidden under a dot-directory, because the records
+<p><code>vogon/</code> is visible rather than hidden under a dot-directory, because the records
 are reviewed in pull requests and read by people who have never run VOGON.
 <code>.vogon/</code> holds tool state — the last-seen tracker state, the trace collector's
 output — and is gitignored.</p>
@@ -1265,7 +1265,7 @@ in a clause or linked to the fact that explains it. And a record is finished
 when that engineer could implement it without asking a question, not when it is
 comprehensive.</p>
 <h2 id="requirement">Requirement<a class="headerlink" href="#requirement" title="Permanent link">&para;</a></h2>
-<p>At <code>gxp/requirements/&lt;module&gt;/REQ-&lt;MODULE&gt;-&lt;NUMBER&gt;.md</code>. Written as a MUST
+<p>At <code>vogon/requirements/&lt;module&gt;/REQ-&lt;MODULE&gt;-&lt;NUMBER&gt;.md</code>. Written as a MUST
 statement, solution-free. If the sentence cannot be failed by a test, it is not
 a requirement yet.</p>
 <p>Frontmatter it adds:</p>
@@ -1347,7 +1347,7 @@ recorded at the time of approval, the record appears in the report and no
 write is issued for it.
 </code></pre>
 <h2 id="domain-fact">Domain fact<a class="headerlink" href="#domain-fact" title="Permanent link">&para;</a></h2>
-<p>At <code>gxp/facts/FACT-NNN.md</code>. No acceptance criteria, and no <code>depends_on</code>: a
+<p>At <code>vogon/facts/FACT-NNN.md</code>. No acceptance criteria, and no <code>depends_on</code>: a
 fact is true on its own. Written in the plain present tense with no modal
 verb.</p>
 <p>Frontmatter it adds: <code>as_of</code>, the date it was observed or read, because facts
@@ -1357,7 +1357,7 @@ re-checked.</p>
 world works; what a fact needs is a <code>source</code> naming the document that states
 it.</p>
 <h2 id="constraint">Constraint<a class="headerlink" href="#constraint" title="Permanent link">&para;</a></h2>
-<p>At <code>gxp/constraints/CON-NNN.md</code>. Its body says what it forbids or forces, and
+<p>At <code>vogon/constraints/CON-NNN.md</code>. Its body says what it forbids or forces, and
 <code>modules</code> is usually every module, which is what makes it a constraint rather
 than a requirement.</p>
 <p>Frontmatter it adds: <code>imposed_by</code>, naming exactly what imposes it — a
@@ -1367,7 +1367,7 @@ regulation, a numbered procedure, a standard, or a platform behaviour — and
 in the design. <code>imposed_by</code> names what put the constraint there and is not a
 path; <code>references</code> names our own document and is.</p>
 <h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
-<p>At <code>gxp/decisions/DEC-NNN.md</code>. The body is the architecture decision record:
+<p>At <code>vogon/decisions/DEC-NNN.md</code>. The body is the architecture decision record:
 context, the options and what each costs, the decision, the consequences
 including the ones accepted as bad, and an example. The example shows the
 decision playing out in a situation a reader recognises, which is how a

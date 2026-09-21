@@ -16,7 +16,7 @@ tags: [meetings, drafting]
 
 **Requirement.** The instructions VOGON installs MUST state how a meeting
 becomes held documents: the recording is transcribed, the transcript is filed
-in `gxp/sources/` with `kind: transcript`, the meeting's date and its
+in `vogon/sources/` with `kind: transcript`, the meeting's date and its
 participants, a summary is produced from that transcript and filed beside it
 with `kind: summary` and `derived_from` naming it, and records are drafted from
 the transcript rather than from the summary.
@@ -28,8 +28,8 @@ agent. What VOGON governs is where the output lands and what it declares.
 transcription tool, and requiring a summary for every transcript.
 
 **Example.** A recorded workshop yields
-`gxp/sources/2026-09-17_requirements_workshop.md` and
-`gxp/sources/2026-09-17_requirements_workshop.summary.md`, and the requirements
+`vogon/sources/2026-09-17_requirements_workshop.md` and
+`vogon/sources/2026-09-17_requirements_workshop.summary.md`, and the requirements
 drafted from it cite the first.
 
 **Acceptance.** The installed instructions name each step, the frontmatter each

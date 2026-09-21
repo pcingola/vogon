@@ -28,4 +28,4 @@ for approving it. A joke in it costs them time and casts doubt on the rest.
 command that refuses to push says what it refused and why.
 
 **Acceptance.** No fixed string from the brand guide appears in a record, in a
-tracker field, in CLI output, or in any file written under `gxp/`.
+tracker field, in CLI output, or in any file written under `vogon/`.

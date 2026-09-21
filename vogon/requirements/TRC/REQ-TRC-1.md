@@ -23,7 +23,7 @@ sits on the test so that whoever changes the test changes the link, in the same
 commit.
 
 **What this does not require.** Marking every test. Tests that verify nothing
-in `gxp/` carry no marker and are not reported as a gap.
+in `vogon/` carry no marker and are not reported as a gap.
 
 **Example.** A test function marked with `REQ-TRC-4` and `REQ-TRC-5` is
 collected once for each id, with the outcome of that run.

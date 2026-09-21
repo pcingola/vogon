@@ -10,7 +10,7 @@ cannot be tested, and a module file reads as a transcript.
 
 ## The two projects
 
-VOGON is one codebase installed into another, and both keep records in `gxp/`
+VOGON is one codebase installed into another, and both keep records in `vogon/`
 in the same format, so the two are named apart.
 
 **VOGON project** — this repository. VOGON's own code, documentation and
@@ -20,7 +20,7 @@ records.
 own code, tests and records. **User project** means the same thing; host
 project is the term used in the documentation.
 
-A statement about `gxp/` applies to both unless it names one.
+A statement about `vogon/` applies to both unless it names one.
 
 ## The four kinds of record
 

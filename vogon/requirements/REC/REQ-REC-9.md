@@ -14,7 +14,7 @@ tags: [sources, validation]
 
 # REQ-REC-9 — Report a held document that breaks the naming or frontmatter rules
 
-**Requirement.** VOGON MUST report a file in `gxp/sources/` whose name does not
+**Requirement.** VOGON MUST report a file in `vogon/sources/` whose name does not
 start with a date in `YYYY-MM-DD` form followed by a slug, a markdown document
 there with no frontmatter, one whose `date` disagrees with its filename prefix,
 and one whose `kind` or `authority` is outside the allowed set.
@@ -30,6 +30,6 @@ content, and requiring frontmatter on a held original that is not text.
 `2026-04-02_procedure.md` declaring `date: 2026-04-03` is reported for
 disagreeing with its name.
 
-**Acceptance.** For any file in `gxp/sources/`, the name matches the pattern
+**Acceptance.** For any file in `vogon/sources/`, the name matches the pattern
 and a markdown file's frontmatter is complete and internally consistent, or the
 file is reported with the rule it breaks.

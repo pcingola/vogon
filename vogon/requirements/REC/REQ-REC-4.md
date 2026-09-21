@@ -25,7 +25,7 @@ read.
 **What this does not require.** Checking that the document says what the
 record claims, and checking the order of a `source` list.
 
-**Example.** A record citing `gxp/sources/2026-04-02_procedure.md` where no
+**Example.** A record citing `vogon/sources/2026-04-02_procedure.md` where no
 such file is held is reported.
 
 **Acceptance.** For any record carrying either field, every entry resolves to

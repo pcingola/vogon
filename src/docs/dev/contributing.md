@@ -8,7 +8,7 @@
 | `src/docs/` | Documentation source, markdown. What you are reading. |
 | `src/html/` | Marketing page source: `index.html`, `img/`. |
 | `docs/` | Build output. Rendered HTML, served by GitHub Pages. Never edit. |
-| `gxp/` | VOGON's own records: requirements, facts, constraints, decisions. |
+| `vogon/` | VOGON's own records: requirements, facts, constraints, decisions. |
 | `tests/` | Test suite. |
 | `assets/` | Brand originals. Never published. |
 

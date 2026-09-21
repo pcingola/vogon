@@ -14,7 +14,7 @@ tags: [sources, evidence]
 
 # REQ-REC-10 — Report a held document edited after it was filed
 
-**Requirement.** VOGON MUST report a file in `gxp/sources/` whose content has
+**Requirement.** VOGON MUST report a file in `vogon/sources/` whose content has
 changed since the commit that added it.
 
 A citation asserts that a specific document says something. A document that can
@@ -27,6 +27,6 @@ was deleted.
 **Example.** A transcript filed in March and corrected in June is reported,
 naming both commits. The correct fix is a new file dated June.
 
-**Acceptance.** For any file in `gxp/sources/` reachable in the git history,
+**Acceptance.** For any file in `vogon/sources/` reachable in the git history,
 its current content equals the content of the commit that introduced it, or the
 file is reported with both revisions.

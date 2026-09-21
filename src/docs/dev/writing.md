@@ -1,6 +1,6 @@
 # Writing standard
 
-One standard for everything: this documentation, the records in `gxp/`, the
+One standard for everything: this documentation, the records in `vogon/`, the
 text VOGON writes into a tracker, and the drafting instructions VOGON installs
 into a host project. A record written to this standard and a page of this
 documentation read the same way, because the reader is the same person.

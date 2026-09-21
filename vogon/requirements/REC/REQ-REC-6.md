@@ -14,7 +14,7 @@ tags: [index, generation]
 
 **Requirement.** VOGON MUST generate an index of every record from the
 frontmatter, holding the id, title, status and modules, and MUST write it under
-`gxp/out/`.
+`vogon/out/`.
 
 The index is the list of what exists and is what anyone consults before
 minting a new id. Maintained by hand it disagrees with the records within a

@@ -915,14 +915,14 @@ repository so the citation can be checked years later. This is where they go
 and how they are named. What the citation itself means is in
 <a href="records.html">Records</a>.</p>
 <h2 id="one-directory-flat-dated">One directory, flat, dated<a class="headerlink" href="#one-directory-flat-dated" title="Permanent link">&para;</a></h2>
-<p>Every held document lives in <code>gxp/sources/</code>, with no subdirectories. A
+<p>Every held document lives in <code>vogon/sources/</code>, with no subdirectories. A
 transcript, a slide deck, a regulation, an email and a summary sit side by
 side, and what kind of thing each one is comes from its frontmatter rather than
 from its directory. A meeting transcript is not filed differently from a
 standard because a record cites both the same way.</p>
 <p>The filename is the document's date, then a slug:</p>
-<pre><code>gxp/sources/2026-09-17_requirements_workshop.md
-gxp/sources/2026-04-02_electronic_records_procedure.pdf
+<pre><code>vogon/sources/2026-09-17_requirements_workshop.md
+vogon/sources/2026-04-02_electronic_records_procedure.pdf
 </code></pre>
 <p>The date is the document's own — when the meeting happened, when the procedure
 was issued — not when it was filed. It sorts the directory chronologically,
@@ -933,8 +933,8 @@ document rather than the record it supports.</p>
 <h2 id="an-original-and-its-text">An original and its text<a class="headerlink" href="#an-original-and-its-text" title="Permanent link">&para;</a></h2>
 <p>A document that is not already text is held twice: the original as it was
 received, and a markdown conversion beside it with the same stem.</p>
-<pre><code>gxp/sources/2026-04-02_electronic_records_procedure.pdf
-gxp/sources/2026-04-02_electronic_records_procedure.md
+<pre><code>vogon/sources/2026-04-02_electronic_records_procedure.pdf
+vogon/sources/2026-04-02_electronic_records_procedure.md
 </code></pre>
 <p>The original is the evidence. The markdown is what people and tools read: it
 diffs, it greps, and a reviewer can see in a pull request what a record was
@@ -943,7 +943,7 @@ written from. Records cite the markdown.</p>
 conversion, because a hand-edited copy no longer says what the original says
 and nothing indicates that.</p>
 <h2 id="frontmatter">Frontmatter<a class="headerlink" href="#frontmatter" title="Permanent link">&para;</a></h2>
-<p>Every markdown document in <code>gxp/sources/</code> carries frontmatter. The original
+<p>Every markdown document in <code>vogon/sources/</code> carries frontmatter. The original
 binary carries none, which is why the conversion exists.</p>
 <table>
 <thead>
@@ -988,7 +988,7 @@ binary carries none, which is why the conversion exists.</p>
 </tbody>
 </table>
 <h2 id="a-held-document-is-never-edited">A held document is never edited<a class="headerlink" href="#a-held-document-is-never-edited" title="Permanent link">&para;</a></h2>
-<p>Once a document is in <code>gxp/sources/</code> its content does not change. A corrected
+<p>Once a document is in <code>vogon/sources/</code> its content does not change. A corrected
 transcript, a reissued procedure, a second version of a deck: each is a new
 file with its own date, and the records that cited the old one either keep
 citing it or are updated deliberately.</p>
@@ -1006,8 +1006,8 @@ retention rule of its own, and the transcript is what a citation points at.</p>
 <h2 id="summaries">Summaries<a class="headerlink" href="#summaries" title="Permanent link">&para;</a></h2>
 <p>A transcript is long and nobody reads it twice. A summary of one is held
 alongside it, with <code>kind: summary</code> and <code>derived_from</code> naming the transcript:</p>
-<pre><code>gxp/sources/2026-09-17_requirements_workshop.md
-gxp/sources/2026-09-17_requirements_workshop.summary.md
+<pre><code>vogon/sources/2026-09-17_requirements_workshop.md
+vogon/sources/2026-09-17_requirements_workshop.summary.md
 </code></pre>
 <p>A summary is a convenience, not an authority. Where a record's statement rests
 on something said in a meeting, the <code>source</code> list names the transcript; the

@@ -9,17 +9,17 @@ records and the documents they cite.
 
 ## Layout
 
-Records live in `gxp/`, in the host project's repository and in the VOGON
+Records live in `vogon/`, in the host project's repository and in the VOGON
 project's alike.
 
 | Path | Holds |
 | --- | --- |
-| `gxp/requirements/<module>/` | Requirement records, one directory per module |
-| `gxp/facts/` | Every `FACT-` |
-| `gxp/constraints/` | Every `CON-` |
-| `gxp/decisions/` | Every `DEC-` |
-| `gxp/sources/` | Held copies of the documents records cite. See [Sources](sources.md) |
-| `gxp/out/` | Generated output. Never hand-edited |
+| `vogon/requirements/<module>/` | Requirement records, one directory per module |
+| `vogon/facts/` | Every `FACT-` |
+| `vogon/constraints/` | Every `CON-` |
+| `vogon/decisions/` | Every `DEC-` |
+| `vogon/sources/` | Held copies of the documents records cite. See [Sources](sources.md) |
+| `vogon/out/` | Generated output. Never hand-edited |
 
 Nothing depends on where a file sits. Identity is the id, the queryable
 structure is the frontmatter, and the directory exists so a person can browse.
@@ -27,7 +27,7 @@ Requirements are grouped per module because there are enough of them for that
 to help. Facts, constraints and decisions are flat, because a fact is routinely
 cited by two modules and a constraint by all of them.
 
-`gxp/` is visible rather than hidden under a dot-directory, because the records
+`vogon/` is visible rather than hidden under a dot-directory, because the records
 are reviewed in pull requests and read by people who have never run VOGON.
 `.vogon/` holds tool state — the last-seen tracker state, the trace collector's
 output — and is gitignored.
@@ -168,7 +168,7 @@ comprehensive.
 
 ## Requirement
 
-At `gxp/requirements/<module>/REQ-<MODULE>-<NUMBER>.md`. Written as a MUST
+At `vogon/requirements/<module>/REQ-<MODULE>-<NUMBER>.md`. Written as a MUST
 statement, solution-free. If the sentence cannot be failed by a test, it is not
 a requirement yet.
 
@@ -242,7 +242,7 @@ write is issued for it.
 
 ## Domain fact
 
-At `gxp/facts/FACT-NNN.md`. No acceptance criteria, and no `depends_on`: a
+At `vogon/facts/FACT-NNN.md`. No acceptance criteria, and no `depends_on`: a
 fact is true on its own. Written in the plain present tense with no modal
 verb.
 
@@ -256,7 +256,7 @@ it.
 
 ## Constraint
 
-At `gxp/constraints/CON-NNN.md`. Its body says what it forbids or forces, and
+At `vogon/constraints/CON-NNN.md`. Its body says what it forbids or forces, and
 `modules` is usually every module, which is what makes it a constraint rather
 than a requirement.
 
@@ -270,7 +270,7 @@ path; `references` names our own document and is.
 
 ## Decision
 
-At `gxp/decisions/DEC-NNN.md`. The body is the architecture decision record:
+At `vogon/decisions/DEC-NNN.md`. The body is the architecture decision record:
 context, the options and what each costs, the decision, the consequences
 including the ones accepted as bad, and an example. The example shows the
 decision playing out in a situation a reader recognises, which is how a

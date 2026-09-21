@@ -7,7 +7,7 @@ and how they are named. What the citation itself means is in
 
 ## One directory, flat, dated
 
-Every held document lives in `gxp/sources/`, with no subdirectories. A
+Every held document lives in `vogon/sources/`, with no subdirectories. A
 transcript, a slide deck, a regulation, an email and a summary sit side by
 side, and what kind of thing each one is comes from its frontmatter rather than
 from its directory. A meeting transcript is not filed differently from a
@@ -16,8 +16,8 @@ standard because a record cites both the same way.
 The filename is the document's date, then a slug:
 
 ```
-gxp/sources/2026-09-17_requirements_workshop.md
-gxp/sources/2026-04-02_electronic_records_procedure.pdf
+vogon/sources/2026-09-17_requirements_workshop.md
+vogon/sources/2026-04-02_electronic_records_procedure.pdf
 ```
 
 The date is the document's own — when the meeting happened, when the procedure
@@ -34,8 +34,8 @@ A document that is not already text is held twice: the original as it was
 received, and a markdown conversion beside it with the same stem.
 
 ```
-gxp/sources/2026-04-02_electronic_records_procedure.pdf
-gxp/sources/2026-04-02_electronic_records_procedure.md
+vogon/sources/2026-04-02_electronic_records_procedure.pdf
+vogon/sources/2026-04-02_electronic_records_procedure.md
 ```
 
 The original is the evidence. The markdown is what people and tools read: it
@@ -48,7 +48,7 @@ and nothing indicates that.
 
 ## Frontmatter
 
-Every markdown document in `gxp/sources/` carries frontmatter. The original
+Every markdown document in `vogon/sources/` carries frontmatter. The original
 binary carries none, which is why the conversion exists.
 
 | Field | Rule |
@@ -64,7 +64,7 @@ binary carries none, which is why the conversion exists.
 
 ## A held document is never edited
 
-Once a document is in `gxp/sources/` its content does not change. A corrected
+Once a document is in `vogon/sources/` its content does not change. A corrected
 transcript, a reissued procedure, a second version of a deck: each is a new
 file with its own date, and the records that cited the old one either keep
 citing it or are updated deliberately.
@@ -91,8 +91,8 @@ A transcript is long and nobody reads it twice. A summary of one is held
 alongside it, with `kind: summary` and `derived_from` naming the transcript:
 
 ```
-gxp/sources/2026-09-17_requirements_workshop.md
-gxp/sources/2026-09-17_requirements_workshop.summary.md
+vogon/sources/2026-09-17_requirements_workshop.md
+vogon/sources/2026-09-17_requirements_workshop.summary.md
 ```
 
 A summary is a convenience, not an authority. Where a record's statement rests

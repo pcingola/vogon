@@ -29,4 +29,4 @@ package would violate this. The check that fails the build on an unmarked
 requirement does not, because its output is not part of the package.
 
 **Acceptance.** No command writes a coverage report or traceability matrix into
-`gxp/out/` or to standard output in a form intended for a validation package.
+`vogon/out/` or to standard output in a form intended for a validation package.
