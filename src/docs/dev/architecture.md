@@ -22,10 +22,14 @@ command line can disagree with a draft because it did not produce it
 (`DEC-005`, `REQ-GEN-3`, `FACT-005`).
 
 What VOGON produces is documents: a requirement, a plan, a design
-specification, a test specification, a risk assessment, a change control
-package. Each is produced complete, and each is a draft until a named person
-approves it (`REQ-GEN-2`). VOGON never performs the approval (`CON-001`,
-`REQ-TRK-1`).
+specification, a test specification, a risk assessment. Each is produced
+complete, and each is a draft until a named person approves it (`REQ-GEN-2`).
+VOGON never performs the approval (`CON-001`, `REQ-TRK-1`).
+
+Change control, the assessment a board approves before a live validated system
+is changed, is not in this version (`DEC-017`). The pipeline below covers
+building the system and changing it; what a project does with a change once it
+is live stays in that project's own procedure.
 
 ## The pipeline
 
