@@ -328,14 +328,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../user/cli.html" class="md-nav__link">
+      <a href="../user/scripts.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    CLI
+    Scripts
   
 
     
@@ -728,10 +728,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#packaging" class="md-nav__link">
+  <a href="#the-plugin" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Packaging
+        The plugin
       
     </span>
   </a>
@@ -836,10 +836,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#packaging" class="md-nav__link">
+  <a href="#the-plugin" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Packaging
+        The plugin
       
     </span>
   </a>
@@ -874,8 +874,12 @@
 </thead>
 <tbody>
 <tr>
+<td><code>.claude-plugin/</code></td>
+<td>The marketplace listing.</td>
+</tr>
+<tr>
 <td><code>src/vogon/</code></td>
-<td>The Python package. The only thing that ships in the wheel.</td>
+<td>The Claude Code plugin: skills, subagents, hooks, scripts.</td>
 </tr>
 <tr>
 <td><code>src/docs/</code></td>
@@ -910,9 +914,9 @@ make test      # pytest, testpaths = [&quot;tests&quot;]
 </code></pre>
 <p><code>core.hooksPath</code> points git at the hooks committed in <code>.githooks/</code>. It is a
 local setting, so it is set once per clone.</p>
-<p>Tests import <code>vogon</code> from the installed editable package rather than the
-working directory, so a file missing from the wheel fails in CI instead of on a
-user's machine.</p>
+<p>Tests import the script modules from <code>src/vogon/scripts/</code> through pytest's
+<code>pythonpath</code>. <code>pyproject.toml</code> exists for development only: it holds the dev
+dependency group and the pytest configuration.</p>
 <h2 id="building-the-site">Building the site<a class="headerlink" href="#building-the-site" title="Permanent link">&para;</a></h2>
 <pre><code class="language-sh">make site     # src/docs/ -&gt; docs/, then src/html/ copied over the top
 make serve    # live preview on http://127.0.0.1:8000
@@ -947,22 +951,32 @@ assets/                        → not served
 re-running Jekyll over HTML that mkdocs already rendered. mkdocs-material writes
 its theme CSS and JS into <code>docs/assets/</code>, which is unrelated to the top-level
 <code>assets/</code>.</p>
-<h2 id="packaging">Packaging<a class="headerlink" href="#packaging" title="Permanent link">&para;</a></h2>
-<pre><code class="language-sh">uv build
-unzip -l dist/*.whl      # expect vogon/ and vogon-*.dist-info/ only
-tar tzf dist/*.tar.gz    # expect src/vogon, tests, README.md, pyproject.toml
+<h2 id="the-plugin">The plugin<a class="headerlink" href="#the-plugin" title="Permanent link">&para;</a></h2>
+<p>The repository is a Claude Code plugin marketplace.
+<code>.claude-plugin/marketplace.json</code> lists one plugin, <code>vogon</code>, with source
+<code>./src/vogon</code>:</p>
+<pre><code>src/vogon/
+├── .claude-plugin/plugin.json   name, version, description
+├── skills/vogon/                SKILL.md and references/
+├── agents/                      subagent definitions
+├── hooks/hooks.json             hook entries, each calling a script
+└── scripts/                     the Python scripts
 </code></pre>
-<p>Three settings in <code>pyproject.toml</code> need that output checked after any change:</p>
-<ul>
-<li><code>[tool.hatch.version] path = "src/vogon/__init__.py"</code> — one source of truth
-  for the version.</li>
-<li><code>[tool.hatch.build.targets.wheel] packages = ["src/vogon"]</code> — the wheel
-  contains <code>vogon/</code> and nothing else.</li>
-<li><code>[tool.hatch.build.targets.sdist] include = [...]</code> — hatchling's default is
-  everything git tracks, which would ship <code>assets/</code> (27 MB) and the generated
-  <code>docs/</code>. Patterns are anchored with a leading <code>/</code>; unanchored <code>README.md</code>
-  matches at any depth and drags in <code>assets/README.md</code>.</li>
-</ul>
+<p>The version is in <code>plugin.json</code> and nowhere else; <code>scripts/cli.py</code> reads it
+from there. There is no wheel and no PyPI release. Each script runs under
+<code>uv run --script</code> and declares its dependencies inline (PEP 723).</p>
+<pre><code class="language-sh">claude plugin validate .           # the marketplace listing
+claude plugin validate src/vogon   # the plugin manifest
+</code></pre>
+<p>To test the plugin as a host project sees it, open Claude Code in a scratch
+git repository and run:</p>
+<pre><code>/plugin marketplace add /path/to/repo
+/plugin install vogon@vogon
+</code></pre>
+<p>Claude Code copies the plugin into its cache at install, keyed by version. A
+change in the working tree reaches the scratch repository only after the plugin
+is uninstalled and installed again; <code>/plugin update</code> does nothing while the
+version is unchanged.</p>
 
 
 

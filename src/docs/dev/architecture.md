@@ -2,14 +2,14 @@
 
 ## Skills, and a little code
 
-VOGON is a set of skills, slash commands and hooks for Claude Code, installed
-as a library into a host project (`REQ-GEN-1`, `REQ-GEN-4`). The skills are the
+VOGON is a Claude Code plugin holding skills, subagents, hooks and the
+scripts they call, installed into a host project (`REQ-GEN-1`, `REQ-GEN-4`). The skills are the
 rules, workflows and guidelines for developing software under GxP: what a
 requirement looks like, how a transcript becomes records (`REQ-GEN-6`), how a
 test case is drafted (`REQ-GEN-7`), what has to be true before a change is
 registered in the tracker. They are the system.
 
-The code is small and exists to serve the skills. It is a command line the
+The code is small and exists to serve the skills. It is scripts the
 skills call where the answer has to be the same on every run: minting the next
 id (`REQ-REC-7`), validating a record against the schema (`REQ-REC-1`),
 resolving links (`REQ-REC-2`, `REQ-REC-4`), collecting test markers
@@ -18,13 +18,14 @@ can do any of those and will do most of them correctly most of the time, which
 is not the standard a validation record is held to.
 
 Claude Code does the work, including any subagents a skill starts. The Python
-code calls no language model API, so the command line can disagree with a
+code calls no language model API, so the scripts can disagree with a
 draft because it did not produce it
 (`DEC-005`, `REQ-GEN-3`, `FACT-005`).
 
-What VOGON produces is documents: a requirement, a plan, a design
-specification, a test specification, a risk assessment. Each is produced
-complete, and each is a draft until a named person approves it (`REQ-GEN-2`).
+VOGON produces the records, the plan, the tests, the code, and the documents
+a validation package holds: the risk assessment, the test specification, the
+design specification and the test report. Each is produced complete, and each
+is a draft until a named person approves it (`REQ-GEN-2`).
 VOGON never performs the approval (`CON-001`, `REQ-TRK-1`).
 
 Change control, the assessment a board approves before a live validated system
@@ -35,12 +36,12 @@ is live stays in that project's own procedure.
 ## The pipeline
 
 VOGON covers the development cycle from the material a project starts with to
-the evidence it ends with. Each step is a skill, a command, ordinary agent work,
+the evidence it ends with. Each step is a skill, a script, ordinary agent work,
 or an approval given by a person.
 
 | # | Step | Produces | Done by |
 | --- | --- | --- | --- |
-| 1 | Install and configure | `vogon/`, `modules.yaml`, `vogon.yaml` naming the systems, the approval roles and their holders, the skills in `.claude/` (`REQ-CLI-5`) | Command `vogon init` |
+| 1 | Install and configure | `vogon/`, `modules.yaml`, `vogon.yaml` naming the systems, the approval roles and their holders (`REQ-CLI-5`) | `/plugin install`, then script `vogon init` |
 | 2 | File the source material | Transcripts and documents in `vogon/sources/` (`REQ-GEN-6`, `REQ-REC-9`) | Skill `vogon-intake` |
 | 3 | Draft the records | Requirements, facts, constraints and decisions in `vogon/` (`DEC-007`, `REQ-REC-1`) | Skill `vogon-records` |
 | 4 | Review and accept | The record set checked for records that contradict or duplicate each other, a risk level and its reasoning per requirement, and records moved off `proposed` (`REQ-GEN-8`, `REQ-GEN-2`) | Skills `vogon-review` and `vogon-risk`, then a person |
@@ -52,7 +53,7 @@ or an approval given by a person.
 | 10 | Register the test cases, draft the test specification | Test issues in the test manager linked to the requirement issues (`REQ-TRC-5`), and the test specification | Skills `vogon-push` and `vogon-docs` |
 | 11 | Approve the test cases | Test issues and the test specification in an approved state, before the code is written (`DEC-012`) | The Test Lead, in the test manager |
 | 12 | Write the code | Source, and a commit naming the records it implements (`REQ-TRC-9`) | Agent work, following the plan |
-| 13 | Run the tests and make them pass | Outcomes keyed to markers (`REQ-TRC-1`, `REQ-TRC-4`) | Command `vogon trace` |
+| 13 | Run the tests and make them pass | Outcomes keyed to markers (`REQ-TRC-1`, `REQ-TRC-4`) | Script `vogon trace` |
 | 14 | Review the change and merge it | An approving review by an engineer other than the author (`REQ-CLI-7`) | A code reviewer, on the repository host |
 | 15 | Register the results, draft the documents | Results in the test manager recording the build (`REQ-TRC-6`), and the design specification and test report | Skills `vogon-push` and `vogon-docs` |
 | 16 | File the evidence | The test manager's traceability report and results for the released build, in the document system (`REQ-TRK-10`) | Skill `vogon-evidence` |
@@ -120,19 +121,55 @@ the package in the document system.
 
 ## How VOGON is installed
 
-VOGON is a Python package. A host project installs it with `uv add vogon` or
-`pip install vogon`, and `vogon init` writes the skills, slash commands and
-subagent definition into `.claude/`, adds the hook entries to
-`.claude/settings.json`, and creates `vogon/` and `vogon.yaml`, which names
-the system filling each role and the people holding each approval role. Those files are
-committed, so a change to them is reviewed like any other.
+The VOGON repository is a Claude Code plugin marketplace.
+`.claude-plugin/marketplace.json` at its root lists one plugin, `vogon`, whose
+source is `src/vogon/`. A developer installs it from inside Claude Code:
 
-It is not distributed as a Claude Code plugin. The command line has to be
-installed either way, so a plugin adds a second channel and a second version
-number without removing the first. What this costs is a copy of the skills in
-every host project, and an upgrade that is `uv add -U vogon`, `vogon init` and
-a reviewed diff. `vogon check` reports where the installed files differ from
-the copies in the package.
+```
+/plugin marketplace add pcingola/vogon
+/plugin install vogon@vogon
+```
+
+A host project can make the plugin available to every developer by naming
+the marketplace and the plugin in its committed `.claude/settings.json`:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "vogon": {"source": {"source": "github", "repo": "pcingola/vogon"}}
+  },
+  "enabledPlugins": {"vogon@vogon": true}
+}
+```
+
+The plugin is laid out as Claude Code expects:
+
+```
+src/vogon/
+├── .claude-plugin/plugin.json   name, version, description
+├── skills/vogon/                SKILL.md and references/
+├── agents/                      subagent definitions
+├── hooks/hooks.json             hook entries, each calling a script
+└── scripts/                     the Python scripts
+```
+
+The version is in `plugin.json`. There is no Python distribution. The scripts
+run with `uv run`, and each declares its own dependencies inline (PEP 723), so
+a host project needs Claude Code, `uv` and git installed and nothing else. An
+upgrade is a plugin update.
+
+Setup in a host project is done by the skill. It runs `vogon init`, which
+creates `vogon/`, `vogon/modules.yaml` and `vogon.yaml` and adds `.vogon/` to
+`.gitignore`. Claude Code then checks, through MCP, that each configured server
+provides the operations VOGON needs (`REQ-CLI-4`).
+
+Nothing from the plugin is copied into the host project. The host project's
+repository does not hold the skill text, and nothing compares an installed
+copy with the plugin (`DEC-020`).
+
+No script contacts an external system or a language model. Claude Code reaches
+the tracker, the test manager, the repository host and the document system
+through MCP and hands the data to a script.
 
 ## Where things sit in a host project
 
@@ -143,10 +180,7 @@ project, which is this repository.
 ```
 <host-project>/
 ├── .claude/
-│   ├── skills/vogon-*/   the skills. Claude Code loads them from here
-│   ├── commands/vogon/   slash commands that start them
-│   ├── agents/           subagent definitions
-│   └── settings.json     hooks
+│   └── settings.json     names the VOGON marketplace and enables the plugin
 ├── vogon/
 │   ├── modules.yaml      the module names the host project uses
 │   ├── requirements/<module>/REQ-<MODULE>-NNN.md
@@ -169,8 +203,8 @@ that accepts the convention configures nothing (`REQ-CLI-3`).
 everything in it, mints the ids and validates it, which is what a directory a
 tool owns in someone else's repository is named for. It is visible rather than
 hidden because the records are reviewed in pull requests and read by people who
-will never run the tool. The skills sit in `.claude/` instead, because that is
-where Claude Code loads them from.
+will never run the tool. The skills, subagents and hooks are
+loaded from the installed plugin and are not in the host project.
 
 ## Two stores
 
@@ -251,7 +285,7 @@ Every external system is named by the role it fills — the tracker, the test
 manager, the repository host, the document system — and the product filling
 each role is configuration (`DEC-011`). For each role VOGON states the
 operations it needs from it, and a configured server that does not provide one
-of them fails at install rather than at first use (`REQ-CLI-4`).
+of them fails during setup rather than at first use (`REQ-CLI-4`).
 
 ## Modules
 
@@ -269,7 +303,7 @@ The VOGON project's own modules:
 | `TRC` | Test markers, the link to the test manager, result import |
 | `TRK` | Reading and writing tracker and test manager issues, filing evidence in the document system, and reporting divergence |
 | `GEN` | The instructions a coding agent follows to draft records, and the checks on what it produces |
-| `CLI` | The command line and configuration, including the approval roles |
+| `CLI` | The scripts and configuration, including the approval roles |
 
 ## Version 0.1 assumes one stack
 

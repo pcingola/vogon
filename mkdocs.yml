@@ -22,7 +22,7 @@ nav:
   - User guide:
       - user/index.md
       - Installation: user/install.md
-      - CLI: user/cli.md
+      - Scripts: user/scripts.md
   - Developer guide:
       - dev/index.md
       - Architecture: dev/architecture.md

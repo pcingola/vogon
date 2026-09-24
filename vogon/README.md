@@ -15,8 +15,8 @@ format VOGON defines for the projects it is installed into.
 Modules are `REC` for the record schema and its checks, `TRC` for test markers
 and the link to the test manager, `TRK` for reading and writing the tracker
 and the test manager, `GEN` for
-the drafting instructions installed into a host project, and `CLI` for the
-command line and configuration.
+the drafting instructions the plugin ships, and `CLI` for the scripts and
+configuration.
 
 What the four kinds of record mean is in `src/docs/dev/vocabulary.md`. How to
 write one is in `src/docs/dev/records.md`. How the documents they cite are

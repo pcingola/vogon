@@ -1,0 +1,12 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.11"
+# dependencies = []
+# ///
+"""VOGON — Validated Operations & Governance OrchestratioN."""
+
+import sys
+
+from cli import main
+
+sys.exit(main())

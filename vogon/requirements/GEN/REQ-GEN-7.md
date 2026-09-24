@@ -14,7 +14,7 @@ tags: [instructions, acceptance]
 
 # REQ-GEN-7 — Instruct the agent to derive expected values from the requirement
 
-**Requirement.** The drafting instructions VOGON installs MUST state that an
+**Requirement.** The drafting instructions VOGON ships MUST state that an
 expected value in an acceptance block or a test is derived from the
 requirement and never from running the code, and MUST state that an
 acceptance block is left without `acceptance_by` for a person to accept.
@@ -29,5 +29,4 @@ from a run.
 requirement works the value out from the rule in the requirement, and leaves
 `acceptance_by` absent.
 
-**Acceptance.** The installed instructions contain both statements, and the
-check that compares the installed copy to the shipped one passes.
+**Acceptance.** The instructions contain both statements.

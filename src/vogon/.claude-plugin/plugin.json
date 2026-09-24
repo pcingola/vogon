@@ -1,0 +1,8 @@
+{
+  "name": "vogon",
+  "version": "0.1.0",
+  "description": "Requirements, traceability and validation evidence for GxP software, maintained by Claude Code.",
+  "author": {
+    "name": "Pablo Cingolani"
+  }
+}

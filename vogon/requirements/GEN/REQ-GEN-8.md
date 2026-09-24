@@ -14,7 +14,7 @@ tags: [risk, instructions]
 
 # REQ-GEN-8 — Require the risk assessment to give the reasoning behind each level
 
-**Requirement.** The instructions VOGON installs for the risk assessment MUST
+**Requirement.** The instructions VOGON ships for the risk assessment MUST
 require, for every requirement carrying a risk level, the level, what a
 failure would damage, and the records, held documents and findings that
 informed the level, each cited by id or path.
@@ -30,6 +30,5 @@ that every source that could bear on the risk was found.
 let an unapproved statement reach the tracker, and cites the constraint and
 the procedure it rests on.
 
-**Acceptance.** The installed instructions require all four parts for every
-requirement carrying a risk level, and the check that compares the installed
-copy to the shipped one passes.
+**Acceptance.** The instructions require all four parts for every
+requirement carrying a risk level.

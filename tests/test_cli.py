@@ -1,5 +1,9 @@
-from vogon import __version__
-from vogon.cli import main
+import subprocess
+from pathlib import Path
+
+from cli import __version__, main
+
+ENTRY = Path(__file__).resolve().parent.parent / "src" / "vogon" / "scripts" / "vogon"
 
 
 def test_version_is_set():
@@ -14,3 +18,8 @@ def test_version_flag(capsys):
 def test_bare_invocation_prints_usage(capsys):
     assert main([]) == 1
     assert "usage: vogon" in capsys.readouterr().err
+
+
+def test_entry_script_runs():
+    out = subprocess.run([str(ENTRY), "--version"], capture_output=True, text=True, check=True)
+    assert out.stdout.strip() == f"vogon {__version__}"

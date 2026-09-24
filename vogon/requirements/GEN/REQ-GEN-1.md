@@ -12,8 +12,8 @@ tags: [drafting, claude-code]
 
 # REQ-GEN-1 — Ship the instructions a coding agent follows to draft records
 
-**Requirement.** VOGON MUST install into the host project the instructions a
-coding agent follows to turn a held source document into draft records, and
+**Requirement.** VOGON MUST provide to the coding agent in the host project
+the instructions it follows to turn a held source document into draft records, and
 those instructions MUST state the record schema, the id grammar, and the order
 in which a sentence is classified.
 
@@ -23,9 +23,10 @@ governs output it does not produce.
 **What this does not require.** Running the agent, and supporting an agent
 other than the one version 0.1 targets.
 
-**Example.** Installing VOGON into a project writes the drafting instructions
-where the coding agent reads them, alongside the project's existing
-instructions rather than replacing them.
+**Example.** With the plugin installed, the coding agent in a host project
+reads the drafting instructions from it, and the project's own instructions
+are unchanged.
 
-**Acceptance.** After installation, the instructions are present in the host
-project, and they specify every frontmatter field the checker enforces.
+**Acceptance.** With the plugin installed, the coding agent reads the drafting
+instructions, the project's own instructions are unchanged, and the drafting
+instructions specify every frontmatter field the checker enforces.

@@ -2,9 +2,14 @@
 
 from __future__ import annotations
 
+import json
 import sys
+from pathlib import Path
 
-from . import __version__
+PLUGIN_JSON = Path(__file__).resolve().parent.parent / ".claude-plugin" / "plugin.json"
+
+# The version is kept in plugin.json only.
+__version__ = json.loads(PLUGIN_JSON.read_text(encoding="utf-8"))["version"]
 
 USAGE = """usage: vogon [-V | --version]
 

@@ -1,12 +1,12 @@
 # Writing standard
 
 One standard for everything: this documentation, the records in `vogon/`, the
-text VOGON writes into a tracker, and the drafting instructions VOGON installs
-into a host project. A record written to this standard and a page of this
+text VOGON writes into a tracker, and the drafting instructions VOGON ships
+to a host project. A record written to this standard and a page of this
 documentation read the same way, because the reader is the same person.
 
 The satirical voice in the brand guide applies to the marketing page and to
-nothing else. Not the README, not CLI output, not any record, not any tracker
+nothing else. Not the README, not script output, not any record, not any tracker
 field, and not any document VOGON generates.
 
 ## The reader

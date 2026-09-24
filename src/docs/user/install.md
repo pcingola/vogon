@@ -1,26 +1,48 @@
 # Installation
 
-VOGON is distributed as a Python package and installed with `uv`.
-
-## As a command-line tool
-
-```sh
-uv tool install vogon
-```
-
-## As a library
-
-```sh
-uv add vogon
-```
+VOGON is a Claude Code plugin. It is installed into Claude Code, and it
+creates its records and configuration in the host project when it is set up.
 
 ## Requirements
 
-- Python 3.11 or later.
+- Claude Code.
+- `uv`, which runs VOGON's scripts.
 - Git, for the repository the records live in.
-- An issue tracker for requirements under approval, a test manager for test
-  cases and results, and a repository host that reviews changes before they
-  merge, each reached through an MCP server. Version 0.1 is built against Jira,
-  Xray and GitHub.
-- `vogon.yaml`, naming the system that fills each of those roles, the roles
-  that give each approval, and the people who hold each role.
+- Python 3.11 or later, which `uv` installs if it is missing.
+- An MCP server connected to Claude Code for each of the tracker, the test
+  manager and the repository host. Version 0.1 is built against Jira, Xray and
+  GitHub.
+
+## Install the plugin
+
+In Claude Code:
+
+```
+/plugin marketplace add pcingola/vogon
+/plugin install vogon@vogon
+```
+
+To make the plugin available to every developer on a host project, commit
+these entries in the project's `.claude/settings.json`. Claude Code then offers
+to install the plugin when the project is opened.
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "vogon": {"source": {"source": "github", "repo": "pcingola/vogon"}}
+  },
+  "enabledPlugins": {"vogon@vogon": true}
+}
+```
+
+## Set up a host project
+
+Ask Claude Code to set up VOGON. The skill runs `vogon init`, which creates
+`vogon/`, `vogon/modules.yaml` and `vogon.yaml`, and adds `.vogon/` to
+`.gitignore`. Claude Code then checks that each configured MCP server provides
+the operations VOGON needs, and names any that are missing.
+
+`vogon.yaml` names the system that fills each role, the roles that give each
+approval, and the people who hold each role.
+[Roles and approvals](../dev/architecture.md#roles-and-approvals) shows the
+format.

@@ -41,7 +41,7 @@ conversation and answered there; if one is already in a file, delete it.
 ```
 vogon/
 ├── src/
-│   ├── vogon/       CODE — the Python package, the only thing in the wheel
+│   ├── vogon/       CODE — the Claude Code plugin
 │   ├── docs/        SOURCE — documentation, markdown (user/, dev/)
 │   └── html/        SOURCE — marketing page: index.html, img/, .nojekyll
 ├── docs/            OUTPUT — rendered HTML. generated. never hand-edited.
@@ -49,19 +49,20 @@ vogon/
 ├── tests/
 ├── tmp/             working notes: plans, brainstorming. gitignored, local only.
 ├── assets/          brand originals + their dark twins, 46 MB. never published.
+├── .claude-plugin/  marketplace.json: the marketplace listing the plugin
 ├── .github/         CI: tests and a strict site build on every push
 ├── .githooks/       pre-commit: rebuilds docs/ when site source changes
 ├── mkdocs.yml       docs_dir: src/docs   site_dir: docs
 ├── Makefile         make site / make clean
-└── pyproject.toml
+└── pyproject.toml   development only: dev dependencies, pytest
 ```
 
 `src/` is source and `docs/` is output: never edit `docs/` and never put source
 there. Pages serves `main:/docs`, so the rendered HTML is committed, and the
 `.githooks/pre-commit` hook rebuilds and stages it whenever a commit touches
-the site source. Do not run `make site` by hand before committing. `src/vogon` is the Python package; `src/docs` and `src/html`
-are website source that happens to sit beside it, and the wheel is limited to
-`src/vogon`. `assets/` is unreachable from the web because Pages roots the site
+the site source. Do not run `make site` by hand before committing. `src/vogon` is the Claude Code plugin, and
+`.claude-plugin/marketplace.json` at the root lists it; `src/docs` and
+`src/html` are website source that happens to sit beside it. `assets/` is unreachable from the web because Pages roots the site
 at `docs/`.
 
 `src/docs/dev/` is the current description of the system. Read

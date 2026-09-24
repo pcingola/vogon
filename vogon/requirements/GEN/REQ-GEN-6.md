@@ -1,7 +1,7 @@
 ---
 id: REQ-GEN-6
 type: requirement
-title: Cover the meeting pipeline in the installed instructions
+title: Cover the meeting pipeline in the instructions
 modules: [GEN]
 status: accepted
 verification: inspection
@@ -12,9 +12,9 @@ references:
 tags: [meetings, drafting]
 ---
 
-# REQ-GEN-6 — Cover the meeting pipeline in the installed instructions
+# REQ-GEN-6 — Cover the meeting pipeline in the instructions
 
-**Requirement.** The instructions VOGON installs MUST state how a meeting
+**Requirement.** The instructions VOGON ships MUST state how a meeting
 becomes held documents: the recording is transcribed, the transcript is filed
 in `vogon/sources/` with `kind: transcript`, the meeting's date and its
 participants, a summary is produced from that transcript and filed beside it
@@ -32,5 +32,5 @@ transcription tool, and requiring a summary for every transcript.
 `vogon/sources/2026-09-17_requirements_workshop.summary.md`, and the requirements
 drafted from it cite the first.
 
-**Acceptance.** The installed instructions name each step, the frontmatter each
+**Acceptance.** The instructions name each step, the frontmatter each
 produced file carries, and the rule that drafting reads the transcript.

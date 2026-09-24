@@ -24,5 +24,5 @@ alongside it.
 **Example.** A command that summarised a transcript by calling a model would
 violate this, whoever paid for the call.
 
-**Acceptance.** The dependency set contains no model client, and no command
-performs a network call other than to the configured tracker.
+**Acceptance.** The plugin's scripts depend on no model client library, and no
+script performs a network call.

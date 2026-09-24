@@ -14,7 +14,7 @@ tags: [plans, instructions]
 
 # REQ-GEN-10 — Ship the instructions for writing and retiring a plan
 
-**Requirement.** The instructions VOGON installs MUST require a plan to state
+**Requirement.** The instructions VOGON ships MUST require a plan to state
 what will be built and name the records it implements, to be written before
 the code, to live at `vogon/plans/plan_<slug>.md`, and to be moved to
 `vogon/plans/done/` once implemented or abandoned, with anything that must stay
@@ -30,5 +30,4 @@ the documentation was updated before the plan moved.
 `vogon/plans/plan_result-import.md` naming the requirements it implements, and
 moves it to `vogon/plans/done/` when the change merges.
 
-**Acceptance.** The installed instructions state all four rules, and the check
-that compares the installed copy to the shipped one passes.
+**Acceptance.** The instructions state all four rules.

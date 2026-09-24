@@ -1,0 +1,16 @@
+{
+  "name": "vogon",
+  "owner": {
+    "name": "Pablo Cingolani"
+  },
+  "metadata": {
+    "description": "The VOGON plugin for Claude Code."
+  },
+  "plugins": [
+    {
+      "name": "vogon",
+      "source": "./src/vogon",
+      "description": "Requirements, traceability and validation evidence for GxP software, maintained by Claude Code."
+    }
+  ]
+}

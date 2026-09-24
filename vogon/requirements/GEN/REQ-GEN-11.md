@@ -14,7 +14,7 @@ tags: [tests, review, instructions]
 
 # REQ-GEN-11 — Ship a check of the test cases against what each requirement states
 
-**Requirement.** VOGON MUST install instructions and a subagent definition
+**Requirement.** VOGON MUST ship instructions and a subagent definition
 that, for every accepted requirement whose `verification` is `test`, compare
 the requirement and its acceptance block with the tests whose markers name it,
 and report each clause of the acceptance block that no test exercises, each
@@ -35,8 +35,6 @@ or demonstration.
 input and for a full one, and its only test uses a full input. The report
 names the requirement and the clause for the empty input.
 
-**Acceptance.** After installation, the instructions require all three kinds
-of finding for every accepted requirement verified by test, the subagent
-definition lists no path under the implementation source among those it may
-read, and the check that compares the installed copy to the shipped one
-passes.
+**Acceptance.** The instructions require all three kinds of finding for every
+accepted requirement verified by test, and the subagent definition lists no
+path under the implementation source among those it may read.

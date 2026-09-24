@@ -16,7 +16,7 @@
         <link rel="prev" href="index.html">
       
       
-        <link rel="next" href="cli.html">
+        <link rel="next" href="scripts.html">
       
       
         
@@ -364,32 +364,32 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#as-a-command-line-tool" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        As a command-line tool
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#as-a-library" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        As a library
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#requirements" class="md-nav__link">
     <span class="md-ellipsis">
       
         Requirements
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-the-plugin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Install the plugin
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#set-up-a-host-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Set up a host project
       
     </span>
   </a>
@@ -412,14 +412,14 @@
   
   
     <li class="md-nav__item">
-      <a href="cli.html" class="md-nav__link">
+      <a href="scripts.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    CLI
+    Scripts
   
 
     
@@ -750,32 +750,32 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#as-a-command-line-tool" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        As a command-line tool
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#as-a-library" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        As a library
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#requirements" class="md-nav__link">
     <span class="md-ellipsis">
       
         Requirements
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-the-plugin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Install the plugin
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#set-up-a-host-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Set up a host project
       
     </span>
   </a>
@@ -800,24 +800,42 @@
 
 
 <h1 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h1>
-<p>VOGON is distributed as a Python package and installed with <code>uv</code>.</p>
-<h2 id="as-a-command-line-tool">As a command-line tool<a class="headerlink" href="#as-a-command-line-tool" title="Permanent link">&para;</a></h2>
-<pre><code class="language-sh">uv tool install vogon
-</code></pre>
-<h2 id="as-a-library">As a library<a class="headerlink" href="#as-a-library" title="Permanent link">&para;</a></h2>
-<pre><code class="language-sh">uv add vogon
-</code></pre>
+<p>VOGON is a Claude Code plugin. It is installed into Claude Code, and it
+creates its records and configuration in the host project when it is set up.</p>
 <h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Python 3.11 or later.</li>
+<li>Claude Code.</li>
+<li><code>uv</code>, which runs VOGON's scripts.</li>
 <li>Git, for the repository the records live in.</li>
-<li>An issue tracker for requirements under approval, a test manager for test
-  cases and results, and a repository host that reviews changes before they
-  merge, each reached through an MCP server. Version 0.1 is built against Jira,
-  Xray and GitHub.</li>
-<li><code>vogon.yaml</code>, naming the system that fills each of those roles, the roles
-  that give each approval, and the people who hold each role.</li>
+<li>Python 3.11 or later, which <code>uv</code> installs if it is missing.</li>
+<li>An MCP server connected to Claude Code for each of the tracker, the test
+  manager and the repository host. Version 0.1 is built against Jira, Xray and
+  GitHub.</li>
 </ul>
+<h2 id="install-the-plugin">Install the plugin<a class="headerlink" href="#install-the-plugin" title="Permanent link">&para;</a></h2>
+<p>In Claude Code:</p>
+<pre><code>/plugin marketplace add pcingola/vogon
+/plugin install vogon@vogon
+</code></pre>
+<p>To make the plugin available to every developer on a host project, commit
+these entries in the project's <code>.claude/settings.json</code>. Claude Code then offers
+to install the plugin when the project is opened.</p>
+<pre><code class="language-json">{
+  &quot;extraKnownMarketplaces&quot;: {
+    &quot;vogon&quot;: {&quot;source&quot;: {&quot;source&quot;: &quot;github&quot;, &quot;repo&quot;: &quot;pcingola/vogon&quot;}}
+  },
+  &quot;enabledPlugins&quot;: {&quot;vogon@vogon&quot;: true}
+}
+</code></pre>
+<h2 id="set-up-a-host-project">Set up a host project<a class="headerlink" href="#set-up-a-host-project" title="Permanent link">&para;</a></h2>
+<p>Ask Claude Code to set up VOGON. The skill runs <code>vogon init</code>, which creates
+<code>vogon/</code>, <code>vogon/modules.yaml</code> and <code>vogon.yaml</code>, and adds <code>.vogon/</code> to
+<code>.gitignore</code>. Claude Code then checks that each configured MCP server provides
+the operations VOGON needs, and names any that are missing.</p>
+<p><code>vogon.yaml</code> names the system that fills each role, the roles that give each
+approval, and the people who hold each role.
+<a href="../dev/architecture.html#roles-and-approvals">Roles and approvals</a> shows the
+format.</p>
 
 
 

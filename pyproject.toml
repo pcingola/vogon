@@ -1,39 +1,18 @@
+# Development only. VOGON ships as a Claude Code plugin from src/vogon, and its
+# version is in src/vogon/.claude-plugin/plugin.json. This project is never
+# built or installed; it holds the dev dependencies and the pytest settings.
+
 [project]
-name = "vogon"
+name = "vogon-dev"
 dynamic = ["version"]
-description = "Validated Operations & Governance OrchestratioN — the bureaucratic burden of GxP software development, automated."
-readme = "README.md"
 requires-python = ">=3.11"
-authors = [{ name = "Pablo Cingolani" }]
-keywords = ["gxp", "validation", "compliance", "traceability", "csv"]
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "Intended Audience :: Developers",
-    "Topic :: Software Development :: Quality Assurance",
-]
-dependencies = []
 
-[project.scripts]
-vogon = "vogon.cli:main"
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[tool.hatch.version]
-path = "src/vogon/__init__.py"
-
-# The wheel contains src/vogon and nothing else.
-[tool.hatch.build.targets.wheel]
-packages = ["src/vogon"]
-
-# Hatchling's sdist default is "everything git tracks", which would ship
-# assets/ (27 MB) and the generated docs/ to anyone installing from source.
-[tool.hatch.build.targets.sdist]
-include = ["/src/vogon", "/tests", "/README.md", "/pyproject.toml"]
+[tool.uv]
+package = false
 
 [dependency-groups]
 dev = ["pytest>=8", "mkdocs>=1.6", "mkdocs-material>=9.5"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["src/vogon/scripts"]

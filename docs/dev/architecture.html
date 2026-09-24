@@ -330,14 +330,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../user/cli.html" class="md-nav__link">
+      <a href="../user/scripts.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    CLI
+    Scripts
   
 
     
@@ -955,13 +955,13 @@
 
 <h1 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h1>
 <h2 id="skills-and-a-little-code">Skills, and a little code<a class="headerlink" href="#skills-and-a-little-code" title="Permanent link">&para;</a></h2>
-<p>VOGON is a set of skills, slash commands and hooks for Claude Code, installed
-as a library into a host project (<code>REQ-GEN-1</code>, <code>REQ-GEN-4</code>). The skills are the
+<p>VOGON is a Claude Code plugin holding skills, subagents, hooks and the
+scripts they call, installed into a host project (<code>REQ-GEN-1</code>, <code>REQ-GEN-4</code>). The skills are the
 rules, workflows and guidelines for developing software under GxP: what a
 requirement looks like, how a transcript becomes records (<code>REQ-GEN-6</code>), how a
 test case is drafted (<code>REQ-GEN-7</code>), what has to be true before a change is
 registered in the tracker. They are the system.</p>
-<p>The code is small and exists to serve the skills. It is a command line the
+<p>The code is small and exists to serve the skills. It is scripts the
 skills call where the answer has to be the same on every run: minting the next
 id (<code>REQ-REC-7</code>), validating a record against the schema (<code>REQ-REC-1</code>),
 resolving links (<code>REQ-REC-2</code>, <code>REQ-REC-4</code>), collecting test markers
@@ -969,12 +969,13 @@ resolving links (<code>REQ-REC-2</code>, <code>REQ-REC-4</code>), collecting tes
 can do any of those and will do most of them correctly most of the time, which
 is not the standard a validation record is held to.</p>
 <p>Claude Code does the work, including any subagents a skill starts. The Python
-code calls no language model API, so the command line can disagree with a
+code calls no language model API, so the scripts can disagree with a
 draft because it did not produce it
 (<code>DEC-005</code>, <code>REQ-GEN-3</code>, <code>FACT-005</code>).</p>
-<p>What VOGON produces is documents: a requirement, a plan, a design
-specification, a test specification, a risk assessment. Each is produced
-complete, and each is a draft until a named person approves it (<code>REQ-GEN-2</code>).
+<p>VOGON produces the records, the plan, the tests, the code, and the documents
+a validation package holds: the risk assessment, the test specification, the
+design specification and the test report. Each is produced complete, and each
+is a draft until a named person approves it (<code>REQ-GEN-2</code>).
 VOGON never performs the approval (<code>CON-001</code>, <code>REQ-TRK-1</code>).</p>
 <p>Change control, the assessment a board approves before a live validated system
 is changed, is not in this version (<code>DEC-017</code>). The pipeline below covers
@@ -982,7 +983,7 @@ building the system and changing it; what a project does with a change once it
 is live stays in that project's own procedure.</p>
 <h2 id="the-pipeline">The pipeline<a class="headerlink" href="#the-pipeline" title="Permanent link">&para;</a></h2>
 <p>VOGON covers the development cycle from the material a project starts with to
-the evidence it ends with. Each step is a skill, a command, ordinary agent work,
+the evidence it ends with. Each step is a skill, a script, ordinary agent work,
 or an approval given by a person.</p>
 <table>
 <thead>
@@ -997,8 +998,8 @@ or an approval given by a person.</p>
 <tr>
 <td>1</td>
 <td>Install and configure</td>
-<td><code>vogon/</code>, <code>modules.yaml</code>, <code>vogon.yaml</code> naming the systems, the approval roles and their holders, the skills in <code>.claude/</code> (<code>REQ-CLI-5</code>)</td>
-<td>Command <code>vogon init</code></td>
+<td><code>vogon/</code>, <code>modules.yaml</code>, <code>vogon.yaml</code> naming the systems, the approval roles and their holders (<code>REQ-CLI-5</code>)</td>
+<td><code>/plugin install</code>, then script <code>vogon init</code></td>
 </tr>
 <tr>
 <td>2</td>
@@ -1070,7 +1071,7 @@ or an approval given by a person.</p>
 <td>13</td>
 <td>Run the tests and make them pass</td>
 <td>Outcomes keyed to markers (<code>REQ-TRC-1</code>, <code>REQ-TRC-4</code>)</td>
-<td>Command <code>vogon trace</code></td>
+<td>Script <code>vogon trace</code></td>
 </tr>
 <tr>
 <td>14</td>
@@ -1148,28 +1149,50 @@ being released, each recording that build (<code>REQ-TRK-10</code>). VOGON produ
 neither report (<code>REQ-TRC-7</code>), and the people holding the release roles sign
 the package in the document system.</p>
 <h2 id="how-vogon-is-installed">How VOGON is installed<a class="headerlink" href="#how-vogon-is-installed" title="Permanent link">&para;</a></h2>
-<p>VOGON is a Python package. A host project installs it with <code>uv add vogon</code> or
-<code>pip install vogon</code>, and <code>vogon init</code> writes the skills, slash commands and
-subagent definition into <code>.claude/</code>, adds the hook entries to
-<code>.claude/settings.json</code>, and creates <code>vogon/</code> and <code>vogon.yaml</code>, which names
-the system filling each role and the people holding each approval role. Those files are
-committed, so a change to them is reviewed like any other.</p>
-<p>It is not distributed as a Claude Code plugin. The command line has to be
-installed either way, so a plugin adds a second channel and a second version
-number without removing the first. What this costs is a copy of the skills in
-every host project, and an upgrade that is <code>uv add -U vogon</code>, <code>vogon init</code> and
-a reviewed diff. <code>vogon check</code> reports where the installed files differ from
-the copies in the package.</p>
+<p>The VOGON repository is a Claude Code plugin marketplace.
+<code>.claude-plugin/marketplace.json</code> at its root lists one plugin, <code>vogon</code>, whose
+source is <code>src/vogon/</code>. A developer installs it from inside Claude Code:</p>
+<pre><code>/plugin marketplace add pcingola/vogon
+/plugin install vogon@vogon
+</code></pre>
+<p>A host project can make the plugin available to every developer by naming
+the marketplace and the plugin in its committed <code>.claude/settings.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;extraKnownMarketplaces&quot;: {
+    &quot;vogon&quot;: {&quot;source&quot;: {&quot;source&quot;: &quot;github&quot;, &quot;repo&quot;: &quot;pcingola/vogon&quot;}}
+  },
+  &quot;enabledPlugins&quot;: {&quot;vogon@vogon&quot;: true}
+}
+</code></pre>
+<p>The plugin is laid out as Claude Code expects:</p>
+<pre><code>src/vogon/
+├── .claude-plugin/plugin.json   name, version, description
+├── skills/vogon/                SKILL.md and references/
+├── agents/                      subagent definitions
+├── hooks/hooks.json             hook entries, each calling a script
+└── scripts/                     the Python scripts
+</code></pre>
+<p>The version is in <code>plugin.json</code>. There is no Python distribution. The scripts
+run with <code>uv run</code>, and each declares its own dependencies inline (PEP 723), so
+a host project needs Claude Code, <code>uv</code> and git installed and nothing else. An
+upgrade is a plugin update.</p>
+<p>Setup in a host project is done by the skill. It runs <code>vogon init</code>, which
+creates <code>vogon/</code>, <code>vogon/modules.yaml</code> and <code>vogon.yaml</code> and adds <code>.vogon/</code> to
+<code>.gitignore</code>. Claude Code then checks, through MCP, that each configured server
+provides the operations VOGON needs (<code>REQ-CLI-4</code>).</p>
+<p>Nothing from the plugin is copied into the host project. The host project's
+repository does not hold the skill text, and nothing compares an installed
+copy with the plugin (<code>DEC-020</code>).</p>
+<p>No script contacts an external system or a language model. Claude Code reaches
+the tracker, the test manager, the repository host and the document system
+through MCP and hands the data to a script.</p>
 <h2 id="where-things-sit-in-a-host-project">Where things sit in a host project<a class="headerlink" href="#where-things-sit-in-a-host-project" title="Permanent link">&para;</a></h2>
 <p>The host project is a project VOGON is installed into, as against the VOGON
 project, which is this repository.
 <a href="vocabulary.html#the-two-projects">Vocabulary</a> defines both.</p>
 <pre><code>&lt;host-project&gt;/
 ├── .claude/
-│   ├── skills/vogon-*/   the skills. Claude Code loads them from here
-│   ├── commands/vogon/   slash commands that start them
-│   ├── agents/           subagent definitions
-│   └── settings.json     hooks
+│   └── settings.json     names the VOGON marketplace and enables the plugin
 ├── vogon/
 │   ├── modules.yaml      the module names the host project uses
 │   ├── requirements/&lt;module&gt;/REQ-&lt;MODULE&gt;-NNN.md
@@ -1190,8 +1213,8 @@ that accepts the convention configures nothing (<code>REQ-CLI-3</code>).</p>
 everything in it, mints the ids and validates it, which is what a directory a
 tool owns in someone else's repository is named for. It is visible rather than
 hidden because the records are reviewed in pull requests and read by people who
-will never run the tool. The skills sit in <code>.claude/</code> instead, because that is
-where Claude Code loads them from.</p>
+will never run the tool. The skills, subagents and hooks are
+loaded from the installed plugin and are not in the host project.</p>
 <h2 id="two-stores">Two stores<a class="headerlink" href="#two-stores" title="Permanent link">&para;</a></h2>
 <p>The specification lives twice.</p>
 <p>In the host project's git repository, as markdown records under <code>vogon/</code>. This
@@ -1256,7 +1279,7 @@ is often its own rather than the vendor's. The skills call that server's tools.<
 manager, the repository host, the document system — and the product filling
 each role is configuration (<code>DEC-011</code>). For each role VOGON states the
 operations it needs from it, and a configured server that does not provide one
-of them fails at install rather than at first use (<code>REQ-CLI-4</code>).</p>
+of them fails during setup rather than at first use (<code>REQ-CLI-4</code>).</p>
 <h2 id="modules">Modules<a class="headerlink" href="#modules" title="Permanent link">&para;</a></h2>
 <p>A module names a part of the system a record belongs to, and appears in the
 record's id. Each host project declares its own names in <code>vogon/modules.yaml</code>;
@@ -1290,7 +1313,7 @@ format.</p>
 </tr>
 <tr>
 <td><code>CLI</code></td>
-<td>The command line and configuration, including the approval roles</td>
+<td>The scripts and configuration, including the approval roles</td>
 </tr>
 </tbody>
 </table>
