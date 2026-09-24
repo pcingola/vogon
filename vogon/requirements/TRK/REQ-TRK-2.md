@@ -23,7 +23,7 @@ asserting approval of text nobody read.
 **What this does not require.** Deciding whether the change is material,
 withdrawing the existing approval, and reverting the record.
 
-**Example.** A requirement is approved in Jira on the 3rd. On the 5th its
+**Example.** A requirement is approved in the tracker on the 3rd. On the 5th its
 acceptance block gains a clause. The next run lists the record as requiring
 re-approval and writes nothing to that issue.
 

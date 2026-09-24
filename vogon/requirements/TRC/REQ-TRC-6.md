@@ -7,14 +7,15 @@ status: accepted
 verification: test
 gxp_risk: data integrity
 depends_on: [FACT-002, FACT-004, REQ-TRC-5]
-tags: [xray, evidence]
+tags: [test-manager, evidence]
 ---
 
 # REQ-TRC-6 — Import results against the test issues, recording the build
 
-**Requirement.** VOGON MUST import test execution results against the Xray
-test issues, and MUST record with each import the identifier of the build the
-tests ran on. VOGON MUST refuse an import with no build identifier.
+**Requirement.** VOGON MUST import test execution results against the test
+issues in the test manager, and MUST record with each import the identifier of
+the build the tests ran on. VOGON MUST refuse an import with no build
+identifier.
 
 Evidence captured from a different build than the one released is one of the
 findings a package attracts, and it is only detectable if the build is recorded

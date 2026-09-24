@@ -24,7 +24,7 @@ for approving it. A joke in it costs them time and casts doubt on the rest.
 
 **What this does not require.** Removing the voice from the places it belongs.
 
-**Example.** A requirement pushed to Jira reads as a requirement, and a
+**Example.** A requirement pushed to the tracker reads as a requirement, and a
 command that refuses to push says what it refused and why.
 
 **Acceptance.** No fixed string from the brand guide appears in a record, in a

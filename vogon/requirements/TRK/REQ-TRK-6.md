@@ -7,7 +7,7 @@ status: accepted
 verification: test
 gxp_risk: data integrity
 depends_on: [REQ-TRK-5]
-tags: [jira, drift]
+tags: [tracker, drift]
 ---
 
 # REQ-TRK-6 — Report a tracked_as key that no longer resolves

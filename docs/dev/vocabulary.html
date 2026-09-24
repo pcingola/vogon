@@ -887,8 +887,9 @@ things. Each has its own id namespace and its own file.</p>
 <p><strong>Requirement</strong> — something the system must do. Written as a MUST statement
 saying what has to be true rather than how to achieve it, and phrased so that a
 test could fail it. Ids are <code>REQ-&lt;MODULE&gt;-&lt;NUMBER&gt;</code>.</p>
-<p><strong>Domain fact</strong> — something true whether or not this project exists. "An Xray
-test issue is linked to the requirement issue it verifies" is a fact; nobody on
+<p><strong>Domain fact</strong> — something true whether or not this project exists. "A test
+issue in the test manager is linked to the requirement issue it verifies" is a
+fact; nobody on
 the project chose it and no test of ours can fail it. Prefix <code>FACT-</code>.</p>
 <p><strong>Constraint</strong> — a limit imposed from outside that design cannot trade away: a
 regulation, a company procedure, or a platform behaviour. "Approval cannot be
@@ -929,8 +930,8 @@ binding, so an ordinary "must" or "should" in prose carries no weight.</p>
 </tr>
 </tbody>
 </table>
-<p>"Results imported into Xray sometimes arrive without a build identifier" has no
-modal verb, so it is a domain fact. "VOGON MUST reject a result import with no
+<p>"Results imported into the test manager sometimes arrive without a build
+identifier" has no modal verb, so it is a domain fact. "VOGON MUST reject a result import with no
 build identifier" is the requirement beside it.</p>
 <p>"shall" is not used here. ISO/IEC/IEEE 29148 uses it, and the ISO drafting
 rules it follows forbid "must" as an alternative, but those rules govern how ISO
@@ -997,14 +998,29 @@ records, and the substitution is mechanical.</p>
 <td>Requirements Traceability Matrix: requirement to design to test to result, for every requirement</td>
 </tr>
 <tr>
-<td><strong>Xray</strong></td>
-<td>A Jira plugin that records test runs and produces requirement coverage and traceability reports</td>
+<td><strong>Tracker</strong></td>
+<td>The issue tracker holding requirements under approval. Jira in version 0.1</td>
+</tr>
+<tr>
+<td><strong>Test manager</strong></td>
+<td>The system holding test cases, test runs and results, which produces the coverage and traceability reports. Xray, a Jira plugin, in version 0.1</td>
+</tr>
+<tr>
+<td><strong>Repository host</strong></td>
+<td>The service holding the git repository and reviewing changes before they merge. GitHub in version 0.1</td>
+</tr>
+<tr>
+<td><strong>Document system</strong></td>
+<td>The controlled document management system where the validation package is filed and signed</td>
 </tr>
 </tbody>
 </table>
 <h2 id="who-signs-what">Who signs what<a class="headerlink" href="#who-signs-what" title="Permanent link">&para;</a></h2>
 <p>A validated system's documents are signed by roles named in the validation
-plan; a separate approval matrix says which person holds each role.</p>
+plan; a separate approval matrix says which person holds each role. A host
+project configures, in <code>vogon.yaml</code>, the role that gives each approval and the
+people who hold each role, so records and generated documents name the role
+and never the person (<code>DEC-018</code>).</p>
 <table>
 <thead>
 <tr>
@@ -1022,7 +1038,7 @@ plan; a separate approval matrix says which person holds each role.</p>
 <tr>
 <td><strong>Business Process Owner</strong></td>
 <td>One named person from the business side who knows how the work is actually done and answers for that process</td>
-<td>Approves the requirements and decides the finished system is fit to use. Cannot be empty at release</td>
+<td>Decides the finished system is fit to use, and approves the requirements where the procedure assigns that approval to this role. Cannot be empty at release</td>
 </tr>
 <tr>
 <td><strong>IT Quality Manager</strong></td>
@@ -1052,7 +1068,17 @@ plan; a separate approval matrix says which person holds each role.</p>
 <tr>
 <td><strong>Product Owner</strong></td>
 <td>One named person who owns the backlog and decides what gets built next</td>
-<td>None. Signs nothing in the validation package</td>
+<td>Approves the requirements in the tracker, in the default configuration. Where the procedure gives that approval to the Business Process Owner, the configuration says so</td>
+</tr>
+<tr>
+<td><strong>Test Lead</strong></td>
+<td>One of the engineers, named to review the test cases</td>
+<td>Approves the test cases in the test manager before the code is written. Never approves test cases they wrote</td>
+</tr>
+<tr>
+<td><strong>Code reviewer</strong></td>
+<td>Any engineer other than the author of a change</td>
+<td>Approves the change on the repository host before it merges</td>
 </tr>
 </tbody>
 </table>

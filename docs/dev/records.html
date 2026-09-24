@@ -1131,9 +1131,10 @@ first match wins.</p>
 <li>Is it only what somebody said? → it stays in the meeting summary and goes
    nowhere else.</li>
 </ol>
-<p>A single sentence often splits. "Xray reports coverage from the link between a
-test issue and a requirement issue, so maintain that link from the test source"
-is a fact and a requirement, written as two records that link to each other.</p>
+<p>A single sentence often splits. "The test manager reports coverage from the
+link between a test issue and a requirement issue, so maintain that link from
+the test source" is a fact and a requirement, written as two records that link
+to each other.</p>
 <h2 id="the-shape-of-a-record">The shape of a record<a class="headerlink" href="#the-shape-of-a-record" title="Permanent link">&para;</a></h2>
 <p>YAML frontmatter followed by a markdown body. The frontmatter is what machines
 read — the indexes, the checks and any export are generated from it — and the
@@ -1287,7 +1288,7 @@ a requirement yet.</p>
 </tr>
 <tr>
 <td><code>acceptance_by</code>, <code>acceptance_on</code></td>
-<td>Who accepted the acceptance block and when. Required where <code>gxp_risk</code> is not <code>none</code>, and absent until a person has accepted it</td>
+<td>Who accepted the acceptance block and when. Required where <code>gxp_risk</code> is not <code>none</code> or <code>verification</code> is <code>test</code>, and absent until a person has accepted it</td>
 </tr>
 </tbody>
 </table>
@@ -1307,8 +1308,8 @@ absence says the mechanism has not been settled.</p>
 <p>Where a value is expected, the acceptance block states it. It is worked out
 from the requirement and never read off a run of the code, because a value
 taken from the code makes the test that asserts it unable to fail. On a
-requirement carrying risk the block is accepted by a named person before the
-record leaves <code>proposed</code>, and a test marker naming a requirement whose block
+requirement carrying risk or verified by test the block is accepted by a named
+person before the record leaves <code>proposed</code>, and a test marker naming a requirement whose block
 has not been accepted fails the run. <code>DEC-012</code> has the reasoning.</p>
 <h3 id="worked-example">Worked example<a class="headerlink" href="#worked-example" title="Permanent link">&para;</a></h3>
 <pre><code class="language-markdown">---
@@ -1322,7 +1323,7 @@ gxp_risk: data integrity
 depends_on: [CON-001, FACT-004]
 references:
   - src/docs/dev/architecture.md
-tags: [jira, approval]
+tags: [tracker, approval]
 ---
 
 # REQ-TRK-2 — Report a record edited after its issue was approved
@@ -1338,9 +1339,9 @@ silent push would leave the tracker asserting approval of text nobody read.
 **What this does not require.** Deciding whether the change is material, and
 withdrawing the existing approval.
 
-**Example.** A requirement is approved in Jira on the 3rd. On the 5th its
+**Example.** A requirement is approved in the tracker on the 3rd. On the 5th its
 acceptance block gains a clause. The next run lists the record as requiring
-re-approval and writes nothing to Jira.
+re-approval and writes nothing to the tracker.
 
 **Acceptance.** For any record whose content hash differs from the hash
 recorded at the time of approval, the record appears in the report and no

@@ -7,7 +7,7 @@ status: accepted
 verification: test
 gxp_risk: data integrity
 depends_on: [DEC-001]
-tags: [jira, idempotency]
+tags: [tracker, idempotency]
 ---
 
 # REQ-TRK-3 — Make writes idempotent, keyed by record id

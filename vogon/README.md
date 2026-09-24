@@ -13,7 +13,8 @@ format VOGON defines for the projects it is installed into.
 | `out/` | Generated output. Never hand-edited |
 
 Modules are `REC` for the record schema and its checks, `TRC` for test markers
-and the link to Xray, `TRK` for reading and writing Jira and Xray, `GEN` for
+and the link to the test manager, `TRK` for reading and writing the tracker
+and the test manager, `GEN` for
 the drafting instructions installed into a host project, and `CLI` for the
 command line and configuration.
 

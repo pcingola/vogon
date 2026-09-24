@@ -47,9 +47,10 @@ first match wins.
 6. Is it only what somebody said? → it stays in the meeting summary and goes
    nowhere else.
 
-A single sentence often splits. "Xray reports coverage from the link between a
-test issue and a requirement issue, so maintain that link from the test source"
-is a fact and a requirement, written as two records that link to each other.
+A single sentence often splits. "The test manager reports coverage from the
+link between a test issue and a requirement issue, so maintain that link from
+the test source" is a fact and a requirement, written as two records that link
+to each other.
 
 ## The shape of a record
 
@@ -178,7 +179,7 @@ Frontmatter it adds:
 | --- | --- |
 | `verification` | One of `inspection`, `analysis`, `demonstration` or `test` |
 | `gxp_risk` | One of `safety`, `product quality`, `data integrity` or `none`. What a failure of this requirement would damage in a regulated project. It decides how much verification the requirement needs and is expensive to add retrospectively |
-| `acceptance_by`, `acceptance_on` | Who accepted the acceptance block and when. Required where `gxp_risk` is not `none`, and absent until a person has accepted it |
+| `acceptance_by`, `acceptance_on` | Who accepted the acceptance block and when. Required where `gxp_risk` is not `none` or `verification` is `test`, and absent until a person has accepted it |
 
 A requirement carries `references` where a document specifies the mechanism it
 is checked against — the schema, the marker format, the tracker rules. A
@@ -197,8 +198,8 @@ Body blocks it adds:
 Where a value is expected, the acceptance block states it. It is worked out
 from the requirement and never read off a run of the code, because a value
 taken from the code makes the test that asserts it unable to fail. On a
-requirement carrying risk the block is accepted by a named person before the
-record leaves `proposed`, and a test marker naming a requirement whose block
+requirement carrying risk or verified by test the block is accepted by a named
+person before the record leaves `proposed`, and a test marker naming a requirement whose block
 has not been accepted fails the run. `DEC-012` has the reasoning.
 
 ### Worked example
@@ -215,7 +216,7 @@ gxp_risk: data integrity
 depends_on: [CON-001, FACT-004]
 references:
   - src/docs/dev/architecture.md
-tags: [jira, approval]
+tags: [tracker, approval]
 ---
 
 # REQ-TRK-2 — Report a record edited after its issue was approved
@@ -231,9 +232,9 @@ silent push would leave the tracker asserting approval of text nobody read.
 **What this does not require.** Deciding whether the change is material, and
 withdrawing the existing approval.
 
-**Example.** A requirement is approved in Jira on the 3rd. On the 5th its
+**Example.** A requirement is approved in the tracker on the 3rd. On the 5th its
 acceptance block gains a clause. The next run lists the record as requiring
-re-approval and writes nothing to Jira.
+re-approval and writes nothing to the tracker.
 
 **Acceptance.** For any record whose content hash differs from the hash
 recorded at the time of approval, the record appears in the report and no

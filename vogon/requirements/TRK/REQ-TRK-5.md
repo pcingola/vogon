@@ -7,7 +7,7 @@ status: accepted
 verification: test
 gxp_risk: data integrity
 depends_on: [REQ-TRK-3, REQ-TRK-4]
-tags: [jira]
+tags: [tracker]
 ---
 
 # REQ-TRK-5 — Create the issue for a record that has none and record its key

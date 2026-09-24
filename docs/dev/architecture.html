@@ -529,6 +529,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#roles-and-approvals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Roles and approvals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#how-vogon-is-installed" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -573,10 +584,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#reaching-jira-and-xray" class="md-nav__link">
+  <a href="#reaching-the-external-systems" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Reaching Jira and Xray
+        Reaching the external systems
       
     </span>
   </a>
@@ -838,6 +849,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#roles-and-approvals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Roles and approvals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#how-vogon-is-installed" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -882,10 +904,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#reaching-jira-and-xray" class="md-nav__link">
+  <a href="#reaching-the-external-systems" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Reaching Jira and Xray
+        Reaching the external systems
       
     </span>
   </a>
@@ -946,8 +968,9 @@ resolving links (<code>REQ-REC-2</code>, <code>REQ-REC-4</code>), collecting tes
 (<code>REQ-TRC-1</code>), working out what the tracker should hold (<code>REQ-TRK-3</code>). An agent
 can do any of those and will do most of them correctly most of the time, which
 is not the standard a validation record is held to.</p>
-<p>Claude Code does the work. VOGON calls no language model of its own, so the
-command line can disagree with a draft because it did not produce it
+<p>Claude Code does the work, including any subagents a skill starts. The Python
+code calls no language model API, so the command line can disagree with a
+draft because it did not produce it
 (<code>DEC-005</code>, <code>REQ-GEN-3</code>, <code>FACT-005</code>).</p>
 <p>What VOGON produces is documents: a requirement, a plan, a design
 specification, a test specification, a risk assessment. Each is produced
@@ -959,22 +982,22 @@ building the system and changing it; what a project does with a change once it
 is live stays in that project's own procedure.</p>
 <h2 id="the-pipeline">The pipeline<a class="headerlink" href="#the-pipeline" title="Permanent link">&para;</a></h2>
 <p>VOGON covers the development cycle from the material a project starts with to
-the evidence it ends with. Each step is a skill, a command or ordinary agent
-work.</p>
+the evidence it ends with. Each step is a skill, a command, ordinary agent work,
+or an approval given by a person.</p>
 <table>
 <thead>
 <tr>
 <th>#</th>
 <th>Step</th>
 <th>Produces</th>
-<th>Built as</th>
+<th>Done by</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>1</td>
 <td>Install and configure</td>
-<td><code>vogon/</code>, <code>modules.yaml</code>, <code>vogon.yaml</code>, the skills in <code>.claude/</code></td>
+<td><code>vogon/</code>, <code>modules.yaml</code>, <code>vogon.yaml</code> naming the systems, the approval roles and their holders, the skills in <code>.claude/</code> (<code>REQ-CLI-5</code>)</td>
 <td>Command <code>vogon init</code></td>
 </tr>
 <tr>
@@ -1003,53 +1026,133 @@ work.</p>
 </tr>
 <tr>
 <td>6</td>
+<td>Approve the requirements</td>
+<td>Requirement issues in an approved state (<code>REQ-TRK-8</code>, <code>REQ-TRK-9</code>)</td>
+<td>The Product Owner, in the tracker</td>
+</tr>
+<tr>
+<td>7</td>
 <td>Plan the change</td>
 <td><code>vogon/plans/plan_&lt;slug&gt;.md</code>: what will be built and how it will be tested, naming the records it implements (<code>DEC-014</code>, <code>REQ-GEN-10</code>)</td>
 <td>Skill <code>vogon-plan</code></td>
 </tr>
 <tr>
-<td>7</td>
+<td>8</td>
 <td>Write the test cases</td>
 <td>Test functions carrying markers (<code>REQ-TRC-1</code>, <code>REQ-TRC-8</code>)</td>
 <td>Skill <code>vogon-tests</code>, in a subagent</td>
 </tr>
 <tr>
-<td>8</td>
+<td>9</td>
+<td>Check the test cases against the requirements</td>
+<td>For each requirement, the acceptance clauses no test exercises, the expected values that differ from the acceptance block, and the assertions the requirement does not support (<code>DEC-019</code>, <code>REQ-GEN-11</code>)</td>
+<td>Skill <code>vogon-test-review</code>, in a second subagent</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Register the test cases, draft the test specification</td>
+<td>Test issues in the test manager linked to the requirement issues (<code>REQ-TRC-5</code>), and the test specification</td>
+<td>Skills <code>vogon-push</code> and <code>vogon-docs</code></td>
+</tr>
+<tr>
+<td>11</td>
+<td>Approve the test cases</td>
+<td>Test issues and the test specification in an approved state, before the code is written (<code>DEC-012</code>)</td>
+<td>The Test Lead, in the test manager</td>
+</tr>
+<tr>
+<td>12</td>
 <td>Write the code</td>
 <td>Source, and a commit naming the records it implements (<code>REQ-TRC-9</code>)</td>
 <td>Agent work, following the plan</td>
 </tr>
 <tr>
-<td>9</td>
+<td>13</td>
 <td>Run the tests and make them pass</td>
 <td>Outcomes keyed to markers (<code>REQ-TRC-1</code>, <code>REQ-TRC-4</code>)</td>
 <td>Command <code>vogon trace</code></td>
 </tr>
 <tr>
-<td>10</td>
-<td>Register the tests and results, draft the documents</td>
-<td>Test issues and results in the test manager, and the design and test specifications (<code>REQ-TRC-5</code>, <code>REQ-TRC-6</code>)</td>
+<td>14</td>
+<td>Review the change and merge it</td>
+<td>An approving review by an engineer other than the author (<code>REQ-CLI-7</code>)</td>
+<td>A code reviewer, on the repository host</td>
+</tr>
+<tr>
+<td>15</td>
+<td>Register the results, draft the documents</td>
+<td>Results in the test manager recording the build (<code>REQ-TRC-6</code>), and the design specification and test report</td>
 <td>Skills <code>vogon-push</code> and <code>vogon-docs</code></td>
+</tr>
+<tr>
+<td>16</td>
+<td>File the evidence</td>
+<td>The test manager's traceability report and results for the released build, in the document system (<code>REQ-TRK-10</code>)</td>
+<td>Skill <code>vogon-evidence</code></td>
+</tr>
+<tr>
+<td>17</td>
+<td>Sign off</td>
+<td>The validation package, signed</td>
+<td>The sign-off roles, in the document system</td>
 </tr>
 </tbody>
 </table>
+<p>The roles in the last column are the default assignment. Which role gives each
+approval, and who holds each role, is configuration (<code>DEC-018</code>); see
+<a href="#roles-and-approvals">Roles and approvals</a>.</p>
 <p>Making a failing test pass has one direction it may not take. Expected values
 come from the requirement and never from a run of the code, so a test is made
 to pass by changing the code and not by moving the expected value to whatever
 the code produced (<code>DEC-012</code>, <code>REQ-GEN-7</code>).</p>
-<p>Three hooks, for the things that have to happen without anyone asking for them.
-After a write under <code>vogon/</code>, the record checks run on that file. Before a
-commit, a message naming no record is blocked (<code>REQ-TRC-9</code>). Before a call to
-the tracker that would move an issue into an approved state, the call is
+<p>Hooks cover what has to happen without anyone asking for it. After a write
+under <code>vogon/</code>, the record checks run on that file. Before a commit, a message
+naming no record is blocked (<code>REQ-TRC-9</code>). Before a call to the tracker or the
+test manager that would move an issue into an approved state, the call is
 blocked (<code>CON-001</code>, <code>REQ-TRK-1</code>), which is what turns that constraint from an
 instruction into something the agent cannot do by accident.</p>
-<p>One subagent, the test author at step 7, with no read access to the
-implementation, so the expected values can only come from the requirement.</p>
+<p>The test author at step 8 and the test reviewer at step 9 are subagents with
+no read access to the implementation, so the expected values the first writes
+and the comparison the second makes can only come from the requirement. The
+reviewer did not write the tests it reviews.</p>
+<h2 id="roles-and-approvals">Roles and approvals<a class="headerlink" href="#roles-and-approvals" title="Permanent link">&para;</a></h2>
+<p>Steps 6, 11, 14 and 17 are approvals, and a person gives each one in the
+system that holds what is approved. VOGON gives none of them (<code>CON-001</code>).
+Records, instructions and generated documents name the role that approves,
+never a person. <code>vogon.yaml</code> in the host project says which roles give each
+approval, in which system, and who holds each role (<code>DEC-018</code>, <code>REQ-CLI-5</code>):</p>
+<pre><code class="language-yaml">approvals:
+  requirements: {roles: [product_owner], system: tracker}
+  test_cases: {roles: [test_lead], system: test_manager}
+  change: {roles: [engineer], system: repository_host}
+  release: {roles: [system_owner, it_quality_manager], system: document_system}
+roles:
+  product_owner: [alice@example.com]
+  test_lead: [bob@example.com]
+  engineer: [alice@example.com, bob@example.com, carol@example.com]
+  system_owner: [dave@example.com]
+  it_quality_manager: []
+</code></pre>
+<p>A role may be listed with no holder until the project's procedure names one,
+and VOGON reports every approval whose role has none (<code>REQ-CLI-6</code>). Once an
+approval has been given, VOGON reads who gave it and reports an approver who
+does not hold the configured role (<code>REQ-TRK-9</code>) or who is the author of what
+was approved (<code>CON-002</code>, <code>REQ-TRK-8</code>).</p>
+<p>The review before a merge is enforced by the repository host, whose rules for
+the default branch can require an approving review from someone other than
+the author. VOGON checks that those rules are in place and reports where they
+are not (<code>REQ-CLI-7</code>).</p>
+<p>Step 16 moves the evidence the test manager produces into the document system
+without changing it: the traceability report and the results for the build
+being released, each recording that build (<code>REQ-TRK-10</code>). VOGON produces
+neither report (<code>REQ-TRC-7</code>), and the people holding the release roles sign
+the package in the document system.</p>
 <h2 id="how-vogon-is-installed">How VOGON is installed<a class="headerlink" href="#how-vogon-is-installed" title="Permanent link">&para;</a></h2>
 <p>VOGON is a Python package. A host project installs it with <code>uv add vogon</code> or
 <code>pip install vogon</code>, and <code>vogon init</code> writes the skills, slash commands and
 subagent definition into <code>.claude/</code>, adds the hook entries to
-<code>.claude/settings.json</code>, and creates <code>vogon/</code> and <code>vogon.yaml</code>. Those files are
+<code>.claude/settings.json</code>, and creates <code>vogon/</code> and <code>vogon.yaml</code>, which names
+the system filling each role and the people holding each approval role. Those files are
 committed, so a change to them is reviewed like any other.</p>
 <p>It is not distributed as a Claude Code plugin. The command line has to be
 installed either way, so a plugin adds a second channel and a second version
@@ -1095,7 +1198,7 @@ where Claude Code loads them from.</p>
 is where the text is written and edited, where a change is reviewed in a pull
 request, and where history is kept. It is cheap to change and it is not
 controlled.</p>
-<p>In the tracker — Jira, with Xray for tests — as issues under approval
+<p>In the tracker, and the test manager for tests, as issues under approval
 (<code>CON-003</code>, <code>DEC-015</code>). This is where a named person approves a statement by
 re-entering their credentials, and what an auditor is shown. It is expensive to
 change and it is controlled. VOGON never performs the approval: an electronic
@@ -1125,19 +1228,28 @@ or changes.</p>
 <p>A commit message is short and names the records the change implements
 (<code>REQ-TRC-9</code>). That is a different link from the marker: the marker says what
 verifies a requirement, the commit says what built it.</p>
-<p>Xray produces the coverage report and the traceability matrix, and VOGON
-produces neither (<code>DEC-003</code>, <code>FACT-002</code>, <code>REQ-TRC-7</code>). What VOGON does is keep
-the link Xray reports from: the Xray test issue exists, points at the right
-requirement issue, and can be matched to the test that ran (<code>REQ-TRC-5</code>), and
-the results are imported against those issues (<code>REQ-TRC-6</code>).</p>
-<p>Xray can only report on what it holds, so a requirement that was never created
+<p>The test manager produces the coverage report and the traceability matrix,
+and VOGON produces neither (<code>DEC-003</code>, <code>FACT-002</code>, <code>REQ-TRC-7</code>). What VOGON
+does is keep the link the test manager reports from: the test issue exists,
+points at the right requirement issue, and can be matched to the test that ran
+(<code>REQ-TRC-5</code>), and the results are imported against those issues
+(<code>REQ-TRC-6</code>).</p>
+<p>The test manager can only report on what it holds, so a requirement that was never created
 as an issue does not appear in its report at all. The checks that catch that
 run locally, before anything is pushed: a marker naming an id that does not
 exist (<code>REQ-TRC-2</code>), a marker on a withdrawn requirement (<code>REQ-TRC-3</code>), a
-requirement carrying risk that no marker names (<code>REQ-TRC-4</code>). They fail the
-build. They are not evidence.</p>
-<h2 id="reaching-jira-and-xray">Reaching Jira and Xray<a class="headerlink" href="#reaching-jira-and-xray" title="Permanent link">&para;</a></h2>
-<p>Jira and Xray are reached through the MCP servers the company provides. A
+requirement verified by test that no marker names (<code>REQ-TRC-4</code>). They exit
+non-zero, so a CI run that includes them fails. They are not evidence.</p>
+<p>A marker shows that a test names a requirement, and says nothing about what
+the test asserts. Whether the tests exercise what the requirement states is
+checked at step 9, for every requirement verified by test whatever its risk
+level: each clause of the acceptance block has a test, and each expected value
+matches the block (<code>DEC-019</code>, <code>REQ-GEN-11</code>). The comparison is between the
+requirement and the tests. Code coverage, which measures which lines of the
+implementation ran, is not used for it.</p>
+<h2 id="reaching-the-external-systems">Reaching the external systems<a class="headerlink" href="#reaching-the-external-systems" title="Permanent link">&para;</a></h2>
+<p>The tracker, the test manager, the repository host and the document system are
+reached through the MCP servers the company provides. A
 regulated company mandates both the product and the path to it, and the server
 is often its own rather than the vendor's. The skills call that server's tools.</p>
 <p>Every external system is named by the role it fills — the tracker, the test
@@ -1166,11 +1278,11 @@ format.</p>
 </tr>
 <tr>
 <td><code>TRC</code></td>
-<td>Test markers, the link to Xray, result import</td>
+<td>Test markers, the link to the test manager, result import</td>
 </tr>
 <tr>
 <td><code>TRK</code></td>
-<td>Reading and writing Jira and Xray issues, and reporting divergence</td>
+<td>Reading and writing tracker and test manager issues, filing evidence in the document system, and reporting divergence</td>
 </tr>
 <tr>
 <td><code>GEN</code></td>
@@ -1178,7 +1290,7 @@ format.</p>
 </tr>
 <tr>
 <td><code>CLI</code></td>
-<td>The command line and configuration</td>
+<td>The command line and configuration, including the approval roles</td>
 </tr>
 </tbody>
 </table>
@@ -1187,12 +1299,14 @@ format.</p>
 over alternatives:</p>
 <ul>
 <li>Python, for the host project and for VOGON itself</li>
-<li>GitHub, for the repository and pull requests</li>
-<li>Jira, for requirements under approval</li>
-<li>Xray, for tests, runs and coverage reporting</li>
+<li>GitHub, as the repository host</li>
+<li>Jira, as the tracker</li>
+<li>Xray, as the test manager</li>
 <li>Claude Code, as the coding agent</li>
 </ul>
-<p>This is a deliberate narrowing (<code>DEC-004</code>).
+<p>This is a deliberate narrowing (<code>DEC-004</code>). The records and the generated
+text name the role each product fills and never the product (<code>DEC-011</code>), so
+the products above appear in configuration and in this section only.
 Supporting a second tracker or a second test manager means an interface, and an
 interface written before the second implementation exists is guesswork.</p>
 <p>This version is built quickly, used, and then changed. Where a choice is

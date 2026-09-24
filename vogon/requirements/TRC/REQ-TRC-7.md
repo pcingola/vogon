@@ -18,7 +18,7 @@ tags: [evidence, scope]
 traceability matrix.
 
 Producing one would make VOGON a tool whose output is offered as validation
-evidence, which carries its own fitness-for-use obligation. Xray produces both
+evidence, which carries its own fitness-for-use obligation. The test manager produces both
 from the links and results VOGON maintains.
 
 **What this does not require.** Suppressing the local build checks in this

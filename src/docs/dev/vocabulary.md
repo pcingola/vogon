@@ -31,8 +31,9 @@ things. Each has its own id namespace and its own file.
 saying what has to be true rather than how to achieve it, and phrased so that a
 test could fail it. Ids are `REQ-<MODULE>-<NUMBER>`.
 
-**Domain fact** — something true whether or not this project exists. "An Xray
-test issue is linked to the requirement issue it verifies" is a fact; nobody on
+**Domain fact** — something true whether or not this project exists. "A test
+issue in the test manager is linked to the requirement issue it verifies" is a
+fact; nobody on
 the project chose it and no test of ours can fail it. Prefix `FACT-`.
 
 **Constraint** — a limit imposed from outside that design cannot trade away: a
@@ -60,8 +61,8 @@ binding, so an ordinary "must" or "should" in prose carries no weight.
 | **MAY** | Permission |
 | *(no modal verb)* | A statement of fact, about the world or about something outside our control |
 
-"Results imported into Xray sometimes arrive without a build identifier" has no
-modal verb, so it is a domain fact. "VOGON MUST reject a result import with no
+"Results imported into the test manager sometimes arrive without a build
+identifier" has no modal verb, so it is a domain fact. "VOGON MUST reject a result import with no
 build identifier" is the requirement beside it.
 
 "shall" is not used here. ISO/IEC/IEEE 29148 uses it, and the ISO drafting
@@ -88,23 +89,31 @@ records, and the substitution is mechanical.
 | **CSV / CSA** | The two names for validating software in this industry; CSA is the FDA's more recent risk-based framing |
 | **URS** | User Requirements Specification: the controlled document holding approved requirements |
 | **RTM** | Requirements Traceability Matrix: requirement to design to test to result, for every requirement |
-| **Xray** | A Jira plugin that records test runs and produces requirement coverage and traceability reports |
+| **Tracker** | The issue tracker holding requirements under approval. Jira in version 0.1 |
+| **Test manager** | The system holding test cases, test runs and results, which produces the coverage and traceability reports. Xray, a Jira plugin, in version 0.1 |
+| **Repository host** | The service holding the git repository and reviewing changes before they merge. GitHub in version 0.1 |
+| **Document system** | The controlled document management system where the validation package is filed and signed |
 
 ## Who signs what
 
 A validated system's documents are signed by roles named in the validation
-plan; a separate approval matrix says which person holds each role.
+plan; a separate approval matrix says which person holds each role. A host
+project configures, in `vogon.yaml`, the role that gives each approval and the
+people who hold each role, so records and generated documents name the role
+and never the person (`DEC-018`).
 
 | Role | What this person normally does | Formal role in validation |
 | --- | --- | --- |
 | **System Owner** | One named person on the IT side. Answers for the software for as long as it runs: available, supported, secure, and changed only through change control | Signs the technical documents and chairs the change control board. Cannot be empty at release |
-| **Business Process Owner** | One named person from the business side who knows how the work is actually done and answers for that process | Approves the requirements and decides the finished system is fit to use. Cannot be empty at release |
+| **Business Process Owner** | One named person from the business side who knows how the work is actually done and answers for that process | Decides the finished system is fit to use, and approves the requirements where the procedure assigns that approval to this role. Cannot be empty at release |
 | **IT Quality Manager** | One named person outside the build team. Checks that the validation process was followed: documents exist, were approved before use, and agree with each other | Signs the validation plan and the summary report. Must be independent of the people building the system |
 | **Business Quality Manager** | One named person outside the build team, on the business side. Checks that the process the system supports still complies | Signs alongside the IT Quality Manager, under the same independence rule |
 | **Change control board** | A standing group that meets after release. For each proposed change it decides whether the change is allowed and what has to be re-tested before it ships | The mechanism by which a validated system is allowed to change. Required once the system is live |
 | **Validation lead** | One named person who writes the validation plan and the summary report and assembles the evidence into a package someone can audit | Author, not approver |
 | **Subject Matter Expert** | Anyone who knows the domain or the technology well enough to write or review a document. Not an appointment | Writes and reviews documents. Never approves them, because an approver may not be the author |
-| **Product Owner** | One named person who owns the backlog and decides what gets built next | None. Signs nothing in the validation package |
+| **Product Owner** | One named person who owns the backlog and decides what gets built next | Approves the requirements in the tracker, in the default configuration. Where the procedure gives that approval to the Business Process Owner, the configuration says so |
+| **Test Lead** | One of the engineers, named to review the test cases | Approves the test cases in the test manager before the code is written. Never approves test cases they wrote |
+| **Code reviewer** | Any engineer other than the author of a change | Approves the change on the repository host before it merges |
 
 These are not rubber stamps and they are not headcount. A signature names who
 is answerable if the thing turns out to be wrong, which is why the approver of

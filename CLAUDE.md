@@ -99,8 +99,10 @@ implementation exists. The reasoning is in `vogon/decisions/DEC-004.md`.
 
 Two consequences hold everywhere. VOGON never performs an approval or a
 signature transition, because a signature requires the signer's own
-credentials (`vogon/constraints/CON-001.md`). VOGON never calls a language
-model: drafting happens in the coding agent, and VOGON validates the result
+credentials (`vogon/constraints/CON-001.md`). The Python code in `src/vogon`
+never calls a language model API and depends on no model client library. All
+model work, including drafting, reviewing and subagents, is done by Claude Code
+running the skills, and the Python code checks the result
 (`vogon/decisions/DEC-005.md`).
 
 ## Plans

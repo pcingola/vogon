@@ -7,7 +7,7 @@ status: accepted
 verification: test
 gxp_risk: data integrity
 depends_on: [REQ-TRK-3]
-tags: [jira, safety]
+tags: [tracker, safety]
 ---
 
 # REQ-TRK-4 — Show the diff and require confirmation before writing
