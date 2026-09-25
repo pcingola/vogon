@@ -1,5 +1,5 @@
 {
-  "description": "VOGON: the configuration at session start, and refusals of a transition into an approved state, and a test agent's read outside the records and the tests.",
+  "description": "VOGON: the configuration at session start, and a refusal of a test agent's read outside the records and the tests.",
   "hooks": {
     "SessionStart": [
       {
@@ -9,12 +9,6 @@
       }
     ],
     "PreToolUse": [
-      {
-        "matcher": "mcp__.*",
-        "hooks": [
-          {"type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}\"/scripts/vogon hook transition"}
-        ]
-      },
       {
         "matcher": "^(Read|Grep|Glob|LS|NotebookRead|NotebookEdit|Edit|MultiEdit|Write|Bash)$|^mcp__",
         "hooks": [

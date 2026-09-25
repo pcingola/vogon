@@ -857,6 +857,12 @@ Nothing from the plugin is copied into the host project.</p>
   manager, the repository host and the document system. Version 0.1 is built
   against Jira, Xray and GitHub. A role with no server is reported as not
   configured, and the steps and checks that need it are skipped.</li>
+<li>A workflow in the tracker and the test manager in which a transition into
+  an approved or signed state requires the approver's own credentials: a
+  condition that limits the transition to the approvers, or an electronic
+  signature step that asks for the approver's password. VOGON performs no
+  transition, and this workflow is what stops any tool, VOGON included, from
+  approving on a person's behalf (<code>CON-001</code>, <code>REQ-TRK-1</code>).</li>
 </ul>
 <h2 id="install-the-plugin">Install the plugin<a class="headerlink" href="#install-the-plugin" title="Permanent link">&para;</a></h2>
 <p>Open Claude Code in the host project's repository and run:</p>
@@ -896,10 +902,8 @@ which has a default and needs no question.</p>
   one company policy requires. With none, the role is left out.</li>
 <li>
 <p>For the tracker and the test manager, Claude Code reads the workflow through
-  the chosen server. It proposes as approved the states whose names say
-  approval or signature, finds the tools that perform a transition and the
-  argument of each that holds the transition id, and lists each transition id
-  with its target state.</p>
+  the chosen server and proposes as approved the states whose names say
+  approval or signature.</p>
 </li>
 <li>
 <p>For each role an approval uses, the email of each holder. Claude Code asks
@@ -925,20 +929,9 @@ test_command: python -m pytest
 systems:
   tracker:
     server: acme-jira
-    transition_tools:
-      transition_issue: transition_id
-    transitions:
-      &quot;11&quot;: In Review
-      &quot;21&quot;: Approved
-      &quot;31&quot;: Rejected
     approved_states: [Approved]
   test_manager:
     server: acme-xray
-    transition_tools:
-      transition_test: transition_id
-    transitions:
-      &quot;41&quot;: Ready
-      &quot;51&quot;: Signed
     approved_states: [Signed]
   repository_host:
     server: github
@@ -988,16 +981,6 @@ roles:
 <td>none</td>
 </tr>
 <tr>
-<td><code>systems.&lt;role&gt;.transition_tools</code></td>
-<td>Tracker and test manager only. Each tool that performs a transition, mapped to the argument holding the transition id.</td>
-<td>none</td>
-</tr>
-<tr>
-<td><code>systems.&lt;role&gt;.transitions</code></td>
-<td>Tracker and test manager only. Each transition id, mapped to its target state.</td>
-<td>none</td>
-</tr>
-<tr>
 <td><code>systems.&lt;role&gt;.approved_states</code></td>
 <td>Tracker and test manager only. The states that mean approved or signed.</td>
 <td>none</td>
@@ -1018,16 +1001,13 @@ roles:
 check</code> reports an error for a system role that an approval is given in and
 that has no server, and for a role that an approval uses and that has no
 holder (<code>REQ-CLI-6</code>), one line per role naming the approvals that cannot be
-given. A configured tracker or test manager missing <code>transition_tools</code>,
-<code>transitions</code> or <code>approved_states</code> is an error too, and the <code>transition</code> hook
-refuses every call to its server until setup writes them, so an incomplete
-setup cannot move an issue into an approved state (<code>REQ-TRK-1</code>).</p>
+given. A configured tracker or test manager missing <code>approved_states</code> is an
+error too, because VOGON then cannot tell which of its issues are approved.</p>
 <p>An approval listed under <code>approvals</code> replaces the default of the same name; a
 key it leaves out keeps the default. Every role an approval names must be
 defined under <code>roles</code> (<code>REQ-CLI-5</code>). The approver the tracker reports for an
 approval is compared with the holders of its roles (<code>REQ-TRK-9</code>), and with the
-authors of the record (<code>REQ-TRK-8</code>). A number used as a transition id is
-quoted, or YAML reads it as a number; either form is accepted.</p>
+authors of the record (<code>REQ-TRK-8</code>).</p>
 <h2 id="ci-in-the-host-project">CI in the host project<a class="headerlink" href="#ci-in-the-host-project" title="Permanent link">&para;</a></h2>
 <p>The host project's CI runs <code>vogon check</code> on every push and pull request, and
 <code>vogon change</code> on every pull request. It checks out the VOGON repository at

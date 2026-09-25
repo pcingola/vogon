@@ -14,6 +14,12 @@ Nothing from the plugin is copied into the host project.
   manager, the repository host and the document system. Version 0.1 is built
   against Jira, Xray and GitHub. A role with no server is reported as not
   configured, and the steps and checks that need it are skipped.
+- A workflow in the tracker and the test manager in which a transition into
+  an approved or signed state requires the approver's own credentials: a
+  condition that limits the transition to the approvers, or an electronic
+  signature step that asks for the approver's password. VOGON performs no
+  transition, and this workflow is what stops any tool, VOGON included, from
+  approving on a person's behalf (`CON-001`, `REQ-TRK-1`).
 
 ## Install the plugin
 
@@ -63,10 +69,8 @@ Claude Code then fills in `systems` from the MCP servers connected to it:
   candidate it is used. With several, you choose, because only you know which
   one company policy requires. With none, the role is left out.
 - For the tracker and the test manager, Claude Code reads the workflow through
-  the chosen server. It proposes as approved the states whose names say
-  approval or signature, finds the tools that perform a transition and the
-  argument of each that holds the transition id, and lists each transition id
-  with its target state.
+  the chosen server and proposes as approved the states whose names say
+  approval or signature.
 
 - For each role an approval uses, the email of each holder. Claude Code asks
   you for them, because only you know who holds a role.
@@ -95,20 +99,9 @@ test_command: python -m pytest
 systems:
   tracker:
     server: acme-jira
-    transition_tools:
-      transition_issue: transition_id
-    transitions:
-      "11": In Review
-      "21": Approved
-      "31": Rejected
     approved_states: [Approved]
   test_manager:
     server: acme-xray
-    transition_tools:
-      transition_test: transition_id
-    transitions:
-      "41": Ready
-      "51": Signed
     approved_states: [Signed]
   repository_host:
     server: github
@@ -135,8 +128,6 @@ roles:
 | `paths.tests` | The test paths, a string or a list. The test agents may read only these and the records directory. | `[tests]` |
 | `test_command` | The command `vogon trace` runs, a string or a list. | `python -m pytest` |
 | `systems.<role>.server` | The MCP server for a role: `tracker`, `test_manager`, `repository_host` or `document_system`. The name Claude Code lists for the server, or `plugin:<plugin>:<server>` for a server bundled in a plugin. | none |
-| `systems.<role>.transition_tools` | Tracker and test manager only. Each tool that performs a transition, mapped to the argument holding the transition id. | none |
-| `systems.<role>.transitions` | Tracker and test manager only. Each transition id, mapped to its target state. | none |
 | `systems.<role>.approved_states` | Tracker and test manager only. The states that mean approved or signed. | none |
 | `approvals.<approval>` | The roles that give an approval and the system role it is given in. | the approvals in the example |
 | `roles.<role>` | The email of each person holding the role. | no holders |
@@ -145,17 +136,14 @@ roles:
 check` reports an error for a system role that an approval is given in and
 that has no server, and for a role that an approval uses and that has no
 holder (`REQ-CLI-6`), one line per role naming the approvals that cannot be
-given. A configured tracker or test manager missing `transition_tools`,
-`transitions` or `approved_states` is an error too, and the `transition` hook
-refuses every call to its server until setup writes them, so an incomplete
-setup cannot move an issue into an approved state (`REQ-TRK-1`).
+given. A configured tracker or test manager missing `approved_states` is an
+error too, because VOGON then cannot tell which of its issues are approved.
 
 An approval listed under `approvals` replaces the default of the same name; a
 key it leaves out keeps the default. Every role an approval names must be
 defined under `roles` (`REQ-CLI-5`). The approver the tracker reports for an
 approval is compared with the holders of its roles (`REQ-TRK-9`), and with the
-authors of the record (`REQ-TRK-8`). A number used as a transition id is
-quoted, or YAML reads it as a number; either form is accepted.
+authors of the record (`REQ-TRK-8`).
 
 ## CI in the host project
 

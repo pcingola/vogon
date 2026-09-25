@@ -129,35 +129,7 @@ Hooks cover what has to happen without anyone asking for it. Each entry in
 | Hook | Runs | Does |
 | --- | --- | --- |
 | `session-start` | On `SessionStart` | Prints the configured server for each role, the approval roles and their holders, then the configuration errors and warnings; after an error, an instruction to complete setup. With no `vogon.yaml`, prints an instruction to run setup (`REQ-CLI-10`) |
-| `transition` | Before a call to any `mcp__` tool | Refuses a transition into an approved state, and every call to a server whose transition setup is incomplete |
 | `test-read` | Before a file tool, shell or MCP call | Refuses a test agent's read or write outside `vogon/` and the test paths |
-
-The `transition` hook is what turns `CON-001` from an instruction into
-something the agent cannot do by accident (`REQ-TRK-1`). A transition call
-carries a transition id, not a target state, so the hook works from the
-configuration. For a call to a tool listed in the role's `transition_tools`,
-it reads the transition id from the argument named there, looks the id up in
-`transitions`, and refuses the call when the target state is in
-`approved_states` or the id is not in the table. For a role whose server is
-configured and whose `transition_tools`, `transitions` or `approved_states`
-is missing, it refuses every call to that server, so an incomplete setup
-cannot approve anything. A call to a server not named in `systems` passes.
-When `vogon.yaml` cannot be parsed, has a top-level key VOGON does not know,
-or holds an error under `systems`, the hook cannot tell a transition from any
-other call, and it refuses every MCP call until the file is corrected. An
-error elsewhere in the file, such as in `approvals`, does not.
-
-The hook finds a call's server in the tool name. Claude Code names an MCP tool
-`mcp__<server>__<tool>`, and a tool of a server bundled in a plugin
-`mcp__plugin_<plugin>_<server>__<tool>`, with every character outside
-letters, digits, `_` and `-` replaced by `_`. The hook applies the same
-replacement to `server` in `vogon.yaml`, and a call belongs to that server
-when its tool name is `mcp__<server>__<tool>` or
-`mcp__plugin_<plugin>_<server>__<tool>` for any plugin. So `server` holds the
-name Claude Code lists for the server, the scoped name
-`plugin:<plugin>:<server>`, or a bundled server's own key. A tool in
-`transition_tools` is named by the part after that prefix, or by its full
-name.
 
 The `test-read` hook reads the path arguments of `Read`, `Grep`, `Glob`,
 `LS`, `NotebookRead`, `NotebookEdit`, `Edit`, `MultiEdit` and `Write`, after
@@ -168,7 +140,7 @@ cannot be checked.
 
 A hook exits with status zero in every case, so it cannot stop the session.
 Given input it cannot read, or failing itself, a hook prints nothing, except
-`transition` and `test-read`, which refuse the call.
+`test-read`, which refuses the call.
 
 The agent receives the configuration from the `session-start` hook, which
 Claude Code runs without the agent asking for it. Claude Code adds a
@@ -215,6 +187,14 @@ is an author of what was approved (`CON-002`, `REQ-TRK-8`). A record's authors
 are the author emails of the commits that changed its file up to the time of
 the approval. The approver is the email the tracker reports for the
 transition.
+
+VOGON performs no transition: `OPERATIONS` in `snapshots.py` lists none, and
+`SKILL.md` forbids a transition into a state that records approval. VOGON does
+not try to refuse such a call itself, because a server's tools are not known
+in advance and a generic tool or a shell command reaches the same API. The
+tracker and the test manager enforce `CON-001`: their workflow requires the
+approver's own credentials for a transition into an approved state
+(`REQ-TRK-1`), as the installation guide states.
 
 The review before a merge is enforced by the repository host, whose rules for
 the default branch can require an approving review from someone other than
@@ -320,10 +300,8 @@ only where it cannot know (`REQ-CLI-8`):
   reports a warning that it was skipped.
 - For the tracker and the test manager, Claude Code reads the workflow
   through the chosen server and proposes as approved the states whose names
-  say approval or signature. It finds the tools that perform a transition
-  and, from each tool's input schema, the argument that holds the transition
-  id. Setup writes that role's `server`, `transition_tools`, `transitions`
-  and `approved_states` in one write.
+  say approval or signature. Setup writes that role's `server` and
+  `approved_states` in one write.
 - `roles`. The person is asked for the holders, as emails, of every role an
   approval uses. A role with no holder is an error in `vogon check`
   (`REQ-CLI-6`).
@@ -336,22 +314,17 @@ Setup is complete when `vogon check` reports no error about `vogon.yaml`.
 systems:
   tracker:
     server: acme-tracker
-    transition_tools: {transition_issue: transition_id}
-    transitions: {"11": In Review, "21": Approved, "31": Rejected}
     approved_states: [Approved]
   test_manager:
     server: acme-tests
-    transition_tools: {transition_test: transition}
-    transitions: {"5": Ready for Review, "6": Approved}
     approved_states: [Approved]
   repository_host: {server: github}
   document_system: {server: acme-documents}
 ```
 
-`transitions` is kept in the committed file and not under `.vogon/`, so every
-clone has it. A changed workflow means running setup again for that role.
-Setup first removes that role's entry, so the `transition` hook does not
-refuse the calls that read the workflow.
+`approved_states` is kept in the committed file and not under `.vogon/`, so
+every clone has it. A changed workflow means running setup again for that
+role.
 
 At setup Claude Code also writes each configured server's tool list to
 `.vogon/servers.json`, with the tool it found for each operation VOGON needs.
@@ -369,14 +342,14 @@ The scripts and the hooks read `vogon.yaml` themselves, through `config.py`,
 every time they run, so what they check never depends on what the agent was
 told. A setting absent from the file takes its default: the paths,
 `test_command` and the approval assignment have one (`REQ-CLI-3`,
-`REQ-CLI-5`). `systems`, `transitions` and `approved_states` have none
+`REQ-CLI-5`). `systems` and `approved_states` have none
 (`REQ-CLI-8`).
 
 A finding is an error or a warning. Only an error sets a non-zero exit status
 (`REQ-CLI-1`). Incomplete setup is an error, reported against `vogon.yaml`
 with one line per role: a role that an approval uses and that has no holder
 (`REQ-CLI-6`), a system role that an approval is given in and that has no
-server, and a tracker or test manager with incomplete transition settings
+server, and a tracker or test manager with no `approved_states`
 (`REQ-CLI-8`). A role that no approval uses is not reported. A check skipped
 because the file it reads is absent (`REQ-CLI-2`), and a step skipped because
 its role is not configured, are warnings. A fresh setup therefore fails

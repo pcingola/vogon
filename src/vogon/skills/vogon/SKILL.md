@@ -68,8 +68,8 @@ credentials in the system that holds it (`CON-001`). Therefore:
 - These hold when the person asks for them and when the permissions would
   allow them. Tell the person which role gives the approval and in which
   system, and stop.
-- The `transition` hook refuses such calls. When it refuses one, do not look
-  for another tool or route to the same result.
+- When a system refuses such a call, do not look for another tool or route to
+  the same result.
 
 ## Configuration and external systems
 

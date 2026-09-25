@@ -11,13 +11,9 @@ SETUP = """
 systems:
   tracker:
     server: issues
-    transition_tools: {transition_issue: transition_id}
-    transitions: {"31": Approved}
     approved_states: [Approved]
   test_manager:
     server: tests
-    transition_tools: {transition_test: transition}
-    transitions: {"6": Approved}
     approved_states: [Approved]
 """
 

@@ -4,10 +4,6 @@ Hooks).
 
     session-start  SessionStart: prints the configuration as plain text, with
                    its errors and warnings.
-    transition     PreToolUse on `mcp__.*`: refuses a transition into an
-                   approved state, a transition id not in `transitions`, and
-                   every call to a tracker or test manager server whose
-                   transition setup is incomplete (REQ-TRK-1).
     test-read      PreToolUse on the file tools, Bash and MCP
                    tools: for `vogon-test-writer` and `vogon-test-checker`,
                    with or without the `vogon:` prefix, allows only paths
@@ -20,19 +16,9 @@ the process's working directory. With no `vogon.yaml` every hook prints
 nothing, so a project without VOGON is unaffected.
 
 A hook never stops the session: every hook exits 0. On input it cannot read,
-or on an error of its own, a hook prints nothing, except `transition` and
-`test-read`, which refuse the call in a project that has `vogon.yaml`, because
-a call they cannot judge may be the one they exist to refuse.
-
-MCP server names. Claude Code names an MCP tool `mcp__<server>__<tool>`, and a
-tool of a server bundled in a plugin `mcp__plugin_<plugin>_<server>__<tool>`,
-with every character outside `A-Z`, `a-z`, `0-9`, `_` and `-` replaced by `_`.
-The `server` in `vogon.yaml` gets the same replacement and a call belongs to
-it when the tool name is `mcp__<server>__<tool>` or
-`mcp__plugin_<any plugin>_<server>__<tool>`. So `server` may be the name
-Claude Code lists for the server, the scoped form `plugin:<plugin>:<server>`,
-or a plugin-bundled server's own key. A name in `transition_tools` is the
-tool's name after that prefix; the full `mcp__...` name is accepted too.
+or on an error of its own, a hook prints nothing, except `test-read`, which
+refuses the call in a project that has `vogon.yaml`, because a call it cannot
+judge may be the one it exists to refuse.
 """
 
 from __future__ import annotations
@@ -45,7 +31,7 @@ from typing import Callable, Mapping
 
 import config as config_module
 from checks import rel
-from config import FILENAME, TRANSITION_ROLES, Config
+from config import FILENAME, Config
 from findings import Finding
 
 TEST_AGENTS = ("vogon-test-writer", "vogon-test-checker")
@@ -188,83 +174,6 @@ def setup_needed(env: Mapping[str, str]) -> str:
             "systems for the person to confirm.")
 
 
-# transition
-
-
-def normalize_server(name: str) -> str:
-    """A server name as it appears in a tool name."""
-    return re.sub(r"[^A-Za-z0-9_-]", "_", name)
-
-
-def server_tool(tool_name: str, server: str) -> str | None:
-    """The tool's name after the server prefix when the tool belongs to `server`,
-    else None. See the module docstring for the rule."""
-    n = re.escape(normalize_server(server))
-    for pattern in (rf"mcp__{n}__(.+)", rf"mcp__plugin_[A-Za-z0-9_-]+?_{n}__(.+)"):
-        m = re.fullmatch(pattern, tool_name, re.S)
-        if m:
-            return m.group(1)
-    return None
-
-
-def _transition_id(value) -> str | None:
-    if isinstance(value, dict) and "id" in value:
-        value = value["id"]
-    if isinstance(value, bool) or not isinstance(value, (str, int)):
-        return None
-    text = str(value).strip()
-    return text or None
-
-
-def transition(data: dict | None, root: Path) -> str:
-    if data is None:
-        return deny("VOGON could not read this call, so it cannot tell whether it is a "
-                    "transition into an approved state; the call is refused.")
-    tool_name = data.get("tool_name")
-    if not isinstance(tool_name, str):
-        return deny("VOGON could not read the tool name of this call, so it cannot tell "
-                    "whether it is a transition into an approved state; the call is refused.")
-    if not tool_name.startswith("mcp__"):
-        return ""
-    cfg = config_module.load(root)
-    if cfg.systems_unreadable:
-        bad = [f.message for f in cfg.findings if f.is_error]
-        return deny(f"{FILENAME} cannot be read ({'; '.join(bad)}), so VOGON cannot tell "
-                    "which MCP calls are transitions; every MCP call is refused until the "
-                    "file is corrected.")
-    tool_input = data.get("tool_input")
-    tool_input = tool_input if isinstance(tool_input, dict) else {}
-    reasons: list[str] = []
-    for role, system in cfg.systems.items():
-        tool = server_tool(tool_name, system.server)
-        if tool is None or role not in TRANSITION_ROLES:
-            continue
-        missing = system.missing_transition_keys()
-        if missing:
-            reasons.append(
-                f"the {role} server {system.server!r} has no {', '.join(missing)} in "
-                f"{FILENAME}, so every call to it is refused until setup writes them")
-            continue
-        argument = system.transition_tools.get(tool) or system.transition_tools.get(tool_name)
-        if argument is None:
-            continue
-        tid = _transition_id(tool_input.get(argument))
-        approved = {s.strip().casefold() for s in system.approved_states}
-        if tid is None:
-            reasons.append(f"{tool_name} is a {role} transition tool and its argument "
-                           f"{argument!r} holds no transition id")
-        elif tid not in system.transitions:
-            reasons.append(f"transition {tid} of the {role} is not in the transitions "
-                           f"configured in {FILENAME}, so its target state is unknown")
-        elif system.transitions[tid].strip().casefold() in approved:
-            reasons.append(f"transition {tid} of the {role} leads to "
-                           f"{system.transitions[tid]!r}, an approved state. A person makes "
-                           "this transition with their own credentials")
-    if not reasons:
-        return ""
-    return deny("VOGON refuses this call: " + "; ".join(reasons) + ".")
-
-
 # test-read
 
 
@@ -353,11 +262,10 @@ def test_read(data: dict | None, root: Path) -> str:
 
 HOOKS: dict[str, Callable[[dict | None, Path], str]] = {
     "session-start": session_start,
-    "transition": transition,
     "test-read": test_read,
 }
 # Hooks that refuse the call when they fail, rather than printing nothing.
-FAIL_CLOSED = {"transition": transition, "test-read": test_read}
+FAIL_CLOSED = {"test-read": test_read}
 
 
 def run(name: str, text: str, env: Mapping[str, str] | None = None) -> str:

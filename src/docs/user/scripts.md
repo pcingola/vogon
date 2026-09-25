@@ -71,8 +71,7 @@ No arguments. It reads:
   incomplete part of setup, one line per role: a role that an approval uses
   and that has no holder under `roles` (`REQ-CLI-6`), a system role that an
   approval is given in and that has no server under `systems`, and a
-  configured tracker or test manager missing `transition_tools`,
-  `transitions` or `approved_states` (`REQ-CLI-8`). Each line names the
+  configured tracker or test manager missing `approved_states` (`REQ-CLI-8`). Each line names the
   approvals that cannot be given. A role that no approval uses is not
   reported.
 - The records directory: the frontmatter schema, ids and file names, links
@@ -238,7 +237,7 @@ vogon hook session-start < input.json
 
 | Argument | Meaning |
 | --- | --- |
-| `name` | `session-start`, `test-read` or `transition`. |
+| `name` | `session-start` or `test-read`. |
 
 It reads the hook's JSON input on standard input and prints the hook's output
 on standard output. The exit status is always 0. In a project with no
@@ -249,7 +248,6 @@ nothing.
 | Hook | Event | Does |
 | --- | --- | --- |
 | `session-start` | `SessionStart` | Prints the configured server for each role, the approvals and the role holders; with no `vogon.yaml`, an instruction to run setup. |
-| `transition` | `PreToolUse` on MCP tools | Refuses a transition into an approved state and a transition id not in `transitions`, and every call to a tracker or test manager server whose transition settings are incomplete (`REQ-TRK-1`). |
 | `test-read` | `PreToolUse` on file, shell and MCP tools | For the test writer and test checker agents, allows only paths under the records directory and the test paths. |
 
 ## vogon push

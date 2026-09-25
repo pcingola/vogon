@@ -1042,8 +1042,7 @@ the findings.</p>
   incomplete part of setup, one line per role: a role that an approval uses
   and that has no holder under <code>roles</code> (<code>REQ-CLI-6</code>), a system role that an
   approval is given in and that has no server under <code>systems</code>, and a
-  configured tracker or test manager missing <code>transition_tools</code>,
-  <code>transitions</code> or <code>approved_states</code> (<code>REQ-CLI-8</code>). Each line names the
+  configured tracker or test manager missing <code>approved_states</code> (<code>REQ-CLI-8</code>). Each line names the
   approvals that cannot be given. A role that no approval uses is not
   reported.</li>
 <li>The records directory: the frontmatter schema, ids and file names, links
@@ -1226,7 +1225,7 @@ its event, and Claude Code runs it; a person does not.</p>
 <tbody>
 <tr>
 <td><code>name</code></td>
-<td><code>session-start</code>, <code>test-read</code> or <code>transition</code>.</td>
+<td><code>session-start</code> or <code>test-read</code>.</td>
 </tr>
 </tbody>
 </table>
@@ -1248,11 +1247,6 @@ nothing.</p>
 <td><code>session-start</code></td>
 <td><code>SessionStart</code></td>
 <td>Prints the configured server for each role, the approvals and the role holders; with no <code>vogon.yaml</code>, an instruction to run setup.</td>
-</tr>
-<tr>
-<td><code>transition</code></td>
-<td><code>PreToolUse</code> on MCP tools</td>
-<td>Refuses a transition into an approved state and a transition id not in <code>transitions</code>, and every call to a tracker or test manager server whose transition settings are incomplete (<code>REQ-TRK-1</code>).</td>
 </tr>
 <tr>
 <td><code>test-read</code></td>

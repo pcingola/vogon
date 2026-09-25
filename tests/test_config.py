@@ -74,14 +74,13 @@ def test_an_invalid_file_is_an_error_naming_the_problem(tmp_path, text, words):
     assert all(w in found[0].message for w in words)
 
 
-@pytest.mark.req("REQ-CLI-3", "REQ-TRK-1")
-def test_a_file_that_is_not_utf8_is_an_error_and_leaves_the_systems_unknown(tmp_path):
+@pytest.mark.req("REQ-CLI-3")
+def test_a_file_that_is_not_utf8_is_an_error(tmp_path):
     (tmp_path / "vogon.yaml").write_bytes(b"systems: \xff\n")
     cfg = load(tmp_path)
     found = errors(cfg)
     assert [f.path for f in found] == ["vogon.yaml"]
     assert "UTF-8" in found[0].message
-    assert cfg.systems_unreadable
 
 
 @pytest.mark.req("REQ-CLI-3")
@@ -90,7 +89,6 @@ def test_an_error_outside_systems_leaves_the_systems_readable(tmp_path):
                     "approvals:\n  release: {roles: [system_owner], system: nowhere}\n")
     cfg = load(tmp_path)
     assert errors(cfg)
-    assert not cfg.systems_unreadable
     assert cfg.system("document_system").server == "docs"
 
 
@@ -156,7 +154,7 @@ def test_approval_given_in_an_unknown_system_fails(tmp_path):
     assert "approvals.requirements.system" in found[0].message
 
 
-# Systems, transitions and approved states have no default.
+# Systems and approved states have no default.
 
 
 @pytest.mark.req("REQ-CLI-8")
@@ -172,43 +170,37 @@ def test_default_document_names_no_system(tmp_path):
 
 
 @pytest.mark.req("REQ-CLI-8")
-def test_server_without_transition_settings_leaves_them_unset(tmp_path):
+def test_server_without_approved_states_leaves_them_unset(tmp_path):
     write(tmp_path, "systems:\n  tracker: {server: issues}\n  document_system: {server: dms}\n")
     cfg = load(tmp_path)
     assert errors(cfg) == []
     tracker = cfg.system("tracker")
     assert tracker.server == "issues"
-    assert (tracker.transition_tools, tracker.transitions, tracker.approved_states) == (None, None, None)
-    assert tracker.missing_transition_keys() == ["transition_tools", "transitions", "approved_states"]
-    assert cfg.system("document_system").missing_transition_keys() == []
+    assert tracker.approved_states is None
     assert cfg.system("test_manager") is None
 
 
 @pytest.mark.req("REQ-CLI-8")
-def test_full_transition_setup_is_read(tmp_path):
+def test_approved_states_are_read(tmp_path):
     write(tmp_path, """
 systems:
   tracker:
     server: issues
-    transition_tools: {transition_issue: transition_id}
-    transitions: {11: In Review, 31: Approved}
     approved_states: [Approved]
 """)
     cfg = load(tmp_path)
     assert errors(cfg) == []
     tracker = cfg.system("tracker")
-    assert tracker.transition_tools == {"transition_issue": "transition_id"}
-    assert tracker.transitions == {"11": "In Review", "31": "Approved"}
     assert tracker.approved_states == ("Approved",)
-    assert tracker.missing_transition_keys() == []
 
 
 @pytest.mark.req("REQ-CLI-8")
 @pytest.mark.parametrize("text, words", [
     ("systems:\n  wiki: {server: w}\n", ["wiki"]),
-    ("systems:\n  tracker: {transitions: {1: Done}}\n", ["server"]),
+    ("systems:\n  tracker: {approved_states: [Done]}\n", ["server"]),
     ("systems:\n  repository_host: {server: git, approved_states: [Merged]}\n", ["approved_states"]),
-    ("systems:\n  tracker: {server: t, transitions: {}}\n", ["transitions"]),
+    ("systems:\n  tracker: {server: t, transitions: {1: Done}}\n", ["transitions"]),
+    ("systems:\n  tracker: {server: t, approved_states: Approved}\n", ["approved_states"]),
 ])
 def test_invalid_system_entry_fails(tmp_path, text, words):
     write(tmp_path, text)
@@ -237,13 +229,9 @@ SERVERS = """
 systems:
   tracker:
     server: issues
-    transition_tools: {transition_issue: transition_id}
-    transitions: {11: In Review, 31: Approved}
     approved_states: [Approved]
   test_manager:
     server: tests
-    transition_tools: {transition_test: transition}
-    transitions: {5: Ready for Review, 6: Approved}
     approved_states: [Approved]
   repository_host: {server: git}
   document_system: {server: dms}
@@ -291,7 +279,7 @@ def test_default_setup_reports_every_role_once(tmp_path):
         ("product_owner", "test_lead", "engineer", "system_owner", "it_quality_manager")]
 
 
-# REQ-CLI-8: roles and transition settings come from setup
+# REQ-CLI-8: roles and approved states come from setup
 
 
 @pytest.mark.req("REQ-CLI-8")
@@ -339,32 +327,22 @@ def test_a_complete_setup_reports_nothing(tmp_path):
 
 @pytest.mark.req("REQ-CLI-8")
 @pytest.mark.parametrize("role", ["tracker", "test_manager"])
-@pytest.mark.parametrize("present, missing", [
-    ({}, ["transition_tools", "transitions", "approved_states"]),
-    ({"transition_tools": "{move: id}"}, ["transitions", "approved_states"]),
-    ({"transition_tools": "{move: id}", "transitions": "{1: Approved}"}, ["approved_states"]),
-])
-def test_incomplete_transition_setup_is_an_error_naming_the_missing_keys(tmp_path, role, present,
-                                                                        missing):
-    entry = "".join(f"\n    {k}: {v}" for k, v in present.items())
-    write(tmp_path, f"systems:\n  {role}:\n    server: srv{entry}\n")
+def test_missing_approved_states_is_an_error(tmp_path, role):
+    write(tmp_path, f"systems:\n  {role}:\n    server: srv\n")
     cfg = load(tmp_path)
     assert errors(cfg) == []
     found = [f for f in setup_findings(cfg, "REQ-CLI-8") if f.message.startswith("systems.")]
     assert len(found) == 1 and found[0].is_error
     assert role in found[0].message and "srv" in found[0].message
-    for key in ("transition_tools", "transitions", "approved_states"):
-        assert (key in found[0].message) == (key in missing), key
+    assert "approved_states" in found[0].message
 
 
 @pytest.mark.req("REQ-CLI-8")
-def test_complete_transition_setup_is_not_an_error(tmp_path):
+def test_configured_approved_states_are_not_an_error(tmp_path):
     write(tmp_path, """
 systems:
   tracker:
     server: issues
-    transition_tools: {transition_issue: transition_id}
-    transitions: {11: In Review, 31: Approved}
     approved_states: [Approved]
   repository_host: {server: git}
 """)
@@ -372,15 +350,13 @@ systems:
 
 
 @pytest.mark.req("REQ-CLI-8")
-def test_invalid_transition_setting_is_reported_once(tmp_path):
+def test_invalid_approved_states_are_reported_once(tmp_path):
     write(tmp_path, """
 systems:
   tracker:
     server: issues
-    transition_tools: {transition_issue: transition_id}
-    transitions: {}
-    approved_states: [Approved]
+    approved_states: Approved
 """)
     cfg = load(tmp_path)
     reported = [f.message for f in cfg.findings] + [f.message for f in config.check(cfg)]
-    assert sum("transitions" in m for m in reported) == 1
+    assert sum("approved_states" in m for m in reported) == 1

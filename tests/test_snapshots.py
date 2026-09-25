@@ -11,17 +11,15 @@ import records
 import snapshots
 from checks import snapshots as checks
 
+REPO = Path(__file__).resolve().parent.parent
+
 SETUP = """
 systems:
   tracker:
     server: issues
-    transition_tools: {transition_issue: transition_id}
-    transitions: {"21": In Review, "31": Approved}
     approved_states: [Approved]
   test_manager:
     server: tests
-    transition_tools: {transition_test: transition}
-    transitions: {"6": Approved}
     approved_states: [Approved]
   repository_host: {server: git}
   document_system: {server: dms}
@@ -501,3 +499,16 @@ def test_requirement_issue_with_no_approval_is_not_reported(tmp_path):
     tracked_repo(tmp_path, "2026-05-08T16:00:00Z")
     snapshot(tmp_path, [issue("PROJ-1", "REQ-TRK-1 a", "x", status="In Review")])
     assert run(checks.approved_after_use, tmp_path) == []
+
+
+@pytest.mark.req("REQ-TRK-1")
+def test_vogon_needs_no_transition_and_the_approval_transition_is_left_to_the_workflow():
+    for role in ("tracker", "test_manager"):
+        assert [op for op in snapshots.OPERATIONS[role]
+                if "transition" in op and not op.startswith("read_")] == []
+    skill = (REPO / "src" / "vogon" / "skills" / "vogon" / "SKILL.md").read_text(encoding="utf-8")
+    assert "Never transition an issue, a test issue or a document into a state that\n" \
+           "  records approval or signature" in skill
+    install = " ".join((REPO / "src" / "docs" / "user" / "install.md").read_text(encoding="utf-8").split())
+    assert "a transition into an approved or signed state requires the approver's own credentials" \
+        in install

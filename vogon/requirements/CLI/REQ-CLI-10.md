@@ -37,7 +37,7 @@ the `vogon` skill and follow `references/config.md`.
 **Acceptance.** Given `CLAUDE_PROJECT_DIR` naming a directory with no
 `vogon.yaml`, `vogon hook session-start` prints text naming
 `<directory>/vogon.yaml`, the `vogon` skill, `references/config.md` and
-`vogon init`, and `vogon hook transition` prints nothing. Given a
+`vogon init`, and `vogon hook test-read` prints nothing. Given a
 `CLAUDE_PROJECT_DIR` with no `vogon.yaml` and a hook input whose `cwd` lies
 inside a directory that has one, `session-start` still prints the
 instruction. Given no `CLAUDE_PROJECT_DIR` and no `vogon.yaml` above `cwd`,

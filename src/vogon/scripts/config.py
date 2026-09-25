@@ -4,8 +4,8 @@ The file is read on every call, so what a script or hook checks never depends
 on what the agent was told. With no file, the default layout applies
 (REQ-CLI-3). The paths, `test_command` and the approval assignment have
 defaults. `systems` has none: a role with no entry is not configured, and the
-transition settings of the tracker and the test manager are never filled in
-by VOGON.
+approved states of the tracker and the test manager are never filled in by
+VOGON.
 
 Schema:
 
@@ -16,8 +16,6 @@ Schema:
     systems:
       tracker:
         server: <MCP server name>
-        transition_tools: {<tool name>: <argument holding the transition id>}
-        transitions: {<transition id>: <target state>}
         approved_states: [<state>, ...]
       test_manager: {same keys as tracker}
       repository_host: {server: <MCP server name>}
@@ -45,9 +43,8 @@ DEFAULT_TESTS = ("tests",)
 DEFAULT_TEST_COMMAND = "python -m pytest"
 
 SYSTEM_ROLES = ("tracker", "test_manager", "repository_host", "document_system")
-# Roles whose workflow has transitions VOGON must never perform into an approved state.
-TRANSITION_ROLES = ("tracker", "test_manager")
-TRANSITION_KEYS = ("transition_tools", "transitions", "approved_states")
+# Roles whose issues have an approved state.
+APPROVAL_STATE_ROLES = ("tracker", "test_manager")
 
 # The shipped approval assignment (DEC-018), plus the drafted documents
 # approved in the document system (DEC-023).
@@ -67,19 +64,11 @@ PATH_KEYS = ("records", "tests")
 @dataclass(frozen=True)
 class SystemConfig:
     """The server filling one role and, for the tracker and the test manager,
-    its transition settings. A transition setting is None when not configured."""
+    the states that record approval, None when not configured."""
 
     role: str
     server: str
-    transition_tools: dict[str, str] | None = None
-    transitions: dict[str, str] | None = None
     approved_states: tuple[str, ...] | None = None
-
-    def missing_transition_keys(self) -> list[str]:
-        """The transition settings this role needs and does not have."""
-        if self.role not in TRANSITION_ROLES:
-            return []
-        return [k for k in TRANSITION_KEYS if getattr(self, k) is None]
 
 
 @dataclass(frozen=True)
@@ -101,10 +90,6 @@ class Config:
     approvals: dict[str, Approval]
     roles: dict[str, tuple[str, ...]]
     findings: tuple[Finding, ...] = field(default=())
-    # True when the file could not be parsed, has a top-level key VOGON does not
-    # know, or holds an error under `systems`: which server fills each role is
-    # then unknown, and the transition hook refuses every MCP call.
-    systems_unreadable: bool = False
 
     def system(self, role: str) -> SystemConfig | None:
         """The configured system for a role, or None when the role is not configured."""
@@ -202,8 +187,6 @@ def load(root: Path) -> Config:
         data = r.mapping(loaded, FILENAME)
     r.unknown_keys(data, TOP_LEVEL_KEYS, FILENAME)
     systems = _read_systems(r, r.mapping(data.get("systems"), "systems"))
-    # Every error so far concerns parsing, the top-level keys or `systems`.
-    systems_unreadable = bool(r.findings)
 
     paths = r.mapping(data.get("paths"), "paths")
     r.unknown_keys(paths, PATH_KEYS, "paths")
@@ -237,7 +220,6 @@ def load(root: Path) -> Config:
         approvals=approvals,
         roles=roles,
         findings=tuple(r.findings),
-        systems_unreadable=systems_unreadable,
     )
 
 
@@ -249,7 +231,7 @@ def _read_systems(r: _Reader, data: dict) -> dict[str, SystemConfig]:
             r.fail(f"unknown system role {role!r}; the roles are {', '.join(SYSTEM_ROLES)}")
             continue
         entry = r.mapping(entry, where)
-        allowed = ("server", *TRANSITION_KEYS) if role in TRANSITION_ROLES else ("server",)
+        allowed = ("server", "approved_states") if role in APPROVAL_STATE_ROLES else ("server",)
         r.unknown_keys(entry, allowed, where)
         if "server" not in entry:
             r.fail(f"{where}.server is missing")
@@ -257,30 +239,11 @@ def _read_systems(r: _Reader, data: dict) -> dict[str, SystemConfig]:
         server = r.string(entry["server"], f"{where}.server")
         if server is None:
             continue
-        tools = transitions = states = None
-        if "transition_tools" in entry:
-            tools = _string_map(r, entry["transition_tools"], f"{where}.transition_tools")
-        if "transitions" in entry:
-            transitions = _string_map(r, entry["transitions"], f"{where}.transitions")
+        states = None
         if "approved_states" in entry:
             states = r.strings(entry["approved_states"], f"{where}.approved_states")
-        systems[role] = SystemConfig(role, server, tools, transitions, states)
+        systems[role] = SystemConfig(role, server, states)
     return systems
-
-
-def _string_map(r: _Reader, value, where: str) -> dict[str, str] | None:
-    """A mapping of strings to strings. Keys YAML read as numbers become strings."""
-    if not isinstance(value, dict) or not value:
-        r.fail(f"{where} must be a non-empty mapping")
-        return None
-    out: dict[str, str] = {}
-    for k, v in value.items():
-        key = r.string(k, f"a key of {where}")
-        val = r.string(v, f"{where}.{k}")
-        if key is None or val is None:
-            return None
-        out[key] = val
-    return out
 
 
 def _read_roles(r: _Reader, data: dict) -> dict[str, tuple[str, ...]]:
@@ -349,10 +312,10 @@ def check(cfg: Config) -> list[Finding]:
 
     - A role that an approval uses and that has no holder: one error per role,
       naming the approvals it gives (REQ-CLI-6).
-    - A configured tracker or test manager without `transition_tools`,
-      `transitions` or `approved_states`, because the transition hook then
-      blocks every call to its server (REQ-CLI-8, REQ-TRK-1). A key whose value
-      `load` already reported as invalid is not reported again.
+    - A configured tracker or test manager without `approved_states`, because
+      `vogon push` and the checks then cannot tell an approved issue
+      (REQ-CLI-8, REQ-TRK-2). A value `load` already reported as invalid is not
+      reported again.
     - A system role that an approval is given in and that has no entry in
       `systems`: one error per role, naming the approvals (REQ-CLI-8).
 
@@ -369,17 +332,15 @@ def check(cfg: Config) -> list[Finding]:
                            path=FILENAME, requirement="REQ-CLI-6"))
 
     reported = [f.message for f in cfg.findings]
-    for role in TRANSITION_ROLES:
+    for role in APPROVAL_STATE_ROLES:
         system = cfg.system(role)
-        if system is None:
+        if system is None or system.approved_states is not None \
+                or any(f"systems.{role}.approved_states" in m for m in reported):
             continue
-        missing = [k for k in system.missing_transition_keys()
-                   if not any(f"systems.{role}.{k}" in m for m in reported)]
-        if missing:
-            found.append(error(
-                f"systems.{role} (server {system.server!r}) has no {', '.join(missing)}; "
-                f"every call to that server is blocked until setup writes them",
-                path=FILENAME, requirement="REQ-CLI-8"))
+        found.append(error(
+            f"systems.{role} (server {system.server!r}) has no approved_states; VOGON "
+            "cannot tell which of its issues are approved until setup writes them",
+            path=FILENAME, requirement="REQ-CLI-8"))
 
     needed: dict[str, list[str]] = {}
     for name, approval in cfg.approvals.items():

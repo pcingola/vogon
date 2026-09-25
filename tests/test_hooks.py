@@ -21,13 +21,9 @@ CONFIG = """\
 systems:
   tracker:
     server: acme-tracker
-    transition_tools: {transition_issue: transition_id}
-    transitions: {"11": In Review, "21": Approved, "31": Rejected}
     approved_states: [Approved]
   test_manager:
     server: acme-tests
-    transition_tools: {transition_test: transition}
-    transitions: {"5": Ready for Review, "6": Approved}
     approved_states: [Approved]
   repository_host: {server: github}
 roles:
@@ -144,7 +140,7 @@ def wired() -> dict[str, list[str]]:
     return out
 
 
-@pytest.mark.req("REQ-TRK-1", "REQ-GEN-11", "REQ-REC-1", "REQ-CLI-8")
+@pytest.mark.req("REQ-GEN-11", "REQ-REC-1", "REQ-CLI-8")
 def test_hooks_json_runs_each_hook_on_its_event_and_tools():
     w = wired()
     assert set(w) == set(hooks.HOOKS)
@@ -153,9 +149,6 @@ def test_hooks_json_runs_each_hook_on_its_event_and_tools():
     def fires(name, event, tool):
         return any(e == event and matches(m, tool) for e, m in w[name])
 
-    for tool in ("mcp__acme-tracker__transition_issue", "mcp__plugin_acme_tests__get_test"):
-        assert fires("transition", "PreToolUse", tool)
-    assert not fires("transition", "PreToolUse", "Bash")
     for tool in ("Read", "Grep", "Glob", "Write", "Edit", "NotebookEdit", "Bash",
                  "mcp__filesystem__read_file"):
         assert fires("test-read", "PreToolUse", tool)
@@ -167,11 +160,9 @@ def test_hooks_json_runs_each_hook_on_its_event_and_tools():
 # is silent.
 
 
-@pytest.mark.req("REQ-TRK-1", "REQ-GEN-11", "REQ-REC-1", "REQ-CLI-8", "REQ-CLI-10")
+@pytest.mark.req("REQ-GEN-11", "REQ-REC-1", "REQ-CLI-8", "REQ-CLI-10")
 @pytest.mark.parametrize("name, event, fields", [
     ("session-start", "SessionStart", {"source": "startup"}),
-    ("transition", "PreToolUse", {"tool_name": "mcp__acme-tracker__transition_issue",
-                                  "tool_input": {"transition_id": "21"}}),
     ("test-read", "PreToolUse", {"tool_name": "Read", "agent_type": "vogon:vogon-test-writer",
                                  "tool_input": {"file_path": "src/a.py"}}),
 ])
@@ -207,9 +198,10 @@ def test_session_start_without_vogon_yaml_asks_for_setup(tmp_path):
 @pytest.mark.req("REQ-CLI-10")
 def test_setup_request_comes_only_from_session_start(tmp_path):
     env = {"CLAUDE_PROJECT_DIR": str(tmp_path)}
-    text = json.dumps(payload(tmp_path, "PreToolUse", tool_name="mcp__acme-tracker__transition_issue",
-                              tool_input={"transition_id": "21"}))
-    assert hooks.run("transition", text, env=env) == ""
+    text = json.dumps(payload(tmp_path, "PreToolUse", tool_name="Read",
+                              agent_type="vogon:vogon-test-writer",
+                              tool_input={"file_path": "src/a.py"}))
+    assert hooks.run("test-read", text, env=env) == ""
 
 
 @pytest.mark.req("REQ-CLI-8")
@@ -270,153 +262,6 @@ def test_session_start_reads_the_project_from_a_subdirectory(project):
     out = run_hook("session-start",
                     json.dumps(payload(project / "src", "SessionStart", source="resume")))
     assert "- tracker: acme-tracker" in out
-
-
-# transition
-
-
-def call(root: Path, tool: str, tool_input: dict | None = None) -> str:
-    return run_hook("transition", pre(root, tool, tool_input or {}))
-
-
-@pytest.mark.req("REQ-TRK-1")
-@pytest.mark.parametrize("tool, tool_input", [
-    ("mcp__acme-tracker__transition_issue", {"issue": "ACME-1", "transition_id": "21"}),
-    ("mcp__acme-tracker__transition_issue", {"issue": "ACME-1", "transition_id": 21}),
-    ("mcp__acme-tracker__transition_issue", {"issue": "ACME-1", "transition_id": {"id": "21"}}),
-    ("mcp__acme-tests__transition_test", {"key": "T-1", "transition": "6"}),
-])
-def test_transition_into_an_approved_state_is_refused(project, tool, tool_input):
-    out = call(project, tool, tool_input)
-    assert decision(out) == "deny"
-    assert "Approved" in reason(out)
-
-
-@pytest.mark.req("REQ-TRK-1")
-@pytest.mark.parametrize("tool_input", [
-    {"issue": "ACME-1", "transition_id": "99"},
-    {"issue": "ACME-1"},
-    {"issue": "ACME-1", "transition_id": None},
-    {"issue": "ACME-1", "transition_id": ["21"]},
-])
-def test_transition_with_an_unknown_or_missing_id_is_refused(project, tool_input):
-    assert decision(call(project, "mcp__acme-tracker__transition_issue", tool_input)) == "deny"
-
-
-@pytest.mark.req("REQ-TRK-1")
-@pytest.mark.parametrize("tool, tool_input", [
-    ("mcp__acme-tracker__transition_issue", {"issue": "ACME-1", "transition_id": "11"}),
-    ("mcp__acme-tracker__transition_issue", {"issue": "ACME-1", "transition_id": "31"}),
-    ("mcp__acme-tracker__get_issue", {"issue": "ACME-1"}),
-    ("mcp__acme-tracker__create_issue", {"summary": "REQ-TRK-1 x"}),
-    ("mcp__github__merge_pull_request", {"number": 1}),
-    # servers not in systems pass, whatever the call
-    ("mcp__other__transition_issue", {"transition_id": "21"}),
-    ("mcp__acme-tracker-2__transition_issue", {"transition_id": "21"}),
-])
-def test_other_calls_pass(project, tool, tool_input):
-    assert decision(call(project, tool, tool_input)) is None
-
-
-@pytest.mark.req("REQ-TRK-1")
-@pytest.mark.parametrize("missing", ["transition_tools", "transitions", "approved_states"])
-@pytest.mark.parametrize("tool", ["mcp__acme-tracker__get_issue",
-                                  "mcp__acme-tracker__transition_issue"])
-def test_every_call_to_a_server_with_incomplete_transition_setup_is_refused(project, missing, tool):
-    lines = CONFIG.splitlines()
-    # the first occurrence is the tracker's
-    lines.remove(next(line for line in lines if line.strip().startswith(f"{missing}:")))
-    (project / "vogon.yaml").write_text("\n".join(lines) + "\n", encoding="utf-8")
-    out = call(project, tool, {"issue": "ACME-1", "transition_id": "11"})
-    assert decision(out) == "deny"
-    assert missing in reason(out)
-    # the test manager's setup is complete, so its calls still pass
-    assert decision(call(project, "mcp__acme-tests__get_test", {"key": "T-1"})) is None
-
-
-@pytest.mark.req("REQ-TRK-1")
-def test_a_configured_server_with_no_transition_keys_is_blocked_entirely(project):
-    (project / "vogon.yaml").write_text("systems:\n  tracker: {server: acme-tracker}\n",
-                                        encoding="utf-8")
-    assert decision(call(project, "mcp__acme-tracker__search_issues", {"jql": "x"})) == "deny"
-    assert decision(call(project, "mcp__other__search", {})) is None
-
-
-@pytest.mark.req("REQ-TRK-1")
-@pytest.mark.parametrize("server, tool", [
-    # a plugin-bundled server, configured by its own key
-    ("acme-tests", "mcp__plugin_acme-plugin_acme-tests__transition_test"),
-    # the same server, configured by its scoped name
-    ("plugin:acme-plugin:acme-tests", "mcp__plugin_acme-plugin_acme-tests__transition_test"),
-    # a name with characters Claude Code replaces by `_`
-    ("claude.ai Acme Tests", "mcp__claude_ai_Acme_Tests__transition_test"),
-])
-def test_server_names_match_the_way_claude_code_names_tools(project, server, tool):
-    text = CONFIG.replace("server: acme-tests", f"server: {server}")
-    (project / "vogon.yaml").write_text(text, encoding="utf-8")
-    assert decision(call(project, tool, {"transition": "6"})) == "deny"
-    assert decision(call(project, tool, {"transition": "5"})) is None
-
-
-@pytest.mark.req("REQ-TRK-1")
-def test_transition_tool_named_in_full_is_recognised(project):
-    text = CONFIG.replace("{transition_issue: transition_id}",
-                          "{mcp__acme-tracker__transition_issue: transition_id}")
-    (project / "vogon.yaml").write_text(text, encoding="utf-8")
-    assert decision(call(project, "mcp__acme-tracker__transition_issue",
-                         {"transition_id": "21"})) == "deny"
-
-
-@pytest.mark.req("REQ-TRK-1")
-@pytest.mark.parametrize("text", [
-    "systems: [not, a, mapping]\n",
-    "systems:\n  tracker: {server: acme-tracker\n",
-    "systems:\n  trackr: {server: acme-tracker}\n",
-])
-def test_unreadable_systems_refuse_every_mcp_call(project, text):
-    (project / "vogon.yaml").write_text(text, encoding="utf-8")
-    assert decision(call(project, "mcp__anything__read", {})) == "deny"
-
-
-@pytest.mark.req("REQ-TRK-1")
-@pytest.mark.parametrize("text", [
-    "approvals:\n  release: {roles: [system_owner], system: nowhere}\n",
-    "approvals:\n  audit: {roles: [auditor]}\n",
-    "roles: [a, b]\n",
-])
-def test_an_error_outside_systems_does_not_refuse_unrelated_mcp_calls(project, text):
-    (project / "vogon.yaml").write_text(CONFIG + text, encoding="utf-8")
-    assert decision(call(project, "mcp__other__read_file", {"path": "x"})) is None
-    assert decision(call(project, "mcp__acme-tracker__transition_issue",
-                         {"transition_id": "21"})) == "deny"
-
-
-@pytest.mark.req("REQ-TRK-1")
-def test_a_transition_id_object_with_more_fields_is_judged_by_its_id(project):
-    tool = "mcp__acme-tracker__transition_issue"
-    assert decision(call(project, tool, {"transition_id": {"id": "21", "name": "Approve"}})) == "deny"
-    assert decision(call(project, tool, {"transition_id": {"id": "11", "name": "Review"}})) is None
-
-
-@pytest.mark.req("REQ-TRK-1")
-def test_the_project_is_found_from_claude_project_dir(project, tmp_path):
-    elsewhere = tmp_path / "elsewhere"
-    elsewhere.mkdir()
-    text = pre(elsewhere, "mcp__acme-tracker__transition_issue", {"transition_id": "21"})
-    assert decision(hooks.run("transition", text, env={})) is None
-    assert decision(hooks.run("transition", text, env={"CLAUDE_PROJECT_DIR": str(project)})) == "deny"
-
-
-@pytest.mark.req("REQ-TRK-1")
-def test_transition_hook_through_the_entry_script_fails_closed(project):
-    result = entry("transition", pre(project, "mcp__acme-tracker__transition_issue",
-                                     {"transition_id": "21"}), project)
-    assert result.returncode == 0
-    assert decision(result.stdout) == "deny"
-    for stdin in ("", "not json", "[1, 2]"):
-        result = entry("transition", stdin, project)
-        assert result.returncode == 0
-        assert decision(result.stdout) == "deny"
 
 
 # test-read

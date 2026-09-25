@@ -24,9 +24,8 @@ in the docstring of `${CLAUDE_PLUGIN_ROOT}/scripts/config.py`.
 ## Running setup again for a role
 
 - [ ] Setup for a role that is already configured, such as after its
-      workflow changed, first removes that role's entry from `systems` in
-      `vogon.yaml`, so the `transition` hook does not refuse the calls that
-      read the workflow. Every other role's entry is left as it is.
+      workflow changed, replaces that role's entry in `systems` in
+      `vogon.yaml`. Every other role's entry is left as it is.
 
 ## The server for each role
 
@@ -49,24 +48,15 @@ The roles are `tracker`, `test_manager`, `repository_host` and
       `plugin:<plugin>:<server>` for a server bundled in a plugin, or that
       server's own key.
 
-## Transitions of the tracker and the test manager
+## Approved states of the tracker and the test manager
 
-- [ ] The workflow is read through the chosen server: for the issue types
-      VOGON writes, requirement issues in the tracker and test issues in the
-      test manager, every status and every transition with its id and target
-      status.
-- [ ] `transitions` maps every transition id read to its target status, the
-      id written as a quoted string.
+- [ ] The statuses are read through the chosen server, for the issue types
+      VOGON writes: requirement issues in the tracker and test issues in the
+      test manager.
 - [ ] `approved_states` proposes each status whose name says approval or
       signature, such as `Approved` or `Signed`.
-- [ ] `transition_tools` maps each tool of the server that performs a
-      transition to the argument of its input schema that holds the
-      transition id. A tool is named by the part of its name after
-      `mcp__<server>__`.
-- [ ] A tool whose input schema shows no argument for the transition id is
-      shown to the person, who names the argument.
-- [ ] `server`, `transition_tools`, `transitions` and `approved_states` for a
-      role are written together, in one write of `vogon.yaml`.
+- [ ] `server` and `approved_states` for a role are written together, in one
+      write of `vogon.yaml`.
 
 ## Role holders
 
@@ -79,10 +69,9 @@ The roles are `tracker`, `test_manager`, `repository_host` and
 
 - [ ] Everything setup derived is shown as one list before any write: for
       each role the server, or that it is not configured; for the tracker and
-      the test manager `transition_tools`, `transitions` and
-      `approved_states`; the tool found for each operation; and each role an
-      approval uses, with the approvals it gives, for the person to name its
-      holders.
+      the test manager `approved_states`; the tool found for each operation;
+      and each role an approval uses, with the approvals it gives, for the
+      person to name its holders.
 - [ ] The person confirms or corrects the list in one answer. Corrections are
       applied as given.
 - [ ] `vogon.yaml` is written once, after that answer, keeping every key
