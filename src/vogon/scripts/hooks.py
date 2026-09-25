@@ -4,17 +4,11 @@ Hooks).
 
     session-start  SessionStart: prints the configuration as plain text, with
                    its errors and warnings.
-    post-write     PostToolUse on Write, Edit, MultiEdit, NotebookEdit: after a
-                   write under the records directory, the findings on that
-                   file, as `additionalContext`.
-    commit         PreToolUse on Bash and PowerShell: refuses a `git commit`
-                   whose message names an id that resolves to no record
-                   (REQ-TRC-9). A message naming no id is allowed.
     transition     PreToolUse on `mcp__.*`: refuses a transition into an
                    approved state, a transition id not in `transitions`, and
                    every call to a tracker or test manager server whose
                    transition setup is incomplete (REQ-TRK-1).
-    test-read      PreToolUse on the file tools, Bash, PowerShell and MCP
+    test-read      PreToolUse on the file tools, Bash and MCP
                    tools: for `vogon-test-writer` and `vogon-test-checker`,
                    with or without the `vogon:` prefix, allows only paths
                    under the records directory and the test paths
@@ -46,13 +40,10 @@ from __future__ import annotations
 import json
 import os
 import re
-import shlex
 from pathlib import Path
 from typing import Callable, Mapping
 
 import config as config_module
-import ids
-import records
 from checks import rel
 from config import FILENAME, TRANSITION_ROLES, Config
 from findings import Finding
@@ -72,7 +63,7 @@ PATH_KEYS = {
 }
 # Tools whose path argument is optional and defaults to the working directory.
 SEARCH_TOOLS = ("Grep", "Glob")
-SHELL_TOOLS = ("Bash", "PowerShell")
+SHELL_TOOLS = ("Bash",)
 GLOB_CHARS = re.compile(r"[*?\[{]")
 
 
@@ -85,10 +76,6 @@ def deny(reason: str) -> str:
         "permissionDecision": "deny",
         "permissionDecisionReason": reason,
     }})
-
-
-def context(event: str, text: str) -> str:
-    return json.dumps({"hookSpecificOutput": {"hookEventName": event, "additionalContext": text}})
 
 
 # Input and project root
@@ -199,198 +186,6 @@ def setup_needed(env: Mapping[str, str]) -> str:
             "and run setup: load the `vogon` skill and follow step 1, "
             "`references/config.md`, which runs `vogon init` and then fills in the "
             "systems for the person to confirm.")
-
-
-# post-write
-
-
-def post_write(data: dict | None, root: Path) -> str:
-    if data is None:
-        return ""
-    tool_input = data.get("tool_input")
-    if not isinstance(tool_input, dict):
-        return ""
-    value = tool_input.get("file_path") or tool_input.get("notebook_path")
-    if not isinstance(value, str) or not value:
-        return ""
-    path = _real(Path(value), _cwd(data, root))
-    cfg = config_module.load(root)
-    records_dir = Path(os.path.realpath(cfg.records_dir))
-    if not _under(path, [records_dir]) or path == records_dir:
-        return ""
-    from commands.check import CHECKS  # imported here: it pulls in every check module
-
-    name = rel(cfg, path)
-    found = [f for check in CHECKS for f in check(cfg) if f.path == name]
-    if not found:
-        return ""
-    text = f"vogon check on {name}:\n" + "\n".join(f"- {f.format()}" for f in found)
-    return context("PostToolUse", text)
-
-
-# commit
-
-
-# Words that run the command after them, so `git` after one is still a command.
-COMMAND_PREFIXES = ("sudo", "env", "command", "exec", "time", "nohup", "then", "do", "else")
-ASSIGNMENT_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*=")
-
-
-def _at_command_position(tokens: list[str], i: int) -> bool:
-    """Whether tokens[i] is the command word: first after a shell operator, or
-    after environment assignments and command prefixes only."""
-    j = i - 1
-    while j >= 0 and not _is_operator(tokens[j]):
-        if not (ASSIGNMENT_RE.match(tokens[j]) or tokens[j] in COMMAND_PREFIXES):
-            return False
-        j -= 1
-    return True
-
-
-def _git_commit_args(tokens: list[str]) -> list[tuple[list[str], str | None]]:
-    """For each `git ... commit` run as a command in the token list, its
-    arguments and its `-C` directory. Tokens are split at shell operators."""
-    found = []
-    i = 0
-    while i < len(tokens):
-        if (tokens[i] != "git" and not tokens[i].endswith("/git")) \
-                or not _at_command_position(tokens, i):
-            i += 1
-            continue
-        i += 1
-        directory = None
-        while i < len(tokens) and tokens[i].startswith("-"):
-            opt = tokens[i]
-            if opt in ("-C", "-c", "--git-dir", "--work-tree", "--namespace", "--exec-path") \
-                    and i + 1 < len(tokens):
-                if opt == "-C":
-                    directory = tokens[i + 1] if directory is None else str(Path(directory) / tokens[i + 1])
-                i += 2
-            else:
-                i += 1
-        if i < len(tokens) and tokens[i] == "commit":
-            i += 1
-            args = []
-            while i < len(tokens) and not _is_operator(tokens[i]):
-                args.append(tokens[i])
-                i += 1
-            found.append((args, directory))
-    return found
-
-
-def _is_operator(token: str) -> bool:
-    return bool(token) and all(c in "();<>|&\n" for c in token)
-
-
-# Long options of `git commit` whose value may be the next token.
-LONG_WITH_VALUE = ("--message", "--file", "--trailer", "--author", "--date", "--cleanup",
-                   "--template", "--reuse-message", "--reedit-message", "--fixup", "--squash",
-                   "--pathspec-from-file")
-# Short options whose value is the rest of the cluster or the next token.
-SHORT_WITH_VALUE = "mFcCt"
-
-
-def commit_message(args: list[str], directory: Path, heredocs: list[str]) -> str:
-    """The text of a commit message given on the command line: every `-m`,
-    every `-F` file (`-` reads the command's here-documents) and every trailer."""
-    parts: list[str] = []
-
-    def file_text(name: str) -> None:
-        if name in ("-", "/dev/stdin"):
-            parts.extend(heredocs)
-            return
-        try:
-            parts.append((directory / name).read_text(encoding="utf-8", errors="replace"))
-        except OSError:
-            pass
-
-    i = 0
-    while i < len(args):
-        a = args[i]
-        i += 1
-        if a == "--":
-            break
-        if a.startswith("--"):
-            name, eq, value = a.partition("=")
-            if name not in LONG_WITH_VALUE:
-                continue
-            if not eq:
-                if i >= len(args):
-                    break
-                value = args[i]
-                i += 1
-            if name == "--message":
-                parts.append(value)
-            elif name == "--file":
-                file_text(value)
-            elif name == "--trailer":
-                parts.append(value)
-            continue
-        if a.startswith("-") and len(a) > 1:
-            for j, c in enumerate(a[1:], start=1):
-                if c not in SHORT_WITH_VALUE:
-                    continue
-                value = a[j + 1:]
-                if not value:
-                    if i >= len(args):
-                        break
-                    value = args[i]
-                    i += 1
-                if c == "m":
-                    parts.append(value)
-                elif c == "F":
-                    file_text(value)
-                break
-    return "\n\n".join(parts)
-
-
-HEREDOC_RE = re.compile(r"<<-?[ \t]*(['\"]?)(\w+)\1[^\n]*\n(.*?)\n[ \t]*\2[ \t]*(?:\n|$)", re.S)
-
-
-def commit_messages(command: str, cwd: Path) -> list[str]:
-    """The message of each `git commit` in a shell command. When the command
-    cannot be split into words, the whole command is the message if it runs
-    `git ... commit`."""
-    heredocs = [m.group(3) for m in HEREDOC_RE.finditer(command)]
-    try:
-        # An unquoted newline separates commands like `;`; a quoted one stays in its word.
-        lexer = shlex.shlex(command, posix=True, punctuation_chars=";&|()<>\n")
-        lexer.whitespace_split = True
-        lexer.whitespace = " \t\r"
-        tokens = list(lexer)
-    except ValueError:
-        return [command] if re.search(r"\bgit\b.*\bcommit\b", command, re.S) else []
-    out = []
-    for args, directory in _git_commit_args(tokens):
-        base = cwd / directory if directory else cwd
-        out.append(commit_message(args, base, heredocs))
-    return out
-
-
-def commit(data: dict | None, root: Path) -> str:
-    if data is None:
-        return ""
-    tool_input = data.get("tool_input")
-    command = tool_input.get("command") if isinstance(tool_input, dict) else None
-    if not isinstance(command, str) or "commit" not in command:
-        return ""
-    messages = commit_messages(command, _cwd(data, root))
-    named = [i for m in messages for i in ids.find_in_text(m)]
-    if not named:
-        return ""
-    cfg = config_module.load(root)
-    keys = records.existing_keys(cfg.records_dir)
-    unknown: list[str] = []
-    for text in named:
-        rid = ids.parse(text)
-        if (rid is None or rid.key not in keys) and text not in unknown:
-            unknown.append(text)
-    if not unknown:
-        return ""
-    where = rel(cfg, cfg.records_dir)
-    return deny(f"The commit message names {', '.join(unknown)}, which resolve"
-                f"{'s' if len(unknown) == 1 else ''} to no record under {where}/. Name the "
-                "record the change implements, or create the record first.")
 
 
 # transition
@@ -558,8 +353,6 @@ def test_read(data: dict | None, root: Path) -> str:
 
 HOOKS: dict[str, Callable[[dict | None, Path], str]] = {
     "session-start": session_start,
-    "post-write": post_write,
-    "commit": commit,
     "transition": transition,
     "test-read": test_read,
 }

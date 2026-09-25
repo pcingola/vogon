@@ -17,7 +17,7 @@ or fails.
 - [ ] Records and held documents are not changed at this step.
 - [ ] Each commit message is short, says what the commit does, and names the
       ids of the records the change implements. Every id named resolves to a
-      record; the `commit` hook refuses one that does not.
+      record.
 - [ ] The change as a whole names at least one record id, in a commit message
       or the pull request description.
 

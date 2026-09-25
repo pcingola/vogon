@@ -1,5 +1,5 @@
 {
-  "description": "VOGON: the configuration at session start, record checks after a write under the records directory, and refusals of a commit naming an unknown id, a transition into an approved state, and a test agent's read outside the records and the tests.",
+  "description": "VOGON: the configuration at session start, and refusals of a transition into an approved state, and a test agent's read outside the records and the tests.",
   "hooks": {
     "SessionStart": [
       {
@@ -8,21 +8,7 @@
         ]
       }
     ],
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit|MultiEdit|NotebookEdit",
-        "hooks": [
-          {"type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}\"/scripts/vogon hook post-write"}
-        ]
-      }
-    ],
     "PreToolUse": [
-      {
-        "matcher": "Bash|PowerShell",
-        "hooks": [
-          {"type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}\"/scripts/vogon hook commit"}
-        ]
-      },
       {
         "matcher": "mcp__.*",
         "hooks": [
@@ -30,7 +16,7 @@
         ]
       },
       {
-        "matcher": "^(Read|Grep|Glob|LS|NotebookRead|NotebookEdit|Edit|MultiEdit|Write|Bash|PowerShell)$|^mcp__",
+        "matcher": "^(Read|Grep|Glob|LS|NotebookRead|NotebookEdit|Edit|MultiEdit|Write|Bash)$|^mcp__",
         "hooks": [
           {"type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}\"/scripts/vogon hook test-read"}
         ]

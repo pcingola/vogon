@@ -144,7 +144,7 @@ def wired() -> dict[str, list[str]]:
     return out
 
 
-@pytest.mark.req("REQ-TRK-1", "REQ-TRC-9", "REQ-GEN-11", "REQ-REC-1", "REQ-CLI-8")
+@pytest.mark.req("REQ-TRK-1", "REQ-GEN-11", "REQ-REC-1", "REQ-CLI-8")
 def test_hooks_json_runs_each_hook_on_its_event_and_tools():
     w = wired()
     assert set(w) == set(hooks.HOOKS)
@@ -153,11 +153,6 @@ def test_hooks_json_runs_each_hook_on_its_event_and_tools():
     def fires(name, event, tool):
         return any(e == event and matches(m, tool) for e, m in w[name])
 
-    for tool in ("Write", "Edit", "MultiEdit", "NotebookEdit"):
-        assert fires("post-write", "PostToolUse", tool)
-    assert not fires("post-write", "PostToolUse", "Read")
-    assert fires("commit", "PreToolUse", "Bash")
-    assert not fires("commit", "PreToolUse", "Read")
     for tool in ("mcp__acme-tracker__transition_issue", "mcp__plugin_acme_tests__get_test"):
         assert fires("transition", "PreToolUse", tool)
     assert not fires("transition", "PreToolUse", "Bash")
@@ -172,13 +167,9 @@ def test_hooks_json_runs_each_hook_on_its_event_and_tools():
 # is silent.
 
 
-@pytest.mark.req("REQ-TRK-1", "REQ-TRC-9", "REQ-GEN-11", "REQ-REC-1", "REQ-CLI-8", "REQ-CLI-10")
+@pytest.mark.req("REQ-TRK-1", "REQ-GEN-11", "REQ-REC-1", "REQ-CLI-8", "REQ-CLI-10")
 @pytest.mark.parametrize("name, event, fields", [
     ("session-start", "SessionStart", {"source": "startup"}),
-    ("post-write", "PostToolUse", {"tool_name": "Write",
-                                   "tool_input": {"file_path": "vogon/decisions/DEC-001.md"}}),
-    ("commit", "PreToolUse", {"tool_name": "Bash",
-                              "tool_input": {"command": "git commit -m 'REQ-X-99 add'"}}),
     ("transition", "PreToolUse", {"tool_name": "mcp__acme-tracker__transition_issue",
                                   "tool_input": {"transition_id": "21"}}),
     ("test-read", "PreToolUse", {"tool_name": "Read", "agent_type": "vogon:vogon-test-writer",
@@ -216,9 +207,9 @@ def test_session_start_without_vogon_yaml_asks_for_setup(tmp_path):
 @pytest.mark.req("REQ-CLI-10")
 def test_setup_request_comes_only_from_session_start(tmp_path):
     env = {"CLAUDE_PROJECT_DIR": str(tmp_path)}
-    text = json.dumps(payload(tmp_path, "PreToolUse", tool_name="Bash",
-                              tool_input={"command": "git commit -m 'REQ-X-99 add'"}))
-    assert hooks.run("commit", text, env=env) == ""
+    text = json.dumps(payload(tmp_path, "PreToolUse", tool_name="mcp__acme-tracker__transition_issue",
+                              tool_input={"transition_id": "21"}))
+    assert hooks.run("transition", text, env=env) == ""
 
 
 @pytest.mark.req("REQ-CLI-8")
@@ -279,124 +270,6 @@ def test_session_start_reads_the_project_from_a_subdirectory(project):
     out = run_hook("session-start",
                     json.dumps(payload(project / "src", "SessionStart", source="resume")))
     assert "- tracker: acme-tracker" in out
-
-
-# post-write
-
-
-def post(root: Path, path: Path, tool: str = "Write") -> str:
-    key = "notebook_path" if tool == "NotebookEdit" else "file_path"
-    return run_hook("post-write", json.dumps(payload(
-        root, "PostToolUse", tool_name=tool, tool_input={key: str(path)},
-        tool_response={"filePath": str(path), "type": "update"})))
-
-
-def added_context(out: str) -> str:
-    data = json.loads(out)["hookSpecificOutput"]
-    assert data["hookEventName"] == "PostToolUse"
-    return data["additionalContext"]
-
-
-@pytest.mark.req("REQ-REC-1")
-def test_post_write_of_a_valid_record_returns_nothing(project):
-    assert post(project, project / "vogon" / "decisions" / "DEC-001.md") == ""
-
-
-@pytest.mark.req("REQ-REC-1")
-@pytest.mark.parametrize("tool", ["Write", "Edit", "MultiEdit"])
-def test_post_write_of_an_invalid_record_returns_its_findings(project, tool):
-    path = project / "vogon" / "decisions" / "DEC-001.md"
-    path.write_text(DECISION.replace("status: accepted", "status: approvedish"), encoding="utf-8")
-    result = entry("post-write", json.dumps(payload(
-        project, "PostToolUse", tool_name=tool, tool_input={"file_path": str(path)})), project)
-    assert result.returncode == 0
-    text = added_context(result.stdout)
-    assert "vogon/decisions/DEC-001.md" in text
-    assert "status" in text and "approvedish" in text
-
-
-@pytest.mark.req("REQ-REC-1")
-def test_post_write_reports_only_the_file_written(project):
-    bad = project / "vogon" / "decisions" / "DEC-002.md"
-    bad.write_text(DECISION.replace("DEC-001", "DEC-002").replace("status: accepted", "status: x"),
-                   encoding="utf-8")
-    assert post(project, project / "vogon" / "decisions" / "DEC-001.md") == ""
-    assert "DEC-002.md" in added_context(post(project, bad))
-
-
-@pytest.mark.req("REQ-REC-1")
-def test_post_write_outside_the_records_returns_nothing(project):
-    (project / "src" / "a.py").write_text("X = 2\n", encoding="utf-8")
-    assert post(project, project / "src" / "a.py") == ""
-
-
-# commit
-
-
-def commit(root: Path, command: str) -> str:
-    return run_hook("commit", pre(root, "Bash", {"command": command, "description": "Commit"}))
-
-
-@pytest.mark.req("REQ-TRC-9")
-@pytest.mark.parametrize("command", [
-    "git commit -m 'REQ-TRK-99 add the transition refusal'",
-    "git add -A && git commit -am 'REQ-X-99 add'",
-    "git -C . commit --message='Implement REQ-TRK-1 and DEC-404'",
-    "git commit -m 'Implement the refusal' -m 'Refs: FACT-007'",
-    "git commit --trailer 'Implements: REQ-TRK-99' -m 'Add the refusal'",
-    "git commit -m \"$(cat <<'EOF'\nREQ-TRK-99 add the refusal\n\nBody.\nEOF\n)\"",
-    "git commit -F - <<'EOF'\nREQ-TRK-99 add the refusal\nEOF\n",
-    "cd . && git status\ngit commit -m 'REQ-TRK-99 x'",
-    "GIT_EDITOR=true git commit -m 'REQ-TRK-99 x'",
-    "if true; then git commit -m 'REQ-TRK-99 x'; fi",
-    "(cd . && /usr/bin/git commit -m 'REQ-TRK-99 x')",
-])
-def test_commit_naming_an_id_with_no_record_is_refused(project, command):
-    out = commit(project, command)
-    assert decision(out) == "deny"
-    assert "no record" in reason(out)
-
-
-@pytest.mark.req("REQ-TRC-9")
-def test_commit_refusal_names_each_unresolved_id(project):
-    out = commit(project, "git commit -m 'REQ-TRK-1, REQ-TRK-98 and CON-404'")
-    assert "REQ-TRK-98" in reason(out) and "CON-404" in reason(out)
-    assert "REQ-TRK-1," not in reason(out)
-
-
-@pytest.mark.req("REQ-TRC-9")
-def test_commit_with_a_message_file_naming_an_unknown_id_is_refused(project):
-    (project / "msg.txt").write_text("REQ-TRK-99 add the refusal\n", encoding="utf-8")
-    assert decision(commit(project, "git commit -F msg.txt")) == "deny"
-    (project / "msg.txt").write_text("REQ-TRK-1 add the refusal\n", encoding="utf-8")
-    assert decision(commit(project, "git commit --file msg.txt")) is None
-
-
-@pytest.mark.req("REQ-TRC-9")
-@pytest.mark.parametrize("command", [
-    "git commit -m 'REQ-TRK-1 refuse a transition into an approved state'",
-    "git commit -m 'REQ-TRK-01 and DEC-1: the number is compared numerically'",
-    "git commit -m 'Fix a typo in the README'",
-    "git commit --amend --no-edit",
-    "git commit -m 'Fix a typo' && echo REQ-TRK-99",
-    "git log --grep REQ-TRK-99",
-    "echo 'git commit -m REQ-TRK-99' > notes.txt",
-    "echo git commit -m REQ-TRK-99",
-    "grep -r 'x' . | xargs echo git commit -m REQ-TRK-99",
-    "ls",
-])
-def test_commit_naming_existing_ids_or_none_is_allowed(project, command):
-    assert decision(commit(project, command)) is None
-
-
-@pytest.mark.req("REQ-TRC-9")
-def test_commit_hook_through_the_entry_script(project):
-    result = entry("commit", pre(project, "Bash", {"command": "git commit -m 'REQ-TRK-99 x'"}),
-                   project)
-    assert result.returncode == 0
-    assert decision(result.stdout) == "deny"
-    result = entry("commit", "not json", project)
-    assert (result.returncode, result.stdout) == (0, "")
 
 
 # transition

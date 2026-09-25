@@ -1412,16 +1412,6 @@ cannot read the code, a plan names the interface the tests call.</p>
 <td>Prints the configured server for each role, the approval roles and their holders, then the configuration errors and warnings; after an error, an instruction to complete setup. With no <code>vogon.yaml</code>, prints an instruction to run setup (<code>REQ-CLI-10</code>)</td>
 </tr>
 <tr>
-<td><code>post-write</code></td>
-<td>After a write</td>
-<td>After a write under <code>vogon/</code>, runs <code>vogon check</code> on the file and returns the findings</td>
-</tr>
-<tr>
-<td><code>commit</code></td>
-<td>Before a <code>git commit</code></td>
-<td>Refuses a message naming an id that resolves to no record</td>
-</tr>
-<tr>
 <td><code>transition</code></td>
 <td>Before a call to any <code>mcp__</code> tool</td>
 <td>Refuses a transition into an approved state, and every call to a server whose transition setup is incomplete</td>
@@ -1433,9 +1423,6 @@ cannot read the code, a plan names the interface the tests call.</p>
 </tr>
 </tbody>
 </table>
-<p>The <code>commit</code> hook allows a message that names no record. <code>REQ-TRC-9</code> asks for a
-record id per change, not per commit, and <code>vogon change</code> checks the change as
-a whole: its commit messages and its pull request description.</p>
 <p>The <code>transition</code> hook is what turns <code>CON-001</code> from an instruction into
 something the agent cannot do by accident (<code>REQ-TRK-1</code>). A transition call
 carries a transition id, not a target state, so the hook works from the
@@ -1465,7 +1452,7 @@ name.</p>
 <code>LS</code>, <code>NotebookRead</code>, <code>NotebookEdit</code>, <code>Edit</code>, <code>MultiEdit</code> and <code>Write</code>, after
 resolving symbolic links. A <code>Grep</code> or <code>Glob</code> with no <code>path</code> searches the
 project root and is refused, as is a glob pattern containing <code>..</code>. It refuses
-a test agent's <code>Bash</code>, <code>PowerShell</code> and MCP calls, because the paths they read
+a test agent's <code>Bash</code> and MCP calls, because the paths they read
 cannot be checked.</p>
 <p>A hook exits with status zero in every case, so it cannot stop the session.
 Given input it cannot read, or failing itself, a hook prints nothing, except

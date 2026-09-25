@@ -1224,7 +1224,7 @@ its event, and Claude Code runs it; a person does not.</p>
 <tbody>
 <tr>
 <td><code>name</code></td>
-<td><code>commit</code>, <code>post-write</code>, <code>session-start</code>, <code>test-read</code> or <code>transition</code>.</td>
+<td><code>session-start</code>, <code>test-read</code> or <code>transition</code>.</td>
 </tr>
 </tbody>
 </table>
@@ -1246,16 +1246,6 @@ nothing.</p>
 <td><code>session-start</code></td>
 <td><code>SessionStart</code></td>
 <td>Prints the configured server for each role, the approvals and the role holders; with no <code>vogon.yaml</code>, an instruction to run setup.</td>
-</tr>
-<tr>
-<td><code>post-write</code></td>
-<td><code>PostToolUse</code> on file writes</td>
-<td>After a write under the records directory, returns the findings on that file.</td>
-</tr>
-<tr>
-<td><code>commit</code></td>
-<td><code>PreToolUse</code> on <code>Bash</code> and <code>PowerShell</code></td>
-<td>Refuses a <code>git commit</code> whose message names an id that resolves to no record. A message naming no id is allowed.</td>
 </tr>
 <tr>
 <td><code>transition</code></td>

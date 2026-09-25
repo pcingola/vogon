@@ -129,14 +129,8 @@ Hooks cover what has to happen without anyone asking for it. Each entry in
 | Hook | Runs | Does |
 | --- | --- | --- |
 | `session-start` | On `SessionStart` | Prints the configured server for each role, the approval roles and their holders, then the configuration errors and warnings; after an error, an instruction to complete setup. With no `vogon.yaml`, prints an instruction to run setup (`REQ-CLI-10`) |
-| `post-write` | After a write | After a write under `vogon/`, runs `vogon check` on the file and returns the findings |
-| `commit` | Before a `git commit` | Refuses a message naming an id that resolves to no record |
 | `transition` | Before a call to any `mcp__` tool | Refuses a transition into an approved state, and every call to a server whose transition setup is incomplete |
 | `test-read` | Before a file tool, shell or MCP call | Refuses a test agent's read or write outside `vogon/` and the test paths |
-
-The `commit` hook allows a message that names no record. `REQ-TRC-9` asks for a
-record id per change, not per commit, and `vogon change` checks the change as
-a whole: its commit messages and its pull request description.
 
 The `transition` hook is what turns `CON-001` from an instruction into
 something the agent cannot do by accident (`REQ-TRK-1`). A transition call
@@ -169,7 +163,7 @@ The `test-read` hook reads the path arguments of `Read`, `Grep`, `Glob`,
 `LS`, `NotebookRead`, `NotebookEdit`, `Edit`, `MultiEdit` and `Write`, after
 resolving symbolic links. A `Grep` or `Glob` with no `path` searches the
 project root and is refused, as is a glob pattern containing `..`. It refuses
-a test agent's `Bash`, `PowerShell` and MCP calls, because the paths they read
+a test agent's `Bash` and MCP calls, because the paths they read
 cannot be checked.
 
 A hook exits with status zero in every case, so it cannot stop the session.
