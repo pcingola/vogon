@@ -1264,7 +1264,7 @@ reference file, by a script, or by a person giving an approval.</p>
 <td>1</td>
 <td>Install and configure</td>
 <td><code>vogon/</code>, <code>modules.yaml</code>, <code>vogon.yaml</code> naming the server for each role, the approval roles and their holders (<code>REQ-CLI-5</code>, <code>REQ-CLI-8</code>)</td>
-<td><code>/plugin install</code>, then <code>vogon</code> with <code>config.md</code>, which runs script <code>vogon init</code></td>
+<td><code>/plugin install vogon@vogon --scope project</code>, then <code>vogon</code> with <code>config.md</code>, which runs script <code>vogon init</code></td>
 </tr>
 <tr>
 <td>2</td>
@@ -1409,7 +1409,7 @@ cannot read the code, a plan names the interface the tests call.</p>
 <tr>
 <td><code>session-start</code></td>
 <td>On <code>SessionStart</code></td>
-<td>Prints the configured server for each role, the approval roles and their holders</td>
+<td>Prints the configured server for each role, the approval roles and their holders. With no <code>vogon.yaml</code>, prints an instruction to run setup (<code>REQ-CLI-10</code>)</td>
 </tr>
 <tr>
 <td><code>post-write</code></td>
@@ -1474,9 +1474,13 @@ Given input it cannot read, or failing itself, a hook prints nothing, except
 without the agent asking for them. Claude Code adds a <code>SessionStart</code> hook's
 standard output to the context, and <code>SessionStart</code> fires on <code>startup</code>,
 <code>resume</code>, <code>clear</code>, <code>compact</code> and <code>fork</code>. After <code>vogon.yaml</code> is written,
-<code>post-write</code> returns the new values as <code>additionalContext</code>. Without
-<code>vogon.yaml</code>, both print nothing, so a project that does not use VOGON is
-unaffected. Subagents do not receive the values, because only the main agent
+<code>post-write</code> returns the new values as <code>additionalContext</code>. The plugin is
+enabled per project, so a session in which the hooks run is in a project that
+uses VOGON. When that project has no <code>vogon.yaml</code>, <code>session-start</code> prints an
+instruction to run setup, step 1 with <code>config.md</code>, and names the missing file.
+It finds the project from <code>CLAUDE_PROJECT_DIR</code>, which Claude Code sets for
+every hook to the directory the session was started in. Every other hook
+prints nothing until <code>vogon.yaml</code> exists. Subagents do not receive the values, because only the main agent
 reaches external systems.</p>
 <h2 id="roles-and-approvals">Roles and approvals<a class="headerlink" href="#roles-and-approvals" title="Permanent link">&para;</a></h2>
 <p>Steps 4, 6, 11, 14 and 17 include approvals, and a person gives each one in
@@ -1535,12 +1539,15 @@ from that table or differs from it (<code>REQ-GEN-9</code>).</p>
 <h2 id="how-vogon-is-installed">How VOGON is installed<a class="headerlink" href="#how-vogon-is-installed" title="Permanent link">&para;</a></h2>
 <p>The VOGON repository is a Claude Code plugin marketplace.
 <code>.claude-plugin/marketplace.json</code> at its root lists one plugin, <code>vogon</code>, whose
-source is <code>src/vogon/</code>. A developer installs it from inside Claude Code:</p>
-<pre><code>/plugin marketplace add pcingola/vogon
-/plugin install vogon@vogon
+source is <code>src/vogon/</code>. A developer installs it from inside Claude Code,
+opened in the host project, at project scope (<code>REQ-CLI-9</code>):</p>
+<pre><code>/plugin marketplace add pcingola/vogon --scope project
+/plugin install vogon@vogon --scope project
 </code></pre>
-<p>A host project can make the plugin available to every developer by naming
-the marketplace and the plugin in its committed <code>.claude/settings.json</code>:</p>
+<p>Project scope writes the marketplace and the plugin into the host project's
+committed <code>.claude/settings.json</code>, and nothing into the user's settings, so
+VOGON is enabled in that project only and every developer of the project gets
+it:</p>
 <pre><code class="language-json">{
   &quot;extraKnownMarketplaces&quot;: {
     &quot;vogon&quot;: {&quot;source&quot;: {&quot;source&quot;: &quot;github&quot;, &quot;repo&quot;: &quot;pcingola/vogon&quot;}}
@@ -1548,6 +1555,8 @@ the marketplace and the plugin in its committed <code>.claude/settings.json</cod
   &quot;enabledPlugins&quot;: {&quot;vogon@vogon&quot;: true}
 }
 </code></pre>
+<p>Both commands default to user scope, which would enable VOGON in every project
+the user opens; the documentation never gives them without <code>--scope project</code>.</p>
 <p>The plugin is laid out as Claude Code expects:</p>
 <pre><code>src/vogon/
 ├── .claude-plugin/plugin.json   name, version, description
@@ -1566,8 +1575,9 @@ upgrade is a plugin update.</p>
 repository does not hold the skill text, and nothing compares an installed
 copy with the plugin (<code>DEC-020</code>).</p>
 <h2 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">&para;</a></h2>
-<p>The person asks Claude Code to set up VOGON, and the skill follows
-<code>config.md</code>. Claude Code runs <code>vogon init</code>, which creates <code>vogon/</code>,
+<p>Setup starts when the person asks Claude Code to set up VOGON, or when the
+<code>session-start</code> hook reports that <code>vogon.yaml</code> is missing (<code>REQ-CLI-10</code>), and
+the skill follows <code>config.md</code>. Claude Code runs <code>vogon init</code>, which creates <code>vogon/</code>,
 <code>vogon/modules.yaml</code> and <code>vogon.yaml</code>, adds <code>.vogon/</code> to <code>.gitignore</code>, and
 registers the <code>req</code> marker in the host project's pytest configuration. It
 writes the values that need no question: the paths (<code>vogon</code>, <code>tests</code>),
@@ -1638,7 +1648,7 @@ project, which is this repository.
 <a href="vocabulary.html#the-two-projects">Vocabulary</a> defines both.</p>
 <pre><code>&lt;host-project&gt;/
 ├── .claude/
-│   └── settings.json     names the VOGON marketplace and enables the plugin
+│   └── settings.json     names the VOGON marketplace and enables the plugin, written by the install commands (`REQ-CLI-9`)
 ├── vogon/
 │   ├── modules.yaml      the module names the host project uses
 │   ├── requirements/&lt;module&gt;/REQ-&lt;MODULE&gt;-NNN.md

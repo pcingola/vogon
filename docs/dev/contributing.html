@@ -1015,8 +1015,8 @@ claude plugin validate src/vogon   # the plugin manifest
 </code></pre>
 <p>To test the plugin as a host project sees it, open Claude Code in a scratch
 git repository and run:</p>
-<pre><code>/plugin marketplace add /path/to/repo
-/plugin install vogon@vogon
+<pre><code>/plugin marketplace add /path/to/repo --scope project
+/plugin install vogon@vogon --scope project
 </code></pre>
 <p>Claude Code copies the plugin into its cache at install, keyed by version. A
 change in the working tree reaches the scratch repository only after the plugin

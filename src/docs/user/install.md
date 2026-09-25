@@ -17,16 +17,17 @@ Nothing from the plugin is copied into the host project.
 
 ## Install the plugin
 
-In Claude Code:
+Open Claude Code in the host project's repository and run:
 
 ```
-/plugin marketplace add pcingola/vogon
-/plugin install vogon@vogon
+/plugin marketplace add pcingola/vogon --scope project
+/plugin install vogon@vogon --scope project
 ```
 
-To make the plugin available to every developer on a host project, commit
-these entries in the project's `.claude/settings.json`. Claude Code then offers
-to install the plugin when the project is opened.
+Both commands take `--scope project`. Without it they default to user scope,
+which enables VOGON in every project the user opens. With it they write the
+marketplace and the plugin into the host project's `.claude/settings.json`,
+and nothing into the user's settings:
 
 ```json
 {
@@ -37,9 +38,17 @@ to install the plugin when the project is opened.
 }
 ```
 
+Commit that file. Claude Code offers to install the plugin to every developer
+who opens the project, and VOGON is active in no other project. Claude Code
+keeps the downloaded plugin files in a cache under `~/.claude/plugins/`; the
+cache does not enable the plugin anywhere.
+
 ## Set up a host project
 
-Open Claude Code in the host project's repository and ask it to set up VOGON.
+Open Claude Code in the host project's repository. Until `vogon.yaml`
+exists, VOGON's session-start hook tells Claude Code that the project is not
+set up, and Claude Code offers to run setup at your first message. You can
+also ask it to set up VOGON.
 
 Claude Code first runs `vogon init`, which creates `vogon.yaml`, the records
 directory `vogon/` with `modules.yaml`, adds `.vogon/` to `.gitignore`, and

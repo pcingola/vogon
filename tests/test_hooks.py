@@ -167,10 +167,11 @@ def test_hooks_json_runs_each_hook_on_its_event_and_tools():
         assert not fires("test-read", "PreToolUse", tool)
 
 
-# Without vogon.yaml every hook is silent.
+# Without vogon.yaml and with no project directory from Claude Code, every hook
+# is silent.
 
 
-@pytest.mark.req("REQ-TRK-1", "REQ-TRC-9", "REQ-GEN-11", "REQ-REC-1", "REQ-CLI-8")
+@pytest.mark.req("REQ-TRK-1", "REQ-TRC-9", "REQ-GEN-11", "REQ-REC-1", "REQ-CLI-8", "REQ-CLI-10")
 @pytest.mark.parametrize("name, event, fields", [
     ("session-start", "SessionStart", {"source": "startup"}),
     ("post-write", "PostToolUse", {"tool_name": "Write",
@@ -191,6 +192,32 @@ def test_every_hook_prints_nothing_in_a_project_without_vogon_yaml(tmp_path, nam
 
 
 # session-start
+
+
+@pytest.mark.req("REQ-CLI-10")
+def test_the_project_directory_from_claude_code_is_the_only_place_looked_at(tmp_path, project):
+    # A project with no vogon.yaml, whose hook input names a cwd inside a set-up project.
+    bare = tmp_path / "bare"
+    bare.mkdir()
+    text = json.dumps(payload(project, "SessionStart", source="startup"))
+    out = hooks.run("session-start", text, env={"CLAUDE_PROJECT_DIR": str(bare)})
+    assert f"{bare / 'vogon.yaml'} does not exist" in out
+
+
+@pytest.mark.req("REQ-CLI-10")
+def test_session_start_without_vogon_yaml_asks_for_setup(tmp_path):
+    text = json.dumps(payload(tmp_path, "SessionStart", source="startup"))
+    out = hooks.run("session-start", text, env={"CLAUDE_PROJECT_DIR": str(tmp_path)})
+    assert f"{tmp_path / 'vogon.yaml'} does not exist" in out
+    assert "`vogon` skill" in out and "`references/config.md`" in out and "`vogon init`" in out
+
+
+@pytest.mark.req("REQ-CLI-10")
+def test_setup_request_comes_only_from_session_start(tmp_path):
+    env = {"CLAUDE_PROJECT_DIR": str(tmp_path)}
+    text = json.dumps(payload(tmp_path, "PreToolUse", tool_name="Bash",
+                              tool_input={"command": "git commit -m 'REQ-X-99 add'"}))
+    assert hooks.run("commit", text, env=env) == ""
 
 
 @pytest.mark.req("REQ-CLI-8")

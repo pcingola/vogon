@@ -133,8 +133,8 @@ To test the plugin as a host project sees it, open Claude Code in a scratch
 git repository and run:
 
 ```
-/plugin marketplace add /path/to/repo
-/plugin install vogon@vogon
+/plugin marketplace add /path/to/repo --scope project
+/plugin install vogon@vogon --scope project
 ```
 
 Claude Code copies the plugin into its cache at install, keyed by version. A

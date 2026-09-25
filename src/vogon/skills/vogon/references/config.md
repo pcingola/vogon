@@ -8,6 +8,9 @@ The schema of `vogon.yaml` is in the docstring of
 
 ## Initialising
 
+- [ ] If neither `.claude/settings.json` nor `.claude/settings.local.json`
+      enables `vogon@vogon`, the person is told to reinstall with
+      `--scope project` (`REQ-CLI-9`).
 - [ ] `vogon init` is run at the project root. It creates `vogon.yaml`, the
       records directory with `modules.yaml`, the `.vogon/` entry in
       `.gitignore` and the `req` marker in the pytest configuration, and

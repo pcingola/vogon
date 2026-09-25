@@ -103,10 +103,13 @@ def parse_input(text: str) -> dict | None:
 
 
 def find_root(data: dict | None, env: Mapping[str, str]) -> Path | None:
-    """The project root: the first directory holding `vogon.yaml`, or None."""
+    """The project root, or None when it holds no `vogon.yaml`. Claude Code sets
+    `CLAUDE_PROJECT_DIR` for every hook, and then that directory is the only one
+    looked at. Without it, as when the hook is run by hand, the root is the first
+    directory holding `vogon.yaml` from the input's `cwd` upwards."""
     project = env.get("CLAUDE_PROJECT_DIR")
-    if project and (Path(project) / FILENAME).is_file():
-        return Path(project)
+    if project:
+        return Path(project) if (Path(project) / FILENAME).is_file() else None
     cwd = data.get("cwd") if data else None
     start = Path(cwd) if isinstance(cwd, str) and cwd else Path.cwd()
     start = start.resolve()
@@ -162,6 +165,21 @@ def configuration_text(cfg: Config) -> str:
 
 def session_start(data: dict | None, root: Path) -> str:
     return configuration_text(config_module.load(root))
+
+
+def setup_needed(env: Mapping[str, str]) -> str:
+    """The setup instruction for a session started in a project with no
+    `vogon.yaml`, or "" when Claude Code gave no project directory. The plugin
+    is enabled per project, so a session that runs this hook is in a project
+    that uses VOGON."""
+    project = env.get("CLAUDE_PROJECT_DIR")
+    if not project or not Path(project).is_dir():
+        return ""
+    return (f"VOGON is enabled in this project, but {Path(project) / FILENAME} does not "
+            "exist, so VOGON is not set up. Before any other VOGON step, tell the person "
+            "and run setup: load the `vogon` skill and follow step 1, "
+            "`references/config.md`, which runs `vogon init` and then fills in the "
+            "systems for the person to confirm.")
 
 
 # post-write
@@ -542,7 +560,7 @@ def run(name: str, text: str, env: Mapping[str, str] | None = None) -> str:
         data = parse_input(text)
         root = find_root(data, env)
         if root is None:
-            return ""
+            return setup_needed(env) if name == "session-start" else ""
         return HOOKS[name](data, root)
     except Exception as e:  # a hook never stops the session
         if name in FAIL_CLOSED:

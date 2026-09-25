@@ -859,13 +859,14 @@ Nothing from the plugin is copied into the host project.</p>
   configured, and the steps and checks that need it are skipped.</li>
 </ul>
 <h2 id="install-the-plugin">Install the plugin<a class="headerlink" href="#install-the-plugin" title="Permanent link">&para;</a></h2>
-<p>In Claude Code:</p>
-<pre><code>/plugin marketplace add pcingola/vogon
-/plugin install vogon@vogon
+<p>Open Claude Code in the host project's repository and run:</p>
+<pre><code>/plugin marketplace add pcingola/vogon --scope project
+/plugin install vogon@vogon --scope project
 </code></pre>
-<p>To make the plugin available to every developer on a host project, commit
-these entries in the project's <code>.claude/settings.json</code>. Claude Code then offers
-to install the plugin when the project is opened.</p>
+<p>Both commands take <code>--scope project</code>. Without it they default to user scope,
+which enables VOGON in every project the user opens. With it they write the
+marketplace and the plugin into the host project's <code>.claude/settings.json</code>,
+and nothing into the user's settings:</p>
 <pre><code class="language-json">{
   &quot;extraKnownMarketplaces&quot;: {
     &quot;vogon&quot;: {&quot;source&quot;: {&quot;source&quot;: &quot;github&quot;, &quot;repo&quot;: &quot;pcingola/vogon&quot;}}
@@ -873,8 +874,15 @@ to install the plugin when the project is opened.</p>
   &quot;enabledPlugins&quot;: {&quot;vogon@vogon&quot;: true}
 }
 </code></pre>
+<p>Commit that file. Claude Code offers to install the plugin to every developer
+who opens the project, and VOGON is active in no other project. Claude Code
+keeps the downloaded plugin files in a cache under <code>~/.claude/plugins/</code>; the
+cache does not enable the plugin anywhere.</p>
 <h2 id="set-up-a-host-project">Set up a host project<a class="headerlink" href="#set-up-a-host-project" title="Permanent link">&para;</a></h2>
-<p>Open Claude Code in the host project's repository and ask it to set up VOGON.</p>
+<p>Open Claude Code in the host project's repository. Until <code>vogon.yaml</code>
+exists, VOGON's session-start hook tells Claude Code that the project is not
+set up, and Claude Code offers to run setup at your first message. You can
+also ask it to set up VOGON.</p>
 <p>Claude Code first runs <code>vogon init</code>, which creates <code>vogon.yaml</code>, the records
 directory <code>vogon/</code> with <code>modules.yaml</code>, adds <code>.vogon/</code> to <code>.gitignore</code>, and
 registers the <code>req</code> test marker in the project's pytest configuration.

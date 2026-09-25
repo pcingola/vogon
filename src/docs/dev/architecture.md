@@ -67,7 +67,7 @@ reference file, by a script, or by a person giving an approval.
 
 | # | Step | Produces | Done by |
 | --- | --- | --- | --- |
-| 1 | Install and configure | `vogon/`, `modules.yaml`, `vogon.yaml` naming the server for each role, the approval roles and their holders (`REQ-CLI-5`, `REQ-CLI-8`) | `/plugin install`, then `vogon` with `config.md`, which runs script `vogon init` |
+| 1 | Install and configure | `vogon/`, `modules.yaml`, `vogon.yaml` naming the server for each role, the approval roles and their holders (`REQ-CLI-5`, `REQ-CLI-8`) | `/plugin install vogon@vogon --scope project`, then `vogon` with `config.md`, which runs script `vogon init` |
 | 2 | File the source material | Transcripts and documents in `vogon/sources/` (`REQ-GEN-6`, `REQ-REC-9`) | `vogon` with `sources.md` |
 | 3 | Draft the records | Requirements, facts, constraints and decisions in `vogon/` (`DEC-007`, `REQ-REC-1`) | `vogon` with `records.md` |
 | 4 | Review and accept | The record set checked for records that contradict or duplicate each other, the risk assessment in `vogon/documents/` giving a risk level and its reasoning per requirement, and records moved off `proposed` (`REQ-GEN-8`, `REQ-GEN-2`) | `vogon` with `review.md`, `risk.md` and `documents.md`, then a person |
@@ -128,7 +128,7 @@ Hooks cover what has to happen without anyone asking for it. Each entry in
 
 | Hook | Runs | Does |
 | --- | --- | --- |
-| `session-start` | On `SessionStart` | Prints the configured server for each role, the approval roles and their holders |
+| `session-start` | On `SessionStart` | Prints the configured server for each role, the approval roles and their holders. With no `vogon.yaml`, prints an instruction to run setup (`REQ-CLI-10`) |
 | `post-write` | After a write | After a write under `vogon/`, runs `vogon check` on the file and returns the findings. After a write of `vogon.yaml`, returns the configuration |
 | `commit` | Before a `git commit` | Refuses a message naming an id that resolves to no record |
 | `transition` | Before a call to any `mcp__` tool | Refuses a transition into an approved state, and every call to a server whose transition setup is incomplete |
@@ -180,9 +180,13 @@ The agent receives the configuration from the hooks, which Claude Code runs
 without the agent asking for them. Claude Code adds a `SessionStart` hook's
 standard output to the context, and `SessionStart` fires on `startup`,
 `resume`, `clear`, `compact` and `fork`. After `vogon.yaml` is written,
-`post-write` returns the new values as `additionalContext`. Without
-`vogon.yaml`, both print nothing, so a project that does not use VOGON is
-unaffected. Subagents do not receive the values, because only the main agent
+`post-write` returns the new values as `additionalContext`. The plugin is
+enabled per project, so a session in which the hooks run is in a project that
+uses VOGON. When that project has no `vogon.yaml`, `session-start` prints an
+instruction to run setup, step 1 with `config.md`, and names the missing file.
+It finds the project from `CLAUDE_PROJECT_DIR`, which Claude Code sets for
+every hook to the directory the session was started in. Every other hook
+prints nothing until `vogon.yaml` exists. Subagents do not receive the values, because only the main agent
 reaches external systems.
 
 ## Roles and approvals
@@ -253,15 +257,18 @@ from that table or differs from it (`REQ-GEN-9`).
 
 The VOGON repository is a Claude Code plugin marketplace.
 `.claude-plugin/marketplace.json` at its root lists one plugin, `vogon`, whose
-source is `src/vogon/`. A developer installs it from inside Claude Code:
+source is `src/vogon/`. A developer installs it from inside Claude Code,
+opened in the host project, at project scope (`REQ-CLI-9`):
 
 ```
-/plugin marketplace add pcingola/vogon
-/plugin install vogon@vogon
+/plugin marketplace add pcingola/vogon --scope project
+/plugin install vogon@vogon --scope project
 ```
 
-A host project can make the plugin available to every developer by naming
-the marketplace and the plugin in its committed `.claude/settings.json`:
+Project scope writes the marketplace and the plugin into the host project's
+committed `.claude/settings.json`, and nothing into the user's settings, so
+VOGON is enabled in that project only and every developer of the project gets
+it:
 
 ```json
 {
@@ -271,6 +278,9 @@ the marketplace and the plugin in its committed `.claude/settings.json`:
   "enabledPlugins": {"vogon@vogon": true}
 }
 ```
+
+Both commands default to user scope, which would enable VOGON in every project
+the user opens; the documentation never gives them without `--scope project`.
 
 The plugin is laid out as Claude Code expects:
 
@@ -296,8 +306,9 @@ copy with the plugin (`DEC-020`).
 
 ## Setup
 
-The person asks Claude Code to set up VOGON, and the skill follows
-`config.md`. Claude Code runs `vogon init`, which creates `vogon/`,
+Setup starts when the person asks Claude Code to set up VOGON, or when the
+`session-start` hook reports that `vogon.yaml` is missing (`REQ-CLI-10`), and
+the skill follows `config.md`. Claude Code runs `vogon init`, which creates `vogon/`,
 `vogon/modules.yaml` and `vogon.yaml`, adds `.vogon/` to `.gitignore`, and
 registers the `req` marker in the host project's pytest configuration. It
 writes the values that need no question: the paths (`vogon`, `tests`),
@@ -380,7 +391,7 @@ project, which is this repository.
 ```
 <host-project>/
 ├── .claude/
-│   └── settings.json     names the VOGON marketplace and enables the plugin
+│   └── settings.json     names the VOGON marketplace and enables the plugin, written by the install commands (`REQ-CLI-9`)
 ├── vogon/
 │   ├── modules.yaml      the module names the host project uses
 │   ├── requirements/<module>/REQ-<MODULE>-NNN.md
