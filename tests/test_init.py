@@ -44,9 +44,9 @@ def test_init_writes_the_defaults_and_no_systems(tmp_path, capsys):
     for name in LAYOUT:
         assert (tmp_path / "vogon" / name).is_dir()
     assert yaml.safe_load((tmp_path / "vogon" / "modules.yaml").read_text()) is None
-    no_req = (tmp_path / "vogon" / "NO-REQ.md").read_text()
-    assert no_req.startswith("# NO-REQ — Changes that need no requirement\n")
-    assert "vogon/NO-REQ.md" in out
+    fake_req = (tmp_path / "vogon" / "fake" / "FAKE-REQ.md").read_text()
+    assert fake_req.startswith("# FAKE-REQ — Changes that need no requirement\n")
+    assert "vogon/fake/FAKE-REQ.md" in out
     assert (tmp_path / ".gitignore").read_text() == ".vogon/\n"
     assert "vogon.yaml" in out and ".gitignore" in out and "pyproject.toml" in out
 

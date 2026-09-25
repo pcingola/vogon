@@ -18,7 +18,7 @@ project's alike.
 | `vogon/facts/` | Every `FACT-` |
 | `vogon/constraints/` | Every `CON-` |
 | `vogon/decisions/` | Every `DEC-` |
-| `vogon/NO-REQ.md` | When a change names `NO-REQ` in place of a record id: a change that implements no requirement, such as a typo fix (`REQ-TRC-9`). Written by `vogon init`; not a record |
+| `vogon/fake/FAKE-REQ.md` | When a change names `FAKE-REQ` in place of a record id: a change that implements no requirement, such as a typo fix (`REQ-TRC-9`). Written by `vogon init`; not a record |
 | `vogon/sources/` | Held copies of the documents records cite. See [Sources](sources.md) |
 | `vogon/plans/` | Plans for changes, written before the code; `done/` holds the spent ones |
 | `vogon/documents/` | Drafted documents of the validation package, filed in the document system and approved there (`DEC-023`) |

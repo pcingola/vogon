@@ -26,8 +26,10 @@ ID_RE = re.compile(r"^(?P<prefix>[A-Z]{3,})(?:-(?P<module>[A-Z0-9]+))?-(?P<numbe
 ID_IN_TEXT_RE = re.compile(r"\b(?:REQ|FACT|CON|DEC)(?:-[A-Z0-9]+)?-[0-9]+\b")
 MODULE_RE = re.compile(r"^[A-Z0-9]+$")
 # Named by a change that implements no record, in place of a record id (REQ-TRC-9).
-NO_REQ = "NO-REQ"
-NO_REQ_IN_TEXT_RE = re.compile(r"(?<![A-Za-z0-9-])NO-REQ(?![A-Za-z0-9-])")
+FAKE_REQ = "FAKE-REQ"
+# The directory under the records root holding FAKE-REQ.md, named from the prefix.
+FAKE_REQ_DIR = "fake"
+FAKE_REQ_IN_TEXT_RE = re.compile(r"(?<![A-Za-z0-9-])FAKE-REQ(?![A-Za-z0-9-])")
 
 # Width new ids are padded to in a namespace that has no id yet.
 UNMODULED_WIDTH = 3
@@ -82,9 +84,9 @@ def find_in_text(text: str) -> list[str]:
     return ID_IN_TEXT_RE.findall(text)
 
 
-def names_no_req(text: str) -> bool:
-    """Whether `text` names NO-REQ as a word of its own."""
-    return NO_REQ_IN_TEXT_RE.search(text) is not None
+def names_fake_req(text: str) -> bool:
+    """Whether `text` names FAKE-REQ as a word of its own."""
+    return FAKE_REQ_IN_TEXT_RE.search(text) is not None
 
 
 def history_ids(root: Path, records_dir: Path) -> set[str]:

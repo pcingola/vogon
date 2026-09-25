@@ -1181,11 +1181,11 @@ test command cannot be run, writes no results file, or exits non-zero.</p>
 </table>
 <p><code>--description</code> and <code>--description-file</code> exclude each other; with neither, the
 description is empty. The change is the commits of <code>git log &lt;base&gt;..HEAD</code> and
-the description. It fails when none of them names a record id or <code>NO-REQ</code>,
+the description. It fails when none of them names a record id or <code>FAKE-REQ</code>,
 and for each named id that resolves to no record, stating where the id
 appears. A commit that names no id passes when another commit or the
-description names one. <code>NO-REQ</code> marks a change that implements no
-requirement, such as a typo fix; <code>vogon/NO-REQ.md</code> says when to use it. It
+description names one. <code>FAKE-REQ</code> marks a change that implements no
+requirement, such as a typo fix; <code>vogon/fake/FAKE-REQ.md</code> says when to use it. It
 fails when git cannot resolve <code>base</code>, which happens in a clone without full
 history.</p>
 <h2 id="vogon-init">vogon init<a class="headerlink" href="#vogon-init" title="Permanent link">&para;</a></h2>
@@ -1197,7 +1197,7 @@ runs it.</p>
 <ul>
 <li><code>vogon.yaml</code>, with the paths, <code>test_command</code>, the default approvals and the
   roles with no holders, and no <code>systems</code>;</li>
-<li>the records directory with <code>modules.yaml</code>, <code>NO-REQ.md</code> and a directory for
+<li>the records directory with <code>modules.yaml</code>, <code>fake/FAKE-REQ.md</code> and a directory for
   each kind of record, <code>sources/</code>, <code>plans/</code> and <code>documents/</code>;</li>
 <li><code>.vogon/</code> in <code>.gitignore</code>;</li>
 <li>the <code>req</code> marker in the pytest configuration: <code>pytest.ini</code>, <code>.pytest.ini</code>,

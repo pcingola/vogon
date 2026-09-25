@@ -205,7 +205,7 @@ jobs:
 ```
 
 `vogon change` fails when neither the commits of the pull request nor its
-description name a record id or `NO-REQ`, or when a named id resolves to no
+description name a record id or `FAKE-REQ`, or when a named id resolves to no
 record
 (`REQ-TRC-9`). The base branch and the description are passed through environment
 variables, and the description reaches `vogon change` on standard input, so

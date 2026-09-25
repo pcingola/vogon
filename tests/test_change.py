@@ -89,28 +89,28 @@ def test_an_id_that_resolves_to_no_record_fails_naming_where_it_appears(tmp_path
 
 @pytest.mark.req("REQ-TRC-9")
 @pytest.mark.parametrize("message, description", [
-    ("NO-REQ — fix a typo in the installation guide", ""),
-    ("Fix a typo in the installation guide", "NO-REQ: typo fix."),
+    ("FAKE-REQ — fix a typo in the installation guide", ""),
+    ("Fix a typo in the installation guide", "FAKE-REQ: typo fix."),
 ])
-def test_a_change_naming_no_req_and_no_record_passes(tmp_path, capsys, message, description):
+def test_a_change_naming_fake_req_and_no_record_passes(tmp_path, capsys, message, description):
     repo(tmp_path)
     commit(tmp_path, message)
     assert change(tmp_path, capsys, "main", "--description", description) == (0, [])
 
 
 @pytest.mark.req("REQ-TRC-9")
-@pytest.mark.parametrize("message", ["NO-REQS for now", "SEE-NO-REQ", "no-req typo fix"])
-def test_no_req_counts_only_as_a_word_of_its_own(tmp_path, capsys, message):
+@pytest.mark.parametrize("message", ["FAKE-REQS for now", "SEE-FAKE-REQ", "fake-req typo fix"])
+def test_fake_req_counts_only_as_a_word_of_its_own(tmp_path, capsys, message):
     repo(tmp_path)
     commit(tmp_path, message)
     status, out = change(tmp_path, capsys, "main")
-    assert status == 1 and "names no record id and no NO-REQ" in out[0]
+    assert status == 1 and "names no record id and no FAKE-REQ" in out[0]
 
 
 @pytest.mark.req("REQ-TRC-9")
-def test_an_id_named_next_to_no_req_must_still_resolve(tmp_path, capsys):
+def test_an_id_named_next_to_fake_req_must_still_resolve(tmp_path, capsys):
     repo(tmp_path)
-    commit(tmp_path, "NO-REQ — tidy up the code of REQ-TRK-99")
+    commit(tmp_path, "FAKE-REQ — tidy up the code of REQ-TRK-99")
     status, out = change(tmp_path, capsys, "main")
     assert status == 1 and "REQ-TRK-99 resolves to no record" in out[0]
 

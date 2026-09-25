@@ -20,8 +20,8 @@ or fails.
       record.
 - [ ] The change as a whole names at least one record id, in a commit message
       or the pull request description. A change that implements no
-      requirement, such as a typo fix, names `NO-REQ` in its place, as
-      `vogon/NO-REQ.md` describes.
+      requirement, such as a typo fix, names `FAKE-REQ` in its place, as
+      `vogon/fake/FAKE-REQ.md` describes.
 
 ## Step 13: running the tests
 
