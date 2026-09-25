@@ -695,6 +695,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#test-markers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test markers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#building-the-site" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -796,6 +807,17 @@
     <span class="md-ellipsis">
       
         Development environment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test-markers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test markers
       
     </span>
   </a>
@@ -917,6 +939,20 @@ local setting, so it is set once per clone.</p>
 <p>Tests import the script modules from <code>src/vogon/scripts/</code> through pytest's
 <code>pythonpath</code>. <code>pyproject.toml</code> exists for development only: it holds the dev
 dependency group and the pytest configuration.</p>
+<h2 id="test-markers">Test markers<a class="headerlink" href="#test-markers" title="Permanent link">&para;</a></h2>
+<p>Every test that verifies one of VOGON's own requirements carries the marker
+naming it, the same marker VOGON provides to host projects:</p>
+<pre><code class="language-python">import pytest
+
+@pytest.mark.req(&quot;REQ-CLI-1&quot;)
+def test_notice_alone_exits_zero():
+    ...
+</code></pre>
+<p>A test verifying several requirements names each: <code>@pytest.mark.req("REQ-TRC-2",
+"REQ-TRC-3")</code>. The expected values come from the requirement's acceptance
+block, never from a run of the code (<code>DEC-024</code>). The <code>req</code> marker is
+registered in <code>pyproject.toml</code> under <code>[tool.pytest.ini_options]</code>, so the suite
+runs under <code>--strict-markers</code> without the plugin loaded.</p>
 <h2 id="building-the-site">Building the site<a class="headerlink" href="#building-the-site" title="Permanent link">&para;</a></h2>
 <pre><code class="language-sh">make site     # src/docs/ -&gt; docs/, then src/html/ copied over the top
 make serve    # live preview on http://127.0.0.1:8000
@@ -961,10 +997,19 @@ its theme CSS and JS into <code>docs/assets/</code>, which is unrelated to the t
 ├── agents/                      subagent definitions
 ├── hooks/hooks.json             hook entries, each calling a script
 └── scripts/                     the Python scripts
+    └── pytest_plugin/           vogon_pytest.py only
 </code></pre>
+<p><code>scripts/pytest_plugin/</code> holds <code>vogon_pytest.py</code> and nothing else. <code>vogon
+trace</code> puts that directory on the host project's <code>PYTHONPATH</code>, so any module
+added beside it becomes importable by the host's tests and can replace an
+installed module of the same name. Script modules go in <code>scripts/</code>.</p>
 <p>The version is in <code>plugin.json</code> and nowhere else; <code>scripts/cli.py</code> reads it
 from there. There is no wheel and no PyPI release. Each script runs under
 <code>uv run --script</code> and declares its dependencies inline (PEP 723).</p>
+<p>Each release is tagged <code>v&lt;version&gt;</code>, with the version read from <code>plugin.json</code>,
+on the commit that sets it: <code>v0.1.0</code> for version <code>0.1.0</code>. A host project's CI
+checks out the VOGON repository at the tag of the plugin version it has
+installed, so a release without its tag cannot be checked in CI.</p>
 <pre><code class="language-sh">claude plugin validate .           # the marketplace listing
 claude plugin validate src/vogon   # the plugin manifest
 </code></pre>

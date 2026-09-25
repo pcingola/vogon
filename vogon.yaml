@@ -1,0 +1,29 @@
+paths:
+  records: vogon
+  tests: [tests]
+test_command: python -m pytest
+approvals:
+  requirements:
+    roles: [product_owner]
+    system: tracker
+  test_cases:
+    roles: [test_lead]
+    system: test_manager
+  test_specification:
+    roles: [test_lead]
+    system: document_system
+  change:
+    roles: [engineer]
+    system: repository_host
+  risk_assessment:
+    roles: [system_owner, it_quality_manager]
+    system: document_system
+  release:
+    roles: [system_owner, it_quality_manager]
+    system: document_system
+roles:
+  product_owner: []
+  test_lead: []
+  engineer: []
+  system_owner: []
+  it_quality_manager: []

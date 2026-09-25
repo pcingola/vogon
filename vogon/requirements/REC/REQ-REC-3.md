@@ -17,7 +17,7 @@ tags: [validation, identifiers]
 **Requirement.** VOGON MUST report any id carried by more than one record
 file, and any record whose `id` does not match its filename.
 
-An id is the record's identity. Two records sharing one, or a file whose name
+An id is the record's identity. Records sharing one, or a file whose name
 disagrees with the id inside it, make every reference to that id ambiguous.
 
 **What this does not require.** Deciding which of the two is correct.

@@ -6,7 +6,7 @@ modules: [GEN]
 status: accepted
 verification: inspection
 gxp_risk: product quality
-depends_on: [DEC-012]
+depends_on: [DEC-024]
 references:
   - src/docs/dev/records.md
 tags: [instructions, acceptance]

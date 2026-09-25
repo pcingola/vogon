@@ -112,7 +112,7 @@ and never the person (`DEC-018`).
 | **Validation lead** | One named person who writes the validation plan and the summary report and assembles the evidence into a package someone can audit | Author, not approver |
 | **Subject Matter Expert** | Anyone who knows the domain or the technology well enough to write or review a document. Not an appointment | Writes and reviews documents. Never approves them, because an approver may not be the author |
 | **Product Owner** | One named person who owns the backlog and decides what gets built next | Approves the requirements in the tracker, in the default configuration. Where the procedure gives that approval to the Business Process Owner, the configuration says so |
-| **Test Lead** | One of the engineers, named to review the test cases | Approves the test cases in the test manager before the code is written. Never approves test cases they wrote |
+| **Test Lead** | One of the engineers, named to review the test cases | Approves the test issues in the test manager and the test specification in the document system, in the default configuration. Never approves test cases they wrote |
 | **Code reviewer** | Any engineer other than the author of a change | Approves the change on the repository host before it merges |
 
 These are not rubber stamps and they are not headcount. A signature names who

@@ -1,0 +1,5 @@
+CLI: The scripts and configuration, including the approval roles
+GEN: The instructions a coding agent follows to draft records, and the checks on what it produces
+REC: The record schema, id grammar, validation and indexes
+TRC: Test markers, the link to the test manager, result import
+TRK: Reading and writing tracker and test manager issues, filing evidence in the document system, and reporting divergence

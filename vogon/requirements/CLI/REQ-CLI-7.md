@@ -6,7 +6,7 @@ modules: [CLI]
 status: proposed
 verification: test
 gxp_risk: product quality
-depends_on: [CON-002, DEC-011, DEC-018]
+depends_on: [CON-002, DEC-025, DEC-018]
 references:
   - src/docs/dev/architecture.md
 tags: [code-review, repository, configuration]

@@ -6,7 +6,7 @@ modules: [TRK, TRC]
 status: proposed
 verification: test
 gxp_risk: data integrity
-depends_on: [DEC-003, DEC-011, REQ-TRC-6, REQ-TRC-7]
+depends_on: [DEC-003, DEC-025, REQ-TRC-6, REQ-TRC-7]
 references:
   - src/docs/dev/architecture.md
 tags: [evidence, document-system]

@@ -6,7 +6,7 @@ modules: [TRC]
 status: accepted
 verification: test
 gxp_risk: product quality
-depends_on: [DEC-012, REQ-REC-12]
+depends_on: [DEC-024, REQ-REC-12]
 references:
   - src/docs/dev/architecture.md
 tags: [markers, acceptance]

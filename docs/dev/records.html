@@ -654,6 +654,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="How a record is written">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#length-limits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Length limits
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -974,6 +991,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="How a record is written">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#length-limits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Length limits
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1103,6 +1137,14 @@ project's alike.</p>
 <td>Held copies of the documents records cite. See <a href="sources.html">Sources</a></td>
 </tr>
 <tr>
+<td><code>vogon/plans/</code></td>
+<td>Plans for changes, written before the code; <code>done/</code> holds the spent ones</td>
+</tr>
+<tr>
+<td><code>vogon/documents/</code></td>
+<td>Drafted documents of the validation package, filed in the document system and approved there (<code>DEC-023</code>)</td>
+</tr>
+<tr>
 <td><code>vogon/out/</code></td>
 <td>Generated output. Never hand-edited</td>
 </tr>
@@ -1166,7 +1208,7 @@ body is what people read.</p>
 </tr>
 <tr>
 <td><code>status</code></td>
-<td><code>proposed</code>, <code>accepted</code>, <code>withdrawn</code>, or <code>superseded_by: &lt;id&gt;</code></td>
+<td><code>proposed</code>, <code>accepted</code>, <code>withdrawn</code>, or <code>superseded_by: &lt;id&gt;</code>, written as a mapping: <code>status: {superseded_by: DEC-024}</code></td>
 </tr>
 <tr>
 <td><code>source</code></td>
@@ -1265,6 +1307,38 @@ first use: no term appears in a record that the record has not either explained
 in a clause or linked to the fact that explains it. And a record is finished
 when that engineer could implement it without asking a question, not when it is
 comprehensive.</p>
+<h3 id="length-limits">Length limits<a class="headerlink" href="#length-limits" title="Permanent link">&para;</a></h3>
+<p>The body of a record, everything after the closing line of the frontmatter,
+has a maximum length in words, counted as runs of characters separated by
+whitespace. A body over the limit is reported (<code>REQ-REC-8</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Maximum words in the body</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Requirement</td>
+<td>300</td>
+</tr>
+<tr>
+<td>Domain fact</td>
+<td>200</td>
+</tr>
+<tr>
+<td>Constraint</td>
+<td>200</td>
+</tr>
+<tr>
+<td>Decision</td>
+<td>600</td>
+</tr>
+</tbody>
+</table>
+<p>A record over its limit usually states two things, and is split into two
+records.</p>
 <h2 id="requirement">Requirement<a class="headerlink" href="#requirement" title="Permanent link">&para;</a></h2>
 <p>At <code>vogon/requirements/&lt;module&gt;/REQ-&lt;MODULE&gt;-&lt;NUMBER&gt;.md</code>. Written as a MUST
 statement, solution-free. If the sentence cannot be failed by a test, it is not
@@ -1310,7 +1384,7 @@ from the requirement and never read off a run of the code, because a value
 taken from the code makes the test that asserts it unable to fail. On a
 requirement carrying risk or verified by test the block is accepted by a named
 person before the record leaves <code>proposed</code>, and a test marker naming a requirement whose block
-has not been accepted fails the run. <code>DEC-012</code> has the reasoning.</p>
+has not been accepted fails the run. <code>DEC-024</code> has the reasoning.</p>
 <h3 id="worked-example">Worked example<a class="headerlink" href="#worked-example" title="Permanent link">&para;</a></h3>
 <pre><code class="language-markdown">---
 id: REQ-TRK-2

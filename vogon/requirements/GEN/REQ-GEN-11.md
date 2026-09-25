@@ -6,7 +6,7 @@ modules: [GEN, TRC]
 status: proposed
 verification: inspection
 gxp_risk: product quality
-depends_on: [DEC-012, DEC-019, REQ-TRC-1]
+depends_on: [DEC-024, DEC-019, REQ-TRC-1]
 references:
   - src/docs/dev/architecture.md
 tags: [tests, review, instructions]

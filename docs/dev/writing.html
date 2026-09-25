@@ -671,6 +671,34 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="What a tool can check">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#banned-words-and-phrases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Banned words and phrases
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#other-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Other checks
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -824,6 +852,34 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="What a tool can check">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#banned-words-and-phrases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Banned words and phrases
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#other-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Other checks
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -908,20 +964,60 @@ question. Not when it is comprehensive. Those are different, and the second
 produces documents nobody reads.</p>
 <h2 id="what-a-tool-can-check">What a tool can check<a class="headerlink" href="#what-a-tool-can-check" title="Permanent link">&para;</a></h2>
 <p>Most of this is a judgement a person makes in review. A checker enforces the
-part that is mechanical, and claims nothing about the rest:</p>
-<ul>
-<li>a banned word or phrase from the published list</li>
-<li>a placeholder value where a field should be absent</li>
-<li>a heading phrased as a question</li>
-<li>a section heading matching the forbidden set: open questions, TODO, TBD,
-  next steps</li>
-<li>a cardinal number standing before a plural noun that names something the
-  repository holds: skills, commands, requirements, records, tests, checks,
-  modules</li>
-<li>a body that exceeds the length a record of that type is allowed</li>
-</ul>
-<p>Passing those checks does not mean the prose is good. Failing one means it is
+part that is mechanical, and claims nothing about the rest. <code>vogon check</code>
+applies the checks below to every record (<code>REQ-REC-8</code>).</p>
+<p>Passing the checks does not mean the prose is good. Failing one means it is
 not.</p>
+<h3 id="banned-words-and-phrases">Banned words and phrases<a class="headerlink" href="#banned-words-and-phrases" title="Permanent link">&para;</a></h3>
+<p>A word or phrase from this list is reported wherever it appears in a record's
+title or body. The match ignores case and is on whole words, and text inside
+a code span or a code block is not matched, so a record can quote a term in
+backticks.</p>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Words and phrases</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No emphasis in place of a fact</td>
+<td>critically, crucially, importantly, notably, worth noting, it should be noted, needless to say, the key insight, here is the thing</td>
+</tr>
+<tr>
+<td>No metaphors for importance</td>
+<td>load-bearing, linchpin, gate, gatekeeper, forcing function, north star, cornerstone, silver bullet, game-changer</td>
+</tr>
+<tr>
+<td>No marketing or management vocabulary</td>
+<td>leverage, seamless, seamlessly, synergy, best-in-class, world-class, cutting-edge, state-of-the-art, next-generation, holistic, empower, unlock, streamline, value proposition, paradigm shift, move the needle, deep dive, low-hanging fruit, wedge, land-and-expand</td>
+</tr>
+</tbody>
+</table>
+<p>The list is extended in a reviewed change to this page and to the checker
+together.</p>
+<h3 id="other-checks">Other checks<a class="headerlink" href="#other-checks" title="Permanent link">&para;</a></h3>
+<ul>
+<li>A placeholder where a field should be absent. A frontmatter value of <code>N/A</code>,
+  <code>n/a</code>, <code>NA</code>, <code>TBD</code>, <code>TODO</code>, <code>none considered</code>, <code>-</code>, <code>null</code>, an empty string
+  or an empty list is reported. So is <code>none</code>, except in <code>gxp_risk</code>, where it
+  is one of the allowed values.</li>
+<li>A heading phrased as a question: a heading or a bold block label ending in
+  <code>?</code>.</li>
+<li>A section heading or bold block label naming open questions, open issues,
+  TODO, TBD or next steps.</li>
+<li>A cardinal number, in digits or in words, standing before a plural noun
+  that names something the repository holds: skills, commands, requirements,
+  records, tests, checks, modules. The example block is exempt, because it
+  describes an illustrative situation rather than the repository.</li>
+<li>A body longer than the limit for its record type. The limits are in
+  <a href="records.html#length-limits">Records</a>.</li>
+</ul>
+<p>The satirical voice is checked separately: no fixed string from the brand
+guide may appear in a record, a tracker field, script output, or any file
+VOGON writes under <code>vogon/</code> (<code>REQ-GEN-5</code>). The checker holds its own copy of
+those strings, because the brand guide is not part of the plugin.</p>
 
 
 

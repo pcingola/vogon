@@ -6,7 +6,7 @@ modules: [CLI]
 status: accepted
 verification: test
 gxp_risk: data integrity
-depends_on: [DEC-011]
+depends_on: [DEC-025]
 references:
   - src/docs/dev/architecture.md
 tags: [install, configuration]

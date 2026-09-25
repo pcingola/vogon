@@ -28,6 +28,25 @@ Tests import the script modules from `src/vogon/scripts/` through pytest's
 `pythonpath`. `pyproject.toml` exists for development only: it holds the dev
 dependency group and the pytest configuration.
 
+## Test markers
+
+Every test that verifies one of VOGON's own requirements carries the marker
+naming it, the same marker VOGON provides to host projects:
+
+```python
+import pytest
+
+@pytest.mark.req("REQ-CLI-1")
+def test_notice_alone_exits_zero():
+    ...
+```
+
+A test verifying several requirements names each: `@pytest.mark.req("REQ-TRC-2",
+"REQ-TRC-3")`. The expected values come from the requirement's acceptance
+block, never from a run of the code (`DEC-024`). The `req` marker is
+registered in `pyproject.toml` under `[tool.pytest.ini_options]`, so the suite
+runs under `--strict-markers` without the plugin loaded.
+
 ## Building the site
 
 ```sh
@@ -88,11 +107,22 @@ src/vogon/
 ├── agents/                      subagent definitions
 ├── hooks/hooks.json             hook entries, each calling a script
 └── scripts/                     the Python scripts
+    └── pytest_plugin/           vogon_pytest.py only
 ```
+
+`scripts/pytest_plugin/` holds `vogon_pytest.py` and nothing else. `vogon
+trace` puts that directory on the host project's `PYTHONPATH`, so any module
+added beside it becomes importable by the host's tests and can replace an
+installed module of the same name. Script modules go in `scripts/`.
 
 The version is in `plugin.json` and nowhere else; `scripts/cli.py` reads it
 from there. There is no wheel and no PyPI release. Each script runs under
 `uv run --script` and declares its dependencies inline (PEP 723).
+
+Each release is tagged `v<version>`, with the version read from `plugin.json`,
+on the commit that sets it: `v0.1.0` for version `0.1.0`. A host project's CI
+checks out the VOGON repository at the tag of the plugin version it has
+installed, so a release without its tag cannot be checked in CI.
 
 ```sh
 claude plugin validate .           # the marketplace listing

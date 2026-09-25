@@ -6,7 +6,7 @@ modules: [REC]
 status: accepted
 verification: test
 gxp_risk: product quality
-depends_on: [DEC-012, REQ-TRC-4, REQ-TRC-8]
+depends_on: [DEC-024, REQ-TRC-4, REQ-TRC-8]
 references:
   - src/docs/dev/records.md
 tags: [acceptance, validation]

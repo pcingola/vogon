@@ -396,6 +396,28 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#vogonyaml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        vogon.yaml
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ci-in-the-host-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CI in the host project
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -782,6 +804,28 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#vogonyaml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        vogon.yaml
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ci-in-the-host-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CI in the host project
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -801,7 +845,8 @@
 
 <h1 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h1>
 <p>VOGON is a Claude Code plugin. It is installed into Claude Code, and it
-creates its records and configuration in the host project when it is set up.</p>
+creates its records and configuration in the host project when it is set up.
+Nothing from the plugin is copied into the host project.</p>
 <h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Claude Code.</li>
@@ -809,8 +854,9 @@ creates its records and configuration in the host project when it is set up.</p>
 <li>Git, for the repository the records live in.</li>
 <li>Python 3.11 or later, which <code>uv</code> installs if it is missing.</li>
 <li>An MCP server connected to Claude Code for each of the tracker, the test
-  manager and the repository host. Version 0.1 is built against Jira, Xray and
-  GitHub.</li>
+  manager, the repository host and the document system. Version 0.1 is built
+  against Jira, Xray and GitHub. A role with no server is reported as not
+  configured, and the steps and checks that need it are skipped.</li>
 </ul>
 <h2 id="install-the-plugin">Install the plugin<a class="headerlink" href="#install-the-plugin" title="Permanent link">&para;</a></h2>
 <p>In Claude Code:</p>
@@ -828,14 +874,193 @@ to install the plugin when the project is opened.</p>
 }
 </code></pre>
 <h2 id="set-up-a-host-project">Set up a host project<a class="headerlink" href="#set-up-a-host-project" title="Permanent link">&para;</a></h2>
-<p>Ask Claude Code to set up VOGON. The skill runs <code>vogon init</code>, which creates
-<code>vogon/</code>, <code>vogon/modules.yaml</code> and <code>vogon.yaml</code>, and adds <code>.vogon/</code> to
-<code>.gitignore</code>. Claude Code then checks that each configured MCP server provides
-the operations VOGON needs, and names any that are missing.</p>
-<p><code>vogon.yaml</code> names the system that fills each role, the roles that give each
-approval, and the people who hold each role.
-<a href="../dev/architecture.html#roles-and-approvals">Roles and approvals</a> shows the
-format.</p>
+<p>Open Claude Code in the host project's repository and ask it to set up VOGON.</p>
+<p>Claude Code first runs <code>vogon init</code>, which creates <code>vogon.yaml</code>, the records
+directory <code>vogon/</code> with <code>modules.yaml</code>, adds <code>.vogon/</code> to <code>.gitignore</code>, and
+registers the <code>req</code> test marker in the project's pytest configuration.
+<a href="scripts.html#vogon-init">Scripts</a> lists exactly what it writes. <code>vogon.yaml</code>
+then holds the paths, the test command and the default approvals, each of
+which has a default and needs no question.</p>
+<p>Claude Code then fills in <code>systems</code> from the MCP servers connected to it:</p>
+<ul>
+<li>For each role, the server that provides the role's operations. With one
+  candidate it is used. With several, you choose, because only you know which
+  one company policy requires. With none, the role is left out.</li>
+<li>For the tracker and the test manager, Claude Code reads the workflow through
+  the chosen server. It proposes as approved the states whose names say
+  approval or signature, finds the tools that perform a transition and the
+  argument of each that holds the transition id, and lists each transition id
+  with its target state.</li>
+</ul>
+<p>Claude Code shows everything it filled in as one list; you confirm or correct
+it in one answer. It saves the tools of each configured server to
+<code>.vogon/servers.json</code>, so that <code>vogon check</code> reports any operation VOGON needs
+that a server lacks (<code>REQ-CLI-4</code>), and commits <code>vogon.yaml</code>. Role holders are
+not asked for; <code>vogon check</code> reports each approval whose role has no holder
+until you add one.</p>
+<p>When a workflow changes in the tracker or the test manager, ask Claude Code to
+set up that role again.</p>
+<h2 id="vogonyaml">vogon.yaml<a class="headerlink" href="#vogonyaml" title="Permanent link">&para;</a></h2>
+<p><code>vogon.yaml</code> sits at the root of the host project and is committed. The
+scripts and the hooks read it every time they run.</p>
+<pre><code class="language-yaml">paths:
+  records: vogon
+  tests: [tests]
+test_command: python -m pytest
+systems:
+  tracker:
+    server: acme-jira
+    transition_tools:
+      transition_issue: transition_id
+    transitions:
+      &quot;11&quot;: In Review
+      &quot;21&quot;: Approved
+      &quot;31&quot;: Rejected
+    approved_states: [Approved]
+  test_manager:
+    server: acme-xray
+    transition_tools:
+      transition_test: transition_id
+    transitions:
+      &quot;41&quot;: Ready
+      &quot;51&quot;: Signed
+    approved_states: [Signed]
+  repository_host:
+    server: github
+  document_system:
+    server: acme-documents
+approvals:
+  requirements: {roles: [product_owner], system: tracker}
+  test_cases: {roles: [test_lead], system: test_manager}
+  test_specification: {roles: [test_lead], system: document_system}
+  change: {roles: [engineer], system: repository_host}
+  risk_assessment: {roles: [system_owner, it_quality_manager], system: document_system}
+  release: {roles: [system_owner, it_quality_manager], system: document_system}
+roles:
+  product_owner: [alice@example.com]
+  test_lead: [bob@example.com]
+  engineer: [carol@example.com, dave@example.com]
+  system_owner: [erin@example.com]
+  it_quality_manager: [frank@example.com]
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Meaning</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>paths.records</code></td>
+<td>The records directory.</td>
+<td><code>vogon</code></td>
+</tr>
+<tr>
+<td><code>paths.tests</code></td>
+<td>The test paths, a string or a list. The test agents may read only these and the records directory.</td>
+<td><code>[tests]</code></td>
+</tr>
+<tr>
+<td><code>test_command</code></td>
+<td>The command <code>vogon trace</code> runs, a string or a list.</td>
+<td><code>python -m pytest</code></td>
+</tr>
+<tr>
+<td><code>systems.&lt;role&gt;.server</code></td>
+<td>The MCP server for a role: <code>tracker</code>, <code>test_manager</code>, <code>repository_host</code> or <code>document_system</code>. The name Claude Code lists for the server, or <code>plugin:&lt;plugin&gt;:&lt;server&gt;</code> for a server bundled in a plugin.</td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>systems.&lt;role&gt;.transition_tools</code></td>
+<td>Tracker and test manager only. Each tool that performs a transition, mapped to the argument holding the transition id.</td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>systems.&lt;role&gt;.transitions</code></td>
+<td>Tracker and test manager only. Each transition id, mapped to its target state.</td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>systems.&lt;role&gt;.approved_states</code></td>
+<td>Tracker and test manager only. The states that mean approved or signed.</td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>approvals.&lt;approval&gt;</code></td>
+<td>The roles that give an approval and the system role it is given in.</td>
+<td>the approvals in the example</td>
+</tr>
+<tr>
+<td><code>roles.&lt;role&gt;</code></td>
+<td>The email of each person holding the role.</td>
+<td>no holders</td>
+</tr>
+</tbody>
+</table>
+<p><code>systems</code> has no default. A role with no entry is not configured. A
+configured tracker or test manager missing <code>transition_tools</code>, <code>transitions</code>
+or <code>approved_states</code> is a failure in <code>vogon check</code>, and the <code>transition</code> hook
+refuses every call to its server until setup writes them, so an incomplete
+setup cannot move an issue into an approved state (<code>REQ-TRK-1</code>).</p>
+<p>An approval listed under <code>approvals</code> replaces the default of the same name; a
+key it leaves out keeps the default. Every role an approval names must be
+defined under <code>roles</code> (<code>REQ-CLI-5</code>). The approver the tracker reports for an
+approval is compared with the holders of its roles (<code>REQ-TRK-9</code>), and with the
+authors of the record (<code>REQ-TRK-8</code>). A number used as a transition id is
+quoted, or YAML reads it as a number; either form is accepted.</p>
+<h2 id="ci-in-the-host-project">CI in the host project<a class="headerlink" href="#ci-in-the-host-project" title="Permanent link">&para;</a></h2>
+<p>The host project's CI runs <code>vogon check</code> on every push and pull request, and
+<code>vogon change</code> on every pull request. It checks out the VOGON repository at
+the tag <code>v&lt;version&gt;</code> of the plugin version the developers have installed
+(<code>vogon --version</code> prints it), and runs the script from that checkout. The
+host project is checked out with its full history, <code>fetch-depth: 0</code>, because
+the held-document checks and <code>vogon change</code> read <code>git log</code>. <code>vogon init</code> does
+not write this file.</p>
+<p>For GitHub Actions, in <code>.github/workflows/vogon.yml</code>:</p>
+<pre><code class="language-yaml">name: vogon
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  vogon:
+    runs-on: ubuntu-latest
+    env:
+      VOGON: uv run --script vogon-plugin/src/vogon/scripts/vogon
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: host
+          fetch-depth: 0
+      - uses: actions/checkout@v4
+        with:
+          repository: pcingola/vogon
+          ref: v0.1.0
+          path: vogon-plugin
+      - uses: astral-sh/setup-uv@v6
+      - name: vogon check
+        run: $VOGON check --root host
+      - name: vogon change
+        if: github.event_name == 'pull_request'
+        env:
+          BASE: ${{ github.base_ref }}
+          DESCRIPTION: ${{ github.event.pull_request.body }}
+        run: |
+          printf '%s' &quot;$DESCRIPTION&quot; |
+            $VOGON change &quot;origin/$BASE&quot; --description-file - --root host
+</code></pre>
+<p><code>vogon change</code> fails when neither the commits of the pull request nor its
+description name a record id, or when a named id resolves to no record
+(<code>REQ-TRC-9</code>). The base branch and the description are passed through environment
+variables, and the description reaches <code>vogon change</code> on standard input, so
+text in them is never run by the shell.</p>
+<p><code>ref</code> is updated together with the installed plugin. The job runs no tests;
+the host project's own test job runs them, and the <code>req</code> marker that
+<code>vogon init</code> registered lets it pass under <code>--strict-markers</code> without the
+plugin.</p>
 
 
 

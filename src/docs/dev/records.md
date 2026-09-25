@@ -19,6 +19,8 @@ project's alike.
 | `vogon/constraints/` | Every `CON-` |
 | `vogon/decisions/` | Every `DEC-` |
 | `vogon/sources/` | Held copies of the documents records cite. See [Sources](sources.md) |
+| `vogon/plans/` | Plans for changes, written before the code; `done/` holds the spent ones |
+| `vogon/documents/` | Drafted documents of the validation package, filed in the document system and approved there (`DEC-023`) |
 | `vogon/out/` | Generated output. Never hand-edited |
 
 Nothing depends on where a file sits. Identity is the id, the queryable
@@ -66,7 +68,7 @@ Frontmatter common to all four types:
 | `type` | `requirement`, `fact`, `constraint` or `decision` |
 | `title` | One line naming what the record is, in the words someone would search for. Not an allusion, not a question |
 | `modules` | Which modules it belongs to, as a list. A fact cited by two modules carries both |
-| `status` | `proposed`, `accepted`, `withdrawn`, or `superseded_by: <id>` |
+| `status` | `proposed`, `accepted`, `withdrawn`, or `superseded_by: <id>`, written as a mapping: `status: {superseded_by: DEC-024}` |
 | `source` | Every held document that states this, as a list of paths. See [below](#source-lists-every-document-that-states-it). Absent on a record the project originated itself |
 | `reviewed_by`, `reviewed_on` | Who read it in detail and when. Absent until someone has |
 | `tags` | Free-form, for searching across modules. Optional |
@@ -167,6 +169,22 @@ in a clause or linked to the fact that explains it. And a record is finished
 when that engineer could implement it without asking a question, not when it is
 comprehensive.
 
+### Length limits
+
+The body of a record, everything after the closing line of the frontmatter,
+has a maximum length in words, counted as runs of characters separated by
+whitespace. A body over the limit is reported (`REQ-REC-8`).
+
+| Type | Maximum words in the body |
+| --- | --- |
+| Requirement | 300 |
+| Domain fact | 200 |
+| Constraint | 200 |
+| Decision | 600 |
+
+A record over its limit usually states two things, and is split into two
+records.
+
 ## Requirement
 
 At `vogon/requirements/<module>/REQ-<MODULE>-<NUMBER>.md`. Written as a MUST
@@ -200,7 +218,7 @@ from the requirement and never read off a run of the code, because a value
 taken from the code makes the test that asserts it unable to fail. On a
 requirement carrying risk or verified by test the block is accepted by a named
 person before the record leaves `proposed`, and a test marker naming a requirement whose block
-has not been accepted fails the run. `DEC-012` has the reasoning.
+has not been accepted fails the run. `DEC-024` has the reasoning.
 
 ### Worked example
 

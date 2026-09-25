@@ -89,17 +89,46 @@ produces documents nobody reads.
 ## What a tool can check
 
 Most of this is a judgement a person makes in review. A checker enforces the
-part that is mechanical, and claims nothing about the rest:
+part that is mechanical, and claims nothing about the rest. `vogon check`
+applies the checks below to every record (`REQ-REC-8`).
 
-- a banned word or phrase from the published list
-- a placeholder value where a field should be absent
-- a heading phrased as a question
-- a section heading matching the forbidden set: open questions, TODO, TBD,
-  next steps
-- a cardinal number standing before a plural noun that names something the
-  repository holds: skills, commands, requirements, records, tests, checks,
-  modules
-- a body that exceeds the length a record of that type is allowed
-
-Passing those checks does not mean the prose is good. Failing one means it is
+Passing the checks does not mean the prose is good. Failing one means it is
 not.
+
+### Banned words and phrases
+
+A word or phrase from this list is reported wherever it appears in a record's
+title or body. The match ignores case and is on whole words, and text inside
+a code span or a code block is not matched, so a record can quote a term in
+backticks.
+
+| Rule | Words and phrases |
+| --- | --- |
+| No emphasis in place of a fact | critically, crucially, importantly, notably, worth noting, it should be noted, needless to say, the key insight, here is the thing |
+| No metaphors for importance | load-bearing, linchpin, gate, gatekeeper, forcing function, north star, cornerstone, silver bullet, game-changer |
+| No marketing or management vocabulary | leverage, seamless, seamlessly, synergy, best-in-class, world-class, cutting-edge, state-of-the-art, next-generation, holistic, empower, unlock, streamline, value proposition, paradigm shift, move the needle, deep dive, low-hanging fruit, wedge, land-and-expand |
+
+The list is extended in a reviewed change to this page and to the checker
+together.
+
+### Other checks
+
+- A placeholder where a field should be absent. A frontmatter value of `N/A`,
+  `n/a`, `NA`, `TBD`, `TODO`, `none considered`, `-`, `null`, an empty string
+  or an empty list is reported. So is `none`, except in `gxp_risk`, where it
+  is one of the allowed values.
+- A heading phrased as a question: a heading or a bold block label ending in
+  `?`.
+- A section heading or bold block label naming open questions, open issues,
+  TODO, TBD or next steps.
+- A cardinal number, in digits or in words, standing before a plural noun
+  that names something the repository holds: skills, commands, requirements,
+  records, tests, checks, modules. The example block is exempt, because it
+  describes an illustrative situation rather than the repository.
+- A body longer than the limit for its record type. The limits are in
+  [Records](records.md#length-limits).
+
+The satirical voice is checked separately: no fixed string from the brand
+guide may appear in a record, a tracker field, script output, or any file
+VOGON writes under `vogon/` (`REQ-GEN-5`). The checker holds its own copy of
+those strings, because the brand guide is not part of the plugin.
