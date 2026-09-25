@@ -10,8 +10,8 @@ def write(root: Path, text: str) -> None:
     (root / "vogon.yaml").write_text(text, encoding="utf-8")
 
 
-def failures(cfg):
-    return [f for f in cfg.findings if f.is_failure]
+def errors(cfg):
+    return [f for f in cfg.findings if f.is_error]
 
 
 # REQ-CLI-3: defaults and overrides
@@ -66,19 +66,19 @@ def test_file_is_read_again_on_every_call(tmp_path):
     ("- a\n- b\n", ["mapping"]),
     ("test_command: 3.5\n", ["test_command"]),
 ])
-def test_an_invalid_file_is_a_failure_naming_the_problem(tmp_path, text, words):
+def test_an_invalid_file_is_an_error_naming_the_problem(tmp_path, text, words):
     write(tmp_path, text)
-    found = failures(load(tmp_path))
+    found = errors(load(tmp_path))
     assert found
     assert all(f.path == "vogon.yaml" for f in found)
     assert all(w in found[0].message for w in words)
 
 
 @pytest.mark.req("REQ-CLI-3", "REQ-TRK-1")
-def test_a_file_that_is_not_utf8_is_a_failure_and_leaves_the_systems_unknown(tmp_path):
+def test_a_file_that_is_not_utf8_is_an_error_and_leaves_the_systems_unknown(tmp_path):
     (tmp_path / "vogon.yaml").write_bytes(b"systems: \xff\n")
     cfg = load(tmp_path)
-    found = failures(cfg)
+    found = errors(cfg)
     assert [f.path for f in found] == ["vogon.yaml"]
     assert "UTF-8" in found[0].message
     assert cfg.systems_unreadable
@@ -89,7 +89,7 @@ def test_an_error_outside_systems_leaves_the_systems_readable(tmp_path):
     write(tmp_path, "systems:\n  document_system: {server: docs}\n"
                     "approvals:\n  release: {roles: [system_owner], system: nowhere}\n")
     cfg = load(tmp_path)
-    assert failures(cfg)
+    assert errors(cfg)
     assert not cfg.systems_unreadable
     assert cfg.system("document_system").server == "docs"
 
@@ -121,7 +121,7 @@ roles:
   product_owner: [alice@example.com]
 """)
     cfg = load(tmp_path)
-    assert failures(cfg) == []
+    assert errors(cfg) == []
     test_cases = cfg.approvals["test_cases"]
     assert (test_cases.roles, test_cases.system, test_cases.configured) == (
         ("validation_lead",), "test_manager", True)
@@ -141,7 +141,7 @@ approvals:
 roles:
   test_lead: [bob@example.com]
 """)
-    found = failures(load(tmp_path))
+    found = errors(load(tmp_path))
     assert len(found) == 1
     assert found[0].requirement == "REQ-CLI-5"
     assert "test_cases" in found[0].message
@@ -151,7 +151,7 @@ roles:
 @pytest.mark.req("REQ-CLI-5")
 def test_approval_given_in_an_unknown_system_fails(tmp_path):
     write(tmp_path, "approvals:\n  requirements: {roles: [product_owner], system: wiki}\n")
-    found = failures(load(tmp_path))
+    found = errors(load(tmp_path))
     assert len(found) == 1
     assert "approvals.requirements.system" in found[0].message
 
@@ -175,7 +175,7 @@ def test_default_document_names_no_system(tmp_path):
 def test_server_without_transition_settings_leaves_them_unset(tmp_path):
     write(tmp_path, "systems:\n  tracker: {server: issues}\n  document_system: {server: dms}\n")
     cfg = load(tmp_path)
-    assert failures(cfg) == []
+    assert errors(cfg) == []
     tracker = cfg.system("tracker")
     assert tracker.server == "issues"
     assert (tracker.transition_tools, tracker.transitions, tracker.approved_states) == (None, None, None)
@@ -195,7 +195,7 @@ systems:
     approved_states: [Approved]
 """)
     cfg = load(tmp_path)
-    assert failures(cfg) == []
+    assert errors(cfg) == []
     tracker = cfg.system("tracker")
     assert tracker.transition_tools == {"transition_issue": "transition_id"}
     assert tracker.transitions == {"11": "In Review", "31": "Approved"}
@@ -212,7 +212,7 @@ systems:
 ])
 def test_invalid_system_entry_fails(tmp_path, text, words):
     write(tmp_path, text)
-    found = failures(load(tmp_path))
+    found = errors(load(tmp_path))
     assert found
     assert all(w in found[0].message for w in words)
 
@@ -224,73 +224,117 @@ def setup_findings(cfg, requirement):
     return [f for f in config.check(cfg) if f.requirement == requirement]
 
 
-@pytest.mark.req("REQ-CLI-6")
-def test_approval_whose_role_has_no_holder_is_reported_naming_both(tmp_path):
-    write(tmp_path, """
-approvals:
-  release: {roles: [system_owner, it_quality_manager], system: document_system}
+HOLDERS = """
 roles:
   product_owner: [alice@example.com]
   test_lead: [bob@example.com]
-  engineer: [alice@example.com]
+  engineer: [carol@example.com]
   system_owner: [dave@example.com]
-  it_quality_manager: []
-""")
+  it_quality_manager: [erin@example.com]
+"""
+
+SERVERS = """
+systems:
+  tracker:
+    server: issues
+    transition_tools: {transition_issue: transition_id}
+    transitions: {11: In Review, 31: Approved}
+    approved_states: [Approved]
+  test_manager:
+    server: tests
+    transition_tools: {transition_test: transition}
+    transitions: {5: Ready for Review, 6: Approved}
+    approved_states: [Approved]
+  repository_host: {server: git}
+  document_system: {server: dms}
+"""
+
+
+@pytest.mark.req("REQ-CLI-6")
+def test_each_role_with_no_holder_is_one_error_naming_its_approvals(tmp_path):
+    write(tmp_path, SERVERS + HOLDERS.replace("[erin@example.com]", "[]")
+          .replace("[bob@example.com]", "[]"))
     found = setup_findings(load(tmp_path), "REQ-CLI-6")
-    reported = {(a, r) for f in found for a in config.DEFAULT_APPROVALS
-                for r in ("system_owner", "it_quality_manager")
-                if repr(a) in f.message and repr(r) in f.message}
-    assert reported == {("release", "it_quality_manager"), ("risk_assessment", "it_quality_manager")}
-    assert len(found) == 2
-    assert all(not f.is_failure and f.path == "vogon.yaml" for f in found)
+    assert [(f.severity, f.path, f.message) for f in found] == [
+        ("error", "vogon.yaml", "no holder for the role test_lead, which gives the test_cases "
+                                "and test_specification approvals"),
+        ("error", "vogon.yaml", "no holder for the role it_quality_manager, which gives the "
+                                "risk_assessment and release approvals"),
+    ]
+
+
+@pytest.mark.req("REQ-CLI-6")
+def test_a_role_giving_one_approval_names_it_in_the_singular(tmp_path):
+    write(tmp_path, SERVERS + HOLDERS.replace("[alice@example.com]", "[]"))
+    assert [f.message for f in setup_findings(load(tmp_path), "REQ-CLI-6")] == [
+        "no holder for the role product_owner, which gives the requirements approval"]
 
 
 @pytest.mark.req("REQ-CLI-6")
 def test_every_role_with_a_holder_reports_nothing(tmp_path):
-    write(tmp_path, """
-roles:
-  product_owner: [alice@example.com]
-  test_lead: [bob@example.com]
-  engineer: [alice@example.com]
-  system_owner: [dave@example.com]
-  it_quality_manager: [erin@example.com]
-""")
+    write(tmp_path, HOLDERS)
     assert setup_findings(load(tmp_path), "REQ-CLI-6") == []
 
 
 @pytest.mark.req("REQ-CLI-6")
-def test_default_setup_reports_every_approval_and_role(tmp_path):
+def test_a_role_no_approval_uses_is_not_reported(tmp_path):
+    write(tmp_path, SERVERS + HOLDERS + "  auditor: []\n")
+    assert config.check(load(tmp_path)) == []
+
+
+@pytest.mark.req("REQ-CLI-6")
+def test_default_setup_reports_every_role_once(tmp_path):
     found = setup_findings(load(tmp_path), "REQ-CLI-6")
-    expected = {("requirements", "product_owner"), ("test_cases", "test_lead"),
-                ("test_specification", "test_lead"), ("change", "engineer"),
-                ("risk_assessment", "system_owner"), ("risk_assessment", "it_quality_manager"),
-                ("release", "system_owner"), ("release", "it_quality_manager")}
-    assert {(a, r) for a, r in expected
-            if any(repr(a) in f.message and repr(r) in f.message for f in found)} == expected
-    assert len(found) == len(expected)
+    assert all(f.is_error for f in found)
+    assert [f.message.split(",")[0] for f in found] == [
+        f"no holder for the role {r}" for r in
+        ("product_owner", "test_lead", "engineer", "system_owner", "it_quality_manager")]
 
 
 # REQ-CLI-8: roles and transition settings come from setup
 
 
 @pytest.mark.req("REQ-CLI-8")
-def test_no_systems_entry_reports_each_needed_role_as_not_configured(tmp_path):
-    write(tmp_path, "test_command: pytest\n")
+def test_no_systems_entry_is_one_error_per_role_naming_its_approvals(tmp_path):
+    write(tmp_path, "test_command: pytest\n" + HOLDERS)
     found = setup_findings(load(tmp_path), "REQ-CLI-8")
-    assert all(not f.is_failure for f in found)
-    for role in config.SYSTEM_ROLES:
-        assert sum(f"the {role} role is not configured" in f.message for f in found) == 1
+    assert [(f.severity, f.path, f.message) for f in found] == [
+        ("error", "vogon.yaml", "no server for the tracker; the requirements approval cannot be given"),
+        ("error", "vogon.yaml", "no server for the test_manager; the test_cases approval cannot "
+                                "be given"),
+        ("error", "vogon.yaml", "no server for the repository_host; the change approval cannot "
+                                "be given"),
+        ("error", "vogon.yaml", "no server for the document_system; the test_specification, "
+                                "risk_assessment and release approvals cannot be given"),
+    ]
 
 
 @pytest.mark.req("REQ-CLI-8")
-def test_configured_role_is_not_reported_as_not_configured(tmp_path):
+def test_configured_role_is_not_reported_as_having_no_server(tmp_path):
     write(tmp_path, "systems:\n  document_system: {server: dms}\n  repository_host: {server: git}\n")
-    found = setup_findings(load(tmp_path), "REQ-CLI-8")
-    messages = " ".join(f.message for f in found)
-    assert "tracker role is not configured" in messages
-    assert "test_manager role is not configured" in messages
-    assert "document_system role" not in messages
-    assert "repository_host role" not in messages
+    messages = [f.message for f in setup_findings(load(tmp_path), "REQ-CLI-8")]
+    assert [m.split(";")[0] for m in messages] == ["no server for the tracker",
+                                                   "no server for the test_manager"]
+
+
+@pytest.mark.req("REQ-CLI-8")
+def test_a_system_role_no_approval_is_given_in_is_not_reported(tmp_path):
+    write(tmp_path, SERVERS.split("  repository_host:")[0] + HOLDERS + """
+approvals:
+  change: {roles: [engineer], system: tracker}
+  test_specification: {roles: [test_lead], system: tracker}
+  risk_assessment: {roles: [system_owner, it_quality_manager], system: tracker}
+  release: {roles: [system_owner, it_quality_manager], system: tracker}
+""")
+    assert config.check(load(tmp_path)) == []
+
+
+@pytest.mark.req("REQ-CLI-6", "REQ-CLI-8")
+def test_a_complete_setup_reports_nothing(tmp_path):
+    write(tmp_path, SERVERS + HOLDERS)
+    cfg = load(tmp_path)
+    assert cfg.findings == ()
+    assert config.check(cfg) == []
 
 
 @pytest.mark.req("REQ-CLI-8")
@@ -300,21 +344,21 @@ def test_configured_role_is_not_reported_as_not_configured(tmp_path):
     ({"transition_tools": "{move: id}"}, ["transitions", "approved_states"]),
     ({"transition_tools": "{move: id}", "transitions": "{1: Approved}"}, ["approved_states"]),
 ])
-def test_incomplete_transition_setup_is_a_failure_naming_the_missing_keys(tmp_path, role, present,
-                                                                         missing):
+def test_incomplete_transition_setup_is_an_error_naming_the_missing_keys(tmp_path, role, present,
+                                                                        missing):
     entry = "".join(f"\n    {k}: {v}" for k, v in present.items())
     write(tmp_path, f"systems:\n  {role}:\n    server: srv{entry}\n")
     cfg = load(tmp_path)
-    assert failures(cfg) == []
-    found = [f for f in setup_findings(cfg, "REQ-CLI-8") if f.is_failure]
-    assert len(found) == 1
+    assert errors(cfg) == []
+    found = [f for f in setup_findings(cfg, "REQ-CLI-8") if f.message.startswith("systems.")]
+    assert len(found) == 1 and found[0].is_error
     assert role in found[0].message and "srv" in found[0].message
     for key in ("transition_tools", "transitions", "approved_states"):
         assert (key in found[0].message) == (key in missing), key
 
 
 @pytest.mark.req("REQ-CLI-8")
-def test_complete_transition_setup_is_not_a_failure(tmp_path):
+def test_complete_transition_setup_is_not_an_error(tmp_path):
     write(tmp_path, """
 systems:
   tracker:
@@ -324,7 +368,7 @@ systems:
     approved_states: [Approved]
   repository_host: {server: git}
 """)
-    assert [f for f in config.check(load(tmp_path)) if f.is_failure] == []
+    assert [f for f in config.check(load(tmp_path)) if f.message.startswith("systems.")] == []
 
 
 @pytest.mark.req("REQ-CLI-8")

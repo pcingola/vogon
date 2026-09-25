@@ -2,7 +2,8 @@
 stdin and prints what Claude Code reads back (`src/docs/dev/architecture.md`,
 Hooks).
 
-    session-start  SessionStart: prints the configuration as plain text.
+    session-start  SessionStart: prints the configuration as plain text, with
+                   its errors and warnings.
     post-write     PostToolUse on Write, Edit, MultiEdit, NotebookEdit: after a
                    write under the records directory, the findings on that
                    file; after a write of vogon.yaml, the configuration. Both
@@ -55,6 +56,7 @@ import ids
 import records
 from checks import rel
 from config import FILENAME, TRANSITION_ROLES, Config
+from findings import Finding
 
 TEST_AGENTS = ("vogon-test-writer", "vogon-test-checker")
 AGENT_PREFIX = "vogon:"
@@ -137,7 +139,7 @@ def _real(path: Path, cwd: Path) -> Path:
 
 def configuration_text(cfg: Config) -> str:
     """The configuration as the agent receives it: the server for each role,
-    the approvals and the role holders, then what is invalid or unset."""
+    the approvals and the role holders, then the errors and the warnings."""
     lines = [f"VOGON configuration, read from {FILENAME}. A role is reached only "
              "through the server named for it here."]
     lines.append("Servers:")
@@ -156,11 +158,29 @@ def configuration_text(cfg: Config) -> str:
     lines.append("Role holders:")
     for role, holders in cfg.roles.items():
         lines.append(f"- {role}: {', '.join(holders) if holders else 'no holder'}")
-    found = [*cfg.findings, *config_module.check(cfg)]
-    if found:
-        lines.append("Findings:")
-        lines.extend(f"- {f.format()}" for f in found)
+    lines.extend(finding_sections([*cfg.findings, *config_module.check(cfg)]))
     return "\n".join(lines)
+
+
+SETUP_INCOMPLETE = ("VOGON setup is incomplete. Complete it by loading the `vogon` skill and "
+                    "following step 1, `references/config.md`.")
+
+
+def finding_sections(found: list[Finding]) -> list[str]:
+    """`Errors:` and `Warnings:`, each only when it has a line, and after any
+    error the instruction to complete setup."""
+    errors = [f for f in found if f.is_error]
+    warnings = [f for f in found if not f.is_error]
+    lines: list[str] = []
+    if errors:
+        lines.append("Errors:")
+        lines.extend(f"- {f.format()}" for f in errors)
+    if warnings:
+        lines.append("Warnings:")
+        lines.extend(f"- {f.format()}" for f in warnings)
+    if errors:
+        lines.append(SETUP_INCOMPLETE)
+    return lines
 
 
 def session_start(data: dict | None, root: Path) -> str:
@@ -416,7 +436,7 @@ def transition(data: dict | None, root: Path) -> str:
         return ""
     cfg = config_module.load(root)
     if cfg.systems_unreadable:
-        bad = [f.message for f in cfg.findings if f.is_failure]
+        bad = [f.message for f in cfg.findings if f.is_error]
         return deny(f"{FILENAME} cannot be read ({'; '.join(bad)}), so VOGON cannot tell "
                     "which MCP calls are transitions; every MCP call is refused until the "
                     "file is corrected.")

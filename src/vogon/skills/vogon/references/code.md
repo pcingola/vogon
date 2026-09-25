@@ -37,7 +37,7 @@ or fails.
       to make a run pass.
 - [ ] The person is given the outcome for each requirement: the tests that
       passed and failed, and the build.
-- [ ] `vogon check` reports no failure.
+- [ ] `vogon check` reports no error.
 
 ## Step 14: review and merge
 
@@ -46,7 +46,7 @@ or fails.
 - [ ] Its description says what the change does, names the record ids it
       implements, and names the plan.
 - [ ] `vogon change` is run with the base branch and the pull request
-      description, and reports no failure.
+      description, and reports no error.
 - [ ] The person is told that the change awaits review by an engineer other
       than its author, as the repository host's rules for the default branch
       require.

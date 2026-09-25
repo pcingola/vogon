@@ -48,8 +48,8 @@ fails.
 - [ ] Each filed document is read back with the tool mapped to
       `download_document` and saved under `.vogon/evidence/<build>/filed/`
       with the same relative path as its export, as the bytes returned.
-- [ ] `vogon evidence <build>` is run and reports no failure.
-- [ ] A failure is shown to the person verbatim, with the filed document it
+- [ ] `vogon evidence <build>` is run and reports no error.
+- [ ] An error is shown to the person verbatim, with the filed document it
       names. The filed document is not changed, replaced or removed by Claude
       Code; the person decides what is done with it.
 

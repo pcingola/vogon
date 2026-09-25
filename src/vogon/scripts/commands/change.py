@@ -16,7 +16,7 @@ import history
 import ids
 import records
 from config import Config
-from findings import Finding, failure
+from findings import Finding, error
 
 NAME = "change"
 HELP = "Check that the commits and pull request description of a change name existing records."
@@ -45,9 +45,9 @@ def _description(args) -> str:
 def check_change(config: Config, base: str, description: str) -> list[Finding]:
     commits = history.messages(config.root, f"{base}..HEAD")
     if commits is None:
-        return [failure(f"cannot read the commits between {base} and HEAD; the base must be a "
-                        "branch or commit git can resolve, in a clone with full history",
-                        requirement="REQ-TRC-9")]
+        return [error(f"cannot read the commits between {base} and HEAD; the base must be a "
+                      "branch or commit git can resolve, in a clone with full history",
+                      requirement="REQ-TRC-9")]
     sources = [(f"commit {history.short(c)}", m) for c, m in reversed(commits)]
     sources.append((DESCRIPTION, description))
 
@@ -58,12 +58,12 @@ def check_change(config: Config, base: str, description: str) -> list[Finding]:
             if where not in places:
                 places.append(where)
     if not named:
-        return [failure(f"the change from {base} to HEAD names no record id in its commit "
-                        f"messages or {DESCRIPTION}", requirement="REQ-TRC-9")]
+        return [error(f"the change from {base} to HEAD names no record id in its commit "
+                      f"messages or {DESCRIPTION}", requirement="REQ-TRC-9")]
 
     found, _ = records.load_all(config.records_dir)
-    return [failure(f"{rid} resolves to no record; it appears in {', '.join(places)}",
-                    requirement="REQ-TRC-9")
+    return [error(f"{rid} resolves to no record; it appears in {', '.join(places)}",
+                  requirement="REQ-TRC-9")
             for rid, places in named.items() if records.find(found, rid) is None]
 
 
@@ -71,6 +71,6 @@ def run(args, config: Config) -> list[Finding]:
     try:
         description = _description(args)
     except OSError as e:
-        return [failure(f"cannot read {args.description_file}: {e.strerror}",
-                        requirement="REQ-TRC-9")]
+        return [error(f"cannot read {args.description_file}: {e.strerror}",
+                      requirement="REQ-TRC-9")]
     return check_change(config, args.base, description)

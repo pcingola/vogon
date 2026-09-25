@@ -128,7 +128,7 @@ Hooks cover what has to happen without anyone asking for it. Each entry in
 
 | Hook | Runs | Does |
 | --- | --- | --- |
-| `session-start` | On `SessionStart` | Prints the configured server for each role, the approval roles and their holders. With no `vogon.yaml`, prints an instruction to run setup (`REQ-CLI-10`) |
+| `session-start` | On `SessionStart` | Prints the configured server for each role, the approval roles and their holders, then the configuration errors and warnings; after an error, an instruction to complete setup. With no `vogon.yaml`, prints an instruction to run setup (`REQ-CLI-10`) |
 | `post-write` | After a write | After a write under `vogon/`, runs `vogon check` on the file and returns the findings. After a write of `vogon.yaml`, returns the configuration |
 | `commit` | Before a `git commit` | Refuses a message naming an id that resolves to no record |
 | `transition` | Before a call to any `mcp__` tool | Refuses a transition into an approved state, and every call to a server whose transition setup is incomplete |
@@ -214,9 +214,9 @@ roles:
 ```
 
 The assignment above is the default `vogon init` writes. Role holders are
-emails. A role may be listed with no holder until the project's procedure
-names one, and VOGON reports every approval whose role has none
-(`REQ-CLI-6`). Once an approval has been given, VOGON reads who gave it and
+emails, and setup asks the person for them. A role that an approval uses and
+that has no holder is an error, one per role naming the approvals it gives
+(`REQ-CLI-6`), because those approvals cannot be given. Once an approval has been given, VOGON reads who gave it and
 reports an approver who does not hold the configured role (`REQ-TRK-9`) or who
 is an author of what was approved (`CON-002`, `REQ-TRK-8`). A record's authors
 are the author emails of the commits that changed its file up to the time of
@@ -322,19 +322,22 @@ only where it cannot know (`REQ-CLI-8`):
   `document_system`), the connected server that provides the role's
   operations. With one candidate, that server is used. With several, the
   person chooses, because only the person knows which one company policy
-  requires. With none, the role stays absent, and every step and check that
-  needs it reports the role as not configured.
+  requires. With none, the role stays absent: `vogon check` reports an error
+  naming the approvals given in it, and every step and check that needs it
+  reports a warning that it was skipped.
 - For the tracker and the test manager, Claude Code reads the workflow
   through the chosen server and proposes as approved the states whose names
   say approval or signature. It finds the tools that perform a transition
   and, from each tool's input schema, the argument that holds the transition
   id. Setup writes that role's `server`, `transition_tools`, `transitions`
   and `approved_states` in one write.
-- Role holders are not asked. A role may have none until the procedure names
-  one, and `vogon check` reports it (`REQ-CLI-6`).
+- `roles`. The person is asked for the holders, as emails, of every role an
+  approval uses. A role with no holder is an error in `vogon check`
+  (`REQ-CLI-6`).
 
 Claude Code shows everything it filled in as one list, and the person
-confirms or corrects it in one answer. Claude Code then commits `vogon.yaml`:
+confirms or corrects it in one answer. Claude Code then commits `vogon.yaml`.
+Setup is complete when `vogon check` reports no error about `vogon.yaml`.
 
 ```yaml
 systems:
@@ -376,11 +379,20 @@ told. A setting absent from the file takes its default: the paths,
 `REQ-CLI-5`). `systems`, `transitions` and `approved_states` have none
 (`REQ-CLI-8`).
 
-A finding is a failure or a notice. Only a failure sets a non-zero exit status
-(`REQ-CLI-1`). An approval whose role has no holder (`REQ-CLI-6`), a check
-skipped because a system is unreachable (`REQ-CLI-2`) and a role that is not
-configured are notices, so a fresh setup and a project with no external
-systems pass `vogon check`.
+A finding is an error or a warning. Only an error sets a non-zero exit status
+(`REQ-CLI-1`). Incomplete setup is an error, reported against `vogon.yaml`
+with one line per role: a role that an approval uses and that has no holder
+(`REQ-CLI-6`), a system role that an approval is given in and that has no
+server, and a tracker or test manager with incomplete transition settings
+(`REQ-CLI-8`). A role that no approval uses is not reported. A check skipped
+because the file it reads is absent (`REQ-CLI-2`), and a step skipped because
+its role is not configured, are warnings. A fresh setup therefore fails
+`vogon check` until the person has named the servers and the holders.
+
+`session-start` prints the configuration, then `Errors:` and `Warnings:`,
+each only when it has a line, as `- ERROR: vogon.yaml: <message>`. After an
+error it prints an instruction to complete setup through step 1 of the skill,
+`config.md`.
 
 ## Where things sit in a host project
 
@@ -458,7 +470,7 @@ approved state, and its approver is the email on that transition. The formats
 of every file under `.vogon/` are in the docstring of `snapshots.py`.
 
 A check that needs one of these files and does not find it reports that it was
-skipped, as a notice (`REQ-CLI-2`), when the role it reads is configured.
+skipped, as a warning (`REQ-CLI-2`), when the role it reads is configured.
 
 A later version may make the tracker the source of truth instead, with the
 markdown dropped or kept as a cache of it. That reverses the direction, and

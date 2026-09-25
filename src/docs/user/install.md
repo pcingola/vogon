@@ -68,12 +68,16 @@ Claude Code then fills in `systems` from the MCP servers connected to it:
   argument of each that holds the transition id, and lists each transition id
   with its target state.
 
+- For each role an approval uses, the email of each holder. Claude Code asks
+  you for them, because only you know who holds a role.
+
 Claude Code shows everything it filled in as one list; you confirm or correct
 it in one answer. It saves the tools of each configured server to
 `.vogon/servers.json`, so that `vogon check` reports any operation VOGON needs
-that a server lacks (`REQ-CLI-4`), and commits `vogon.yaml`. Role holders are
-not asked for; `vogon check` reports each approval whose role has no holder
-until you add one.
+that a server lacks (`REQ-CLI-4`), and commits `vogon.yaml`. Setup is complete
+when `vogon check` reports no error about `vogon.yaml`. Until then each
+session starts with the configuration errors and an instruction to complete
+setup.
 
 When a workflow changes in the tracker or the test manager, ask Claude Code to
 set up that role again.
@@ -137,9 +141,12 @@ roles:
 | `approvals.<approval>` | The roles that give an approval and the system role it is given in. | the approvals in the example |
 | `roles.<role>` | The email of each person holding the role. | no holders |
 
-`systems` has no default. A role with no entry is not configured. A
-configured tracker or test manager missing `transition_tools`, `transitions`
-or `approved_states` is a failure in `vogon check`, and the `transition` hook
+`systems` has no default. A role with no entry is not configured. `vogon
+check` reports an error for a system role that an approval is given in and
+that has no server, and for a role that an approval uses and that has no
+holder (`REQ-CLI-6`), one line per role naming the approvals that cannot be
+given. A configured tracker or test manager missing `transition_tools`,
+`transitions` or `approved_states` is an error too, and the `transition` hook
 refuses every call to its server until setup writes them, so an incomplete
 setup cannot move an issue into an approved state (`REQ-TRK-1`).
 

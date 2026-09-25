@@ -36,8 +36,8 @@ COMMANDS = [
 ]
 
 DESCRIPTION = """VOGON maintains the requirements, traceability and validation evidence for a
-GxP software project. Findings are failures or notices; the exit status is
-non-zero only when there is a failure."""
+GxP software project. Findings are errors or warnings; the exit status is
+non-zero only when there is an error."""
 
 
 def build_parser() -> argparse.ArgumentParser:

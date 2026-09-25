@@ -62,7 +62,7 @@ def test_record_free_of_violations_produces_no_findings(tmp_path):
 def test_banned_phrase_in_body_is_reported_with_file_and_line(tmp_path, phrase):
     found = run(tmp_path, HEAD + f"\nFirst line.\n\nThis is {phrase} here.\n")
     assert len(found) == 1
-    assert found[0].is_failure
+    assert found[0].is_error
     assert found[0].requirement == "REQ-REC-8"
     assert found[0].path == REQ_PATH
     assert found[0].line == BODY_LINE + 3
@@ -198,7 +198,7 @@ def test_brand_fixed_string_in_a_record_is_reported(tmp_path, text):
     found = run(tmp_path, HEAD + "\nFirst line.\n" + text + "\n")
     assert len(found) == 1
     assert found[0].requirement == "REQ-GEN-5"
-    assert found[0].is_failure
+    assert found[0].is_error
     assert (found[0].path, found[0].line) == (REQ_PATH, BODY_LINE + 2)
 
 

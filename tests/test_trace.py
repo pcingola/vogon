@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -149,7 +150,7 @@ def test_a_run_with_uncommitted_changes_records_no_build(tmp_path, capsys, chang
     assert [t["outcome"] for t in results["tests"]] == ["passed"]
     assert status == 0
     assert "build none" in out
-    assert "notice: no build recorded" in out and "uncommitted" in out
+    assert re.search(r"^WARNING: \S+: no build recorded", out, re.M) and "uncommitted" in out
 
 
 @pytest.mark.req("REQ-TRC-6")

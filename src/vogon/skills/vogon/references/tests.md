@@ -62,7 +62,7 @@ test whose marker names it, and reports:
 
 ## Step 10: handing the tests over
 
-- [ ] `vogon check` reports no failure from the marker checks.
+- [ ] `vogon check` reports no error from the marker checks.
 - [ ] The final step 9 report goes to the person with the test cases, for the
       roles `approvals.test_cases` names, who approve the test issues in the
       test manager.

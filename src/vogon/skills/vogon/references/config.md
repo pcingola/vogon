@@ -1,10 +1,10 @@
 # Setup (step 1)
 
 Creating `vogon.yaml` and the records layout in a host project, and filling in
-the server for each role from the MCP servers connected to Claude Code
-(`REQ-CLI-8`, `DEC-025`). Each item below is a rule the setup meets or fails.
-The schema of `vogon.yaml` is in the docstring of
-`${CLAUDE_PLUGIN_ROOT}/scripts/config.py`.
+the server for each role from the MCP servers connected to Claude Code and
+the role holders from the person (`REQ-CLI-6`, `REQ-CLI-8`, `DEC-025`). Each
+item below is a rule the setup meets or fails. The schema of `vogon.yaml` is
+in the docstring of `${CLAUDE_PLUGIN_ROOT}/scripts/config.py`.
 
 ## Initialising
 
@@ -18,7 +18,7 @@ The schema of `vogon.yaml` is in the docstring of
       nothing.
 - [ ] The values `vogon init` writes are not asked of the person: the paths,
       `test_command` and the approval assignment.
-- [ ] A failure `vogon init` reports, such as a marker it cannot add, is
+- [ ] An error `vogon init` reports, such as a marker it cannot add, is
       shown to the person with the file it names.
 
 ## Running setup again for a role
@@ -41,7 +41,8 @@ The roles are `tracker`, `test_manager`, `repository_host` and
 - [ ] With several, the person is asked to choose, and shown each candidate
       with the tools found for each operation. Claude Code does not choose.
 - [ ] With none, the role is left out of `systems`, and the person is told
-      the role is not configured and which operations no server provides.
+      the role is not configured, which operations no server provides, and
+      which approvals cannot be given until it is.
 - [ ] A server with tools for some of a role's operations and not all is not
       a candidate. It is named to the person with the operations it lacks.
 - [ ] `server` is the name Claude Code lists for the server, the scoped name
@@ -69,17 +70,19 @@ The roles are `tracker`, `test_manager`, `repository_host` and
 
 ## Role holders
 
-- [ ] The person is not asked for role holders. `roles` keeps the empty
-      lists `vogon init` wrote until the project's procedure names the
-      holders, and `vogon check` reports each approval with no holder as a
-      notice.
+- [ ] The person is asked for the holders, as email addresses, of every role
+      an approval under `approvals` uses. A role no approval uses is not
+      asked about.
+- [ ] The holders are written under `roles`, one list per role, as given.
 
 ## Confirming and writing
 
 - [ ] Everything setup derived is shown as one list before any write: for
       each role the server, or that it is not configured; for the tracker and
       the test manager `transition_tools`, `transitions` and
-      `approved_states`; and the tool found for each operation.
+      `approved_states`; the tool found for each operation; and each role an
+      approval uses, with the approvals it gives, for the person to name its
+      holders.
 - [ ] The person confirms or corrects the list in one answer. Corrections are
       applied as given.
 - [ ] `vogon.yaml` is written once, after that answer, keeping every key
@@ -94,11 +97,13 @@ The roles are `tracker`, `test_manager`, `repository_host` and
 
 ## Checking and committing
 
-- [ ] `vogon check` is run. A failure naming a role, a server and an
-      operation means the server lacks it: setup has failed, and the person
-      is told the role, the server and each missing operation.
-- [ ] Every notice is shown to the person, including each role not
-      configured and each approval with no holder.
+- [ ] `vogon check` is run. An error naming a role, a server and an
+      operation means the server lacks it, and the person is told the role,
+      the server and each missing operation.
+- [ ] Setup is complete only when `vogon check` reports no error at
+      `vogon.yaml`. Each such error is shown to the person, and setup is not
+      reported as complete while one remains.
+- [ ] Every warning is shown to the person.
 - [ ] `vogon.yaml`, the records directory, `.gitignore` and the pytest
       configuration file are committed, with a message saying VOGON was set
       up. `.vogon/` is not committed.

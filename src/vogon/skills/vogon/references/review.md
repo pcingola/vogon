@@ -12,7 +12,7 @@ rule the review meets or fails. The report also follows
 - [ ] The review covers every record whose status is `proposed` or
       `accepted`, and every held document in `vogon/sources/` that a record
       cites or that was filed at step 2 for this change.
-- [ ] `vogon check` reports no failure before the review starts. A failure
+- [ ] `vogon check` reports no error before the review starts. An error
       is fixed first, following `references/records.md`.
 - [ ] Records that are `withdrawn` or superseded are read only to find a
       record that still depends on them.
@@ -68,6 +68,6 @@ rule the review meets or fails. The report also follows
       `vogon-writer`, following `references/records.md`, and checked by
       `vogon-checker`.
 - [ ] A missing record is created with `vogon id` and has status `proposed`.
-- [ ] `vogon check` reports no failure after the edits.
+- [ ] `vogon check` reports no error after the edits.
 - [ ] The person is told which records remain `proposed`. Only an `accepted`
       record is registered at step 5.

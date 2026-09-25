@@ -80,7 +80,7 @@ def test_marker_naming_no_requirement_fails(tmp_path, named):
     put(tmp_path, "vogon/facts/FACT-001.md", "---\nid: FACT-001\ntype: fact\n---\n")
     rel = write_test(tmp_path, f'@pytest.mark.req("REQ-TRC-1", "{named}")\ndef test_x():\n    pass\n')
     found = check(tmp_path, marker_checks.resolution)
-    assert [(f.path, f.line, f.requirement, f.is_failure) for f in found] == [
+    assert [(f.path, f.line, f.requirement, f.is_error) for f in found] == [
         (rel, 4, "REQ-TRC-2", True)]
     assert f"{rel}::test_x" in found[0].message and named in found[0].message
 
@@ -92,7 +92,7 @@ def test_a_test_file_that_is_not_utf8_fails_naming_the_file(tmp_path):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_bytes(b'# caf\xe9\n@pytest.mark.req("REQ-TRC-1")\ndef test_x():\n    pass\n')
     found = check(tmp_path, marker_checks.resolution)
-    assert [(f.path, f.requirement, f.is_failure) for f in found] == [
+    assert [(f.path, f.requirement, f.is_error) for f in found] == [
         ("tests/test_latin1.py", "REQ-TRC-2", True)]
     assert "UTF-8" in found[0].message
 
@@ -160,7 +160,7 @@ def test_accepted_requirement_verified_by_test_that_no_marker_names_fails(tmp_pa
     req(tmp_path, "REQ-TRC-2", gxp_risk=gxp_risk)
     write_test(tmp_path, '@pytest.mark.req("REQ-TRC-1")\ndef test_x():\n    pass\n')
     found = check(tmp_path, marker_checks.coverage)
-    assert [(f.path, f.requirement, f.is_failure) for f in found] == [
+    assert [(f.path, f.requirement, f.is_error) for f in found] == [
         ("vogon/requirements/TRC/REQ-TRC-2.md", "REQ-TRC-4", True)]
     assert "REQ-TRC-2" in found[0].message
 

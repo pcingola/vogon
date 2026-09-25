@@ -10,7 +10,7 @@ shows and applies. Each item below is a rule the step meets or fails.
 - [ ] The step reads and writes only through the servers `vogon.yaml` names
       for `tracker` and `test_manager`. A role with no server is reported as
       not configured and its part of the step is skipped.
-- [ ] `vogon check` reports no failure.
+- [ ] `vogon check` reports no error.
 - [ ] Step 5 registers only `accepted` records. Step 10 follows the step 10
       items of `references/tests.md`. Step 15 needs `vogon trace` run on a
       committed working tree, so `.vogon/results.json` records a build.
@@ -46,7 +46,7 @@ Read it before writing the file.
 ## Planning
 
 - [ ] `vogon push --plan` is run after the read, and its output is the plan.
-      A failure it reports is shown to the person and is not worked around.
+      An error it reports is shown to the person and is not worked around.
 - [ ] The person is shown every line it printed, and nothing is written
       until the person confirms. `no changes` means nothing is written.
 - [ ] A record or test reported as requiring re-approval is shown to the
@@ -79,7 +79,7 @@ Read it before writing the file.
       records' `tracked_as`. The records are never edited by hand for this.
 - [ ] The issues are read again into `.vogon/tracker.json`, and
       `vogon push --plan` then prints `no changes`.
-- [ ] `vogon check` reports no failure, and the `tracked_as` changes are
+- [ ] `vogon check` reports no error, and the `tracked_as` changes are
       committed with a message naming the record ids.
 
 ## After the step

@@ -25,7 +25,7 @@ from pathlib import Path
 
 import snapshots
 from config import Config
-from findings import Finding, failure
+from findings import Finding, error
 
 NAME = "evidence"
 HELP = "Compare the test manager's export for a build with the copies filed in the document system."
@@ -53,16 +53,16 @@ def _files(base: Path) -> dict[str, Path]:
 def run(args, config: Config) -> list[Finding]:
     build = args.build.strip()
     if not build or "/" in build or "\\" in build or build in (".", ".."):
-        return [failure(f"{args.build!r} is not a build identifier", requirement=REQ)]
+        return [error(f"{args.build!r} is not a build identifier", requirement=REQ)]
     base = build_dir(config, build)
     shown = f"{snapshots.STATE_DIR}/{EVIDENCE_DIR}/{build}"
     exported, filed = _files(base / EXPORT), _files(base / FILED)
     if not exported:
-        return [failure(f"nothing exported for build {build}: {shown}/{EXPORT}/ is empty or absent",
-                        requirement=REQ)]
+        return [error(f"nothing exported for build {build}: {shown}/{EXPORT}/ is empty or absent",
+                      requirement=REQ)]
     if not filed:
-        return [failure(f"nothing read back from the document system for build {build}: "
-                        f"{shown}/{FILED}/ is empty or absent", requirement=REQ)]
+        return [error(f"nothing read back from the document system for build {build}: "
+                      f"{shown}/{FILED}/ is empty or absent", requirement=REQ)]
     other_builds = {}
     for d in sorted((config.root / snapshots.STATE_DIR / EVIDENCE_DIR).iterdir()):
         if d.is_dir() and d.name != build:
@@ -74,27 +74,27 @@ def run(args, config: Config) -> list[Finding]:
     for name in sorted(set(exported) | set(filed)):
         where = f"{shown}/{FILED}/{name}"
         if name not in filed:
-            found.append(failure(f"{name} was exported for build {build} and has no filed copy",
-                                 path=f"{shown}/{EXPORT}/{name}", requirement=REQ))
+            found.append(error(f"{name} was exported for build {build} and has no filed copy",
+                               path=f"{shown}/{EXPORT}/{name}", requirement=REQ))
             continue
         data = filed[name].read_bytes()
         same = name in exported and data == exported[name].read_bytes()
         # A copy equal to this build's export is this build's, even when another
         # build exported the same bytes.
         if not same and data in other_builds:
-            found.append(failure(f"{name} is the export of build {other_builds[data]}, "
-                                 f"not {build}", path=where, requirement=REQ))
+            found.append(error(f"{name} is the export of build {other_builds[data]}, "
+                               f"not {build}", path=where, requirement=REQ))
             continue
         if name not in exported:
-            found.append(failure(f"{name} is filed and is not in the export for build {build}",
-                                 path=where, requirement=REQ))
+            found.append(error(f"{name} is filed and is not in the export for build {build}",
+                               path=where, requirement=REQ))
             continue
         if not same:
-            found.append(failure(f"{name} differs from the exported file", path=where,
-                                 requirement=REQ))
+            found.append(error(f"{name} differs from the exported file", path=where,
+                               requirement=REQ))
         if build not in name and token not in data:
-            found.append(failure(f"{name} does not name build {build}", path=where,
-                                 requirement=REQ))
+            found.append(error(f"{name} does not name build {build}", path=where,
+                               requirement=REQ))
     if not found:
         sys.stdout.write(f"every filed copy for build {build} matches the export\n")
     return found

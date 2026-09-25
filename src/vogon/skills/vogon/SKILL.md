@@ -24,7 +24,7 @@ and the reference files write that as `vogon <command>`.
 | `vogon push --plan`, `vogon push --record FILE` | Plans tracker writes; writes created keys into `tracked_as` |
 | `vogon evidence <build>` | Compares the exported evidence with the copies filed |
 
-A finding is a failure or a notice. Only a failure sets a non-zero exit status.
+A finding is an error or a warning. Only an error sets a non-zero exit status.
 
 ## Pipeline
 
@@ -91,9 +91,9 @@ credentials in the system that holds it (`CON-001`). Therefore:
 ## Checks
 
 - Run `vogon check` after every step that changes a file under `vogon/`.
-- Fix a failure in the output. Never change a check, a hook or
+- Fix an error in the output. Never change a check, a hook or
   `vogon.yaml` to make a finding go away.
-- Tell the person every notice.
+- Tell the person every warning.
 
 ## Writer and checker loop
 

@@ -258,7 +258,7 @@ def test_schema_violation_names_file_field_and_rule(tmp_path, rel, old, new, fie
     found = check(tmp_path, record_checks.schema)
     assert len(found) == 1, found
     f = found[0]
-    assert (f.path, f.line, f.requirement, f.is_failure) == (rel, line, "REQ-REC-1", True)
+    assert (f.path, f.line, f.requirement, f.is_error) == (rel, line, "REQ-REC-1", True)
     assert f"'{field}'" in f.message
     assert rule in f.message
 
@@ -425,7 +425,7 @@ def test_accepted_requirement_without_accepted_block_fails(tmp_path, old, new):
     edit(tmp_path, TRK_2_PATH, "gxp_risk: data integrity", "gxp_risk: safety")
     edit(tmp_path, TRK_2_PATH, old, new)
     found = check(tmp_path, record_checks.acceptance)
-    assert [(f.path, f.line, f.requirement, f.is_failure) for f in found] == [
+    assert [(f.path, f.line, f.requirement, f.is_error) for f in found] == [
         (TRK_2_PATH, 6, "REQ-REC-12", True)]
     assert "'safety'" in found[0].message and "proposed" in found[0].message
 
@@ -436,7 +436,7 @@ def test_proposed_requirement_without_acceptance_is_reported_and_does_not_fail(t
     edit(tmp_path, TRK_2_PATH, "status: accepted", "status: proposed")
     edit(tmp_path, TRK_2_PATH, "acceptance_by: alice@example.com\nacceptance_on: 2026-03-01\n", "")
     found = check(tmp_path, record_checks.acceptance)
-    assert [(f.path, f.requirement, f.is_failure) for f in found] == [
+    assert [(f.path, f.requirement, f.is_error) for f in found] == [
         (TRK_2_PATH, "REQ-REC-12", False)]
 
 
@@ -515,7 +515,7 @@ def test_record_asserting_approval_is_invalid(tmp_path, old, new, line):
     project(tmp_path)
     edit(tmp_path, TRK_2_PATH, old, new)
     found = check(tmp_path, record_checks.approval_claims)
-    assert [(f.path, f.line, f.requirement, f.is_failure) for f in found] == [
+    assert [(f.path, f.line, f.requirement, f.is_error) for f in found] == [
         (TRK_2_PATH, line, "REQ-TRK-7", True)]
     assert check(tmp_path, record_checks.schema) == []
 

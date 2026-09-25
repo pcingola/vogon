@@ -113,4 +113,4 @@ Apply to each sentence of the source, in this order. The first match wins.
 
 ## Done
 
-- [ ] `vogon check` reports no failure for the files written.
+- [ ] `vogon check` reports no error for the files written.

@@ -15,7 +15,7 @@ import ids
 import records
 from checks import rel
 from config import Config
-from findings import Finding, failure
+from findings import Finding, error
 
 NAME = "id"
 HELP = "Mint the next unused record id and create the record file named for it."
@@ -50,21 +50,21 @@ def _scalar(text: str) -> str:
 def run(args, config: Config) -> list[Finding]:
     prefix = TYPE_NAMES.get(args.type) or TYPE_NAMES.get(args.type.upper())
     if prefix is None:
-        return [failure(f"unknown record type {args.type!r}; use one of "
-                        f"{', '.join(ids.PREFIXES)}", requirement="REQ-REC-7")]
+        return [error(f"unknown record type {args.type!r}; use one of "
+                      f"{', '.join(ids.PREFIXES)}", requirement="REQ-REC-7")]
     module = args.module
     if module is not None:
         if not ids.MODULE_RE.match(module):
-            return [failure(f"module {module!r} is not uppercase letters and digits",
-                            requirement="REQ-REC-13")]
+            return [error(f"module {module!r} is not uppercase letters and digits",
+                          requirement="REQ-REC-13")]
         try:
             declared = records.load_modules(config.records_dir)
         except records.RecordError as e:
-            return [failure(e.message, path=rel(config, e.path), requirement="REQ-REC-14")]
+            return [error(e.message, path=rel(config, e.path), requirement="REQ-REC-14")]
         if declared is None or module not in declared:
             where = rel(config, config.records_dir / records.MODULES_FILE)
-            return [failure(f"module {module} is not declared in {where}; add it there first",
-                            requirement="REQ-REC-14")]
+            return [error(f"module {module} is not declared in {where}; add it there first",
+                          requirement="REQ-REC-14")]
     rid = ids.mint(config.root, config.records_dir, prefix, module)
     path = ids.record_path(config.records_dir, rid)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -72,7 +72,7 @@ def run(args, config: Config) -> list[Finding]:
         with path.open("x", encoding="utf-8") as f:
             f.write(frontmatter(rid, args.title))
     except FileExistsError:
-        return [failure(f"{rel(config, path)} already exists", path=rel(config, path),
-                        requirement="REQ-REC-7")]
+        return [error(f"{rel(config, path)} already exists", path=rel(config, path),
+                      requirement="REQ-REC-7")]
     sys.stdout.write(f"{rid} {rel(config, path)}\n")
     return []

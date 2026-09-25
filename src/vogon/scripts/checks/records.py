@@ -13,7 +13,7 @@ import records
 import sources
 from checks import rel
 from config import Config
-from findings import Finding, failure, notice
+from findings import Finding, error, warning
 
 COMMON_FIELDS = ("id", "type", "title", "modules", "status", "source", "reviewed_by",
                  "reviewed_on", "tags", "tracked_as", "depends_on", "references")
@@ -66,7 +66,7 @@ def _f(config: Config, message: str, record: records.Record, key: str | None = N
        requirement: str | None = None, line: int | None = None) -> Finding:
     if line is None and key is not None:
         line = record.line_of(key)
-    return failure(message, path=rel(config, record.path), line=line, requirement=requirement)
+    return error(message, path=rel(config, record.path), line=line, requirement=requirement)
 
 
 def has_acceptance_block(record: records.Record) -> bool:
@@ -95,8 +95,8 @@ def schema(config: Config) -> Iterable[Finding]:
     its type requires, no field its type does not define, and allowed values."""
     found, errors = _load(config)
     for e in errors:
-        yield failure(f"record {e.message}", path=rel(config, e.path), line=e.line,
-                      requirement="REQ-REC-1")
+        yield error(f"record {e.message}", path=rel(config, e.path), line=e.line,
+                    requirement="REQ-REC-1")
     for r in found:
         yield from _schema(config, r)
 
@@ -292,13 +292,13 @@ def modules(config: Config) -> Iterable[Finding]:
     try:
         declared = records.load_modules(config.records_dir)
     except records.RecordError as e:
-        yield failure(e.message, path=rel(config, e.path), requirement="REQ-REC-14")
+        yield error(e.message, path=rel(config, e.path), requirement="REQ-REC-14")
         return
     if declared is not None:
         for name in declared:
             if not ids.MODULE_RE.match(name):
-                yield failure(f"module {name!r} is not uppercase letters and digits",
-                              path=rel(config, modules_path), requirement="REQ-REC-14")
+                yield error(f"module {name!r} is not uppercase letters and digits",
+                            path=rel(config, modules_path), requirement="REQ-REC-14")
     for r in found:
         undeclared = [m for m in records.record_modules(r) if declared is None or m not in declared]
         for m in undeclared:
@@ -315,7 +315,7 @@ def modules(config: Config) -> Iterable[Finding]:
 def acceptance(config: Config) -> Iterable[Finding]:
     """REQ-REC-12: a requirement carrying risk or verified by test has an
     acceptance block with `acceptance_by` and `acceptance_on`, and stays
-    `proposed` until it has. On a proposed requirement the gap is a notice."""
+    `proposed` until it has. On a proposed requirement the gap is a warning."""
     found, _ = _load(config)
     for r in found:
         if r.type != "requirement":
@@ -336,10 +336,10 @@ def acceptance(config: Config) -> Iterable[Finding]:
         message = f"a requirement with {why} needs {' and '.join(missing)}"
         path = rel(config, r.path)
         if r.status == "proposed":
-            yield notice(message + " before it leaves proposed", path=path,
-                         line=r.line_of("status"), requirement="REQ-REC-12")
+            yield warning(message + " before it leaves proposed", path=path,
+                          line=r.line_of("status"), requirement="REQ-REC-12")
         else:
-            yield failure(message + f"; its status is {r.status!r} and must stay proposed until "
+            yield error(message + f"; its status is {r.status!r} and must stay proposed until "
                                     "it has them", path=path, line=r.line_of("status"),
                           requirement="REQ-REC-12")
 
@@ -353,8 +353,8 @@ def reuse(config: Config) -> Iterable[Finding]:
     root, rdir = config.root, config.records_dir
     if not history.is_repo(root):
         if records.record_files(rdir):
-            yield notice("id reuse check skipped: the project is not a git repository",
-                         requirement="REQ-REC-5")
+            yield warning("id reuse check skipped: the project is not a git repository",
+                          requirement="REQ-REC-5")
         return
     top = history.toplevel(root)
     if top is None or not history.has_commits(root):
@@ -410,13 +410,13 @@ def reuse(config: Config) -> Iterable[Finding]:
         if key in present:
             r = current.get(key)
             where = shown(path) if r is None else rel(config, r.path)
-            yield failure(f"id {stem} was held by a record deleted in {history.short(commit)} and "
-                          "is taken again in the working tree; an id is never reused",
-                          path=where, requirement="REQ-REC-5")
+            yield error(f"id {stem} was held by a record deleted in {history.short(commit)} and "
+                        "is taken again in the working tree; an id is never reused",
+                        path=where, requirement="REQ-REC-5")
         else:
-            yield failure(f"record {stem} was deleted in {history.short(commit)}; a record is "
-                          "withdrawn and keeps its file, never deleted",
-                          path=shown(path), requirement="REQ-REC-5")
+            yield error(f"record {stem} was deleted in {history.short(commit)}; a record is "
+                        "withdrawn and keeps its file, never deleted",
+                        path=shown(path), requirement="REQ-REC-5")
     for key, (gone, back) in retaken.items():
         r = current.get(key)
         if r is not None:
@@ -426,9 +426,9 @@ def reuse(config: Config) -> Iterable[Finding]:
     for key, paths_now in held.items():
         if paths_now and key not in present:
             path = sorted(paths_now)[0]
-            yield failure(f"record {Path(path).stem} is committed and has been deleted from the "
-                          "working tree; a record is withdrawn and keeps its file, never deleted",
-                          path=shown(path), requirement="REQ-REC-5")
+            yield error(f"record {Path(path).stem} is committed and has been deleted from the "
+                        "working tree; a record is withdrawn and keeps its file, never deleted",
+                        path=shown(path), requirement="REQ-REC-5")
 
     # The first revision in which each id was withdrawn or superseded.
     retired: dict[tuple, tuple[str, str]] = {}

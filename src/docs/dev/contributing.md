@@ -37,7 +37,7 @@ naming it, the same marker VOGON provides to host projects:
 import pytest
 
 @pytest.mark.req("REQ-CLI-1")
-def test_notice_alone_exits_zero():
+def test_warning_alone_exits_zero():
     ...
 ```
 

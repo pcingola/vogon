@@ -97,8 +97,8 @@ def run(check, root: Path):
     return list(check(cfg(root)))
 
 
-def failures(found):
-    return [f for f in found if f.is_failure]
+def errors(found):
+    return [f for f in found if f.is_error]
 
 
 def git(root: Path, *args: str, date: str | None = None, email: str = "alice@example.com") -> None:
@@ -118,15 +118,15 @@ def commit(root: Path, message: str, date: str, email: str = "alice@example.com"
     git(root, "commit", "-q", "--allow-empty", "-m", message, date=date, email=email)
 
 
-# REQ-CLI-2: a missing snapshot skips the checks that read it, as a notice.
+# REQ-CLI-2: a missing snapshot skips the checks that read it, as a warning.
 
 
 @pytest.mark.req("REQ-CLI-2")
-def test_missing_snapshots_are_notices_and_no_failure(tmp_path):
+def test_missing_snapshots_are_warnings_and_no_error(tmp_path):
     project(tmp_path)
     write_record(tmp_path, "REQ-TRK-1")
     found = [f for c in checks.CHECKS for f in c(cfg(tmp_path))]
-    assert failures(found) == []
+    assert errors(found) == []
     paths = sorted(f.path for f in found)
     assert paths == [".vogon/branch_rules.json", ".vogon/risk_assessment.md",
                      ".vogon/servers.json", ".vogon/tracker.json"]
@@ -134,18 +134,18 @@ def test_missing_snapshots_are_notices_and_no_failure(tmp_path):
 
 
 @pytest.mark.req("REQ-CLI-2")
-def test_no_snapshot_notice_for_a_project_with_no_systems(tmp_path):
+def test_no_snapshot_warning_for_a_project_with_no_systems(tmp_path):
     write_record(tmp_path, "REQ-TRK-1")
     assert [f for c in checks.CHECKS for f in c(cfg(tmp_path))] == []
 
 
 @pytest.mark.req("REQ-CLI-8")
-def test_snapshot_read_from_another_server_is_a_failure(tmp_path):
+def test_snapshot_read_from_another_server_is_an_error(tmp_path):
     project(tmp_path)
     (tmp_path / "vogon.yaml").write_text(SETUP.replace("server: issues", "server: other"))
     snapshot(tmp_path)
     found = run(checks.tracker_snapshot, tmp_path)
-    assert len(found) == 1 and found[0].is_failure
+    assert len(found) == 1 and found[0].is_error
     assert "'issues'" in found[0].message and "'other'" in found[0].message
 
 
@@ -169,7 +169,7 @@ def test_record_edited_after_approval_requires_re_approval(tmp_path):
                                              "The thing is reported. A second clause."))
     found = run(checks.edited_after_approval, tmp_path)
     assert [(f.severity, f.requirement, f.path) for f in found] == [
-        ("failure", "REQ-TRK-2", "vogon/requirements/TRK/REQ-TRK-1.md")]
+        ("error", "REQ-TRK-2", "vogon/requirements/TRK/REQ-TRK-1.md")]
     assert "REQ-TRK-1 requires re-approval" in found[0].message
     assert "PROJ-1" in found[0].message
 
@@ -235,7 +235,7 @@ def test_key_under_every_role_resolves_or_is_reported_with_the_reason(tmp_path):
              missing=[{"key": "PROJ-9", "reason": "deleted"}])
     found = run(checks.unresolved_keys, tmp_path)
     got = sorted((f.path.rsplit("/", 1)[-1], f.message) for f in found)
-    assert all(f.is_failure and f.requirement == "REQ-TRK-6" for f in found)
+    assert all(f.is_error and f.requirement == "REQ-TRK-6" for f in found)
     assert got == [
         ("REQ-TRK-2.md", "REQ-TRK-2: tracked_as.tracker PROJ-9 does not resolve: deleted"),
         ("REQ-TRK-3.md", "REQ-TRK-3: tracked_as.test_manager TEST-7 does not resolve: "
@@ -303,7 +303,7 @@ def test_approver_outside_the_configured_role_is_reported(tmp_path):
              tests=[issue("TEST-1", "tests/test_a.py::test_a", "x", by="bob@example.com"),
                     issue("TEST-2", "tests/test_a.py::test_b", "x", by="alice@example.com")])
     found = run(checks.approver_holds_role, tmp_path)
-    assert all(f.is_failure and f.requirement == "REQ-TRK-9" for f in found)
+    assert all(f.is_error and f.requirement == "REQ-TRK-9" for f in found)
     assert len(found) == 2
     assert "PROJ-2" in found[0].message and "carol@example.com" in found[0].message
     assert "product_owner" in found[0].message
@@ -346,7 +346,7 @@ def test_each_missing_operation_is_reported_with_role_and_server(tmp_path):
         "the tracker server 'issues' does not provide the operation 'update_issue'",
         "the tracker server 'issues' does not provide the operation 'link_issues'",
     ]
-    assert all(f.is_failure and f.requirement == "REQ-CLI-4" for f in found)
+    assert all(f.is_error and f.requirement == "REQ-CLI-4" for f in found)
 
 
 @pytest.mark.req("REQ-CLI-4")
@@ -382,7 +382,7 @@ def test_branch_passes_only_with_an_independent_review(tmp_path, reviews, exclud
     project(tmp_path)
     branch_rules(tmp_path, reviews, excluded)
     found = run(checks.branch_rules, tmp_path)
-    assert all(f.is_failure and f.requirement == "REQ-CLI-7" for f in found)
+    assert all(f.is_error and f.requirement == "REQ-CLI-7" for f in found)
     assert [f.message for f in found] == [
         f"branch 'main' allows a merge without an independent review: missing rule: {m}"
         for m in missing]
@@ -407,7 +407,7 @@ def test_risk_level_absent_or_different_is_reported_with_both_levels(tmp_path):
     write_record(tmp_path, "REQ-TRK-4", risk="none")
     risk(tmp_path, [("REQ-TRK-1", "product quality"), ("REQ-TRK-2", "product quality")])
     found = run(checks.risk_assessment, tmp_path)
-    assert all(f.is_failure and f.requirement == "REQ-GEN-9" for f in found)
+    assert all(f.is_error and f.requirement == "REQ-GEN-9" for f in found)
     assert [f.message for f in found] == [
         "REQ-TRK-2 carries risk 'safety'; the approved risk assessment gives 'product quality'",
         "REQ-TRK-3 carries risk 'data integrity', which the approved risk assessment does not list",
@@ -415,12 +415,12 @@ def test_risk_level_absent_or_different_is_reported_with_both_levels(tmp_path):
 
 
 @pytest.mark.req("REQ-GEN-9")
-def test_a_risk_assessment_that_is_not_utf8_is_a_failure(tmp_path):
+def test_a_risk_assessment_that_is_not_utf8_is_an_error(tmp_path):
     project(tmp_path)
     (tmp_path / ".vogon").mkdir(exist_ok=True)
     (tmp_path / ".vogon" / "risk_assessment.md").write_bytes(b"| Requirement | Risk |\n\xff\n")
     found = run(checks.risk_assessment, tmp_path)
-    assert [(f.path, f.requirement, f.is_failure) for f in found] == [
+    assert [(f.path, f.requirement, f.is_error) for f in found] == [
         (".vogon/risk_assessment.md", "REQ-GEN-9", True)]
 
 

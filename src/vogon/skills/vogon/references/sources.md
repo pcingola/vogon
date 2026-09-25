@@ -67,4 +67,4 @@ is a rule the filed documents meet or fail.
 
 ## Done
 
-- [ ] `vogon check` reports no failure for the files filed.
+- [ ] `vogon check` reports no error for the files filed.

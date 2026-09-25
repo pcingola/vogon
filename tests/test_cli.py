@@ -7,25 +7,26 @@ from pathlib import Path
 
 import pytest
 
+import hooks
 from cli import main
-from findings import exit_status, failure, notice, write
+from findings import exit_status, error, warning, write
 
 SCRIPTS = Path(__file__).resolve().parent.parent / "src" / "vogon" / "scripts"
 ENTRY = SCRIPTS / "vogon"
 
 
-# REQ-CLI-1: the exit status is non-zero if and only if a failure was reported.
+# REQ-CLI-1: the exit status is non-zero if and only if an error was reported.
 
 
 @pytest.mark.req("REQ-CLI-1")
 @pytest.mark.parametrize("findings, status", [
     ([], 0),
-    ([notice("role has no holder", path="vogon.yaml")], 0),
-    ([notice("a"), notice("b")], 0),
-    ([failure("dangling depends_on", path="vogon/decisions/DEC-001.md", line=7)], 1),
-    ([notice("a"), failure("b")], 1),
+    ([warning("check skipped", path="vogon.yaml")], 0),
+    ([warning("a"), warning("b")], 0),
+    ([error("dangling depends_on", path="vogon/decisions/DEC-001.md", line=7)], 1),
+    ([warning("a"), error("b")], 1),
 ])
-def test_exit_status_is_nonzero_only_for_a_failure(findings, status):
+def test_exit_status_is_nonzero_only_for_an_error(findings, status):
     assert exit_status(findings) == status
 
 
@@ -73,7 +74,7 @@ def complete_snapshots(root: Path) -> None:
     (state / "risk_assessment.md").write_text("| Requirement | Risk | Reasoning |\n| --- | --- | --- |\n")
 
 
-@pytest.mark.req("REQ-CLI-1")
+@pytest.mark.req("REQ-CLI-1", "REQ-CLI-6", "REQ-CLI-8")
 def test_check_on_a_valid_project_exits_zero_with_no_output(tmp_path, capsys):
     (tmp_path / "vogon.yaml").write_text(COMPLETE_SETUP)
     complete_snapshots(tmp_path)
@@ -82,16 +83,16 @@ def test_check_on_a_valid_project_exits_zero_with_no_output(tmp_path, capsys):
 
 
 @pytest.mark.req("REQ-CLI-1")
-def test_check_reporting_a_failure_exits_nonzero(tmp_path, capsys):
+def test_check_reporting_an_error_exits_nonzero(tmp_path, capsys):
     (tmp_path / "vogon.yaml").write_text(
         "approvals:\n  test_cases: {roles: [validation_lead], system: test_manager}\n")
     assert main(["check", "--root", str(tmp_path)]) == 1
     out = capsys.readouterr().out
-    assert re.search(r"^vogon\.yaml: failure: .*test_cases.*validation_lead", out, re.M)
+    assert re.search(r"^ERROR: vogon\.yaml: .*test_cases.*validation_lead", out, re.M)
 
 
 @pytest.mark.req("REQ-CLI-1")
-def test_check_through_the_entry_script_exits_nonzero_on_failure(tmp_path):
+def test_check_through_the_entry_script_exits_nonzero_on_error(tmp_path):
     (tmp_path / "vogon.yaml").write_text("unknown_setting: 1\n")
     run = subprocess.run([str(ENTRY), "check", "--root", str(tmp_path)], capture_output=True, text=True)
     assert run.returncode != 0
@@ -99,24 +100,24 @@ def test_check_through_the_entry_script_exits_nonzero_on_failure(tmp_path):
 
 
 @pytest.mark.req("REQ-CLI-1")
-def test_notice_alone_is_printed_and_exits_zero():
+def test_warning_alone_is_printed_and_exits_zero():
     stream = io.StringIO()
-    found = [notice("approval release: role it_quality_manager has no holder", path="vogon.yaml",
-                    requirement="REQ-CLI-6")]
+    found = [warning("Approval order check skipped: .vogon/tracker.json is absent",
+                     path=".vogon/tracker.json", requirement="REQ-CLI-2")]
     write(found, "text", stream)
     assert stream.getvalue() == (
-        "vogon.yaml: notice: approval release: role it_quality_manager has no holder\n")
+        "WARNING: .vogon/tracker.json: Approval order check skipped: .vogon/tracker.json is absent\n")
     assert exit_status(found) == 0
 
 
 @pytest.mark.req("REQ-REC-1", "REQ-REC-8")
 def test_text_output_names_file_line_and_severity_and_never_vogons_requirement():
     stream = io.StringIO()
-    write([failure("status 'done' is not allowed", path="vogon/facts/FACT-001.md", line=6,
-                   requirement="REQ-REC-1"), failure("no location")], "text", stream)
+    write([error("status 'done' is not allowed", path="vogon/facts/FACT-001.md", line=6,
+                 requirement="REQ-REC-1"), error("no location")], "text", stream)
     assert stream.getvalue().splitlines() == [
-        "vogon/facts/FACT-001.md:6: failure: status 'done' is not allowed",
-        "failure: no location",
+        "ERROR: vogon/facts/FACT-001.md:6: status 'done' is not allowed",
+        "ERROR: no location",
     ]
 
 
@@ -125,8 +126,9 @@ def test_json_output_holds_the_location_severity_and_message(tmp_path, capsys):
     (tmp_path / "vogon.yaml").write_text("pathz: {}\n")
     assert main(["check", "--root", str(tmp_path), "--format", "json"]) == 1
     data = json.loads(capsys.readouterr().out)
-    assert [f for f in data["findings"] if f["severity"] == "failure"] == [{
-        "severity": "failure",
+    assert {f["severity"] for f in data["findings"]} <= {"error", "warning"}
+    assert [f for f in data["findings"] if "pathz" in f["message"]] == [{
+        "severity": "error",
         "message": "unknown key 'pathz' in vogon.yaml",
         "path": "vogon.yaml",
         "line": None,
@@ -163,3 +165,14 @@ def test_no_script_imports_a_model_or_network_module():
                 continue
             offenders += [(path.name, n) for n in names if n.split(".")[0] in MODEL_OR_NETWORK_MODULES]
     assert offenders == []
+
+
+@pytest.mark.req("REQ-CLI-6", "REQ-CLI-8")
+def test_session_start_on_a_complete_setup_prints_no_error(tmp_path):
+    (tmp_path / "vogon.yaml").write_text(COMPLETE_SETUP)
+    complete_snapshots(tmp_path)
+    text = json.dumps({"hook_event_name": "SessionStart", "source": "startup", "cwd": str(tmp_path)})
+    out = hooks.run("session-start", text, env={"CLAUDE_PROJECT_DIR": str(tmp_path)})
+    assert "- tracker: issues" in out and "- it_quality_manager: erin@example.com" in out
+    assert "Errors:" not in out and "Warnings:" not in out
+    assert hooks.SETUP_INCOMPLETE not in out

@@ -11,6 +11,7 @@ from pathlib import Path
 import pytest
 
 import hooks
+from findings import Finding
 
 SCRIPTS = Path(__file__).resolve().parent.parent / "src" / "vogon" / "scripts"
 ENTRY = SCRIPTS / "vogon"
@@ -235,6 +236,42 @@ def test_session_start_prints_the_server_for_each_role_the_approvals_and_the_hol
     assert "- release: by system_owner, it_quality_manager, in the document_system" in out
     assert "- product_owner: alice@example.com" in out
     assert "- system_owner: no holder" in out
+
+
+@pytest.mark.req("REQ-CLI-6", "REQ-CLI-8")
+def test_session_start_lists_each_configuration_error_then_asks_to_complete_setup(project):
+    out = run_hook("session-start", json.dumps(payload(project, "SessionStart", source="startup")))
+    lines = out.splitlines()
+    errors = lines[lines.index("Errors:") + 1:-1]
+    assert errors == [
+        "- ERROR: vogon.yaml: no holder for the role engineer, which gives the change approval",
+        "- ERROR: vogon.yaml: no holder for the role system_owner, which gives the "
+        "risk_assessment and release approvals",
+        "- ERROR: vogon.yaml: no holder for the role it_quality_manager, which gives the "
+        "risk_assessment and release approvals",
+        "- ERROR: vogon.yaml: no server for the document_system; the test_specification, "
+        "risk_assessment and release approvals cannot be given",
+    ]
+    assert lines[-1] == hooks.SETUP_INCOMPLETE
+    assert "Warnings:" not in lines
+
+
+@pytest.mark.req("REQ-CLI-8")
+@pytest.mark.parametrize("severities, sections", [
+    ((), []),
+    (("warning",), ["Warnings:"]),
+    (("error",), ["Errors:", "setup"]),
+    (("warning", "error"), ["Errors:", "Warnings:", "setup"]),
+])
+def test_session_start_prints_a_section_only_for_a_severity_it_has(severities, sections):
+    found = [Finding(s, f"a {s}", path="vogon.yaml") for s in severities]
+    lines = hooks.finding_sections(found)
+    shown = [line for line in lines if line in ("Errors:", "Warnings:")]
+    if hooks.SETUP_INCOMPLETE in lines:
+        shown.append("setup")
+    assert shown == sections
+    assert [line for line in lines if line.startswith("- ")] == (
+        [f"- {s.upper()}: vogon.yaml: a {s}" for s in ("error", "warning") if s in severities])
 
 
 @pytest.mark.req("REQ-CLI-8")

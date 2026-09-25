@@ -84,7 +84,7 @@ same format: markdown holding one table whose first two columns are
 
 A file that is absent returns None and no finding; the caller reports the
 check it could not run as skipped (REQ-CLI-2). A file that is present and
-malformed is a failure.
+malformed is an error.
 """
 
 from __future__ import annotations
@@ -97,7 +97,7 @@ from pathlib import Path
 
 import ids
 from config import Config
-from findings import Finding, failure, notice
+from findings import Finding, error, warning
 
 STATE_DIR = ".vogon"
 TRACKER_FILE = "tracker.json"
@@ -134,9 +134,9 @@ def rel(name: str) -> str:
 
 
 def skipped(name: str, what: str) -> Finding:
-    """The notice for a check that did not run because a snapshot is absent."""
-    return notice(f"{what} skipped: {rel(name)} is absent; Claude Code writes it from what "
-                  f"it reads through MCP", path=rel(name), requirement="REQ-CLI-2")
+    """The warning for a check that did not run because a snapshot is absent."""
+    return warning(f"{what} skipped: {rel(name)} is absent; Claude Code writes it from what "
+                   f"it reads through MCP", path=rel(name), requirement="REQ-CLI-2")
 
 
 def parse_time(value) -> datetime | None:
@@ -153,7 +153,7 @@ def parse_time(value) -> datetime | None:
 class SnapshotError(Exception):
     def __init__(self, name: str, message: str) -> None:
         super().__init__(message)
-        self.finding = failure(f"{rel(name)} {message}", path=rel(name))
+        self.finding = error(f"{rel(name)} {message}", path=rel(name))
 
 
 def _read_json(config: Config, name: str):
@@ -294,7 +294,7 @@ def load_tracker(config: Config) -> tuple[TrackerSnapshot | None, list[Finding]]
     for role, s in list(systems.items()):
         configured = config.system(role)
         if configured is not None and configured.server != s.server:
-            findings.append(failure(
+            findings.append(error(
                 f"{rel(name)} holds the {role} as read from server {s.server!r}, but "
                 f"vogon.yaml names {configured.server!r}; read it again", path=rel(name)))
             del systems[role]
@@ -470,8 +470,8 @@ def load_risk_assessment(config: Config) -> tuple[dict[str, str] | None, list[Fi
     try:
         text = p.read_text(encoding="utf-8")
     except (OSError, UnicodeDecodeError) as e:
-        return {}, [failure(f"{rel(RISK_FILE)} cannot be read as UTF-8 text: {e}",
-                            path=rel(RISK_FILE), requirement="REQ-GEN-9")]
+        return {}, [error(f"{rel(RISK_FILE)} cannot be read as UTF-8 text: {e}",
+                          path=rel(RISK_FILE), requirement="REQ-GEN-9")]
     levels, problems = parse_risk_assessment(text)
-    return levels, [failure(f"{rel(RISK_FILE)} {m}", path=rel(RISK_FILE), requirement="REQ-GEN-9")
+    return levels, [error(f"{rel(RISK_FILE)} {m}", path=rel(RISK_FILE), requirement="REQ-GEN-9")
                     for m in problems]

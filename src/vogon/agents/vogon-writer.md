@@ -30,7 +30,7 @@ Rules:
    items of `writing.md` require. A statement no input supports is not
    written; report it to the caller instead.
 6. Do not call MCP tools, commit, or contact any external system.
-7. Run `vogon check` before you finish and fix every failure in your files.
+7. Run `vogon check` before you finish and fix every error in your files.
 8. On a later round, address each finding and change only the text it
    names. Resolve an unsupported statement by deleting it or by citing the
    input that states it, never by adding a new explanation. Where you cannot

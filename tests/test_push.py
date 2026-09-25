@@ -132,7 +132,7 @@ def approve(root: Path, role: str, key: str, at: str = "2026-05-10T09:00:00Z") -
 
 
 @pytest.mark.req("REQ-CLI-8")
-def test_a_role_that_is_not_configured_is_a_notice_and_plans_nothing(tmp_path, capsys):
+def test_a_role_that_is_not_configured_is_a_warning_and_plans_nothing(tmp_path, capsys):
     project(tmp_path)
     (tmp_path / "vogon.yaml").write_text(SETUP.split("  test_manager:")[0], encoding="utf-8")
     record(tmp_path, "REQ-TRK-1")
@@ -141,8 +141,8 @@ def test_a_role_that_is_not_configured_is_a_notice_and_plans_nothing(tmp_path, c
     writes, _, findings, status = plan(tmp_path, capsys)
     assert status == 0
     assert [w["role"] for w in writes] == ["tracker"]
-    assert "notice: Planning the test issues skipped: the test_manager role is " \
-           "not configured in vogon.yaml" in findings
+    assert "WARNING: vogon.yaml: Planning the test issues skipped: the test_manager role " \
+           "is not configured in vogon.yaml" in findings
 
 
 # REQ-GEN-2: no tracker write for a proposed record.

@@ -36,7 +36,7 @@ from pathlib import Path
 
 import yaml
 
-from findings import Finding, failure, notice
+from findings import Finding, error, warning
 
 FILENAME = "vogon.yaml"
 
@@ -115,9 +115,9 @@ class Config:
 
 
 def not_configured(role: str, needed_by: str) -> Finding:
-    """The notice a step or check reports when the role it needs has no server."""
-    return notice(f"{needed_by} skipped: the {role} role is not configured in {FILENAME}",
-                  path=FILENAME, requirement="REQ-CLI-8")
+    """The warning a step or check reports when the role it needs has no server."""
+    return warning(f"{needed_by} skipped: the {role} role is not configured in {FILENAME}",
+                   path=FILENAME, requirement="REQ-CLI-8")
 
 
 def default_document() -> dict:
@@ -139,13 +139,13 @@ def _default_roles() -> list[str]:
 
 
 class _Reader:
-    """Validates the parsed document, collecting failures instead of raising."""
+    """Validates the parsed document, collecting errors instead of raising."""
 
     def __init__(self) -> None:
         self.findings: list[Finding] = []
 
     def fail(self, message: str) -> None:
-        self.findings.append(failure(message, path=FILENAME, requirement="REQ-CLI-3"))
+        self.findings.append(error(message, path=FILENAME, requirement="REQ-CLI-3"))
 
     def mapping(self, value, where: str) -> dict:
         if value is None:
@@ -182,7 +182,7 @@ def load(root: Path) -> Config:
     """Read `vogon.yaml` under `root`, apply the defaults, and report what is invalid.
 
     Always returns a Config. Invalid parts are reported in `Config.findings` as
-    failures and the default is used in their place.
+    errors and the default is used in their place.
     """
     root = Path(root).resolve()
     path = root / FILENAME
@@ -202,7 +202,7 @@ def load(root: Path) -> Config:
         data = r.mapping(loaded, FILENAME)
     r.unknown_keys(data, TOP_LEVEL_KEYS, FILENAME)
     systems = _read_systems(r, r.mapping(data.get("systems"), "systems"))
-    # Every failure so far concerns parsing, the top-level keys or `systems`.
+    # Every error so far concerns parsing, the top-level keys or `systems`.
     systems_unreadable = bool(r.findings)
 
     paths = r.mapping(data.get("paths"), "paths")
@@ -325,7 +325,7 @@ def _read_approvals(r: _Reader, data: dict, roles: dict) -> dict[str, Approval]:
         if names is not None:
             for role in names:
                 if role not in roles:
-                    r.findings.append(failure(
+                    r.findings.append(error(
                         f"approval {name!r} names role {role!r}, which is not defined in roles",
                         path=FILENAME, requirement="REQ-CLI-5"))
         if names is None or system is None:
@@ -334,24 +334,39 @@ def _read_approvals(r: _Reader, data: dict, roles: dict) -> dict[str, Approval]:
     return approvals
 
 
+def _names(names: list[str]) -> str:
+    """`a`, `a and b`, or `a, b and c`."""
+    return names[0] if len(names) == 1 else f"{', '.join(names[:-1])} and {names[-1]}"
+
+
+def _approvals(names: list[str]) -> str:
+    return f"{_names(names)} approval{'s' if len(names) > 1 else ''}"
+
+
 def check(cfg: Config) -> list[Finding]:
     """What the configuration leaves unset, beyond what `load` reported as invalid.
+    Each is an error, because a step that needs it cannot be completed.
 
-    - An approval whose role has no holder is a notice naming both (REQ-CLI-6).
+    - A role that an approval uses and that has no holder: one error per role,
+      naming the approvals it gives (REQ-CLI-6).
     - A configured tracker or test manager without `transition_tools`,
-      `transitions` or `approved_states` is a failure, because the transition
-      hook then blocks every call to its server (REQ-CLI-8, REQ-TRK-1). A key
-      whose value `load` already reported as invalid is not reported again.
+      `transitions` or `approved_states`, because the transition hook then
+      blocks every call to its server (REQ-CLI-8, REQ-TRK-1). A key whose value
+      `load` already reported as invalid is not reported again.
     - A system role that an approval is given in and that has no entry in
-      `systems` is a notice naming the role and the approvals (REQ-CLI-8).
+      `systems`: one error per role, naming the approvals (REQ-CLI-8).
+
+    A role that no approval uses is not reported.
     """
     found: list[Finding] = []
+    given_by: dict[str, list[str]] = {}
     for name, approval in cfg.approvals.items():
         for role in approval.roles:
             if role in cfg.roles and not cfg.holders(role):
-                found.append(notice(
-                    f"approval {name!r}: role {role!r} has no holder in roles",
-                    path=FILENAME, requirement="REQ-CLI-6"))
+                given_by.setdefault(role, []).append(name)
+    for role, names in given_by.items():
+        found.append(error(f"no holder for the role {role}, which gives the {_approvals(names)}",
+                           path=FILENAME, requirement="REQ-CLI-6"))
 
     reported = [f.message for f in cfg.findings]
     for role in TRANSITION_ROLES:
@@ -361,7 +376,7 @@ def check(cfg: Config) -> list[Finding]:
         missing = [k for k in system.missing_transition_keys()
                    if not any(f"systems.{role}.{k}" in m for m in reported)]
         if missing:
-            found.append(failure(
+            found.append(error(
                 f"systems.{role} (server {system.server!r}) has no {', '.join(missing)}; "
                 f"every call to that server is blocked until setup writes them",
                 path=FILENAME, requirement="REQ-CLI-8"))
@@ -372,9 +387,8 @@ def check(cfg: Config) -> list[Finding]:
             needed.setdefault(approval.system, []).append(name)
     for role in SYSTEM_ROLES:
         if role in needed:
-            names = ", ".join(repr(n) for n in needed[role])
-            found.append(notice(
-                f"the {role} role is not configured in {FILENAME}; "
-                f"the approvals given in it are {names}",
+            names = needed[role]
+            found.append(error(
+                f"no server for the {role}; the {_approvals(names)} cannot be given",
                 path=FILENAME, requirement="REQ-CLI-8"))
     return found

@@ -10,7 +10,7 @@ import records
 from checks import rel
 from checks.records import has_acceptance_block
 from config import Config
-from findings import Finding, failure
+from findings import Finding, error
 
 
 def _collect(config: Config):
@@ -27,8 +27,8 @@ def resolution(config: Config) -> Iterable[Finding]:
     carries `acceptance_by`."""
     found, errors = _collect(config)
     for path, e in errors:
-        yield failure(f"test file does not parse, so its markers cannot be read: {e.msg}",
-                      path=rel(config, path), line=e.lineno, requirement="REQ-TRC-2")
+        yield error(f"test file does not parse, so its markers cannot be read: {e.msg}",
+                    path=rel(config, path), line=e.lineno, requirement="REQ-TRC-2")
     if not found:
         return
     recs, _ = records.load_all(config.records_dir)
@@ -36,7 +36,7 @@ def resolution(config: Config) -> Iterable[Finding]:
         test = _test(config, m)
 
         def fail(message: str, requirement: str) -> Finding:
-            return failure(message, path=rel(config, m.path), line=m.line, requirement=requirement)
+            return error(message, path=rel(config, m.path), line=m.line, requirement=requirement)
 
         for arg in m.problems:
             yield fail(f"test {test} has a marker argument {arg} that is not a string literal, so "
@@ -76,9 +76,9 @@ def coverage(config: Config) -> Iterable[Finding]:
         if (r.type == "requirement" and r.status == "accepted"
                 and r.meta.get("verification") == "test"
                 and r.parsed_id is not None and r.parsed_id.key not in named):
-            yield failure(f"requirement {r.id} is accepted and verified by test, and no test "
-                          "marker names it", path=rel(config, r.path),
-                          line=r.line_of("verification"), requirement="REQ-TRC-4")
+            yield error(f"requirement {r.id} is accepted and verified by test, and no test "
+                        "marker names it", path=rel(config, r.path),
+                        line=r.line_of("verification"), requirement="REQ-TRC-4")
 
 
 CHECKS = [resolution, coverage]

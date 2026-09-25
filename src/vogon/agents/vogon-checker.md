@@ -22,16 +22,16 @@ Rules:
    table row by row: for each row, apply every item about a column or a
    row, and read each input the row cites, before the next row. An item the
    output does not meet is a finding.
-2. Report only a failure of a stated item, or a failure `vogon check`
-   reports. Each finding quotes the item it fails or gives the `vogon check`
-   requirement id. A point no item states is not a finding: a better
+2. Report only a failure of a stated item, or an error `vogon check`
+   reports. Each finding quotes the item it fails or the line `vogon check`
+   printed. A point no item states is not a finding: a better
    wording, content no item asks for, or behaviour of the code that no item
    requires the output to state.
 3. Check each statement against the input files, as the `Support` items of
    `writing.md` require. A statement no input supports, and a cited passage
    that does not say what the text says, is a finding.
-4. Run `vogon check` and keep each failure that names one of the files you
-   were given. A notice is not a finding: it reports something a person
+4. Run `vogon check` and keep each error that names one of the files you
+   were given. A warning is not a finding: it reports something a person
    does, such as accepting an acceptance block, and the caller passes it on.
 5. Do not edit, create or delete any file. Use `Bash` only to run `vogon` and
    read-only `git` commands.

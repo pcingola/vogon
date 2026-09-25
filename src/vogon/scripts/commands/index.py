@@ -15,7 +15,7 @@ import ids
 import records
 from checks import rel
 from config import Config
-from findings import Finding, failure
+from findings import Finding, error
 
 NAME = "index"
 HELP = "Write the record index to out/index.md from the record frontmatter."
@@ -69,8 +69,8 @@ def render(found: list[records.Record]) -> str:
 
 def run(args, config: Config) -> list[Finding]:
     found, errors = records.load_all(config.records_dir)
-    findings = [failure(f"record {e.message}; it is not in the index", path=rel(config, e.path),
-                        line=e.line, requirement="REQ-REC-6") for e in errors]
+    findings = [error(f"record {e.message}; it is not in the index", path=rel(config, e.path),
+                      line=e.line, requirement="REQ-REC-6") for e in errors]
     path = index_path(config.records_dir)
     text = render(found)
     path.parent.mkdir(parents=True, exist_ok=True)

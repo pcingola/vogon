@@ -894,18 +894,25 @@ which has a default and needs no question.</p>
 <li>For each role, the server that provides the role's operations. With one
   candidate it is used. With several, you choose, because only you know which
   one company policy requires. With none, the role is left out.</li>
-<li>For the tracker and the test manager, Claude Code reads the workflow through
+<li>
+<p>For the tracker and the test manager, Claude Code reads the workflow through
   the chosen server. It proposes as approved the states whose names say
   approval or signature, finds the tools that perform a transition and the
   argument of each that holds the transition id, and lists each transition id
-  with its target state.</li>
+  with its target state.</p>
+</li>
+<li>
+<p>For each role an approval uses, the email of each holder. Claude Code asks
+  you for them, because only you know who holds a role.</p>
+</li>
 </ul>
 <p>Claude Code shows everything it filled in as one list; you confirm or correct
 it in one answer. It saves the tools of each configured server to
 <code>.vogon/servers.json</code>, so that <code>vogon check</code> reports any operation VOGON needs
-that a server lacks (<code>REQ-CLI-4</code>), and commits <code>vogon.yaml</code>. Role holders are
-not asked for; <code>vogon check</code> reports each approval whose role has no holder
-until you add one.</p>
+that a server lacks (<code>REQ-CLI-4</code>), and commits <code>vogon.yaml</code>. Setup is complete
+when <code>vogon check</code> reports no error about <code>vogon.yaml</code>. Until then each
+session starts with the configuration errors and an instruction to complete
+setup.</p>
 <p>When a workflow changes in the tracker or the test manager, ask Claude Code to
 set up that role again.</p>
 <h2 id="vogonyaml">vogon.yaml<a class="headerlink" href="#vogonyaml" title="Permanent link">&para;</a></h2>
@@ -1007,9 +1014,12 @@ roles:
 </tr>
 </tbody>
 </table>
-<p><code>systems</code> has no default. A role with no entry is not configured. A
-configured tracker or test manager missing <code>transition_tools</code>, <code>transitions</code>
-or <code>approved_states</code> is a failure in <code>vogon check</code>, and the <code>transition</code> hook
+<p><code>systems</code> has no default. A role with no entry is not configured. <code>vogon
+check</code> reports an error for a system role that an approval is given in and
+that has no server, and for a role that an approval uses and that has no
+holder (<code>REQ-CLI-6</code>), one line per role naming the approvals that cannot be
+given. A configured tracker or test manager missing <code>transition_tools</code>,
+<code>transitions</code> or <code>approved_states</code> is an error too, and the <code>transition</code> hook
 refuses every call to its server until setup writes them, so an incomplete
 setup cannot move an issue into an approved state (<code>REQ-TRK-1</code>).</p>
 <p>An approval listed under <code>approvals</code> replaces the default of the same name; a

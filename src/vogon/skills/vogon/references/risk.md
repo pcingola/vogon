@@ -97,6 +97,6 @@ they cannot parse fails `vogon check` once the approved copy is read back.
       `vogon.yaml` names.
 - [ ] Once approved, the approved version is read back from the document
       system and saved, unchanged, as `.vogon/risk_assessment.md`.
-- [ ] `vogon check` then reports no failure for `REQ-GEN-9`. A requirement
-      whose level changed after the approval is reported, and the
-      assessment is drafted, filed and approved again.
+- [ ] `vogon check` then reports no error about a requirement's risk
+      level. A requirement whose level changed after the approval is
+      reported, and the assessment is drafted, filed and approved again.

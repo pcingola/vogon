@@ -17,7 +17,7 @@ host's `python`.
 The build is the output of `git rev-parse HEAD`. It is recorded only when the
 working tree has no uncommitted change, tracked or untracked, before the run,
 and the commit and the tracked files are the same after it. Otherwise the
-results are written with no build, so they cannot be imported, and a notice
+results are written with no build, so they cannot be imported, and a warning
 names the reason.
 """
 
@@ -35,7 +35,7 @@ import history
 import snapshots
 from checks import rel
 from config import Config
-from findings import Finding, failure, notice
+from findings import Finding, error, warning
 
 NAME = "trace"
 HELP = "Run the tests and record each marked test's outcome with the build it ran on."
@@ -120,12 +120,12 @@ def run(args, config: Config) -> list[Finding]:
     try:
         status = _run(command, root, env)
     except OSError as e:
-        return [failure(f"test command {' '.join(command)!r} could not be run: {e}",
-                        requirement="REQ-TRC-1")]
+        return [error(f"test command {' '.join(command)!r} could not be run: {e}",
+                      requirement="REQ-TRC-1")]
 
     if not out.is_file():
-        return [failure(f"test command {' '.join(command)!r} exited with status {status} "
-                        f"and wrote no {shown}", requirement="REQ-TRC-1")]
+        return [error(f"test command {' '.join(command)!r} exited with status {status} "
+                      f"and wrote no {shown}", requirement="REQ-TRC-1")]
 
     if build is not None:
         after = history.head(root)
@@ -140,10 +140,10 @@ def run(args, config: Config) -> list[Finding]:
 
     found: list[Finding] = []
     if build is None:
-        found.append(notice(f"no build recorded in {shown}, so these results cannot be "
-                            f"imported: {reason}", path=shown, requirement="REQ-TRC-6"))
+        found.append(warning(f"no build recorded in {shown}, so these results cannot be "
+                             f"imported: {reason}", path=shown, requirement="REQ-TRC-6"))
     if status != 0:
-        found.append(failure(f"test command exited with status {status}", path=shown,
-                             requirement="REQ-TRC-1"))
+        found.append(error(f"test command exited with status {status}", path=shown,
+                           requirement="REQ-TRC-1"))
     sys.stdout.write(f"{shown} build {build or 'none'}\n")
     return found

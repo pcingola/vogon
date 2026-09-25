@@ -1,6 +1,6 @@
-"""What a check reports: a failure or a notice, and where.
+"""What a check reports: an error or a warning, and where.
 
-A failure makes the run exit non-zero. A notice is reported and does not change
+An error makes the run exit non-zero. A warning is reported and does not change
 the exit status (REQ-CLI-1).
 """
 
@@ -10,9 +10,9 @@ import json
 from dataclasses import asdict, dataclass
 from typing import IO, Iterable
 
-FAILURE = "failure"
-NOTICE = "notice"
-SEVERITIES = (FAILURE, NOTICE)
+ERROR = "error"
+WARNING = "warning"
+SEVERITIES = (ERROR, WARNING)
 
 
 @dataclass(frozen=True)
@@ -39,8 +39,8 @@ class Finding:
             raise ValueError("a line number needs a path")
 
     @property
-    def is_failure(self) -> bool:
-        return self.severity == FAILURE
+    def is_error(self) -> bool:
+        return self.severity == ERROR
 
     @property
     def location(self) -> str | None:
@@ -50,8 +50,8 @@ class Finding:
         return self.path if self.line is None else f"{self.path}:{self.line}"
 
     def format(self) -> str:
-        """One line: `location: severity: message`, omitting an absent location."""
-        parts = [p for p in (self.location, self.severity) if p]
+        """One line: `SEVERITY: location: message`, omitting an absent location."""
+        parts = [p for p in (self.severity.upper(), self.location) if p]
         return ": ".join([*parts, self.message])
 
     def to_dict(self) -> dict:
@@ -61,19 +61,19 @@ class Finding:
         return d
 
 
-def failure(message: str, path: str | None = None, line: int | None = None,
+def error(message: str, path: str | None = None, line: int | None = None,
+          requirement: str | None = None) -> Finding:
+    return Finding(ERROR, message, path, line, requirement)
+
+
+def warning(message: str, path: str | None = None, line: int | None = None,
             requirement: str | None = None) -> Finding:
-    return Finding(FAILURE, message, path, line, requirement)
-
-
-def notice(message: str, path: str | None = None, line: int | None = None,
-           requirement: str | None = None) -> Finding:
-    return Finding(NOTICE, message, path, line, requirement)
+    return Finding(WARNING, message, path, line, requirement)
 
 
 def exit_status(findings: Iterable[Finding]) -> int:
-    """1 if any finding is a failure, else 0 (REQ-CLI-1)."""
-    return 1 if any(f.is_failure for f in findings) else 0
+    """1 if any finding is an error, else 0 (REQ-CLI-1)."""
+    return 1 if any(f.is_error for f in findings) else 0
 
 
 def write(findings: list[Finding], fmt: str, stream: IO[str]) -> None:

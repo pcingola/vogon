@@ -11,7 +11,7 @@ import records
 import sources
 from checks import rel
 from config import Config
-from findings import Finding, failure, notice
+from findings import Finding, error, warning
 
 
 def naming(config: Config) -> Iterable[Finding]:
@@ -29,7 +29,7 @@ def naming(config: Config) -> Iterable[Finding]:
                     line = records.parse(path).line_of(key)
                 except records.RecordError:
                     pass
-            return failure(message, path=shown, line=line, requirement="REQ-REC-9")
+            return error(message, path=shown, line=line, requirement="REQ-REC-9")
 
         if path.parent.resolve() != base.resolve():
             yield fail(f"held documents sit directly in {rel(config, base)}, with no subdirectories")
@@ -44,8 +44,8 @@ def naming(config: Config) -> Iterable[Finding]:
         try:
             meta = records.parse(path).meta
         except records.RecordError as e:
-            yield failure(f"a markdown held document needs frontmatter: {e.message}", path=shown,
-                          line=e.line, requirement="REQ-REC-9")
+            yield error(f"a markdown held document needs frontmatter: {e.message}", path=shown,
+                        line=e.line, requirement="REQ-REC-9")
             continue
         for key in sources.REQUIRED:
             if key not in meta:
@@ -84,8 +84,8 @@ def unchanged(config: Config) -> Iterable[Finding]:
     if not held:
         return
     if not history.is_repo(root):
-        yield notice("held document check skipped: the project is not a git repository",
-                     requirement="REQ-REC-10")
+        yield warning("held document check skipped: the project is not a git repository",
+                      requirement="REQ-REC-10")
         return
     top = history.toplevel(root)
     added: dict[str, str] = {}      # path -> the commit that last added it
@@ -109,9 +109,9 @@ def unchanged(config: Config) -> Iterable[Finding]:
         where = f"in {changed}" if changed else "in the working tree"
         if changed and history.blob_ids(root, [f"HEAD:{rp}"])[f"HEAD:{rp}"] != after:
             where += " and again in the working tree"
-        yield failure(f"held document added in {history.short(added[rp])} was changed {where}; a "
-                      "held document is never edited, a new version is filed as a new dated file",
-                      path=rel(config, tracked[rp]), requirement="REQ-REC-10")
+        yield error(f"held document added in {history.short(added[rp])} was changed {where}; a "
+                    "held document is never edited, a new version is filed as a new dated file",
+                    path=rel(config, tracked[rp]), requirement="REQ-REC-10")
 
 
 def citations(config: Config) -> Iterable[Finding]:
@@ -136,7 +136,7 @@ def citations(config: Config) -> Iterable[Finding]:
         shown, line = rel(config, r.path), r.line_of("source")
 
         def fail(message: str) -> Finding:
-            return failure(message, path=shown, line=line, requirement="REQ-REC-11")
+            return error(message, path=shown, line=line, requirement="REQ-REC-11")
 
         resolved = [held(e) for e in entries]
         previous: tuple[str, str] | None = None   # (entry, authority) of the last entry with one

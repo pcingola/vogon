@@ -37,7 +37,7 @@ from markers import MARKER
 import records
 from checks import rel
 from config import Config
-from findings import Finding, failure
+from findings import Finding, error
 
 NAME = "init"
 HELP = "Create vogon.yaml, the records layout, the .gitignore entry and the req marker."
@@ -176,9 +176,9 @@ def register_marker(config: Config, done: list[str]) -> list[Finding]:
     new = _add_to_toml(text) if section is None else _add_to_ini(text, section)
     after = read(new) if new is not None else None
     if after is None or MARKER not in _marker_names(after):
-        return [failure(f"cannot add the {MARKER} marker to {rel(config, path)}; add "
-                        f"'{MARKER_LINE}' to its markers setting by hand",
-                        path=rel(config, path), requirement="REQ-TRC-1")]
+        return [error(f"cannot add the {MARKER} marker to {rel(config, path)}; add "
+                      f"'{MARKER_LINE}' to its markers setting by hand",
+                      path=rel(config, path), requirement="REQ-TRC-1")]
     _write(path, new, done, config)
     return []
 

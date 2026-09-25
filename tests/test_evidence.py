@@ -40,7 +40,7 @@ def test_a_changed_byte_is_reported(tmp_path, capsys):
     put(tmp_path, BUILD, "filed", "results.json", RESULTS)
     status, out = evidence(tmp_path, capsys)
     assert status == 1
-    assert out == [".vogon/evidence/a1b2c3d/filed/traceability.txt: failure: "
+    assert out == ["ERROR: .vogon/evidence/a1b2c3d/filed/traceability.txt: "
                    "traceability.txt differs from the exported file"]
 
 
@@ -50,7 +50,7 @@ def test_an_export_not_filed_is_reported(tmp_path, capsys):
     put(tmp_path, BUILD, "filed", "results.json", RESULTS)
     status, out = evidence(tmp_path, capsys)
     assert status == 1
-    assert out == [".vogon/evidence/a1b2c3d/export/traceability.txt: failure: "
+    assert out == ["ERROR: .vogon/evidence/a1b2c3d/export/traceability.txt: "
                    "traceability.txt was exported for build a1b2c3d and has no filed copy"]
 
 
@@ -62,7 +62,7 @@ def test_a_file_that_does_not_name_the_build_is_reported(tmp_path, capsys):
     put(tmp_path, BUILD, "filed", "results.json", RESULTS)
     status, out = evidence(tmp_path, capsys)
     assert status == 1
-    assert out == [".vogon/evidence/a1b2c3d/filed/traceability.txt: failure: "
+    assert out == ["ERROR: .vogon/evidence/a1b2c3d/filed/traceability.txt: "
                    "traceability.txt does not name build a1b2c3d"]
 
 
@@ -75,7 +75,7 @@ def test_a_result_from_another_build_is_reported(tmp_path, capsys):
     put(tmp_path, BUILD, "filed", "results.json", old)
     status, out = evidence(tmp_path, capsys)
     assert status == 1
-    assert out == [".vogon/evidence/a1b2c3d/filed/results.json: failure: "
+    assert out == ["ERROR: .vogon/evidence/a1b2c3d/filed/results.json: "
                    "results.json is the export of build 0f9e8d7, not a1b2c3d"]
 
 
@@ -87,7 +87,7 @@ def test_a_filed_file_that_is_not_in_the_export_is_reported(tmp_path, capsys):
     put(tmp_path, BUILD, "filed", "extra.txt", b"Build a1b2c3d notes\n")
     status, out = evidence(tmp_path, capsys)
     assert status == 1
-    assert out == [".vogon/evidence/a1b2c3d/filed/extra.txt: failure: "
+    assert out == ["ERROR: .vogon/evidence/a1b2c3d/filed/extra.txt: "
                    "extra.txt is filed and is not in the export for build a1b2c3d"]
 
 

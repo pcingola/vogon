@@ -67,7 +67,7 @@ fails. Every document also follows `references/writing.md`.
 
 ## Filing
 
-- [ ] A document is filed only when `vogon check` reports no failure and the
+- [ ] A document is filed only when `vogon check` reports no error and the
       writer and checker loop ended with no findings.
 - [ ] It is filed through the server `vogon.yaml` names for
       `document_system`, with the tool mapped to `upload_document` in

@@ -17,7 +17,7 @@ import records
 import writing_rules as rules
 from checks import relative
 from config import Config
-from findings import Finding, failure
+from findings import Finding, error
 
 REQ_WRITING = "REQ-REC-8"
 REQ_BRAND = "REQ-GEN-5"
@@ -169,7 +169,7 @@ def check_record(record: records.Record, root: Path) -> list[Finding]:
     found: list[Finding] = []
 
     def add(line: int | None, message: str) -> None:
-        found.append(failure(message, path=path, line=line, requirement=REQ_WRITING))
+        found.append(error(message, path=path, line=line, requirement=REQ_WRITING))
 
     for key, value in record.meta.items():
         for p in _placeholders(str(key), value):
@@ -219,7 +219,7 @@ def brand_findings(text: str, path: str, first_line: int = 1) -> list[Finding]:
             if any(a <= m.start() and m.end() <= b for a, b in spans):
                 continue
             spans.append(m.span())
-            found.append(failure(
+            found.append(error(
                 f"brand fixed string {s!r}: the satirical voice belongs on the marketing "
                 "page only", path=path, line=first_line + _line(text, m.start()),
                 requirement=REQ_BRAND))

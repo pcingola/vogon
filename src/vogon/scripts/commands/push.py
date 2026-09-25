@@ -68,7 +68,7 @@ import records
 import snapshots
 from checks import rel
 from config import Config, not_configured
-from findings import Finding, failure
+from findings import Finding, error
 
 NAME = "push"
 HELP = "Plan the writes to the tracker and the test manager, or record the keys created."
@@ -122,7 +122,7 @@ def plan(config: Config) -> tuple[list[dict], list[Finding]]:
     snap, found = snapshots.load_tracker(config)
     found = list(found)
     if snap is None:
-        return [], found or [failure(
+        return [], found or [error(
             f"{snapshots.rel(snapshots.TRACKER_FILE)} is absent; Claude Code reads the tracker "
             f"and the test manager into it before planning", requirement="REQ-TRK-3")]
     recs, _ = records.load_all(config.records_dir)
@@ -139,8 +139,8 @@ def _system(config: Config, snap, role: str, found: list[Finding], what: str):
     if system is None:
         f = not_configured(role, what)
     elif held is None:
-        f = failure(f"{what}: {snapshots.rel(snapshots.TRACKER_FILE)} holds no {role}; "
-                    f"read it before planning", requirement="REQ-TRK-3")
+        f = error(f"{what}: {snapshots.rel(snapshots.TRACKER_FILE)} holds no {role}; "
+                  f"read it before planning", requirement="REQ-TRK-3")
     else:
         return system, held
     if f not in found:
@@ -184,15 +184,15 @@ def _record_writes(config: Config, snap, r: records.Record, found: list[Finding]
         issue = held.issues.get(key)
         if issue is None:
             reason = held.missing.get(key, "not found in the snapshot")
-            found.append(failure(f"{r.id}: tracked_as.{role} {key} does not resolve: {reason}; "
-                                 f"nothing is planned for it", path=path, requirement="REQ-TRK-6"))
+            found.append(error(f"{r.id}: tracked_as.{role} {key} does not resolve: {reason}; "
+                               f"nothing is planned for it", path=path, requirement="REQ-TRK-6"))
             return []
     else:
         matches = held.find(r.id)
         if len(matches) > 1:
-            found.append(failure(f"{r.id}: {len(matches)} {role} issues carry its id "
-                                 f"({', '.join(sorted(i.key for i in matches))}); nothing is planned "
-                                 f"for it", path=path, requirement="REQ-TRK-3"))
+            found.append(error(f"{r.id}: {len(matches)} {role} issues carry its id "
+                               f"({', '.join(sorted(i.key for i in matches))}); nothing is planned "
+                               f"for it", path=path, requirement="REQ-TRK-3"))
             return []
         if not matches:
             return [{"action": "create", **base, "record": path, "summary": summary,
@@ -203,9 +203,9 @@ def _record_writes(config: Config, snap, r: records.Record, found: list[Finding]
                                           issues.record_hash(r))
     if approved:
         if changed:
-            found.append(failure(f"{r.id} requires re-approval: {role} issue {issue.key} is "
-                                 f"approved and the record has changed since; nothing is written "
-                                 f"to it", path=path, requirement="REQ-TRK-2"))
+            found.append(error(f"{r.id} requires re-approval: {role} issue {issue.key} is "
+                               f"approved and the record has changed since; nothing is written "
+                               f"to it", path=path, requirement="REQ-TRK-2"))
         return track
     fields = _fields(issue, summary, description)
     update = [{"action": "update", **base, "key": issue.key, "fields": fields}] if fields else []
@@ -238,14 +238,14 @@ def load_results(config: Config) -> tuple[str | None, dict[str, str], list[Findi
         for t in tests:
             outcomes.setdefault(_PARAM_RE.sub("", t["nodeid"]), []).append(t["outcome"])
     except (OSError, ValueError, KeyError, TypeError) as e:
-        return None, {}, [failure(f"{shown} cannot be read: {e}", path=shown,
-                                  requirement="REQ-TRC-6")]
+        return None, {}, [error(f"{shown} cannot be read: {e}", path=shown,
+                                requirement="REQ-TRC-6")]
     combined = {n: next((o for o in OUTCOME_ORDER if o in outs), outs[0])
                 for n, outs in outcomes.items()}
     if build is None and combined:
-        return None, {}, [failure(f"{shown} records no build, so no result is imported; run "
-                                  f"`vogon trace` on a committed working tree",
-                                  path=shown, requirement="REQ-TRC-6")]
+        return None, {}, [error(f"{shown} records no build, so no result is imported; run "
+                                f"`vogon trace` on a committed working tree",
+                                path=shown, requirement="REQ-TRC-6")]
     return build, combined, []
 
 
@@ -269,10 +269,10 @@ def _test_writes(config: Config, snap, recs: list[records.Record],
             continue
         matches = held.find(node.node_id)
         if len(matches) > 1:
-            found.append(failure(f"{node.node_id}: {len(matches)} test issues carry its node id "
-                                 f"({', '.join(sorted(i.key for i in matches))}); nothing is planned "
-                                 f"for it", path=rel(config, node.path), line=node.line,
-                                 requirement="REQ-TRC-5"))
+            found.append(error(f"{node.node_id}: {len(matches)} test issues carry its node id "
+                               f"({', '.join(sorted(i.key for i in matches))}); nothing is planned "
+                               f"for it", path=rel(config, node.path), line=node.line,
+                               requirement="REQ-TRC-5"))
             continue
         if not matches:
             writes.append({"action": "create", **base, "summary": node.summary,
@@ -281,10 +281,10 @@ def _test_writes(config: Config, snap, recs: list[records.Record],
         issue = matches[0]
         approved, changed = _approved_changed(issue, states, node.content_hash)
         if approved and changed:
-            found.append(failure(f"{node.node_id} requires re-approval: test issue {issue.key} is "
-                                 f"approved and the test has changed since; nothing is written "
-                                 f"to it", path=rel(config, node.path), line=node.line,
-                                 requirement="REQ-TRK-2"))
+            found.append(error(f"{node.node_id} requires re-approval: test issue {issue.key} is "
+                               f"approved and the test has changed since; nothing is written "
+                               f"to it", path=rel(config, node.path), line=node.line,
+                               requirement="REQ-TRK-2"))
         if not approved:
             fields = _fields(issue, node.summary, node.description)
             if fields:
@@ -332,41 +332,41 @@ def record_keys(config: Config, file: Path) -> list[Finding]:
     try:
         data = json.loads(Path(file).read_text(encoding="utf-8"))
     except (OSError, ValueError) as e:
-        return [failure(f"{file} cannot be read: {e}", requirement="REQ-TRK-5")]
+        return [error(f"{file} cannot be read: {e}", requirement="REQ-TRK-5")]
     entries = data.get("created") if isinstance(data, dict) else data
     if not isinstance(entries, list):
-        return [failure(f"{file} must hold a list of {{id, role, key}} entries",
-                        requirement="REQ-TRK-5")]
+        return [error(f"{file} must hold a list of {{id, role, key}} entries",
+                      requirement="REQ-TRK-5")]
     recs, _ = records.load_all(config.records_dir)
     found: list[Finding] = []
     for e in entries:
         if not (isinstance(e, dict) and all(isinstance(e.get(k), str) and e[k].strip()
                                             for k in ("id", "role", "key"))):
-            found.append(failure(f"{file}: entry {e!r} needs id, role and key",
-                                 requirement="REQ-TRK-5"))
+            found.append(error(f"{file}: entry {e!r} needs id, role and key",
+                               requirement="REQ-TRK-5"))
             continue
         if "::" in e["id"]:
             continue  # a test issue is found by its summary
         r = records.find(recs, e["id"])
         if r is None:
-            found.append(failure(f"{file}: no record has the id {e['id']}", requirement="REQ-TRK-5"))
+            found.append(error(f"{file}: no record has the id {e['id']}", requirement="REQ-TRK-5"))
             continue
         role, key = e["role"], e["key"].strip()
         others = [o.id for o in recs if o is not r and isinstance(o.meta.get("tracked_as"), dict)
                   and o.meta["tracked_as"].get(role) == key]
         if others:
-            found.append(failure(f"{e['id']}: {role} issue {key} is already named by "
-                                 f"{', '.join(others)}; not recorded", path=rel(config, r.path),
-                                 requirement="REQ-TRK-5"))
+            found.append(error(f"{e['id']}: {role} issue {key} is already named by "
+                               f"{', '.join(others)}; not recorded", path=rel(config, r.path),
+                               requirement="REQ-TRK-5"))
             continue
         tracked = r.meta.get("tracked_as")
         tracked = dict(tracked) if isinstance(tracked, dict) else {"governs": role}
         if tracked.get(role) == key:
             continue
         if tracked.get(role):
-            found.append(failure(f"{e['id']}: tracked_as.{role} is already {tracked[role]}; "
-                                 f"{key} is not recorded", path=rel(config, r.path),
-                                 requirement="REQ-TRK-5"))
+            found.append(error(f"{e['id']}: tracked_as.{role} is already {tracked[role]}; "
+                               f"{key} is not recorded", path=rel(config, r.path),
+                               requirement="REQ-TRK-5"))
             continue
         tracked[role] = key
         write_tracked_as(r, tracked)

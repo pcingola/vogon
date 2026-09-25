@@ -8,6 +8,6 @@ Each module defines:
     run(args, config) -> Iterable[Finding]      does the work; may print its own output
 
 `cli.py` lists the modules in `COMMANDS`, one line each, and prints the
-findings `run` returns. The exit status is non-zero only when a finding is a
-failure (REQ-CLI-1).
+findings `run` returns. The exit status is non-zero only when a finding is an
+error (REQ-CLI-1).
 """

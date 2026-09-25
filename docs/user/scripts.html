@@ -1012,20 +1012,24 @@ Every command reads <code>vogon.yaml</code> from the root each time it runs. Wit
 <p><code>vogon --version</code> (or <code>-V</code>) prints the plugin version. <code>vogon</code> with no command
 prints the help on standard error and exits 1.</p>
 <h2 id="findings-and-exit-status">Findings and exit status<a class="headerlink" href="#findings-and-exit-status" title="Permanent link">&para;</a></h2>
-<p>A command reports what it found as findings. A finding is a failure or a
-notice. A failure is a condition a requirement forbids. A notice reports
-something that is not a failure, such as a check that was skipped because the
-file it reads is absent, or an approval whose role has no holder yet.</p>
-<p>The exit status is 1 when at least one finding is a failure, and 0 otherwise,
-so a run that reports only notices exits 0 (<code>REQ-CLI-1</code>). An argument error
+<p>A command reports what it found as findings. A finding is an error or a
+warning. An error is a condition a requirement forbids, including a setup that
+leaves an approval impossible to give. A warning reports something that is not
+an error, such as a check that was skipped because the file it reads is
+absent.</p>
+<p>The exit status is 1 when at least one finding is an error, and 0 otherwise,
+so a run that reports only warnings exits 0 (<code>REQ-CLI-1</code>). An argument error
 exits 2.</p>
-<p>In text format each finding is one line on standard output:</p>
-<pre><code>vogon/requirements/API/REQ-API-3.md:6: failure: depends_on names REQ-API-9, for which no record file exists
-vogon.yaml: notice: approval 'release': role 'system_owner' has no holder in roles
+<p>In text format each finding is one line on standard output: the severity in
+capitals, the file and line, and the message.</p>
+<pre><code>ERROR: vogon/requirements/API/REQ-API-3.md:6: depends_on names REQ-API-9, for which no record file exists
+ERROR: vogon.yaml: no holder for the role system_owner, which gives the risk_assessment and release approvals
+WARNING: .vogon/servers.json: Server operation check skipped: .vogon/servers.json is absent; Claude Code writes it from what it reads through MCP
 </code></pre>
-<p>The parts are the file and line, the severity and the message; a location
-that does not apply is left out. In JSON format standard output is one
-object, <code>{"findings": [{"severity", "message", "path", "line"}, ...]}</code>.
+<p>A location that does not apply is left out, as in <code>ERROR: message</code>. In JSON
+format standard output is one object,
+<code>{"findings": [{"severity", "message", "path", "line"}, ...]}</code>, with
+<code>severity</code> <code>error</code> or <code>warning</code>.
 A command's own output, described under each command below, is printed before
 the findings.</p>
 <h2 id="vogon-check">vogon check<a class="headerlink" href="#vogon-check" title="Permanent link">&para;</a></h2>
@@ -1034,11 +1038,14 @@ the findings.</p>
 </code></pre>
 <p>No arguments. It reads:</p>
 <ul>
-<li><code>vogon.yaml</code>: invalid values and unknown keys are failures; an approval
-  whose role has no holder is a notice (<code>REQ-CLI-6</code>); a configured tracker or
-  test manager missing <code>transition_tools</code>, <code>transitions</code> or <code>approved_states</code>
-  is a failure; a system an approval is given in that has no entry under
-  <code>systems</code> is a notice.</li>
+<li><code>vogon.yaml</code>: invalid values and unknown keys are errors. So is each
+  incomplete part of setup, one line per role: a role that an approval uses
+  and that has no holder under <code>roles</code> (<code>REQ-CLI-6</code>), a system role that an
+  approval is given in and that has no server under <code>systems</code>, and a
+  configured tracker or test manager missing <code>transition_tools</code>,
+  <code>transitions</code> or <code>approved_states</code> (<code>REQ-CLI-8</code>). Each line names the
+  approvals that cannot be given. A role that no approval uses is not
+  reported.</li>
 <li>The records directory: the frontmatter schema, ids and file names, links
   between records, <code>source</code> and <code>references</code> paths, modules against
   <code>modules.yaml</code>, acceptance blocks, approval claims, id reuse, the writing
@@ -1058,7 +1065,7 @@ the findings.</p>
   governs was used, a server missing an operation VOGON needs, a default
   branch that allows a merge without an independent review, and a risk level
   that differs from the approved risk assessment. When one of these files is
-  absent the check that reads it is skipped with a notice (<code>REQ-CLI-2</code>),
+  absent the check that reads it is skipped with a warning (<code>REQ-CLI-2</code>),
   and only when its role is configured.</li>
 <li>The git history, for the author of each record and for held documents.</li>
 </ul>
@@ -1106,7 +1113,7 @@ exists.</p>
 per record file, sorted by type, module and number. It carries no timestamp,
 so a second run with no change to the records leaves the file unchanged. It
 prints the path written. A record file that cannot be parsed is left out of
-the index and reported as a failure.</p>
+the index and reported as an error.</p>
 <h2 id="vogon-trace">vogon trace<a class="headerlink" href="#vogon-trace" title="Permanent link">&para;</a></h2>
 <p>Runs the tests and records the outcome of each test carrying a <code>req</code> marker,
 with the build it ran on (<code>REQ-TRC-1</code>, <code>REQ-TRC-6</code>).</p>
@@ -1142,7 +1149,7 @@ the requirement ids its markers name and its outcome, one of <code>passed</code>
 <p>The build is the output of <code>git rev-parse HEAD</code>. It is recorded only when the
 working tree has no uncommitted change, tracked or untracked, before the run,
 and neither the commit nor a tracked file changed during it. Otherwise the
-results are written with <code>build</code> null and a notice gives the reason. Results
+results are written with <code>build</code> null and a warning gives the reason. Results
 with no build are never imported into the test manager.</p>
 <p>It prints <code>&lt;results path&gt; build &lt;commit&gt;</code>, or <code>build none</code>. It fails when the
 test command cannot be run, writes no results file, or exits non-zero.</p>
@@ -1298,7 +1305,7 @@ writes in <code>.vogon/push_plan.json</code> (<code>REQ-TRK-4</code>). The rules
   node id its summary starts with, so a second run creates nothing
   (<code>REQ-TRK-3</code>).</li>
 <li>Nothing is written to an issue in an approved state. A record or test
-  changed since its issue was approved is reported as a failure instead
+  changed since its issue was approved is reported as an error instead
   (<code>REQ-TRK-2</code>).</li>
 <li>A marked test gets one test issue once a requirement it names has an issue,
   linked to each such requirement issue (<code>REQ-TRC-5</code>).</li>
@@ -1306,7 +1313,7 @@ writes in <code>.vogon/push_plan.json</code> (<code>REQ-TRK-4</code>). The rules
   Results with no build are refused (<code>REQ-TRC-6</code>).</li>
 </ul>
 <p>It fails when <code>.vogon/tracker.json</code> is absent or does not hold a configured
-role. A role not configured in <code>vogon.yaml</code> is a notice, and nothing is
+role. A role not configured in <code>vogon.yaml</code> is a warning, and nothing is
 planned for it.</p>
 <p><code>--record FILE</code> reads a JSON list of <code>{"id", "role", "key"}</code> entries, or an
 object whose <code>created</code> member holds one, and writes each key into its
