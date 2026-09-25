@@ -21,7 +21,7 @@ def snapshot(root: Path) -> dict[str, bytes | None]:
             for p in sorted(root.rglob("*"))}
 
 
-@pytest.mark.req("REQ-CLI-3", "REQ-CLI-5", "REQ-CLI-8")
+@pytest.mark.req("REQ-CLI-3", "REQ-CLI-5", "REQ-CLI-8", "REQ-TRC-9")
 def test_init_writes_the_defaults_and_no_systems(tmp_path, capsys):
     status, out = init(tmp_path, capsys)
     assert status == 0
@@ -44,6 +44,9 @@ def test_init_writes_the_defaults_and_no_systems(tmp_path, capsys):
     for name in LAYOUT:
         assert (tmp_path / "vogon" / name).is_dir()
     assert yaml.safe_load((tmp_path / "vogon" / "modules.yaml").read_text()) is None
+    no_req = (tmp_path / "vogon" / "NO-REQ.md").read_text()
+    assert no_req.startswith("# NO-REQ — Changes that need no requirement\n")
+    assert "vogon/NO-REQ.md" in out
     assert (tmp_path / ".gitignore").read_text() == ".vogon/\n"
     assert "vogon.yaml" in out and ".gitignore" in out and "pyproject.toml" in out
 

@@ -191,9 +191,11 @@ vogon change origin/main --description-file pr.md
 
 `--description` and `--description-file` exclude each other; with neither, the
 description is empty. The change is the commits of `git log <base>..HEAD` and
-the description. It fails when none of them names a record id, and for each
-named id that resolves to no record, stating where the id appears. A commit
-that names no id passes when another commit or the description names one. It
+the description. It fails when none of them names a record id or `NO-REQ`,
+and for each named id that resolves to no record, stating where the id
+appears. A commit that names no id passes when another commit or the
+description names one. `NO-REQ` marks a change that implements no
+requirement, such as a typo fix; `vogon/NO-REQ.md` says when to use it. It
 fails when git cannot resolve `base`, which happens in a clone without full
 history.
 
@@ -210,8 +212,8 @@ No arguments. It writes, where each is missing:
 
 - `vogon.yaml`, with the paths, `test_command`, the default approvals and the
   roles with no holders, and no `systems`;
-- the records directory with `modules.yaml` and a directory for each kind of
-  record, `sources/`, `plans/` and `documents/`;
+- the records directory with `modules.yaml`, `NO-REQ.md` and a directory for
+  each kind of record, `sources/`, `plans/` and `documents/`;
 - `.vogon/` in `.gitignore`;
 - the `req` marker in the pytest configuration: `pytest.ini`, `.pytest.ini`,
   `pyproject.toml` with `[tool.pytest.ini_options]`, `tox.ini` with `[pytest]`

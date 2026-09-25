@@ -4,8 +4,8 @@ It writes, where each is missing:
 
 - `vogon.yaml`, holding every setting that has a default and no `systems`
   (`config.default_document()`); setup fills in the rest;
-- the records directory with `modules.yaml` and the directories for each kind
-  of record, held sources, plans and documents;
+- the records directory with `modules.yaml`, `NO-REQ.md` and the directories
+  for each kind of record, held sources, plans and documents;
 - `.vogon/` in `.gitignore`;
 - the `req` marker in the host project's pytest configuration, so a run
   without the plugin does not fail under `--strict-markers`.
@@ -46,6 +46,21 @@ MARKER_LINE = "req(*ids): the requirement ids the test verifies"
 GITIGNORE_ENTRY = ".vogon/"
 LAYOUT = (*ids.DIRECTORIES.values(), "sources", "plans", "documents")
 MODULES_TEXT = "# Each module the records use, mapped to what it covers, e.g.\n# API: The public API\n"
+NO_REQ_FILE = f"{ids.NO_REQ}.md"
+NO_REQ_TEXT = """# NO-REQ — Changes that need no requirement
+
+Some changes implement no requirement: typo fixes, refactoring, formatting,
+dependency updates, build and CI fixes. Such a change names `NO-REQ` in a
+commit message or in the pull request description, followed by a sentence
+saying what the change does. `vogon change` accepts a change that names
+`NO-REQ` in place of a record id.
+
+A change that adds or changes behaviour does not use `NO-REQ`. It names the
+requirement it implements, and if there is none, the requirement is written
+first.
+
+Example: "NO-REQ — fix a typo in the installation guide."
+"""
 
 # (file, section) in the order pytest looks for its configuration.
 INI_FILES = (("pytest.ini", "pytest"), (".pytest.ini", "pytest"), ("pyproject.toml", None),
@@ -212,6 +227,9 @@ def run(args, config: Config) -> list[Finding]:
     modules = config.records_dir / records.MODULES_FILE
     if not modules.exists():
         _write(modules, MODULES_TEXT, done, config)
+    no_req = config.records_dir / NO_REQ_FILE
+    if not no_req.exists():
+        _write(no_req, NO_REQ_TEXT, done, config)
 
     ignore_state(config, done)
     findings = register_marker(config, done)

@@ -19,7 +19,9 @@ or fails.
       ids of the records the change implements. Every id named resolves to a
       record.
 - [ ] The change as a whole names at least one record id, in a commit message
-      or the pull request description.
+      or the pull request description. A change that implements no
+      requirement, such as a typo fix, names `NO-REQ` in its place, as
+      `vogon/NO-REQ.md` describes.
 
 ## Step 13: running the tests
 

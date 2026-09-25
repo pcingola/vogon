@@ -1071,7 +1071,8 @@ jobs:
             $VOGON change &quot;origin/$BASE&quot; --description-file - --root host
 </code></pre>
 <p><code>vogon change</code> fails when neither the commits of the pull request nor its
-description name a record id, or when a named id resolves to no record
+description name a record id or <code>NO-REQ</code>, or when a named id resolves to no
+record
 (<code>REQ-TRC-9</code>). The base branch and the description are passed through environment
 variables, and the description reaches <code>vogon change</code> on standard input, so
 text in them is never run by the shell.</p>

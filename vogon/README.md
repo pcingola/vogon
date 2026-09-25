@@ -11,6 +11,7 @@ format VOGON defines for the host projects it is installed into.
 | `decisions/` | Every `DEC-` |
 | `sources/` | Held copies of the documents records cite, flat and dated |
 | `modules.yaml` | The module names the records use |
+| `NO-REQ.md` | When a change names `NO-REQ` in place of a record id. Not a record |
 | `out/` | Generated output. Never hand-edited |
 
 Modules are declared in `modules.yaml`: `REC` for the record schema and its

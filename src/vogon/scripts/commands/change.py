@@ -2,9 +2,10 @@
 
 A change is the commits on HEAD that are not on the base branch, read with
 `git log <base>..HEAD`, together with the pull request description. It fails
-when neither names a record id, and for each id that resolves to no record,
-naming where the id appears. A commit with no id passes when another commit
-or the description names one.
+when neither names a record id nor NO-REQ, and for each id that resolves to no
+record, naming where the id appears. A commit with no id passes when another
+commit or the description names one. NO-REQ marks a change that implements no
+record, such as a typo fix; ids named next to it must still resolve.
 """
 
 from __future__ import annotations
@@ -57,9 +58,13 @@ def check_change(config: Config, base: str, description: str) -> list[Finding]:
             places = named.setdefault(rid, [])
             if where not in places:
                 places.append(where)
+    no_req = any(ids.names_no_req(text) for _, text in sources)
+    if not named and not no_req:
+        return [error(f"the change from {base} to HEAD names no record id and no "
+                      f"{ids.NO_REQ} in its commit messages or {DESCRIPTION}",
+                      requirement="REQ-TRC-9")]
     if not named:
-        return [error(f"the change from {base} to HEAD names no record id in its commit "
-                      f"messages or {DESCRIPTION}", requirement="REQ-TRC-9")]
+        return []
 
     found, _ = records.load_all(config.records_dir)
     return [error(f"{rid} resolves to no record; it appears in {', '.join(places)}",
