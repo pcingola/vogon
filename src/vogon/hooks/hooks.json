@@ -1,5 +1,5 @@
 {
-  "description": "VOGON: the configuration at session start and after vogon.yaml is written, record checks after a write under the records directory, and refusals of a commit naming an unknown id, a transition into an approved state, and a test agent's read outside the records and the tests.",
+  "description": "VOGON: the configuration at session start, record checks after a write under the records directory, and refusals of a commit naming an unknown id, a transition into an approved state, and a test agent's read outside the records and the tests.",
   "hooks": {
     "SessionStart": [
       {

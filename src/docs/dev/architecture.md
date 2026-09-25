@@ -129,7 +129,7 @@ Hooks cover what has to happen without anyone asking for it. Each entry in
 | Hook | Runs | Does |
 | --- | --- | --- |
 | `session-start` | On `SessionStart` | Prints the configured server for each role, the approval roles and their holders, then the configuration errors and warnings; after an error, an instruction to complete setup. With no `vogon.yaml`, prints an instruction to run setup (`REQ-CLI-10`) |
-| `post-write` | After a write | After a write under `vogon/`, runs `vogon check` on the file and returns the findings. After a write of `vogon.yaml`, returns the configuration |
+| `post-write` | After a write | After a write under `vogon/`, runs `vogon check` on the file and returns the findings |
 | `commit` | Before a `git commit` | Refuses a message naming an id that resolves to no record |
 | `transition` | Before a call to any `mcp__` tool | Refuses a transition into an approved state, and every call to a server whose transition setup is incomplete |
 | `test-read` | Before a file tool, shell or MCP call | Refuses a test agent's read or write outside `vogon/` and the test paths |
@@ -176,11 +176,10 @@ A hook exits with status zero in every case, so it cannot stop the session.
 Given input it cannot read, or failing itself, a hook prints nothing, except
 `transition` and `test-read`, which refuse the call.
 
-The agent receives the configuration from the hooks, which Claude Code runs
-without the agent asking for them. Claude Code adds a `SessionStart` hook's
-standard output to the context, and `SessionStart` fires on `startup`,
-`resume`, `clear`, `compact` and `fork`. After `vogon.yaml` is written,
-`post-write` returns the new values as `additionalContext`. The plugin is
+The agent receives the configuration from the `session-start` hook, which
+Claude Code runs without the agent asking for it. Claude Code adds a
+`SessionStart` hook's standard output to the context, and `SessionStart` fires
+on `startup`, `resume`, `clear`, `compact` and `fork`. The plugin is
 enabled per project, so a session in which the hooks run is in a project that
 uses VOGON. When that project has no `vogon.yaml`, `session-start` prints an
 instruction to run setup, step 1 with `config.md`, and names the missing file.

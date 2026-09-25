@@ -1414,7 +1414,7 @@ cannot read the code, a plan names the interface the tests call.</p>
 <tr>
 <td><code>post-write</code></td>
 <td>After a write</td>
-<td>After a write under <code>vogon/</code>, runs <code>vogon check</code> on the file and returns the findings. After a write of <code>vogon.yaml</code>, returns the configuration</td>
+<td>After a write under <code>vogon/</code>, runs <code>vogon check</code> on the file and returns the findings</td>
 </tr>
 <tr>
 <td><code>commit</code></td>
@@ -1470,11 +1470,10 @@ cannot be checked.</p>
 <p>A hook exits with status zero in every case, so it cannot stop the session.
 Given input it cannot read, or failing itself, a hook prints nothing, except
 <code>transition</code> and <code>test-read</code>, which refuse the call.</p>
-<p>The agent receives the configuration from the hooks, which Claude Code runs
-without the agent asking for them. Claude Code adds a <code>SessionStart</code> hook's
-standard output to the context, and <code>SessionStart</code> fires on <code>startup</code>,
-<code>resume</code>, <code>clear</code>, <code>compact</code> and <code>fork</code>. After <code>vogon.yaml</code> is written,
-<code>post-write</code> returns the new values as <code>additionalContext</code>. The plugin is
+<p>The agent receives the configuration from the <code>session-start</code> hook, which
+Claude Code runs without the agent asking for it. Claude Code adds a
+<code>SessionStart</code> hook's standard output to the context, and <code>SessionStart</code> fires
+on <code>startup</code>, <code>resume</code>, <code>clear</code>, <code>compact</code> and <code>fork</code>. The plugin is
 enabled per project, so a session in which the hooks run is in a project that
 uses VOGON. When that project has no <code>vogon.yaml</code>, <code>session-start</code> prints an
 instruction to run setup, step 1 with <code>config.md</code>, and names the missing file.

@@ -330,18 +330,6 @@ def test_post_write_outside_the_records_returns_nothing(project):
     assert post(project, project / "src" / "a.py") == ""
 
 
-@pytest.mark.req("REQ-CLI-8")
-def test_post_write_of_vogon_yaml_returns_the_configuration(project):
-    (project / "vogon.yaml").write_text(
-        CONFIG.replace("repository_host: {server: github}",
-                       "repository_host: {server: github}\n  document_system: {server: acme-docs}"),
-        encoding="utf-8")
-    text = added_context(post(project, project / "vogon.yaml", tool="Edit"))
-    assert "- tracker: acme-tracker" in text
-    assert "- document_system: acme-docs" in text
-    assert "- test_lead: bob@example.com" in text
-
-
 # commit
 
 

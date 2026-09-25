@@ -6,8 +6,7 @@ Hooks).
                    its errors and warnings.
     post-write     PostToolUse on Write, Edit, MultiEdit, NotebookEdit: after a
                    write under the records directory, the findings on that
-                   file; after a write of vogon.yaml, the configuration. Both
-                   as `additionalContext`.
+                   file, as `additionalContext`.
     commit         PreToolUse on Bash and PowerShell: refuses a `git commit`
                    whose message names an id that resolves to no record
                    (REQ-TRC-9). A message naming no id is allowed.
@@ -216,8 +215,6 @@ def post_write(data: dict | None, root: Path) -> str:
         return ""
     path = _real(Path(value), _cwd(data, root))
     cfg = config_module.load(root)
-    if path == Path(os.path.realpath(root / FILENAME)):
-        return context("PostToolUse", configuration_text(cfg))
     records_dir = Path(os.path.realpath(cfg.records_dir))
     if not _under(path, [records_dir]) or path == records_dir:
         return ""

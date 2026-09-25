@@ -247,7 +247,7 @@ nothing.
 | Hook | Event | Does |
 | --- | --- | --- |
 | `session-start` | `SessionStart` | Prints the configured server for each role, the approvals and the role holders; with no `vogon.yaml`, an instruction to run setup. |
-| `post-write` | `PostToolUse` on file writes | After a write under the records directory, returns the findings on that file; after a write of `vogon.yaml`, returns the configuration. |
+| `post-write` | `PostToolUse` on file writes | After a write under the records directory, returns the findings on that file. |
 | `commit` | `PreToolUse` on `Bash` and `PowerShell` | Refuses a `git commit` whose message names an id that resolves to no record. A message naming no id is allowed. |
 | `transition` | `PreToolUse` on MCP tools | Refuses a transition into an approved state and a transition id not in `transitions`, and every call to a tracker or test manager server whose transition settings are incomplete (`REQ-TRK-1`). |
 | `test-read` | `PreToolUse` on file, shell and MCP tools | For the test writer and test checker agents, allows only paths under the records directory and the test paths. |
