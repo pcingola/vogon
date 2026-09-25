@@ -7,5 +7,6 @@ Documentation for people working on VOGON itself.
 - [Records](records.md)
 - [Sources](sources.md)
 - [Writing standard](writing.md)
+- [Development process](process/index.md)
 - [Marketing page](site.md)
 - [Contributing](contributing.md)
