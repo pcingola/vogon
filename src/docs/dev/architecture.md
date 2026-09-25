@@ -110,16 +110,9 @@ reports nothing. After five rounds, or when a finding the writer has already
 been given is reported again, the remaining findings go to the person.
 
 The test cases have their own pair. `vogon-test-writer` writes them at step 8
-and `vogon-test-checker` compares them with the requirements at step 9. Both
-read only `vogon/` and the test paths, so the expected values the first writes
-and the comparison the second makes can only come from the requirement, and
-the checker did not write the tests it checks (`DEC-019`). Neither has `Bash`.
-The `test-read` hook enforces the read restriction: for a subagent whose
-`agent_type` is one of the two, with or without the `vogon:` prefix, it allows
-a read of a path under `vogon/` or a test path and refuses every other read.
-It lists the paths allowed rather than the directories refused, because a list
-of source directories misses code kept anywhere else. Since the test agents
-cannot read the code, a plan names the interface the tests call.
+and `vogon-test-checker` compares them with the requirements at step 9, so the
+checker did not write the tests it checks (`DEC-019`). Neither has `Bash`. A
+plan names the interface the tests call.
 
 ## Hooks
 
@@ -129,18 +122,9 @@ Hooks cover what has to happen without anyone asking for it. Each entry in
 | Hook | Runs | Does |
 | --- | --- | --- |
 | `session-start` | On `SessionStart` | Prints the configured server for each role, the approval roles and their holders, then the configuration errors and warnings; after an error, an instruction to complete setup. With no `vogon.yaml`, prints an instruction to run setup (`REQ-CLI-10`) |
-| `test-read` | Before a file tool, shell or MCP call | Refuses a test agent's read or write outside `vogon/` and the test paths |
-
-The `test-read` hook reads the path arguments of `Read`, `Grep`, `Glob`,
-`LS`, `NotebookRead`, `NotebookEdit`, `Edit`, `MultiEdit` and `Write`, after
-resolving symbolic links. A `Grep` or `Glob` with no `path` searches the
-project root and is refused, as is a glob pattern containing `..`. It refuses
-a test agent's `Bash` and MCP calls, because the paths they read
-cannot be checked.
 
 A hook exits with status zero in every case, so it cannot stop the session.
-Given input it cannot read, or failing itself, a hook prints nothing, except
-`test-read`, which refuses the call.
+Given input it cannot read, or failing itself, a hook prints nothing.
 
 The agent receives the configuration from the `session-start` hook, which
 Claude Code runs without the agent asking for it. Claude Code adds a
@@ -150,9 +134,8 @@ enabled per project, so a session in which the hooks run is in a project that
 uses VOGON. When that project has no `vogon.yaml`, `session-start` prints an
 instruction to run setup, step 1 with `config.md`, and names the missing file.
 It finds the project from `CLAUDE_PROJECT_DIR`, which Claude Code sets for
-every hook to the directory the session was started in. Every other hook
-prints nothing until `vogon.yaml` exists. Subagents do not receive the values, because only the main agent
-reaches external systems.
+every hook to the directory the session was started in. Subagents do not
+receive the values, because only the main agent reaches external systems.
 
 ## Roles and approvals
 

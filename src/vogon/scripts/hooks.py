@@ -4,11 +4,6 @@ Hooks).
 
     session-start  SessionStart: prints the configuration as plain text, with
                    its errors and warnings.
-    test-read      PreToolUse on the file tools, Bash and MCP
-                   tools: for `vogon-test-writer` and `vogon-test-checker`,
-                   with or without the `vogon:` prefix, allows only paths
-                   under the records directory and the test paths
-                   (REQ-GEN-11, DEC-019).
 
 The project root is the first directory holding `vogon.yaml` found from
 `CLAUDE_PROJECT_DIR`, then upwards from the input's `cwd`, then upwards from
@@ -16,52 +11,19 @@ the process's working directory. With no `vogon.yaml` every hook prints
 nothing, so a project without VOGON is unaffected.
 
 A hook never stops the session: every hook exits 0. On input it cannot read,
-or on an error of its own, a hook prints nothing, except `test-read`, which
-refuses the call in a project that has `vogon.yaml`, because a call it cannot
-judge may be the one it exists to refuse.
+or on an error of its own, a hook prints nothing.
 """
 
 from __future__ import annotations
 
 import json
 import os
-import re
 from pathlib import Path
 from typing import Callable, Mapping
 
 import config as config_module
-from checks import rel
 from config import FILENAME, Config
 from findings import Finding
-
-TEST_AGENTS = ("vogon-test-writer", "vogon-test-checker")
-AGENT_PREFIX = "vogon:"
-
-# tool name -> the tool_input keys holding the paths it reads or writes
-PATH_KEYS = {
-    "Read": ("file_path",),
-    "Write": ("file_path",),
-    "Edit": ("file_path",),
-    "MultiEdit": ("file_path",),
-    "NotebookRead": ("notebook_path",),
-    "NotebookEdit": ("notebook_path",),
-    "LS": ("path",),
-}
-# Tools whose path argument is optional and defaults to the working directory.
-SEARCH_TOOLS = ("Grep", "Glob")
-SHELL_TOOLS = ("Bash",)
-GLOB_CHARS = re.compile(r"[*?\[{]")
-
-
-# Output
-
-
-def deny(reason: str) -> str:
-    return json.dumps({"hookSpecificOutput": {
-        "hookEventName": "PreToolUse",
-        "permissionDecision": "deny",
-        "permissionDecisionReason": reason,
-    }})
 
 
 # Input and project root
@@ -91,19 +53,6 @@ def find_root(data: dict | None, env: Mapping[str, str]) -> Path | None:
         if (d / FILENAME).is_file():
             return d
     return None
-
-
-def _cwd(data: dict, root: Path) -> Path:
-    cwd = data.get("cwd")
-    return Path(cwd) if isinstance(cwd, str) and cwd else root
-
-
-def _under(path: Path, bases: list[Path]) -> bool:
-    return any(path == b or b in path.parents for b in bases)
-
-
-def _real(path: Path, cwd: Path) -> Path:
-    return Path(os.path.realpath(cwd / Path(path).expanduser()))
 
 
 # session-start and the configuration text
@@ -174,98 +123,11 @@ def setup_needed(env: Mapping[str, str]) -> str:
             "systems for the person to confirm.")
 
 
-# test-read
-
-
-def is_test_agent(agent_type) -> bool:
-    if not isinstance(agent_type, str):
-        return False
-    name = agent_type[len(AGENT_PREFIX):] if agent_type.startswith(AGENT_PREFIX) else agent_type
-    return name in TEST_AGENTS
-
-
-def _glob_base(pattern: str) -> str | None:
-    """The literal directory a glob pattern starts from, or None when the
-    pattern contains `..` anywhere, such as in a brace alternative."""
-    if ".." in pattern:
-        return None
-    parts = pattern.replace("\\", "/").split("/")
-    literal = []
-    for p in parts:
-        if GLOB_CHARS.search(p):
-            break
-        literal.append(p)
-    base = "/".join(literal)
-    if pattern.startswith("/") and not base:
-        base = "/"
-    return base
-
-
-def tool_paths(tool_name: str, tool_input: dict, cwd: Path) -> list[Path] | None:
-    """The paths a tool call reads or writes, resolved; None when the call
-    reads files the hook cannot name; [] when it reads no file."""
-    if tool_name in SHELL_TOOLS or tool_name.startswith("mcp__"):
-        return None
-    if tool_name in PATH_KEYS:
-        values = [tool_input.get(k) for k in PATH_KEYS[tool_name]]
-        if not all(isinstance(v, str) and v for v in values):
-            return None
-        return [_real(Path(v), cwd) for v in values]
-    if tool_name in SEARCH_TOOLS:
-        path = tool_input.get("path")
-        if path is not None and not (isinstance(path, str) and path):
-            return None
-        base = _real(Path(path), cwd) if path else _real(Path("."), cwd)
-        out = [base]
-        for key in ("pattern", "glob") if tool_name == "Glob" else ("glob",):
-            pattern = tool_input.get(key)
-            if not isinstance(pattern, str) or not pattern:
-                continue
-            start = _glob_base(pattern)
-            if start is None:
-                return None
-            out.append(_real(Path(start), base) if start else base)
-        return out
-    return []
-
-
-def test_read(data: dict | None, root: Path) -> str:
-    if data is None:
-        return deny("VOGON could not read this call, so it cannot tell whether a test agent "
-                    "is reading outside the records and the tests; the call is refused.")
-    agent_type = data.get("agent_type")
-    if not is_test_agent(agent_type):
-        return ""
-    tool_name = data.get("tool_name")
-    tool_input = data.get("tool_input")
-    if not isinstance(tool_name, str) or not isinstance(tool_input, dict):
-        return deny(f"{agent_type} may read only the records and the tests; VOGON could not "
-                    "read this call, so it is refused.")
-    cfg = config_module.load(root)
-    allowed = [Path(os.path.realpath(p)) for p in (cfg.records_dir, *cfg.test_paths)]
-    shown = ", ".join(f"{rel(cfg, p)}/" for p in (cfg.records_dir, *cfg.test_paths))
-    paths = tool_paths(tool_name, tool_input, _cwd(data, root))
-    if paths is None:
-        return deny(f"{agent_type} may read only {shown}, through the file tools with a path "
-                    f"under them. {tool_name} is refused, because the paths it reads cannot "
-                    "be checked.")
-    outside = [p for p in paths if not _under(p, allowed)]
-    if not outside:
-        return ""
-    where = "The project root" if outside[0] == Path(os.path.realpath(root)) else rel(cfg, outside[0])
-    return deny(f"{agent_type} may read only {shown}. {where} is outside them, so the "
-                "call is refused: the tests are written and checked from the requirements, "
-                "not from the code.")
-
-
 # Dispatch
 
 HOOKS: dict[str, Callable[[dict | None, Path], str]] = {
     "session-start": session_start,
-    "test-read": test_read,
 }
-# Hooks that refuse the call when they fail, rather than printing nothing.
-FAIL_CLOSED = {"test-read": test_read}
 
 
 def run(name: str, text: str, env: Mapping[str, str] | None = None) -> str:
@@ -279,12 +141,5 @@ def run(name: str, text: str, env: Mapping[str, str] | None = None) -> str:
         if root is None:
             return setup_needed(env) if name == "session-start" else ""
         return HOOKS[name](data, root)
-    except Exception as e:  # a hook never stops the session
-        if name in FAIL_CLOSED:
-            try:
-                if find_root(parse_input(text), env) is not None:
-                    return deny(f"VOGON's {name} hook failed ({type(e).__name__}: {e}), so "
-                                "the call is refused.")
-            except Exception:
-                return ""
+    except Exception:  # a hook never stops the session
         return ""

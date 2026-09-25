@@ -4,8 +4,7 @@ Writing the test cases for requirements, checking them against the
 requirements, and handing them over for registration. Each item below is a
 rule the tests or the report meet or fail.
 
-The test agents read only the records directory and the test paths. They
-never read the implementation source, run the code, or see its output.
+The test agents never run the code or see its output.
 
 ## Which requirements
 

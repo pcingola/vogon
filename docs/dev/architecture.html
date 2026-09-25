@@ -1384,16 +1384,9 @@ it, and its findings go back to the writer. The loop ends when the checker
 reports nothing. After five rounds, or when a finding the writer has already
 been given is reported again, the remaining findings go to the person.</p>
 <p>The test cases have their own pair. <code>vogon-test-writer</code> writes them at step 8
-and <code>vogon-test-checker</code> compares them with the requirements at step 9. Both
-read only <code>vogon/</code> and the test paths, so the expected values the first writes
-and the comparison the second makes can only come from the requirement, and
-the checker did not write the tests it checks (<code>DEC-019</code>). Neither has <code>Bash</code>.
-The <code>test-read</code> hook enforces the read restriction: for a subagent whose
-<code>agent_type</code> is one of the two, with or without the <code>vogon:</code> prefix, it allows
-a read of a path under <code>vogon/</code> or a test path and refuses every other read.
-It lists the paths allowed rather than the directories refused, because a list
-of source directories misses code kept anywhere else. Since the test agents
-cannot read the code, a plan names the interface the tests call.</p>
+and <code>vogon-test-checker</code> compares them with the requirements at step 9, so the
+checker did not write the tests it checks (<code>DEC-019</code>). Neither has <code>Bash</code>. A
+plan names the interface the tests call.</p>
 <h2 id="hooks">Hooks<a class="headerlink" href="#hooks" title="Permanent link">&para;</a></h2>
 <p>Hooks cover what has to happen without anyone asking for it. Each entry in
 <code>hooks/hooks.json</code> calls <code>${CLAUDE_PLUGIN_ROOT}/scripts/vogon hook &lt;name&gt;</code>.</p>
@@ -1411,22 +1404,10 @@ cannot read the code, a plan names the interface the tests call.</p>
 <td>On <code>SessionStart</code></td>
 <td>Prints the configured server for each role, the approval roles and their holders, then the configuration errors and warnings; after an error, an instruction to complete setup. With no <code>vogon.yaml</code>, prints an instruction to run setup (<code>REQ-CLI-10</code>)</td>
 </tr>
-<tr>
-<td><code>test-read</code></td>
-<td>Before a file tool, shell or MCP call</td>
-<td>Refuses a test agent's read or write outside <code>vogon/</code> and the test paths</td>
-</tr>
 </tbody>
 </table>
-<p>The <code>test-read</code> hook reads the path arguments of <code>Read</code>, <code>Grep</code>, <code>Glob</code>,
-<code>LS</code>, <code>NotebookRead</code>, <code>NotebookEdit</code>, <code>Edit</code>, <code>MultiEdit</code> and <code>Write</code>, after
-resolving symbolic links. A <code>Grep</code> or <code>Glob</code> with no <code>path</code> searches the
-project root and is refused, as is a glob pattern containing <code>..</code>. It refuses
-a test agent's <code>Bash</code> and MCP calls, because the paths they read
-cannot be checked.</p>
 <p>A hook exits with status zero in every case, so it cannot stop the session.
-Given input it cannot read, or failing itself, a hook prints nothing, except
-<code>test-read</code>, which refuses the call.</p>
+Given input it cannot read, or failing itself, a hook prints nothing.</p>
 <p>The agent receives the configuration from the <code>session-start</code> hook, which
 Claude Code runs without the agent asking for it. Claude Code adds a
 <code>SessionStart</code> hook's standard output to the context, and <code>SessionStart</code> fires
@@ -1435,9 +1416,8 @@ enabled per project, so a session in which the hooks run is in a project that
 uses VOGON. When that project has no <code>vogon.yaml</code>, <code>session-start</code> prints an
 instruction to run setup, step 1 with <code>config.md</code>, and names the missing file.
 It finds the project from <code>CLAUDE_PROJECT_DIR</code>, which Claude Code sets for
-every hook to the directory the session was started in. Every other hook
-prints nothing until <code>vogon.yaml</code> exists. Subagents do not receive the values, because only the main agent
-reaches external systems.</p>
+every hook to the directory the session was started in. Subagents do not
+receive the values, because only the main agent reaches external systems.</p>
 <h2 id="roles-and-approvals">Roles and approvals<a class="headerlink" href="#roles-and-approvals" title="Permanent link">&para;</a></h2>
 <p>Steps 4, 6, 11, 14 and 17 include approvals, and a person gives each one in
 the system that holds what is approved. VOGON gives none of them (<code>CON-001</code>).

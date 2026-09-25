@@ -125,7 +125,7 @@ roles:
 | Key | Meaning | Default |
 | --- | --- | --- |
 | `paths.records` | The records directory. | `vogon` |
-| `paths.tests` | The test paths, a string or a list. The test agents may read only these and the records directory. | `[tests]` |
+| `paths.tests` | The test paths, a string or a list. | `[tests]` |
 | `test_command` | The command `vogon trace` runs, a string or a list. | `python -m pytest` |
 | `systems.<role>.server` | The MCP server for a role: `tracker`, `test_manager`, `repository_host` or `document_system`. The name Claude Code lists for the server, or `plugin:<plugin>:<server>` for a server bundled in a plugin. | none |
 | `systems.<role>.approved_states` | Tracker and test manager only. The states that mean approved or signed. | none |

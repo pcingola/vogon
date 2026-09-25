@@ -1225,15 +1225,14 @@ its event, and Claude Code runs it; a person does not.</p>
 <tbody>
 <tr>
 <td><code>name</code></td>
-<td><code>session-start</code> or <code>test-read</code>.</td>
+<td><code>session-start</code>.</td>
 </tr>
 </tbody>
 </table>
 <p>It reads the hook's JSON input on standard input and prints the hook's output
 on standard output. The exit status is always 0. In a project with no
 <code>vogon.yaml</code>, <code>session-start</code> prints an instruction to set VOGON up, naming
-the file it looked for in <code>CLAUDE_PROJECT_DIR</code>, and every other hook prints
-nothing.</p>
+the file it looked for in <code>CLAUDE_PROJECT_DIR</code>.</p>
 <table>
 <thead>
 <tr>
@@ -1247,11 +1246,6 @@ nothing.</p>
 <td><code>session-start</code></td>
 <td><code>SessionStart</code></td>
 <td>Prints the configured server for each role, the approvals and the role holders; with no <code>vogon.yaml</code>, an instruction to run setup.</td>
-</tr>
-<tr>
-<td><code>test-read</code></td>
-<td><code>PreToolUse</code> on file, shell and MCP tools</td>
-<td>For the test writer and test checker agents, allows only paths under the records directory and the test paths.</td>
 </tr>
 </tbody>
 </table>

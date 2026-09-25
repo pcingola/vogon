@@ -94,77 +94,36 @@ def payload(root: Path, event: str, **fields) -> dict:
             "permission_mode": "default", "hook_event_name": event, **fields}
 
 
-def pre(root: Path, tool: str, tool_input: dict, agent_type: str | None = None) -> str:
-    fields = {"tool_name": tool, "tool_input": tool_input, "tool_use_id": "toolu_01"}
-    if agent_type is not None:
-        fields.update(agent_id="agent-1", agent_type=agent_type)
-    return json.dumps(payload(root, "PreToolUse", **fields))
-
-
-def decision(out: str) -> str | None:
-    """`deny` when the hook refused the call, None when it said nothing."""
-    if not out.strip():
-        return None
-    data = json.loads(out)["hookSpecificOutput"]
-    assert data["hookEventName"] == "PreToolUse"
-    return data["permissionDecision"]
-
-
-def reason(out: str) -> str:
-    return json.loads(out)["hookSpecificOutput"]["permissionDecisionReason"]
-
-
 # hooks.json
 
 
-def matches(matcher: str, value: str) -> bool:
-    """A matcher as Claude Code evaluates it: an exact list of names, or an
-    unanchored regular expression when it holds any other character."""
-    if matcher in ("", "*"):
-        return True
-    if re.fullmatch(r"[A-Za-z0-9_\-, |]+", matcher):
-        return value in [m.strip() for m in re.split(r"[|,]", matcher)]
-    return re.search(matcher, value) is not None
-
-
 def wired() -> dict[str, list[str]]:
-    """hook name -> the matchers of the entries that run it, per event."""
+    """hook name -> the events of the entries that run it."""
     data = json.loads(HOOKS_JSON.read_text(encoding="utf-8"))
-    out: dict[str, list[tuple[str, str]]] = {}
+    out: dict[str, list[str]] = {}
     for event, entries in data["hooks"].items():
         for e in entries:
             for h in e["hooks"]:
                 m = re.fullmatch(r'"\$\{CLAUDE_PLUGIN_ROOT\}"/scripts/vogon hook ([a-z-]+)', h["command"])
                 assert m, h["command"]
-                out.setdefault(m[1], []).append((event, e.get("matcher", "")))
+                out.setdefault(m[1], []).append(event)
     return out
 
 
-@pytest.mark.req("REQ-GEN-11", "REQ-REC-1", "REQ-CLI-8")
-def test_hooks_json_runs_each_hook_on_its_event_and_tools():
+@pytest.mark.req("REQ-REC-1", "REQ-CLI-8")
+def test_hooks_json_runs_each_hook_on_its_event():
     w = wired()
     assert set(w) == set(hooks.HOOKS)
-    assert [e for e, _ in w["session-start"]] == ["SessionStart"]
-
-    def fires(name, event, tool):
-        return any(e == event and matches(m, tool) for e, m in w[name])
-
-    for tool in ("Read", "Grep", "Glob", "Write", "Edit", "NotebookEdit", "Bash",
-                 "mcp__filesystem__read_file"):
-        assert fires("test-read", "PreToolUse", tool)
-    for tool in ("TodoWrite", "Agent", "SubagentHandback"):
-        assert not fires("test-read", "PreToolUse", tool)
+    assert w["session-start"] == ["SessionStart"]
 
 
 # Without vogon.yaml and with no project directory from Claude Code, every hook
 # is silent.
 
 
-@pytest.mark.req("REQ-GEN-11", "REQ-REC-1", "REQ-CLI-8", "REQ-CLI-10")
+@pytest.mark.req("REQ-REC-1", "REQ-CLI-8", "REQ-CLI-10")
 @pytest.mark.parametrize("name, event, fields", [
     ("session-start", "SessionStart", {"source": "startup"}),
-    ("test-read", "PreToolUse", {"tool_name": "Read", "agent_type": "vogon:vogon-test-writer",
-                                 "tool_input": {"file_path": "src/a.py"}}),
 ])
 def test_every_hook_prints_nothing_in_a_project_without_vogon_yaml(tmp_path, name, event, fields):
     (tmp_path / "vogon" / "decisions").mkdir(parents=True)
@@ -193,15 +152,6 @@ def test_session_start_without_vogon_yaml_asks_for_setup(tmp_path):
     out = hooks.run("session-start", text, env={"CLAUDE_PROJECT_DIR": str(tmp_path)})
     assert f"{tmp_path / 'vogon.yaml'} does not exist" in out
     assert "`vogon` skill" in out and "`references/config.md`" in out and "`vogon init`" in out
-
-
-@pytest.mark.req("REQ-CLI-10")
-def test_setup_request_comes_only_from_session_start(tmp_path):
-    env = {"CLAUDE_PROJECT_DIR": str(tmp_path)}
-    text = json.dumps(payload(tmp_path, "PreToolUse", tool_name="Read",
-                              agent_type="vogon:vogon-test-writer",
-                              tool_input={"file_path": "src/a.py"}))
-    assert hooks.run("test-read", text, env=env) == ""
 
 
 @pytest.mark.req("REQ-CLI-8")
@@ -263,118 +213,3 @@ def test_session_start_reads_the_project_from_a_subdirectory(project):
                     json.dumps(payload(project / "src", "SessionStart", source="resume")))
     assert "- tracker: acme-tracker" in out
 
-
-# test-read
-
-
-def read(root: Path, agent: str | None, tool: str, tool_input: dict, cwd: Path | None = None) -> str:
-    text = pre(cwd or root, tool, tool_input, agent_type=agent)
-    return run_hook("test-read", text)
-
-
-TEST_AGENTS = ["vogon-test-writer", "vogon-test-checker",
-               "vogon:vogon-test-writer", "vogon:vogon-test-checker"]
-
-
-@pytest.mark.req("REQ-GEN-11")
-@pytest.mark.parametrize("agent", TEST_AGENTS)
-def test_test_agent_reading_the_source_is_refused(project, agent):
-    out = read(project, agent, "Read", {"file_path": str(project / "src" / "a.py")})
-    assert decision(out) == "deny"
-    assert "vogon/" in reason(out) and "tests/" in reason(out)
-
-
-@pytest.mark.req("REQ-GEN-11")
-@pytest.mark.parametrize("agent", TEST_AGENTS)
-@pytest.mark.parametrize("tool, tool_input", [
-    ("Read", {"file_path": "vogon/requirements/TRK/REQ-TRK-1.md"}),
-    ("Read", {"file_path": "tests/test_a.py", "offset": 1, "limit": 10}),
-    ("Grep", {"pattern": "MUST", "path": "vogon"}),
-    ("Grep", {"pattern": "def test", "path": "tests", "glob": "*.py"}),
-    ("Glob", {"pattern": "**/*.md", "path": "vogon"}),
-    ("Glob", {"pattern": "unit/*.py", "path": "tests"}),
-    ("Write", {"file_path": "tests/test_b.py", "content": "def test_b():\n    pass\n"}),
-    ("Edit", {"file_path": "tests/test_a.py", "old_string": "pass", "new_string": "assert 1"}),
-])
-def test_test_agent_reading_the_records_and_tests_is_allowed(project, agent, tool, tool_input):
-    tool_input = {k: (str(project / v) if k in ("file_path", "path") else v)
-                  for k, v in tool_input.items()}
-    assert decision(read(project, agent, tool, tool_input)) is None
-
-
-@pytest.mark.req("REQ-GEN-11")
-@pytest.mark.parametrize("tool, tool_input", [
-    ("Grep", {"pattern": "X"}),                                   # no path: the project root
-    ("Grep", {"pattern": "X", "path": "src"}),
-    ("Grep", {"pattern": "X", "path": "."}),
-    ("Glob", {"pattern": "**/*.py"}),                             # no path: the project root
-    ("Glob", {"pattern": "../src/*.py", "path": "tests"}),
-    ("Glob", {"pattern": "{..,unit}/src/*.py", "path": "tests"}),
-    ("Grep", {"pattern": "X", "path": "tests", "glob": "{..,x}/src/*.py"}),
-    ("Glob", {"pattern": "src/**/*.py"}),
-    ("Glob", {"pattern": "tests/**/*.py"}),                       # no path: the project root
-    ("Read", {"file_path": "tests/../src/a.py"}),
-    ("Read", {"file_path": "vogon.yaml"}),
-    ("Write", {"file_path": "src/a.py", "content": "X = 3\n"}),
-    ("Edit", {"file_path": "src/a.py", "old_string": "1", "new_string": "2"}),
-    ("Read", {}),
-    ("Bash", {"command": "cat src/a.py"}),
-    ("mcp__filesystem__read_file", {"path": "src/a.py"}),
-])
-def test_test_agent_reading_anything_else_is_refused(project, tool, tool_input):
-    tool_input = {k: (str(project / v) if k in ("file_path",) else v) for k, v in tool_input.items()}
-    assert decision(read(project, "vogon:vogon-test-writer", tool, tool_input)) == "deny"
-
-
-@pytest.mark.req("REQ-GEN-11")
-def test_a_search_of_the_project_root_is_refused_naming_the_root(project):
-    out = read(project, "vogon-test-writer", "Grep", {"pattern": "X"})
-    assert decision(out) == "deny"
-    assert "The project root is outside them" in reason(out)
-
-
-@pytest.mark.req("REQ-GEN-11")
-def test_a_relative_path_resolves_against_the_agent_cwd(project):
-    out = read(project, "vogon-test-checker", "Grep", {"pattern": "X", "path": "../src"},
-               cwd=project / "tests")
-    assert decision(out) == "deny"
-    out = read(project, "vogon-test-checker", "Grep", {"pattern": "X", "path": "."},
-               cwd=project / "tests")
-    assert decision(out) is None
-
-
-@pytest.mark.req("REQ-GEN-11")
-def test_a_link_from_the_tests_to_the_source_is_refused(project):
-    (project / "tests" / "link").symlink_to(project / "src", target_is_directory=True)
-    out = read(project, "vogon-test-writer", "Read",
-               {"file_path": str(project / "tests" / "link" / "a.py")})
-    assert decision(out) == "deny"
-
-
-@pytest.mark.req("REQ-GEN-11")
-def test_the_configured_test_paths_are_the_allowed_ones(project):
-    (project / "spec").mkdir()
-    (project / "vogon.yaml").write_text(CONFIG + "paths:\n  tests: [spec]\n", encoding="utf-8")
-    agent = "vogon:vogon-test-checker"
-    assert decision(read(project, agent, "Read", {"file_path": str(project / "spec" / "x.py")})) is None
-    assert decision(read(project, agent, "Read", {"file_path": str(project / "tests" / "test_a.py")})) == "deny"
-
-
-@pytest.mark.req("REQ-GEN-11")
-@pytest.mark.parametrize("agent", [None, "Explore", "general-purpose", "vogon:vogon-writer",
-                                   "vogon:vogon-checker", "other:vogon-test-writer"])
-def test_other_agents_pass(project, agent):
-    for tool, tool_input in [("Read", {"file_path": str(project / "src" / "a.py")}),
-                             ("Grep", {"pattern": "X"}), ("Bash", {"command": "ls"})]:
-        assert decision(read(project, agent, tool, tool_input)) is None
-
-
-@pytest.mark.req("REQ-GEN-11")
-def test_test_read_hook_through_the_entry_script_fails_closed(project):
-    result = entry("test-read", pre(project, "Read", {"file_path": str(project / "src" / "a.py")},
-                                    agent_type="vogon:vogon-test-writer"), project)
-    assert result.returncode == 0
-    assert decision(result.stdout) == "deny"
-    result = entry("test-read", "{broken", project)
-    assert result.returncode == 0
-    assert decision(result.stdout) == "deny"

@@ -1,18 +1,10 @@
 {
-  "description": "VOGON: the configuration at session start, and a refusal of a test agent's read outside the records and the tests.",
+  "description": "VOGON: the configuration at session start.",
   "hooks": {
     "SessionStart": [
       {
         "hooks": [
           {"type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}\"/scripts/vogon hook session-start"}
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "^(Read|Grep|Glob|LS|NotebookRead|NotebookEdit|Edit|MultiEdit|Write|Bash)$|^mcp__",
-        "hooks": [
-          {"type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}\"/scripts/vogon hook test-read"}
         ]
       }
     ]

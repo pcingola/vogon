@@ -117,11 +117,10 @@ writer, and the loop above applies: five rounds, or a repeated finding, and
 the rest go to the person. The final test checker report goes to the person
 with the test cases, for the approval at step 11.
 
-- Both agents read only the records directory and the test paths, so put the
-  text of `references/tests.md` and `references/writing.md` in their prompt,
-  not their paths.
-- Never give either agent implementation source, a run of the code, or its
-  output. Give the plan path; the plan names the interface the tests call.
+- Put the text of `references/tests.md` and `references/writing.md` in their
+  prompt.
+- Never give either agent a run of the code or its output. Give the plan
+  path; the plan names the interface the tests call.
 
 ## Subagent prompts
 

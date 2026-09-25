@@ -19,8 +19,7 @@ that, for every accepted requirement whose `verification` is `test`, compare
 the requirement and its acceptance block with the tests whose markers name it,
 and report each clause of the acceptance block that no test exercises, each
 expected value that differs from the acceptance block, and each assertion that
-does not follow from the requirement. The subagent definition MUST grant no
-read access to the implementation source.
+does not follow from the requirement.
 
 The marker checks establish that a test names a requirement. This is where the
 tests are compared with what the requirement says, and the comparison has to
@@ -36,5 +35,4 @@ input and for a full one, and its only test uses a full input. The report
 names the requirement and the clause for the empty input.
 
 **Acceptance.** The instructions require all three kinds of finding for every
-accepted requirement verified by test, and the subagent definition lists no
-path under the implementation source among those it may read.
+accepted requirement verified by test.

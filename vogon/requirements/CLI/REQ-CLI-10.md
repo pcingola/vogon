@@ -17,8 +17,7 @@ tags: [configuration, setup, hooks]
 **Requirement.** When a Claude Code session starts in a host project that has no
 `vogon.yaml`, VOGON MUST add to the session's context an instruction to run
 setup, naming the missing file and the skill and reference file that perform
-setup. The host project is the directory in `CLAUDE_PROJECT_DIR`. Every other hook
-MUST print nothing in that host project until `vogon.yaml` exists.
+setup. The host project is the directory in `CLAUDE_PROJECT_DIR`.
 
 The plugin is enabled only in host projects (`REQ-CLI-9`), so a
 session in which the hooks run is in a host project, and a missing
@@ -37,8 +36,8 @@ the `vogon` skill and follow `references/config.md`.
 **Acceptance.** Given `CLAUDE_PROJECT_DIR` naming a directory with no
 `vogon.yaml`, `vogon hook session-start` prints text naming
 `<directory>/vogon.yaml`, the `vogon` skill, `references/config.md` and
-`vogon init`, and `vogon hook test-read` prints nothing. Given a
+`vogon init`. Given a
 `CLAUDE_PROJECT_DIR` with no `vogon.yaml` and a hook input whose `cwd` lies
 inside a directory that has one, `session-start` still prints the
 instruction. Given no `CLAUDE_PROJECT_DIR` and no `vogon.yaml` above `cwd`,
-every hook prints nothing.
+`session-start` prints nothing.

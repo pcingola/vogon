@@ -237,18 +237,16 @@ vogon hook session-start < input.json
 
 | Argument | Meaning |
 | --- | --- |
-| `name` | `session-start` or `test-read`. |
+| `name` | `session-start`. |
 
 It reads the hook's JSON input on standard input and prints the hook's output
 on standard output. The exit status is always 0. In a project with no
 `vogon.yaml`, `session-start` prints an instruction to set VOGON up, naming
-the file it looked for in `CLAUDE_PROJECT_DIR`, and every other hook prints
-nothing.
+the file it looked for in `CLAUDE_PROJECT_DIR`.
 
 | Hook | Event | Does |
 | --- | --- | --- |
 | `session-start` | `SessionStart` | Prints the configured server for each role, the approvals and the role holders; with no `vogon.yaml`, an instruction to run setup. |
-| `test-read` | `PreToolUse` on file, shell and MCP tools | For the test writer and test checker agents, allows only paths under the records directory and the test paths. |
 
 ## vogon push
 
