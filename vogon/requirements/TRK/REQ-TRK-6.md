@@ -14,7 +14,7 @@ tags: [tracker, drift]
 
 **Requirement.** VOGON MUST report every record whose `tracked_as` names, under any role, an
 issue that does not exist, has been deleted, or has been moved to another
-project.
+tracker project.
 
 A record pointing at a missing issue looks tracked and is not. Its approval
 state cannot be read, and the coverage report in the tracker does not include

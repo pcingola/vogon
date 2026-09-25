@@ -19,16 +19,16 @@ operations it requires from that role, and MUST check during setup that
 each configured server provides them, failing with the role, the server and
 the missing operation named. Claude Code performs the check through MCP.
 
-The product filling each role is the project's choice, so VOGON cannot assume
+The product filling each role is the host project's choice, so VOGON cannot assume
 what a server offers. A missing operation found during setup is a
 configuration error; found on first use it is a half-written record and a
 tracker that disagrees with the repository.
 
 **What this does not require.** Checking that an operation behaves correctly,
-checking credentials or permissions, or checking a role the project has not
+checking credentials or permissions, or checking a role the host project has not
 configured.
 
-**Example.** A project configures a tracker server that can read and create
+**Example.** A host project configures a tracker server that can read and create
 issues but cannot link two issues. Setup fails, naming the tracker role, the
 server and the link operation.
 

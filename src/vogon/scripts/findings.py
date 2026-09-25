@@ -1,4 +1,4 @@
-"""What a check reports: a failure or a notice, where, and under which requirement.
+"""What a check reports: a failure or a notice, and where.
 
 A failure makes the run exit non-zero. A notice is reported and does not change
 the exit status (REQ-CLI-1).
@@ -20,7 +20,10 @@ class Finding:
     """One reported problem.
 
     `path` is relative to the project root where the finding concerns a file.
-    `requirement` is the id of the requirement the check implements, if any.
+    `requirement` is the id of the VOGON requirement the check implements, for
+    VOGON's own tests. It is never printed, because the output is read in a host
+    project, where that id means nothing or names one of the host project's own
+    records.
     """
 
     severity: str
@@ -47,12 +50,15 @@ class Finding:
         return self.path if self.line is None else f"{self.path}:{self.line}"
 
     def format(self) -> str:
-        """One line: `location: severity: REQ-ID: message`, omitting absent parts."""
-        parts = [p for p in (self.location, self.severity, self.requirement) if p]
+        """One line: `location: severity: message`, omitting an absent location."""
+        parts = [p for p in (self.location, self.severity) if p]
         return ": ".join([*parts, self.message])
 
     def to_dict(self) -> dict:
-        return asdict(self)
+        """The printed fields: severity, message, path and line."""
+        d = asdict(self)
+        del d["requirement"]
+        return d
 
 
 def failure(message: str, path: str | None = None, line: int | None = None,

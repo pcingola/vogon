@@ -24,9 +24,9 @@ governs output it does not produce.
 other than the one version 0.1 targets.
 
 **Example.** With the plugin installed, the coding agent in a host project
-reads the drafting instructions from it, and the project's own instructions
+reads the drafting instructions from it, and the host project's own instructions
 are unchanged.
 
 **Acceptance.** With the plugin installed, the coding agent reads the drafting
-instructions, the project's own instructions are unchanged, and the drafting
+instructions, the host project's own instructions are unchanged, and the drafting
 instructions specify every frontmatter field the checker enforces.

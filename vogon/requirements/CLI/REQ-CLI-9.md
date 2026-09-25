@@ -17,14 +17,14 @@ tags: [install, distribution, claude-code]
 
 **Requirement.** Every install command VOGON's documentation gives MUST
 enable the plugin at project scope, run in the host project, so that the
-marketplace and the plugin are named in that project's `.claude/settings.json`
+marketplace and the plugin are named in the host project's `.claude/settings.json`
 and in no user settings file.
 
 Claude Code's `/plugin marketplace add` and `/plugin install` default to user
-scope, which enables a plugin in every project the user opens. VOGON's skill,
-agents and hooks then load in projects that do not use it, and the hooks
-cannot tell a project that has not been set up from one that does not use
-VOGON.
+scope, which enables a plugin in every repository the user opens. VOGON's skill,
+agents and hooks then load in repositories that do not use it, and the hooks
+cannot tell a host project that has not been set up from a repository that
+does not use VOGON.
 
 **What this does not require.** Preventing a person from installing the
 plugin at user scope, and controlling where Claude Code caches the plugin

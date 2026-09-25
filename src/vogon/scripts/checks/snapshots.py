@@ -41,7 +41,7 @@ def tracker_snapshot(config: Config) -> Iterable[Finding]:
     snap, found = snapshots.load_tracker(config)
     if snap is None and not found and any(config.system(r) for r in ISSUE_ROLES):
         found = [snapshots.skipped(snapshots.TRACKER_FILE,
-                                   "Tracker checks (REQ-TRK-2, -6, -8, -9, -11)")]
+                                   "Tracker checks")]
     return found
 
 
@@ -189,7 +189,7 @@ def server_operations(config: Config) -> Iterable[Finding]:
     yield from found
     if servers is None:
         if not found:
-            yield snapshots.skipped(snapshots.SERVERS_FILE, "Server operation check (REQ-CLI-4)")
+            yield snapshots.skipped(snapshots.SERVERS_FILE, "Server operation check")
         return
     for role in snapshots.OPERATIONS:
         system = config.system(role)
@@ -210,7 +210,7 @@ def branch_rules(config: Config) -> Iterable[Finding]:
     yield from found
     if rules is None:
         if not found:
-            yield snapshots.skipped(snapshots.BRANCH_RULES_FILE, "Branch rule check (REQ-CLI-7)")
+            yield snapshots.skipped(snapshots.BRANCH_RULES_FILE, "Branch rule check")
         return
     if rules.server != host.server:
         yield failure(f"{snapshots.rel(snapshots.BRANCH_RULES_FILE)} was read from server "
@@ -231,7 +231,7 @@ def risk_assessment(config: Config) -> Iterable[Finding]:
     levels, found = snapshots.load_risk_assessment(config)
     yield from found
     if levels is None:
-        yield snapshots.skipped(snapshots.RISK_FILE, "Risk assessment check (REQ-GEN-9)")
+        yield snapshots.skipped(snapshots.RISK_FILE, "Risk assessment check")
         return
     by_key = {ids.parse(k).key: v for k, v in levels.items()}
     recs, _ = records.load_all(config.records_dir, "requirement")
@@ -295,7 +295,7 @@ def approved_after_use(config: Config) -> Iterable[Finding]:
     if not approved:
         pass
     elif ref is None:
-        yield notice("Approval order check for requirement issues (REQ-TRK-11) skipped: the "
+        yield notice("Approval order check for requirement issues skipped: the "
                      "default branch is not known; it is read from "
                      f"{snapshots.rel(snapshots.BRANCH_RULES_FILE)} or origin/HEAD",
                      requirement="REQ-CLI-2")

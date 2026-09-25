@@ -45,7 +45,7 @@ def test_a_change_naming_no_record_fails(tmp_path, capsys):
     status, out = change(tmp_path, capsys, "main", "--description", "Fixes rounding.")
     assert status == 1
     assert len(out) == 1
-    assert "failure: REQ-TRC-9" in out[0] and "names no record id" in out[0]
+    assert "failure" in out[0] and "names no record id" in out[0]
 
 
 @pytest.mark.req("REQ-TRC-9")

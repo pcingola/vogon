@@ -373,7 +373,7 @@ def commit(data: dict | None, root: Path) -> str:
     where = rel(cfg, cfg.records_dir)
     return deny(f"The commit message names {', '.join(unknown)}, which resolve"
                 f"{'s' if len(unknown) == 1 else ''} to no record under {where}/. Name the "
-                "record the change implements, or create the record first (REQ-TRC-9).")
+                "record the change implements, or create the record first.")
 
 
 # transition
@@ -407,12 +407,11 @@ def _transition_id(value) -> str | None:
 def transition(data: dict | None, root: Path) -> str:
     if data is None:
         return deny("VOGON could not read this call, so it cannot tell whether it is a "
-                    "transition into an approved state; the call is refused (REQ-TRK-1).")
+                    "transition into an approved state; the call is refused.")
     tool_name = data.get("tool_name")
     if not isinstance(tool_name, str):
         return deny("VOGON could not read the tool name of this call, so it cannot tell "
-                    "whether it is a transition into an approved state; the call is refused "
-                    "(REQ-TRK-1).")
+                    "whether it is a transition into an approved state; the call is refused.")
     if not tool_name.startswith("mcp__"):
         return ""
     cfg = config_module.load(root)
@@ -420,7 +419,7 @@ def transition(data: dict | None, root: Path) -> str:
         bad = [f.message for f in cfg.findings if f.is_failure]
         return deny(f"{FILENAME} cannot be read ({'; '.join(bad)}), so VOGON cannot tell "
                     "which MCP calls are transitions; every MCP call is refused until the "
-                    "file is corrected (REQ-TRK-1).")
+                    "file is corrected.")
     tool_input = data.get("tool_input")
     tool_input = tool_input if isinstance(tool_input, dict) else {}
     reasons: list[str] = []
@@ -448,10 +447,10 @@ def transition(data: dict | None, root: Path) -> str:
         elif system.transitions[tid].strip().casefold() in approved:
             reasons.append(f"transition {tid} of the {role} leads to "
                            f"{system.transitions[tid]!r}, an approved state. A person makes "
-                           "this transition with their own credentials (CON-001)")
+                           "this transition with their own credentials")
     if not reasons:
         return ""
-    return deny("VOGON refuses this call: " + "; ".join(reasons) + " (REQ-TRK-1).")
+    return deny("VOGON refuses this call: " + "; ".join(reasons) + ".")
 
 
 # test-read
@@ -528,14 +527,14 @@ def test_read(data: dict | None, root: Path) -> str:
     if paths is None:
         return deny(f"{agent_type} may read only {shown}, through the file tools with a path "
                     f"under them. {tool_name} is refused, because the paths it reads cannot "
-                    "be checked (DEC-019).")
+                    "be checked.")
     outside = [p for p in paths if not _under(p, allowed)]
     if not outside:
         return ""
     where = "The project root" if outside[0] == Path(os.path.realpath(root)) else rel(cfg, outside[0])
     return deny(f"{agent_type} may read only {shown}. {where} is outside them, so the "
                 "call is refused: the tests are written and checked from the requirements, "
-                "not from the code (DEC-019).")
+                "not from the code.")
 
 
 # Dispatch

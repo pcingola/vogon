@@ -141,7 +141,7 @@ def test_a_role_that_is_not_configured_is_a_notice_and_plans_nothing(tmp_path, c
     writes, _, findings, status = plan(tmp_path, capsys)
     assert status == 0
     assert [w["role"] for w in writes] == ["tracker"]
-    assert "notice: REQ-CLI-8: Planning the test issues skipped: the test_manager role is " \
+    assert "notice: Planning the test issues skipped: the test_manager role is " \
            "not configured in vogon.yaml" in findings
 
 
@@ -243,7 +243,7 @@ def test_no_write_to_an_approved_issue_whose_record_changed(tmp_path, capsys):
     writes, _, findings, status = plan(tmp_path, capsys)
     assert writes == []
     assert status == 1
-    assert "REQ-TRK-2: REQ-TRK-1 requires re-approval" in findings
+    assert "REQ-TRK-1 requires re-approval" in findings
 
 
 @pytest.mark.req("REQ-TRK-5")
@@ -363,4 +363,4 @@ def test_results_without_a_build_are_never_imported(tmp_path, capsys, build):
     writes, _, findings, status = plan(tmp_path, capsys)
     assert writes == []
     assert status == 1
-    assert "REQ-TRC-6" in findings and "no build" in findings
+    assert "records no build, so no result is imported" in findings

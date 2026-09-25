@@ -1020,13 +1020,12 @@ file it reads is absent, or an approval whose role has no holder yet.</p>
 so a run that reports only notices exits 0 (<code>REQ-CLI-1</code>). An argument error
 exits 2.</p>
 <p>In text format each finding is one line on standard output:</p>
-<pre><code>vogon/requirements/API/REQ-API-3.md:6: failure: REQ-REC-2: depends_on names REQ-API-9, for which no record file exists
-vogon.yaml: notice: REQ-CLI-6: approval 'release': role 'system_owner' has no holder in roles
+<pre><code>vogon/requirements/API/REQ-API-3.md:6: failure: depends_on names REQ-API-9, for which no record file exists
+vogon.yaml: notice: approval 'release': role 'system_owner' has no holder in roles
 </code></pre>
-<p>The parts are the file and line, the severity, the requirement the check
-implements and the message; a part that does not apply is left out. In JSON
-format standard output is one object,
-<code>{"findings": [{"severity", "message", "path", "line", "requirement"}, ...]}</code>.
+<p>The parts are the file and line, the severity and the message; a location
+that does not apply is left out. In JSON format standard output is one
+object, <code>{"findings": [{"severity", "message", "path", "line"}, ...]}</code>.
 A command's own output, described under each command below, is printed before
 the findings.</p>
 <h2 id="vogon-check">vogon check<a class="headerlink" href="#vogon-check" title="Permanent link">&para;</a></h2>

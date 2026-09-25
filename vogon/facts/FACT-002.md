@@ -19,6 +19,6 @@ reported as uncovered; a requirement that was never created as an issue is not
 reported at all, and the report shows full coverage of the issues that do
 exist.
 
-**Example.** A project has forty requirement records and thirty-eight
+**Example.** A host project has forty requirement records and thirty-eight
 requirement issues. Xray reports coverage of thirty-eight, and nothing in the
 report indicates that two are missing.

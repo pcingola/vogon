@@ -24,11 +24,11 @@ Every other link is written as an id: the test marker, the commit message,
 all of them at once, and it breaks them silently, because a reference to it
 resolves to nothing rather than to the wrong thing.
 
-**What this does not require.** Checking that a module name is one the project
+**What this does not require.** Checking that a module name is one the host project
 uses elsewhere, and choosing the module for a new record.
 
 **Example.** A record carrying `id: REQ_TRK_2` is reported. A record carrying
-`id: REQ-TRK-2` in a project with no other `TRK` record is not.
+`id: REQ-TRK-2` in a host project with no other `TRK` record is not.
 
 **Acceptance.** For every record file, the `id` matches the grammar, or the
 record is reported with its id and its path.

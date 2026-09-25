@@ -1,7 +1,7 @@
 ---
 id: REQ-REC-14
 type: requirement
-title: Report a module name that the project has not declared
+title: Report a module name that the host project has not declared
 modules: [REC]
 status: accepted
 verification: test
@@ -12,7 +12,7 @@ references:
 tags: [identifiers, modules, validation]
 ---
 
-# REQ-REC-14 — Report a module name that the project has not declared
+# REQ-REC-14 — Report a module name that the host project has not declared
 
 **Requirement.** VOGON MUST read the module names the host project declares
 from `vogon/modules.yaml`, and MUST report every record whose id or `modules`
@@ -24,11 +24,11 @@ alike. The declared list is what turns that into an error, and it is committed
 so that adding a module is a reviewed change rather than a side effect of
 minting an id.
 
-**What this does not require.** Requiring the file where a project uses no
+**What this does not require.** Requiring the file where a host project uses no
 modules, checking that a declared module is used by any record, and judging
 whether a module name is a good one.
 
-**Example.** A project declares `TRK` and `REC`. A record minted as `REQ-TRK-3`
+**Example.** A host project declares `TRK` and `REC`. A record minted as `REQ-TRK-3`
 passes; one minted as `REQ-TRCK-3` is reported, naming the record and the
 undeclared module.
 

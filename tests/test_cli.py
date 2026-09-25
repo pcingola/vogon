@@ -87,7 +87,7 @@ def test_check_reporting_a_failure_exits_nonzero(tmp_path, capsys):
         "approvals:\n  test_cases: {roles: [validation_lead], system: test_manager}\n")
     assert main(["check", "--root", str(tmp_path)]) == 1
     out = capsys.readouterr().out
-    assert re.search(r"^vogon\.yaml: failure: REQ-CLI-5: .*test_cases.*validation_lead", out, re.M)
+    assert re.search(r"^vogon\.yaml: failure: .*test_cases.*validation_lead", out, re.M)
 
 
 @pytest.mark.req("REQ-CLI-1")
@@ -105,23 +105,23 @@ def test_notice_alone_is_printed_and_exits_zero():
                     requirement="REQ-CLI-6")]
     write(found, "text", stream)
     assert stream.getvalue() == (
-        "vogon.yaml: notice: REQ-CLI-6: approval release: role it_quality_manager has no holder\n")
+        "vogon.yaml: notice: approval release: role it_quality_manager has no holder\n")
     assert exit_status(found) == 0
 
 
 @pytest.mark.req("REQ-REC-1", "REQ-REC-8")
-def test_text_output_names_file_line_severity_and_requirement():
+def test_text_output_names_file_line_and_severity_and_never_vogons_requirement():
     stream = io.StringIO()
     write([failure("status 'done' is not allowed", path="vogon/facts/FACT-001.md", line=6,
                    requirement="REQ-REC-1"), failure("no location")], "text", stream)
     assert stream.getvalue().splitlines() == [
-        "vogon/facts/FACT-001.md:6: failure: REQ-REC-1: status 'done' is not allowed",
+        "vogon/facts/FACT-001.md:6: failure: status 'done' is not allowed",
         "failure: no location",
     ]
 
 
 @pytest.mark.req("REQ-CLI-1", "REQ-CLI-3")
-def test_json_output_holds_every_field(tmp_path, capsys):
+def test_json_output_holds_the_location_severity_and_message(tmp_path, capsys):
     (tmp_path / "vogon.yaml").write_text("pathz: {}\n")
     assert main(["check", "--root", str(tmp_path), "--format", "json"]) == 1
     data = json.loads(capsys.readouterr().out)
@@ -130,7 +130,6 @@ def test_json_output_holds_every_field(tmp_path, capsys):
         "message": "unknown key 'pathz' in vogon.yaml",
         "path": "vogon.yaml",
         "line": None,
-        "requirement": "REQ-CLI-3",
     }]
 
 

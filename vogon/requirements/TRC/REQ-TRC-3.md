@@ -16,7 +16,7 @@ tags: [markers, ci]
 status is `withdrawn` or `superseded_by`.
 
 A withdrawn requirement keeps its file and its id, so a marker pointing at it
-resolves and looks healthy. The test is verifying a statement the project has
+resolves and looks healthy. The test is verifying a statement the host project has
 retracted.
 
 **What this does not require.** Deleting the test, and retargeting the marker

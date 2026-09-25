@@ -21,7 +21,7 @@ survives every rename and deletion until something checks it.
 **What this does not require.** Checking that the test verifies what the
 requirement says.
 
-**Example.** A test marked `REQ-TRC-40` in a project whose highest `TRC`
+**Example.** A test marked `REQ-TRC-40` in a host project whose highest `TRC`
 requirement is 8 fails the run.
 
 **Acceptance.** For any set of markers and records, a marker naming an id with

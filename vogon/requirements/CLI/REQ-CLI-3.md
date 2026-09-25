@@ -25,7 +25,7 @@ is the one the records already use, so no second parser is needed.
 **What this does not require.** Reading configuration from the host project's
 build file, and supporting a layered or per-environment configuration.
 
-**Example.** A project with `vogon/` in place and no `vogon.yaml` runs every
+**Example.** A host project with `vogon/` in place and no `vogon.yaml` runs every
 command.
 
 **Acceptance.** With no `vogon.yaml` present, every command resolves the

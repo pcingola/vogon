@@ -1,7 +1,7 @@
 # Records
 
 VOGON's own requirements, domain facts, constraints and decisions, in the
-format VOGON defines for the projects it is installed into.
+format VOGON defines for the host projects it is installed into.
 
 | Path | Holds |
 | --- | --- |

@@ -43,14 +43,13 @@ exits 2.
 In text format each finding is one line on standard output:
 
 ```
-vogon/requirements/API/REQ-API-3.md:6: failure: REQ-REC-2: depends_on names REQ-API-9, for which no record file exists
-vogon.yaml: notice: REQ-CLI-6: approval 'release': role 'system_owner' has no holder in roles
+vogon/requirements/API/REQ-API-3.md:6: failure: depends_on names REQ-API-9, for which no record file exists
+vogon.yaml: notice: approval 'release': role 'system_owner' has no holder in roles
 ```
 
-The parts are the file and line, the severity, the requirement the check
-implements and the message; a part that does not apply is left out. In JSON
-format standard output is one object,
-`{"findings": [{"severity", "message", "path", "line", "requirement"}, ...]}`.
+The parts are the file and line, the severity and the message; a location
+that does not apply is left out. In JSON format standard output is one
+object, `{"findings": [{"severity", "message", "path", "line"}, ...]}`.
 A command's own output, described under each command below, is printed before
 the findings.
 

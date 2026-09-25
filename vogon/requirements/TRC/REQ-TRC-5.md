@@ -17,7 +17,7 @@ in the test manager and is linked to the requirement issue named by the
 marker.
 
 The test manager builds its coverage report from that link. The marker in the test source
-is the project's statement of what verifies what, and this is where it reaches
+is the host project's statement of what verifies what, and this is where it reaches
 the tracker.
 
 **What this does not require.** Copying the test's code into the issue, and

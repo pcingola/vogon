@@ -20,14 +20,14 @@ people who hold it, and MUST use the shipped default assignment for any
 approval the file does not configure.
 
 Which role approves what is set by each company's procedure, and who holds a
-role changes during a project. Both have to be changeable without changing
+role changes during a host project. Both have to be changeable without changing
 VOGON.
 
 **What this does not require.** Checking that the configured assignment
 matches the company's procedure, and reading role holders from a directory
 service.
 
-**Example.** A project configures the test cases to be approved by a role
+**Example.** A host project configures the test cases to be approved by a role
 named Validation Lead instead of Test Lead, and names one holder. VOGON checks
 test-case approvals against that holder, and uses the default assignment for
 every other approval.
