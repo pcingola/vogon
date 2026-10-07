@@ -29,10 +29,13 @@ and never by product. The project names the system that fills each role in
 | Approval of requirements | `vogon approve`, recorded in `REQ-*.json`; the tracker holds no approval | Tracker workflow transition, cached in `REQ-*.json` |
 | Test manager | None: `vogon trace` builds the matrix | Xray |
 | Document system | None: documents stay in the repository | The company's controlled document system |
-| Meetings | The meeting system holding the transcripts | The meeting system holding the transcripts |
+| Meetings | The project's choice, for example Google Meet | The project's choice, for example Teams |
+| Mail | The project's choice, for example Gmail | The project's choice, for example Outlook |
+| Chat | The project's choice, for example Slack | The project's choice, for example Teams |
 
-Jira and Xray are examples. A project may fill a role with another product,
-such as GitHub Issues as the tracker, and the skills do not change.
+The products named are examples. A project may fill a role with another
+product, and the skills do not change. VOGON reaches the meeting, mail and chat
+systems through the MCP connectors of the Claude Code session.
 
 A POC approval records the approver's git identity, which the approver does not
 re-enter at approval, so it is not an electronic signature under 21 CFR
@@ -57,10 +60,10 @@ session, which is the main agent of [the loop](loop.md).
 | Skill | Does | Process page |
 | --- | --- | --- |
 | `vogon:init` | Records the held validation plan, the role holders and the system for each role in `vogon/project/vogon.yaml` | [Setup](process/setup.md) |
-| `vogon:meetings` | Downloads the selected transcripts, writes checked summaries, drafts records with their risk fields, checks them, opens the pull request, and in the real version sends the requirements to the tracker for approval | [Meetings](process/meetings.md), [New requirements](process/new_requirements.md) |
-| `vogon:from-code` | The same as `vogon:meetings`, drafting from existing code and its documentation | [Development process](process/index.md) |
+| `vogon:requirements` | Reads the selected sources, writes checked summaries of meetings, mail and chat, drafts records with their risk fields, checks them, opens the pull request, and in the real version sends the requirements to the tracker for approval | [Meetings](process/meetings.md), [New requirements](process/new_requirements.md) |
 | `vogon:approve` | Records the Product Owner's approval of the requirements they name, commits and pushes | [New requirements](process/new_requirements.md) |
 | `vogon:next` | Lists the approved requirements ready to start, lists the blocked ones with what blocks them, assigns the chosen one | [Next work](process/next_work.md) |
+| `vogon:test-scripts` | Writes the test scripts of approved requirements before development, or generates them from the existing tests, as `tests.md` states, and registers them for approval | [Tests](process/test_checks.md) |
 | `vogon:implement` | Plans one requirement, writes its tests, code and documentation, has them reviewed, and opens the pull request | [Planning](process/planning.md), [Implementation](process/implementation.md), [Tests](process/test_checks.md) |
 | `vogon:release` | Drafts and checks the validation documents for a release commit, produces the traceability matrix, files the evidence | [Documents](process/documents.md) |
 
@@ -88,10 +91,11 @@ Each skill runs its work through [the loop](loop.md). The loops are:
 | Skill | Writing sub-agent produces | Evaluators check |
 | --- | --- | --- |
 | `vogon:init`, any skill | One project process file | Each statement is supported by the cited plan section; the file covers every topic it must |
-| `vogon:meetings` | One summary per meeting | The summary against its transcript |
-| `vogon:meetings`, `vogon:from-code` | Records with their risk fields | The requirement checklist |
+| `vogon:requirements` | One summary per meeting, mail thread or chat channel | The summary against its source |
+| `vogon:requirements` | Records with their risk fields | The requirement checklist |
+| `vogon:test-scripts` | Test scripts | Each script against its requirement and, where generated, its tests |
 | `vogon:implement` | The plan for one requirement | The plan against the requirement and the code |
-| `vogon:implement` | Tests, and test scripts where `tests.md` asks for them | The test checklist |
+| `vogon:implement` | Tests | The test checklist |
 | `vogon:implement` | Code and documentation | Claude Code's code review; the code checklist |
 | `vogon:release` | One validation document | The document against the requirements, the code and the results of the release commit |
 
@@ -171,13 +175,24 @@ prints the next unused number. Two branches that take an id before either
 pushes can get the same one. The same script detects the duplicate on the pull
 request, and the later pull request renumbers before it merges.
 
-Meeting transcripts are downloaded to `vogon/tmp/`, which is gitignored, and
-are never committed. A writing sub-agent summarises each one, and an evaluator
-checks the summary against the transcript. The checked summary is committed to
-`vogon/sources/` with the meeting's id in the meeting system, its date and its
-participants ([Sources](sources.md)), and the transcript is deleted. Records
-are drafted from the checked summary. The Product Owner's approval makes a
-statement a requirement; the meeting is only where it came from.
+`vogon:requirements` drafts records from any source the session can reach:
+meeting transcripts, mail threads, chat channels, documents, and existing code
+with its documentation, git history, pull requests and issues.
+
+Meeting transcripts, mail and chat contain personal data, and some countries
+restrict keeping meeting transcripts. They are downloaded to `vogon/tmp/`,
+which is gitignored, and are never committed. A writing sub-agent summarises
+each one, and an evaluator checks the summary against its source. The checked
+summary is committed to `vogon/sources/` with the source's id in its system,
+its date and its participants ([Sources](sources.md)), and the downloaded
+content is deleted. Records are drafted from the checked summary. The Product
+Owner's approval makes a statement a requirement; the meeting or message is
+only where it came from.
+
+Code shows what the system does, and its history shows why. A requirement
+drafted from code alone describes the current behaviour, defects included, so
+an evaluator reports every requirement whose only source is the code, and the
+developer confirms that the behaviour is intended.
 
 ## Approval of requirements
 
@@ -252,8 +267,8 @@ combinations.
 A test script is a narrative test procedure with an id, linked to its
 requirement. `tests.md` states whether the project needs test scripts, whether
 they are written before the tests, from the requirement, or after, generated
-from the tests, and who approves them. VOGON follows that order and imposes
-none of its own. Where scripts exist, each test also names its script,
+from the tests, and who approves them. `vogon:test-scripts` follows that
+order and imposes none of its own. Where scripts exist, each test also names its script,
 `@pytest.mark.script("<script id>")`. Where the validation plan needs a test
 document, such as a test specification, `vogon:release` prepares it from the
 requirements, the scripts and the tests.

@@ -1479,13 +1479,24 @@ and never by product. The project names the system that fills each role in
 </tr>
 <tr>
 <td>Meetings</td>
-<td>The meeting system holding the transcripts</td>
-<td>The meeting system holding the transcripts</td>
+<td>The project's choice, for example Google Meet</td>
+<td>The project's choice, for example Teams</td>
+</tr>
+<tr>
+<td>Mail</td>
+<td>The project's choice, for example Gmail</td>
+<td>The project's choice, for example Outlook</td>
+</tr>
+<tr>
+<td>Chat</td>
+<td>The project's choice, for example Slack</td>
+<td>The project's choice, for example Teams</td>
 </tr>
 </tbody>
 </table>
-<p>Jira and Xray are examples. A project may fill a role with another product,
-such as GitHub Issues as the tracker, and the skills do not change.</p>
+<p>The products named are examples. A project may fill a role with another
+product, and the skills do not change. VOGON reaches the meeting, mail and chat
+systems through the MCP connectors of the Claude Code session.</p>
 <p>A POC approval records the approver's git identity, which the approver does not
 re-enter at approval, so it is not an electronic signature under 21 CFR
 Part 11. In the real version, approvals and signatures come from the tracker,
@@ -1517,14 +1528,9 @@ session, which is the main agent of <a href="loop.html">the loop</a>.</p>
 <td><a href="process/setup.html">Setup</a></td>
 </tr>
 <tr>
-<td><code>vogon:meetings</code></td>
-<td>Downloads the selected transcripts, writes checked summaries, drafts records with their risk fields, checks them, opens the pull request, and in the real version sends the requirements to the tracker for approval</td>
+<td><code>vogon:requirements</code></td>
+<td>Reads the selected sources, writes checked summaries of meetings, mail and chat, drafts records with their risk fields, checks them, opens the pull request, and in the real version sends the requirements to the tracker for approval</td>
 <td><a href="process/meetings.html">Meetings</a>, <a href="process/new_requirements.html">New requirements</a></td>
-</tr>
-<tr>
-<td><code>vogon:from-code</code></td>
-<td>The same as <code>vogon:meetings</code>, drafting from existing code and its documentation</td>
-<td><a href="process/index.html">Development process</a></td>
 </tr>
 <tr>
 <td><code>vogon:approve</code></td>
@@ -1535,6 +1541,11 @@ session, which is the main agent of <a href="loop.html">the loop</a>.</p>
 <td><code>vogon:next</code></td>
 <td>Lists the approved requirements ready to start, lists the blocked ones with what blocks them, assigns the chosen one</td>
 <td><a href="process/next_work.html">Next work</a></td>
+</tr>
+<tr>
+<td><code>vogon:test-scripts</code></td>
+<td>Writes the test scripts of approved requirements before development, or generates them from the existing tests, as <code>tests.md</code> states, and registers them for approval</td>
+<td><a href="process/test_checks.html">Tests</a></td>
 </tr>
 <tr>
 <td><code>vogon:implement</code></td>
@@ -1579,14 +1590,19 @@ items in its own files.</p>
 <td>Each statement is supported by the cited plan section; the file covers every topic it must</td>
 </tr>
 <tr>
-<td><code>vogon:meetings</code></td>
-<td>One summary per meeting</td>
-<td>The summary against its transcript</td>
+<td><code>vogon:requirements</code></td>
+<td>One summary per meeting, mail thread or chat channel</td>
+<td>The summary against its source</td>
 </tr>
 <tr>
-<td><code>vogon:meetings</code>, <code>vogon:from-code</code></td>
+<td><code>vogon:requirements</code></td>
 <td>Records with their risk fields</td>
 <td>The requirement checklist</td>
+</tr>
+<tr>
+<td><code>vogon:test-scripts</code></td>
+<td>Test scripts</td>
+<td>Each script against its requirement and, where generated, its tests</td>
 </tr>
 <tr>
 <td><code>vogon:implement</code></td>
@@ -1595,7 +1611,7 @@ items in its own files.</p>
 </tr>
 <tr>
 <td><code>vogon:implement</code></td>
-<td>Tests, and test scripts where <code>tests.md</code> asks for them</td>
+<td>Tests</td>
 <td>The test checklist</td>
 </tr>
 <tr>
@@ -1705,13 +1721,22 @@ the working tree, in every local and remote branch and in the history, and
 prints the next unused number. Two branches that take an id before either
 pushes can get the same one. The same script detects the duplicate on the pull
 request, and the later pull request renumbers before it merges.</p>
-<p>Meeting transcripts are downloaded to <code>vogon/tmp/</code>, which is gitignored, and
-are never committed. A writing sub-agent summarises each one, and an evaluator
-checks the summary against the transcript. The checked summary is committed to
-<code>vogon/sources/</code> with the meeting's id in the meeting system, its date and its
-participants (<a href="sources.html">Sources</a>), and the transcript is deleted. Records
-are drafted from the checked summary. The Product Owner's approval makes a
-statement a requirement; the meeting is only where it came from.</p>
+<p><code>vogon:requirements</code> drafts records from any source the session can reach:
+meeting transcripts, mail threads, chat channels, documents, and existing code
+with its documentation, git history, pull requests and issues.</p>
+<p>Meeting transcripts, mail and chat contain personal data, and some countries
+restrict keeping meeting transcripts. They are downloaded to <code>vogon/tmp/</code>,
+which is gitignored, and are never committed. A writing sub-agent summarises
+each one, and an evaluator checks the summary against its source. The checked
+summary is committed to <code>vogon/sources/</code> with the source's id in its system,
+its date and its participants (<a href="sources.html">Sources</a>), and the downloaded
+content is deleted. Records are drafted from the checked summary. The Product
+Owner's approval makes a statement a requirement; the meeting or message is
+only where it came from.</p>
+<p>Code shows what the system does, and its history shows why. A requirement
+drafted from code alone describes the current behaviour, defects included, so
+an evaluator reports every requirement whose only source is the code, and the
+developer confirms that the behaviour is intended.</p>
 <h2 id="approval-of-requirements">Approval of requirements<a class="headerlink" href="#approval-of-requirements" title="Permanent link">&para;</a></h2>
 <p><code>REQ-*.md</code> and its state file <code>REQ-*.json</code> are both committed.</p>
 <p>In the POC the Product Owner approves in their own Claude Code session, for
@@ -1773,8 +1798,8 @@ combinations.</p>
 <p>A test script is a narrative test procedure with an id, linked to its
 requirement. <code>tests.md</code> states whether the project needs test scripts, whether
 they are written before the tests, from the requirement, or after, generated
-from the tests, and who approves them. VOGON follows that order and imposes
-none of its own. Where scripts exist, each test also names its script,
+from the tests, and who approves them. <code>vogon:test-scripts</code> follows that
+order and imposes none of its own. Where scripts exist, each test also names its script,
 <code>@pytest.mark.script("&lt;script id&gt;")</code>. Where the validation plan needs a test
 document, such as a test specification, <code>vogon:release</code> prepares it from the
 requirements, the scripts and the tests.</p>
