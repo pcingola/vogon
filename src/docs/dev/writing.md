@@ -115,7 +115,7 @@ together.
 
 - A placeholder where a field should be absent. A frontmatter value of `N/A`,
   `n/a`, `NA`, `TBD`, `TODO`, `none considered`, `-`, `null`, an empty string
-  or an empty list is reported. So is `none`, except in `gxp_risk`, where it
+  or an empty list is reported. So is `none`, except in `gxp_impact`, where it
   is one of the allowed values.
 - A heading phrased as a question: a heading or a bold block label ending in
   `?`.

@@ -103,12 +103,15 @@ The repository is a Claude Code plugin marketplace.
 ```
 src/vogon/
 ├── .claude-plugin/plugin.json   name, version, description
-├── skills/vogon/                SKILL.md and references/
-├── agents/                      subagent definitions
-├── hooks/hooks.json             hook entries, each calling a script
-└── scripts/                     the Python scripts
+├── skills/<skill>/              SKILL.md and references/, one directory per skill
+├── agents/                      one definition per worker and checker
+└── scripts/
+    ├── vogon                    vogon trace
     └── pytest_plugin/           vogon_pytest.py only
 ```
+
+[Architecture](architecture.md) lists the skills, the workers and the
+checkers.
 
 `scripts/pytest_plugin/` holds `vogon_pytest.py` and nothing else. `vogon
 trace` puts that directory on the host project's `PYTHONPATH`, so any module

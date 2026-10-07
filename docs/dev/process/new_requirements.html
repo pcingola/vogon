@@ -666,6 +666,62 @@
   
   
     <li class="md-nav__item">
+      <a href="steps.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Steps of the GxP process
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="setup.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setting up a project
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="failed_checks.html" class="md-nav__link">
         
   
@@ -823,7 +879,7 @@
   <span class="md-ellipsis">
     
   
-    Writing the code
+    Test cases, code and tests
   
 
     
@@ -1107,9 +1163,8 @@ work would run, and what each costs.</p>
 <li>The agent commits the summaries and the drafted records to the
    developer's branch. How the work reaches <code>main</code> is the developer's choice. The usual
    case is one pull request per meeting batch holding the summaries and
-   all the records drafted from them, however many there are, merged
-   quickly because it is documentation the agent has already checked, so
-   that every developer can see and pick the new requirements. When the
+   all the records drafted from them, however many there are, so that every
+   developer can see and pick the new requirements. When the
    developer is going to implement all of them at once, the records go in
    the same pull request as the implementation, and there is one merge.
    Every pull request names the ids of the records it adds or implements.
@@ -1125,7 +1180,9 @@ work would run, and what each costs.</p>
    edit the developer makes is checked again against <a href="meetings.html">From meetings to requirements</a> and
    <a href="new_requirements.html">Checking the new requirements</a>.</li>
 <li>With the developer's feedback applied, or once the developer says to go
-   ahead, the agent creates a tracker issue for each proposed requirement,
+   ahead, the agent gives each draft its final id, reserved by creating its
+   tracker issue, and renames the draft from its temporary id. It creates a
+   tracker issue for each proposed requirement,
    from the branch, in the tracker's state for items awaiting review, so
    the Product Owner's approval does not wait for a merge. Each issue holds
    the requirement's text and acceptance criteria, and any finding above
@@ -1138,8 +1195,13 @@ work would run, and what each costs.</p>
    rejected, it reads the tracker. No merge follows the approval.</li>
 <li>An edit the Product Owner made to the text in the tracker is copied into
    the record by the implementation pull request of that requirement
-   (<a href="implementation.html">Writing the code</a>), so the code is built against the approved text.</li>
+   (<a href="implementation.html">Test cases, code and tests</a>), so the code is built against the approved text.</li>
 </ol>
+<p>Steps 4 to 6 describe a deployment, where the tracker records the approval.
+In the prototype, the tracker is GitHub Issues and holds priority and
+assignee only. The Product Owner approves the requirements by approving the
+pull request that adds them, edits the text in that pull request, and the
+pull request merges after the approval.</p>
 
 
 

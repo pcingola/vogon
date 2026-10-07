@@ -662,6 +662,62 @@
   
   
     <li class="md-nav__item">
+      <a href="process/steps.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Steps of the GxP process
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="process/setup.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setting up a project
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="process/failed_checks.html" class="md-nav__link">
         
   
@@ -809,7 +865,7 @@
   <span class="md-ellipsis">
     
   
-    Writing the code
+    Test cases, code and tests
   
 
     
@@ -1302,12 +1358,14 @@ its theme CSS and JS into <code>docs/assets/</code>, which is unrelated to the t
 <code>./src/vogon</code>:</p>
 <pre><code>src/vogon/
 ├── .claude-plugin/plugin.json   name, version, description
-├── skills/vogon/                SKILL.md and references/
-├── agents/                      subagent definitions
-├── hooks/hooks.json             hook entries, each calling a script
-└── scripts/                     the Python scripts
+├── skills/&lt;skill&gt;/              SKILL.md and references/, one directory per skill
+├── agents/                      one definition per worker and checker
+└── scripts/
+    ├── vogon                    vogon trace
     └── pytest_plugin/           vogon_pytest.py only
 </code></pre>
+<p><a href="architecture.html">Architecture</a> lists the skills, the workers and the
+checkers.</p>
 <p><code>scripts/pytest_plugin/</code> holds <code>vogon_pytest.py</code> and nothing else. <code>vogon
 trace</code> puts that directory on the host project's <code>PYTHONPATH</code>, so any module
 added beside it becomes importable by the host's tests and can replace an

@@ -42,12 +42,14 @@ person who holds it, in the system that records it.
 
 ## Pages
 
+- [Steps of the GxP process](steps.md): the steps every requirement goes through, in order
+- [Setting up a project](setup.md)
 - [When a check fails](failed_checks.md): the handling every page below uses when a check fails
 - [From meetings to requirements](meetings.md)
 - [Checking the new requirements](new_requirements.md)
 - [What to work on next](next_work.md)
 - [Planning one requirement](planning.md)
-- [Writing the code, the documentation and the tests](implementation.md)
+- [Test cases, code and tests](implementation.md)
 - [Checking the tests](test_checks.md)
 - [Compliance documents](documents.md)
 

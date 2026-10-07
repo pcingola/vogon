@@ -10,7 +10,7 @@ A developer tells the agent to implement a requirement.
    call, which tests cover which acceptance criteria, and which
    documentation changes.
 3. A second agent checks the plan. Findings go back until none remain.
-4. The agent goes on to [Writing the code](implementation.md). The developer can read the plan and is
+4. The agent goes on to [the test cases](implementation.md). The developer can read the plan and is
    not asked to approve it.
 
 Checks on the plan against the requirements:

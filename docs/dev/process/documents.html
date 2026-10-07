@@ -666,6 +666,62 @@
   
   
     <li class="md-nav__item">
+      <a href="steps.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Steps of the GxP process
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="setup.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setting up a project
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="failed_checks.html" class="md-nav__link">
         
   
@@ -813,7 +869,7 @@
   <span class="md-ellipsis">
     
   
-    Writing the code
+    Test cases, code and tests
   
 
     
@@ -1002,15 +1058,22 @@
 <h1 id="compliance-documents">Compliance documents<a class="headerlink" href="#compliance-documents" title="Permanent link">&para;</a></h1>
 <ol>
 <li>For the release, the agent drafts the documents the validation package
-   needs: the risk assessment, the test specification, the design
-   specification and the test report. Each is drawn from the requirements,
-   the tests, and the results of the build being released, and cites them.</li>
+   needs: the URS, the risk assessment, the test specification, the design
+   specification, the test report and the validation summary report. Each is drawn from the requirements,
+   the tests, and the results of the build being released, and cites them.
+   The risk assessment is compiled from the risk each requirement carries,
+   and the test specification from the approved test case files; neither is
+   worked out again.</li>
 <li>A second agent checks each draft. Findings go back until none remain.</li>
-<li>The agent imports the test results of the released build into the test manager,
-   files the documents in the document system, and tells each approver what
-   is waiting for them.</li>
+<li>In a deployment, the agent imports the test results of the released build
+   into the test manager, files the documents and the test manager's
+   traceability report in the document system, and tells each approver what
+   is waiting for them. In the prototype, it writes the traceability matrix
+   itself, copies the release build's results beside the documents, and opens
+   a pull request with all of them.</li>
 <li>The Test Lead approves the test specification, and the System Owner and
-   the Quality Manager sign the package, in the document system.</li>
+   the Quality Manager sign the package: in the document system in a
+   deployment, by approving the pull request in the prototype.</li>
 <li>The agent checks what was filed against what was built, and reports any
    difference.</li>
 </ol>
@@ -1030,9 +1093,15 @@
   its reasoning, the level agrees with the requirement, and a higher risk
   has more thorough testing.</li>
 <li>Test specification: every test in the release is described with what it
-  checks, its inputs and its expected values, and they match the test code.</li>
+  checks, its inputs and its expected values, taken from its approved test
+  case, and they match the test code.</li>
 <li>Design specification: it describes the code as built, and where the code
   differs from a plan, it follows the code.</li>
+<li>URS: it holds every approved requirement in the release, in its approved
+  text, and no other.</li>
+<li>Validation summary report: it follows the approved validation plan, states
+  every deviation from the plan and every failed or skipped test with how it
+  was handled, and states whether the release meets the plan's conditions.</li>
 <li>Test report: every test's outcome for the release build is given; every
   failed or skipped test is named with how it was handled.</li>
 </ul>

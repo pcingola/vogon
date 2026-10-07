@@ -666,6 +666,62 @@
   
   
     <li class="md-nav__item">
+      <a href="steps.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Steps of the GxP process
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="setup.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setting up a project
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="failed_checks.html" class="md-nav__link">
         
   
@@ -813,7 +869,7 @@
   <span class="md-ellipsis">
     
   
-    Writing the code
+    Test cases, code and tests
   
 
     
@@ -1000,12 +1056,15 @@
 
 
 <h1 id="checking-the-tests">Checking the tests<a class="headerlink" href="#checking-the-tests" title="Permanent link">&para;</a></h1>
-<p>The agent does this before opening the pull request, and again whenever the
-requirement or its tests change. A separate agent, with no access to the
-code, checks the tests against the requirement; a second pass, with the
-code, checks that the tests are sound. Findings go back to the test-writing
-agent until none remain. The final report goes to the Test Lead with the tests.</p>
-<p>Checks that the tests test the requirement:</p>
+<p>A separate agent, which did not write the tests, does two checks. It checks
+the test cases against the requirement before they go to the Test Lead. It
+checks the test code against the approved test cases, and for soundness,
+before the pull request is opened. Both run again whenever the requirement,
+the test cases or the tests change. It reads the requirement, the test cases,
+the tests and the code. Findings go back to the agent that wrote the tests
+until none remain. The report on the test cases goes to the Test Lead with
+them.</p>
+<p>Checks that the test cases and the tests test the requirement:</p>
 <ul>
 <li>Every acceptance criterion has a test.</li>
 <li>The boundary values and error cases the requirement names are tested:
@@ -1015,7 +1074,9 @@ agent until none remain. The final report goes to the Test Lead with the tests.<
 <li>No assertion goes beyond the requirement, such as a check of an internal
   detail the requirement does not state, which fails when the code is
   restructured without being wrong.</li>
-<li>Each test is linked to the requirement it verifies, and to no other.</li>
+<li>Each test is linked to every requirement it verifies.</li>
+<li>Every approved test case is carried out by a test that uses its inputs and
+  expected values.</li>
 </ul>
 <p>Checks that the tests are sound:</p>
 <ul>
@@ -1038,7 +1099,7 @@ agent until none remain. The final report goes to the Test Lead with the tests.<
   allowed, malformed, non-ASCII.</li>
 <li>A rejected input is rejected with the error the requirement states, not
   only "some error".</li>
-<li>Each test checks one behaviour, and its name says which criterion.</li>
+<li>Each test checks one behaviour, and its name says which.</li>
 <li>No test is skipped or marked as an expected failure without a stated
   reason.</li>
 <li>The test checks the project's code, not the behaviour of a library it
@@ -1048,10 +1109,9 @@ agent until none remain. The final report goes to the Test Lead with the tests.<
 <li>The tests run in CI on the build that will be released, and the results
   are recorded against that build.</li>
 </ul>
-<p>After the checks, if a developer later edits an expected value to make a
-failing test pass, the agent reports it on that pull request. On merge the agent
-registers the tests in the test manager, linked to the requirement issue, with the check
-report. The Test Lead approves them in the test manager.</p>
+<p>If an approved test case is later changed, or a test's expected value is
+edited away from its test case to make a failing test pass, the agent reports
+it on the pull request, and the change needs the Test Lead's approval again.</p>
 
 
 

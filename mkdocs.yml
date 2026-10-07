@@ -32,12 +32,14 @@ nav:
       - Writing standard: dev/writing.md
       - Development process:
           - dev/process/index.md
+          - Steps of the GxP process: dev/process/steps.md
+          - Setting up a project: dev/process/setup.md
           - When a check fails: dev/process/failed_checks.md
           - From meetings to requirements: dev/process/meetings.md
           - Checking the new requirements: dev/process/new_requirements.md
           - What to work on next: dev/process/next_work.md
           - Planning one requirement: dev/process/planning.md
-          - Writing the code: dev/process/implementation.md
+          - Test cases, code and tests: dev/process/implementation.md
           - Checking the tests: dev/process/test_checks.md
           - Compliance documents: dev/process/documents.md
       - Marketing page: dev/site.md

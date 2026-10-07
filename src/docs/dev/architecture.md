@@ -1,598 +1,341 @@
 # Architecture
 
-## Skills, and a little code
+VOGON is a Claude Code plugin installed into a host project: the repository of
+a regulated (GxP) software project. It carries out the
+[steps of the GxP process](process/steps.md) that do not need a person, as the
+pages of [Development process](process/index.md) describe them. The plugin is
+a set of skills and subagent definitions, plus a pytest plugin and one script.
+All model work is done by Claude Code. The Python code calls no language model
+and reaches no network (`DEC-005`).
 
-VOGON is a Claude Code plugin holding a skill, subagents, hooks and the
-scripts they call, installed into a host project (`REQ-GEN-1`, `REQ-GEN-4`).
-The skill holds the rules, workflows and guidelines for developing software
-under GxP: what a requirement looks like, how a transcript becomes records
-(`REQ-GEN-6`), how a test case is drafted (`REQ-GEN-7`), what has to be true
-before a change is registered in the tracker. It is the system.
+[Vocabulary](vocabulary.md) defines the terms used here. [Records](records.md)
+defines the record format and the requirement state file.
 
-The code is small and exists to serve the skill. It is scripts the skill
-calls where the answer has to be the same on every run: minting the next id
-(`REQ-REC-7`), validating a record against the schema (`REQ-REC-1`), resolving
-links (`REQ-REC-2`, `REQ-REC-4`), collecting test markers (`REQ-TRC-1`),
-working out what the tracker should hold (`REQ-TRK-3`). An agent can do any of
-those and will do most of them correctly most of the time, which is not the
-standard a validation record is held to.
+## Scope of this version
 
-Claude Code does the work, including any subagents the skill starts. The
-Python code calls no language model API and reaches no network, so the scripts
-can disagree with a draft because they did not produce it (`DEC-005`,
-`REQ-GEN-3`, `FACT-005`). Claude Code reads the external systems through MCP
-and writes what it read as JSON under `.vogon/`, and the scripts compare that
-with the records.
+The host project is written in Python and tested with pytest. The coding
+agent is Claude Code. External systems are named by role, and the product
+filling each role is configuration:
 
-VOGON produces the records, the plan, the tests, the code, and the documents
-a validation package holds: the risk assessment, the test specification, the
-design specification and the test report. Each is produced complete, and each
-is a draft until a named person approves it (`REQ-GEN-2`).
-VOGON never performs the approval (`CON-001`, `REQ-TRK-1`).
-
-Change control, the assessment a board approves before a live validated system
-is changed, is not in this version (`DEC-017`). The pipeline below covers
-building the system and changing it; what a project does with a change once it
-is live stays in that project's own procedure.
-
-## One skill, with a reference file per step
-
-The plugin holds one skill, `vogon` (`DEC-021`). Its `SKILL.md` holds what
-every step shares: the pipeline, the actions VOGON never takes, the rules for
-subagents, the rule that a role is reached only through the server the
-configuration names for it, and a table from each step to its reference file.
-`SKILL.md` is at most 150 lines. Each reference file is at most 120 lines and
-is a checklist of rules the step's output meets or fails.
-
-| Reference file | Steps |
-| --- | --- |
-| `config.md` | 1 |
-| `sources.md` | 2 |
-| `records.md` | 3 |
-| `review.md` | 4 |
-| `risk.md` | 4 |
-| `documents.md` | 4, 10, 15 |
-| `tracker.md` | 5, 10, 15 |
-| `plan.md` | 7 |
-| `tests.md` | 8, 9, 10 |
-| `code.md` | 12, 13, 14 |
-| `evidence.md` | 16 |
-| `writing.md` | Every step that writes prose |
-
-## The pipeline
-
-VOGON covers the development cycle from the material a project starts with to
-the evidence it ends with. Each step is done by the `vogon` skill following a
-reference file, by a script, or by a person giving an approval.
-
-| # | Step | Produces | Done by |
-| --- | --- | --- | --- |
-| 1 | Install and configure | `vogon/`, `modules.yaml`, `vogon.yaml` naming the server for each role, the approval roles and their holders (`REQ-CLI-5`, `REQ-CLI-8`) | `/plugin install vogon@vogon --scope project`, then `vogon` with `config.md`, which runs script `vogon init` |
-| 2 | File the source material | Transcripts and documents in `vogon/sources/` (`REQ-GEN-6`, `REQ-REC-9`) | `vogon` with `sources.md` |
-| 3 | Draft the records | Requirements, facts, constraints and decisions in `vogon/` (`DEC-007`, `REQ-REC-1`) | `vogon` with `records.md` |
-| 4 | Review and accept | The record set checked for records that contradict or duplicate each other, the risk assessment in `vogon/documents/` giving a risk level and its reasoning per requirement, and records moved off `proposed` (`REQ-GEN-8`, `REQ-GEN-2`) | `vogon` with `review.md`, `risk.md` and `documents.md`, then a person |
-| 5 | Register the requirements | Requirement issues in the tracker (`REQ-TRK-5`, `REQ-TRK-3`) | `vogon` with `tracker.md` |
-| 6 | Approve the requirements | Requirement issues in an approved state (`REQ-TRK-8`, `REQ-TRK-9`) | The Product Owner, in the tracker |
-| 7 | Plan the change | `vogon/plans/plan_<slug>.md`: what will be built and how it will be tested, naming the records it implements and the interface the tests call (`DEC-014`, `REQ-GEN-10`) | `vogon` with `plan.md` |
-| 8 | Write the test cases | Test functions carrying markers (`REQ-TRC-1`, `REQ-TRC-8`) | `vogon` with `tests.md`, in subagent `vogon-test-writer` |
-| 9 | Check the test cases against the requirements | For each requirement, the acceptance clauses no test exercises, the expected values that differ from the acceptance block, and the assertions the requirement does not support (`DEC-019`, `REQ-GEN-11`) | `vogon` with `tests.md`, in subagent `vogon-test-checker` |
-| 10 | Register the test cases, draft the test specification | Test issues in the test manager linked to the requirement issues (`REQ-TRC-5`), and the test specification in `vogon/documents/` | `vogon` with `tracker.md`, `tests.md` and `documents.md` |
-| 11 | Approve the test cases | Test issues in an approved state, and the test specification approved (`DEC-023`, `DEC-024`) | The Test Lead: the test issues in the test manager, the test specification in the document system |
-| 12 | Write the code | Source, and a commit naming the records it implements (`REQ-TRC-9`) | `vogon` with `code.md`, following the plan |
-| 13 | Run the tests and make them pass | Outcomes keyed to markers, recording the build (`REQ-TRC-1`, `REQ-TRC-4`) | `vogon` with `code.md`, and script `vogon trace` |
-| 14 | Review the change and merge it | An approving review by an engineer other than the author (`REQ-CLI-7`) | `vogon` with `code.md`, then a code reviewer on the repository host |
-| 15 | Register the results, draft the documents | Results in the test manager recording the build (`REQ-TRC-6`), and the design specification and test report in `vogon/documents/` | `vogon` with `tracker.md` and `documents.md` |
-| 16 | File the evidence | The test manager's traceability report and results for the released build, in the document system (`REQ-TRK-10`) | `vogon` with `evidence.md`, and script `vogon evidence` |
-| 17 | Sign off | The validation package, signed | The sign-off roles, in the document system |
-
-The roles in the last column are the default assignment. Which role gives each
-approval, and who holds each role, is configuration (`DEC-018`); see
-[Roles and approvals](#roles-and-approvals).
-
-The pipeline is followed where the project allows. A step that was skipped is
-done afterwards, with the real dates, and the order the steps were actually
-done in is reported: an approval given after what it governs was used appears
-in the report (`REQ-TRK-11`). A failing check still fails, whatever order the
-steps ran in.
-
-Making a failing test pass has one direction it may not take. Expected values
-come from the requirement and never from a run of the code, so a test is made
-to pass by changing the code and not by moving the expected value to whatever
-the code produced (`DEC-024`, `REQ-GEN-7`).
-
-## Writer and checker
-
-A step that produces a record, a plan or a document runs a writer subagent
-and a checker subagent (`DEC-022`). `vogon-writer` drafts the output. `vogon-checker` checks it
-against the checklist in the step's reference file and runs `vogon check` on
-it, and its findings go back to the writer. The loop ends when the checker
-reports nothing. After five rounds, or when a finding the writer has already
-been given is reported again, the remaining findings go to the person.
-
-The test cases have their own pair. `vogon-test-writer` writes them at step 8
-and `vogon-test-checker` compares them with the requirements at step 9, so the
-checker did not write the tests it checks (`DEC-019`). Neither has `Bash`. A
-plan names the interface the tests call.
-
-## Hooks
-
-Hooks cover what has to happen without anyone asking for it. Each entry in
-`hooks/hooks.json` calls `${CLAUDE_PLUGIN_ROOT}/scripts/vogon hook <name>`.
-
-| Hook | Runs | Does |
+| Role | Prototype | Deployment |
 | --- | --- | --- |
-| `session-start` | On `SessionStart` | Prints the configured server for each role, the approval roles and their holders, then the configuration errors and warnings; after an error, an instruction to complete setup. With no `vogon.yaml`, prints an instruction to run setup (`REQ-CLI-10`) |
-
-A hook exits with status zero in every case, so it cannot stop the session.
-Given input it cannot read, or failing itself, a hook prints nothing.
-
-The agent receives the configuration from the `session-start` hook, which
-Claude Code runs without the agent asking for it. Claude Code adds a
-`SessionStart` hook's standard output to the context, and `SessionStart` fires
-on `startup`, `resume`, `clear`, `compact` and `fork`. The plugin is
-enabled per project, so a session in which the hooks run is in a project that
-uses VOGON. When that project has no `vogon.yaml`, `session-start` prints an
-instruction to run setup, step 1 with `config.md`, and names the missing file.
-It finds the project from `CLAUDE_PROJECT_DIR`, which Claude Code sets for
-every hook to the directory the session was started in. Subagents do not
-receive the values, because only the main agent reaches external systems.
-
-## Roles and approvals
-
-Steps 4, 6, 11, 14 and 17 include approvals, and a person gives each one in
-the system that holds what is approved. VOGON gives none of them (`CON-001`).
-Records, instructions and generated documents name the role that approves,
-never a person. `vogon.yaml` in the host project says which roles give each
-approval, in which system, and who holds each role (`DEC-018`, `REQ-CLI-5`):
-
-```yaml
-approvals:
-  requirements: {roles: [product_owner], system: tracker}
-  risk_assessment: {roles: [system_owner, it_quality_manager], system: document_system}
-  test_cases: {roles: [test_lead], system: test_manager}
-  test_specification: {roles: [test_lead], system: document_system}
-  change: {roles: [engineer], system: repository_host}
-  release: {roles: [system_owner, it_quality_manager], system: document_system}
-roles:
-  product_owner: [alice@example.com]
-  test_lead: [bob@example.com]
-  engineer: [alice@example.com, bob@example.com, carol@example.com]
-  system_owner: [dave@example.com]
-  it_quality_manager: []
-```
-
-The assignment above is the default `vogon init` writes. Role holders are
-emails, and setup asks the person for them. A role that an approval uses and
-that has no holder is an error, one per role naming the approvals it gives
-(`REQ-CLI-6`), because those approvals cannot be given. Once an approval has been given, VOGON reads who gave it and
-reports an approver who does not hold the configured role (`REQ-TRK-9`) or who
-is an author of what was approved (`CON-002`, `REQ-TRK-8`). A record's authors
-are the author emails of the commits that changed its file up to the time of
-the approval. The approver is the email the tracker reports for the
-transition.
-
-VOGON performs no transition: `OPERATIONS` in `snapshots.py` lists none, and
-`SKILL.md` forbids a transition into a state that records approval. VOGON does
-not try to refuse such a call itself, because a server's tools are not known
-in advance and a generic tool or a shell command reaches the same API. The
-tracker and the test manager enforce `CON-001`: their workflow requires the
-approver's own credentials for a transition into an approved state
-(`REQ-TRK-1`), as the installation guide states.
-
-The review before a merge is enforced by the repository host, whose rules for
-the default branch can require an approving review from someone other than
-the author. VOGON checks that those rules are in place and reports where they
-are not (`REQ-CLI-7`).
-
-Step 16 moves the evidence the test manager produces into the document system
-without changing it: the traceability report and the results for the build
-being released, each recording that build (`REQ-TRK-10`). VOGON produces
-neither report (`REQ-TRC-7`), and the people holding the release roles sign
-the package in the document system.
-
-## Documents
-
-A document VOGON drafts, such as the risk assessment, the test specification,
-the design specification or the test report, is written to `vogon/documents/`
-in the host project (`DEC-023`). From there it is filed into the document
-system and approved there, by the roles of its approval in `vogon.yaml`:
-`risk_assessment` for the risk assessment, `test_specification` for the test
-specification, and `release` for the design specification and the test
-report. `vogon/out/` holds only generated output, which a
-script can overwrite at any time, so a drafted document never goes there.
-
-The risk assessment is `vogon/documents/risk_assessment.md`. It holds one
-table whose first two columns are `Requirement` and `Risk`, with one row per
-requirement and a `gxp_risk` value as the level; further columns hold the
-reasoning. Once it is approved, Claude Code reads the approved version back
-from the document system to `.vogon/risk_assessment.md`, and `vogon check`
-reports a requirement whose `gxp_risk` is not `none` and whose level is absent
-from that table or differs from it (`REQ-GEN-9`).
-
-## How VOGON is installed
-
-The VOGON repository is a Claude Code plugin marketplace.
-`.claude-plugin/marketplace.json` at its root lists one plugin, `vogon`, whose
-source is `src/vogon/`. A developer installs it from inside Claude Code,
-opened in the host project, at project scope (`REQ-CLI-9`):
-
-```
-/plugin marketplace add pcingola/vogon --scope project
-/plugin install vogon@vogon --scope project
-```
-
-Project scope writes the marketplace and the plugin into the host project's
-committed `.claude/settings.json`, and nothing into the user's settings, so
-VOGON is enabled in that project only and every developer of the project gets
-it:
-
-```json
-{
-  "extraKnownMarketplaces": {
-    "vogon": {"source": {"source": "github", "repo": "pcingola/vogon"}}
-  },
-  "enabledPlugins": {"vogon@vogon": true}
-}
-```
-
-Both commands default to user scope, which would enable VOGON in every project
-the user opens; the documentation never gives them without `--scope project`.
-
-The plugin is laid out as Claude Code expects:
-
-```
-src/vogon/
-├── .claude-plugin/plugin.json   name, version, description
-├── skills/vogon/                SKILL.md and references/
-├── agents/                      vogon-writer, vogon-checker, vogon-test-writer, vogon-test-checker
-├── hooks/hooks.json             hook entries, each calling a script
-└── scripts/                     the Python scripts
-    └── pytest_plugin/           vogon_pytest.py only, loaded into the host's test run
-```
-
-The version is in `plugin.json`, and each release of VOGON is tagged
-`v<version>` from it. There is no Python distribution. The scripts run with
-`uv run --script`, and each declares its own dependencies inline (PEP 723), so
-a host project needs Claude Code, `uv` and git installed and nothing else. An
-upgrade is a plugin update.
-
-Nothing from the plugin is copied into the host project. The host project's
-repository does not hold the skill text, and nothing compares an installed
-copy with the plugin (`DEC-020`).
-
-## Setup
-
-Setup starts when the person asks Claude Code to set up VOGON, or when the
-`session-start` hook reports that `vogon.yaml` is missing (`REQ-CLI-10`), and
-the skill follows `config.md`. Claude Code runs `vogon init`, which creates `vogon/`,
-`vogon/modules.yaml` and `vogon.yaml`, adds `.vogon/` to `.gitignore`, and
-registers the `req` marker in the host project's pytest configuration. It
-writes the values that need no question: the paths (`vogon`, `tests`),
-`test_command` (`python -m pytest`) and the default approval assignment. It
-writes nothing under `.claude/` and no CI file.
-
-Claude Code then works out the rest from the connected MCP servers and asks
-only where it cannot know (`REQ-CLI-8`):
-
-- `systems`. For each role (`tracker`, `test_manager`, `repository_host`,
-  `document_system`), the connected server that provides the role's
-  operations. With one candidate, that server is used. With several, the
-  person chooses, because only the person knows which one company policy
-  requires. With none, the role stays absent: `vogon check` reports an error
-  naming the approvals given in it, and every step and check that needs it
-  reports a warning that it was skipped.
-- For the tracker and the test manager, Claude Code reads the workflow
-  through the chosen server and proposes as approved the states whose names
-  say approval or signature. Setup writes that role's `server` and
-  `approved_states` in one write.
-- `roles`. The person is asked for the holders, as emails, of every role an
-  approval uses. A role with no holder is an error in `vogon check`
-  (`REQ-CLI-6`).
-
-Claude Code shows everything it filled in as one list, and the person
-confirms or corrects it in one answer. Claude Code then commits `vogon.yaml`.
-Setup is complete when `vogon check` reports no error about `vogon.yaml`.
-
-```yaml
-systems:
-  tracker:
-    server: acme-tracker
-    approved_states: [Approved]
-  test_manager:
-    server: acme-tests
-    approved_states: [Approved]
-  repository_host: {server: github}
-  document_system: {server: acme-documents}
-```
-
-`approved_states` is kept in the committed file and not under `.vogon/`, so
-every clone has it. A changed workflow means running setup again for that
-role.
-
-At setup Claude Code also writes each configured server's tool list to
-`.vogon/servers.json`, with the tool it found for each operation VOGON needs.
-The operations are a list in `snapshots.py` (`OPERATIONS`), and `vogon check`
-reports each operation a configured server lacks, with the role and the server
-(`REQ-CLI-4`): an operation with no tool, or mapped to a tool the server does
-not list. It also reads the repository host's rules for the default branch
-into `.vogon/branch_rules.json`, and `vogon check` reports a default branch
-that requires no approving review or counts the author's own approval
-(`REQ-CLI-7`).
-
-## Configuration and findings
-
-The scripts and the hooks read `vogon.yaml` themselves, through `config.py`,
-every time they run, so what they check never depends on what the agent was
-told. A setting absent from the file takes its default: the paths,
-`test_command` and the approval assignment have one (`REQ-CLI-3`,
-`REQ-CLI-5`). `systems` and `approved_states` have none
-(`REQ-CLI-8`).
-
-A finding is an error or a warning. Only an error sets a non-zero exit status
-(`REQ-CLI-1`). Incomplete setup is an error, reported against `vogon.yaml`
-with one line per role: a role that an approval uses and that has no holder
-(`REQ-CLI-6`), a system role that an approval is given in and that has no
-server, and a tracker or test manager with no `approved_states`
-(`REQ-CLI-8`). A role that no approval uses is not reported. A check skipped
-because the file it reads is absent (`REQ-CLI-2`), and a step skipped because
-its role is not configured, are warnings. A fresh setup therefore fails
-`vogon check` until the person has named the servers and the holders.
-
-`session-start` prints the configuration, then `Errors:` and `Warnings:`,
-each only when it has a line, as `- ERROR: vogon.yaml: <message>`. After an
-error it prints an instruction to complete setup through step 1 of the skill,
-`config.md`.
-
-## Where things sit in a host project
-
-The host project is a project VOGON is installed into, as against the VOGON
-project, which is this repository.
-[Vocabulary](vocabulary.md#the-two-projects) defines both.
-
-```
-<host-project>/
-├── .claude/
-│   └── settings.json     names the VOGON marketplace and enables the plugin, written by the install commands (`REQ-CLI-9`)
-├── vogon/
-│   ├── modules.yaml      the module names the host project uses
-│   ├── fake/FAKE-REQ.md  when a change names FAKE-REQ in place of a record id (`REQ-TRC-9`)
-│   ├── requirements/<module>/REQ-<MODULE>-NNN.md
-│   ├── facts/FACT-NNN.md
-│   ├── constraints/CON-NNN.md
-│   ├── decisions/DEC-NNN.md
-│   ├── sources/          held copies of every cited document, dated and flat
-│   ├── plans/            what will be built, before it is. done/ holds the spent ones
-│   ├── documents/        drafted documents of the validation package
-│   └── out/              generated. Never hand-edited
-├── .vogon/               tool state, gitignored: tracker.json, servers.json, branch_rules.json,
-│                         risk_assessment.md, results.json, push_plan.json,
-│                         push_created.json, evidence/<build>/
-├── tests/                test functions carrying requirement markers
-└── vogon.yaml            configuration
-```
-
-All of it is plain text in git (`DEC-001`), except `.vogon/`, which is
-gitignored. There is no database. Configuration sits in `vogon.yaml` at the
-host project's root, in the format the records already use, and the layout
-above is the default, so a host project that accepts the convention changes
-no path (`REQ-CLI-3`).
-
-`vogon/` is named for the tool because VOGON creates it, defines the format of
-everything in it, mints the ids and validates it, which is what a directory a
-tool owns in someone else's repository is named for. It is visible rather than
-hidden because the records are reviewed in pull requests and read by people who
-will never run the tool. The skill, subagents and hooks are loaded from the
-installed plugin and are not in the host project.
-
-## Two stores
-
-The specification lives twice.
-
-In the host project's git repository, as markdown records under `vogon/`. This
-is where the text is written and edited, where a change is reviewed in a pull
-request, and where history is kept. It is cheap to change and it is not
-controlled.
-
-In the tracker, and the test manager for tests, as issues under approval
-(`CON-003`, `DEC-015`). This is where a named person approves a statement by
-re-entering their credentials, and what an auditor is shown. It is expensive to
-change and it is controlled. VOGON never performs the approval: an electronic
-signature requires the signer to re-enter their own credentials (`FACT-001`),
-so the transition stays a human action in the tracker (`CON-001`,
-`REQ-TRK-1`).
-
-In this version the markdown files are the source of truth. VOGON writes from
-the repository to the tracker and reads the tracker's state back only to report
-where the two have diverged: a record edited after its issue was approved
-(`REQ-TRK-2`), a test marker naming a requirement that no longer exists
-(`REQ-TRC-3`), an approval applied by the record's own author (`CON-002`,
-`REQ-TRK-8`), an approval given after what it governs was used
-(`REQ-TRK-11`), a result imported from a build other than the one released
-(`FACT-004`, `REQ-TRC-6`).
-
-Claude Code reads the tracker and the test manager through MCP and saves what
-it read to `.vogon/tracker.json`: per role, the server read and each issue with
-its key, summary, description, status, links, every status transition with
-the email of the person who made it and the time, and, for a test issue, the
-results imported against it with their build. The scripts compare that file
-with the records. The approval of an issue is the last transition into an
-approved state, and its approver is the email on that transition. The formats
-of every file under `.vogon/` are in the docstring of `snapshots.py`.
-
-A check that needs one of these files and does not find it reports that it was
-skipped, as a warning (`REQ-CLI-2`), when the role it reads is configured.
-
-A later version may make the tracker the source of truth instead, with the
-markdown dropped or kept as a cache of it. That reverses the direction, and
-nothing is built now to anticipate it.
-
-## Writing to the tracker
-
-An issue's summary starts with its record id, and a test issue's summary
-starts with the test's node id. The tracker's search finds an issue that way
-without a custom field, which would need a tracker administrator to create,
-and that id is what keys every write (`REQ-TRK-3`, `REQ-TRC-5`). The last line
-of each issue description holds the record's content hash, so the description
-at the time of approval carries the hash of the text that was approved
-(`REQ-TRK-2`). A record's hash covers its frontmatter without `tracked_as`, and
-its body, so recording the key does not change it. A test's hash covers the
-test function's source with its decorators.
-
-`vogon push --plan` prints the creates and the field changes that follow from
-the records and `.vogon/tracker.json`. It plans no write for a record whose
-status is `proposed` (`REQ-GEN-2`), and its output is the set Claude Code shows
-the person and then applies (`REQ-TRK-4`). After applying it, Claude Code saves
-the keys the tracker created to a file, and `vogon push --record FILE` writes
-each key into its record's `tracked_as` (`REQ-TRK-5`), so the edit to the
-record is made by tested code.
-
-The plan is printed one line per write and saved to `.vogon/push_plan.json`,
-which Claude Code applies. It creates issues only for `accepted` records, and
-writes nothing to an issue in an approved state: a record or test changed
-since that approval is reported instead (`REQ-TRK-2`). An issue that exists
-for a record whose `tracked_as` does not name it yet is planned as a `track`
-entry, which `vogon push --record` writes like a created key. A marked test
-gets one test issue once a requirement it names has an issue, linked to each
-such requirement issue (`REQ-TRC-5`). The results `vogon trace` saved are
-planned as imports against the test issues, once per build, and results with
-no build are refused (`REQ-TRC-6`). `commands/push.py` has the plan format.
-
-## Where the link between a test and a requirement is written
-
-A requirement is verified by a test, and that link is written on the test: a
-marker on the test function names the requirement ids it verifies (`DEC-006`,
-`REQ-TRC-1`). Whoever changes a test is looking at the test, so they change the
-marker in the same edit. The same link kept as a list of tests inside the
-requirement file is edited by someone else, later, or not at all, so VOGON does
-not use one.
-
-The marker is `@pytest.mark.req("REQ-TRK-2")`, with one or more ids as
-arguments. The marker checks read the test files with Python's `ast` module
-and do not import or run them. `vogon trace` runs the configured
-`test_command` with `-p vogon_pytest` and the plugin's
-`scripts/pytest_plugin/` on `PYTHONPATH`. That directory holds
-`vogon_pytest.py` and nothing else, because a module on `PYTHONPATH` takes
-precedence over an installed module of the same name, and the other script
-modules, such as `config` and `records`, would replace the host project's own.
-`vogon_pytest.py` uses only the standard library and pytest,
-because it runs in the host project's environment. `uv run --script` puts the
-scripts' own environment first on `PATH` and in `VIRTUAL_ENV`; `vogon trace`
-removes it from both before starting the test command, or `python` in
-`test_command` would be the scripts' interpreter, which has no pytest.
-`vogon init` registers the
-`req` marker in the host project's pytest configuration, so a run without the
-plugin, as in CI, does not fail under `--strict-markers`.
-
-`vogon trace` records the output of `git rev-parse HEAD` as the build. With
-uncommitted changes in the working tree it records no build, and results with
-no build are never imported, because the revision under test could not be
-identified (`REQ-TRC-6`).
-
-Requirement ids are not written into the implementation source as comments.
-Nothing checks a comment, so it stays behind when the code it described moves
-or changes.
-
-A commit message is short and names the records the change implements
-(`REQ-TRC-9`). That is a different link from the marker: the marker says what
-verifies a requirement, the commit says what built it.
-
-The test manager produces the coverage report and the traceability matrix,
-and VOGON produces neither (`DEC-003`, `FACT-002`, `REQ-TRC-7`). What VOGON
-does is keep the link the test manager reports from: the test issue exists,
-points at the right requirement issue, and can be matched to the test that ran
-(`REQ-TRC-5`), and the results are imported against those issues
-(`REQ-TRC-6`).
-
-The test manager can only report on what it holds, so a requirement that was
-never created as an issue does not appear in its report at all. The checks
-that catch that run locally, before anything is pushed: a marker naming an id
-that does not exist (`REQ-TRC-2`), a marker on a withdrawn requirement
-(`REQ-TRC-3`), a requirement verified by test that no marker names
-(`REQ-TRC-4`). They exit non-zero, so a CI run that includes them fails. They
-are not evidence.
-
-A marker shows that a test names a requirement, and says nothing about what
-the test asserts. Whether the tests exercise what the requirement states is
-checked at step 9, for every requirement verified by test whatever its risk
-level: each clause of the acceptance block has a test, and each expected value
-matches the block (`DEC-019`, `REQ-GEN-11`). The comparison is between the
-requirement and the tests. Code coverage, which measures which lines of the
-implementation ran, is not used for it.
-
-## Evidence
-
-`vogon evidence <build>` compares the test manager's export for a build, which
-Claude Code saves under `.vogon/evidence/<build>/export/`, with the copies
-Claude Code reads back from the document system after filing them, which it
-saves under `.vogon/evidence/<build>/filed/` with the same file names. Each
-copy is byte-identical to the export, each names the build in its file name or
-its content, and none is the export of another build under
-`.vogon/evidence/`, or the difference is reported (`REQ-TRK-10`).
-
-## Continuous integration in a host project
-
-The host project's CI checks out the VOGON repository at the tag `v<version>`
-of the installed plugin and runs `uv run --script src/vogon/scripts/vogon
-check`, then `vogon change` with the base branch and the pull request
-description. The host project is checked out with its full history
-(`fetch-depth: 0`), because `REQ-REC-10` and `vogon change` read `git log`.
-`vogon init` does not write the CI file; the job is described in the
-installation guide.
-
-## Reaching the external systems
-
-The tracker, the test manager, the repository host and the document system are
-reached through the MCP servers the company provides. A regulated company
-mandates both the product and the path to it, and the server is often its own
-rather than the vendor's. The skill calls that server's tools.
-
-Every external system is named by the role it fills, and the product filling
-each role is configuration (`DEC-025`). The server for a role has no default:
-it is set during setup from the servers connected to Claude Code, and the
-person chooses where several could fill the role, because a guessed server
-would send records to the wrong system. A role is reached only through the
-server the configuration names for it (`REQ-CLI-8`). For each role VOGON
-states the operations it needs from it, and a configured server that does not
-provide one of them is reported at setup rather than at first use
-(`REQ-CLI-4`).
-
-No script contacts an external system or a language model. Claude Code reaches
-the external systems through MCP and hands the data to a script.
-
-## Modules
-
-A module names a part of the system a record belongs to, and appears in the
-record's id. Each host project declares its own names in `vogon/modules.yaml`;
-VOGON enforces only the shape of the name
-(`DEC-016`, `REQ-REC-13`, `REQ-REC-14`). [Records](records.md) has the id
-format.
-
-The VOGON project's own modules, as declared in its `vogon/modules.yaml`:
-
-| Module | Covers |
+| Repository host | GitHub | GitHub |
+| Tracker | GitHub Issues | Jira |
+| Approval of requirements | Pull request review on GitHub | Jira workflow transition |
+| Test manager | None: test descriptions and results stay in the repository | Xray |
+| Document system | None: documents stay in the repository | The company's controlled document system |
+
+The prototype runs entirely on GitHub, and its approvals are pull request
+reviews. GitHub does not make the reviewer re-enter credentials, so a
+prototype approval is not an electronic signature under 21 CFR Part 11. A
+deployment takes its approvals and signatures from Jira, Xray and the document
+system. A Jira or Xray transition is an electronic signature only when the
+workflow makes the approver re-enter their credentials at that transition;
+setup reports a workflow that does not.
+
+VOGON never approves or signs anything (`CON-001`). It drafts, checks, files
+and reports. A change to a live system is recorded and approved in the host
+project's own change control system; its requirements, tests and release
+documents go through the same skills (`DEC-026`).
+
+## Skills
+
+One skill per task a person starts. A skill runs in the main Claude Code
+session, which acts as the coordinator described below.
+
+| Skill | Does | Steps | Process page |
+| --- | --- | --- | --- |
+| `vogon:setup` | Writes `vogon.yaml`, drafts the validation plan and sends it for approval | 1 | [Setup](process/setup.md) |
+| `vogon:meetings` | Selects meetings, writes checked summaries, drafts records and their risk, checks them, opens the pull request, creates the tracker issues | 2–5 | [Meetings](process/meetings.md), [New requirements](process/new_requirements.md) |
+| `vogon:from-code` | The same as `vogon:meetings`, drafting from existing code and its documentation | 3–5 | [Development process](process/index.md) |
+| `vogon:next` | Lists the requirements ready to start in priority order, lists the blocked ones with what blocks them, assigns the chosen one | | [Next work](process/next_work.md) |
+| `vogon:implement` | Plans one requirement, writes its test cases and sends them to the Test Lead, writes or checks the code and test code, opens the pull request | 7–10, 12–13 | [Planning](process/planning.md), [Implementation](process/implementation.md), [Tests](process/test_checks.md) |
+| `vogon:release` | Drafts and checks the validation documents for a release commit, including the URS and the validation summary report, imports the results, files the evidence | 15–16 | [Documents](process/documents.md) |
+
+Steps 6, 11, 14 and 17 are approvals given by people, and no skill performs
+them.
+
+Every skill starts the same way: it reads the current state of the
+requirements it concerns from the repository, the tracker and each
+requirement's [state file](#state-of-a-requirement), and reports any
+difference between them. Tasks happen weeks apart, by different developers, in
+any order. A skill does not assume an earlier task ran. When one was skipped,
+the skill does what still applies and reports the gap, such as code merged
+with no plan.
+
+A skill's `SKILL.md` holds the task's steps, the subagents it starts, what
+each receives, and where it stops for a person. Checklists are in the skill's
+`references/` directory and are read by the subagents that apply them.
+
+### Test cases and test code
+
+A test case states what is tested: the acceptance criterion it covers, its
+inputs and its expected values. Test code is the pytest function that carries
+it out. VOGON imposes no order on code, test cases and test code.
+
+How formal the testing is follows the requirement's risk:
+
+| Risk | Test cases | Test Lead approval |
+| --- | --- | --- |
+| `high`, `medium` | Written as test cases in `REQ-<MODULE>-<NUMBER>.tests.md` | Required |
+| `low` | The acceptance criteria are the test cases; no separate file | Required, of the tests on the pull request |
+| `gxp_impact: none` | None; verified by whatever the `verification` field names | Not required |
+
+`vogon:implement` writes the test cases from the requirement, never from the
+code, and the `test-checker` checks every expected value against the
+requirement whichever was written first. The Test Lead approves them (step
+11): in the prototype by an approving review of the pull request, in a
+deployment in the test manager, where the skill registers them linked to the
+requirement issue. The approval must come before the merge and before any
+result counts as evidence; it does not have to come before the code. In a
+deployment, `vogon:implement` copies the approved test cases from the test
+manager into the `.tests.md` file in the pull request, as it does for the
+requirement text.
+
+The developer writes the code and the test code in whatever order they work
+in, with or without the agent. A test that verifies requirements names them in
+its marker, and may name several. A test with no marker, such as a unit test
+of an internal function, is allowed and is not evidence. The `test-checker`
+confirms that every approved test case is carried out by a test. A test case
+changed after its approval goes back to the Test Lead, and the skill reports
+the change on the pull request.
+
+## Coordinator and subagents
+
+The main session coordinates. It reads state, starts subagents, passes
+results between them, decides when a result is good enough to go on, and
+stops for people. It drafts nothing itself. Its context holds the task, file
+paths and short summaries, so it does not fill up over a long task.
+
+A subagent is a separate Claude Code session started by the coordinator, with
+its own instructions and context. It writes its output to files on the
+working branch and returns a short summary and the paths it wrote. Independent
+units of work run in parallel, for example one summary per meeting.
+
+Workers produce things. Each worker has full access to the repository and to
+whatever its work needs.
+
+| Worker | Produces |
 | --- | --- |
-| `REC` | The record schema, id grammar, validation and indexes |
-| `TRC` | Test markers, the link to the test manager, result import |
-| `TRK` | Reading and writing tracker and test manager issues, filing evidence in the document system, and reporting divergence |
-| `GEN` | The instructions a coding agent follows to draft records, and the checks on what it produces |
-| `CLI` | The scripts and configuration, including the approval roles |
+| `summariser` | One summary per meeting transcript |
+| `drafter` | Records, with risk, drafted from summaries or from existing code |
+| `planner` | The plan for one requirement |
+| `implementer` | Test cases, code, test code and documentation |
+| `document-writer` | One validation document for a release commit |
 
-## Version 0.1 assumes one stack
+Checkers review what a worker produced. A checker is never the session whose
+output it checks. It has read access to everything and edits nothing; it
+returns findings, each with its evidence. Each checker applies one checklist.
 
-The first version is written against one set of tools and does not abstract
-over alternatives:
+| Checker | Checks | Checklist from |
+| --- | --- | --- |
+| `summary-checker` | A summary against its transcript | [Meetings](process/meetings.md) |
+| `record-checker` | Drafts against the summaries, the other records, the open pull requests and the code | [New requirements](process/new_requirements.md) |
+| `challenger` | Whether a requirement or a design makes sense in practice: how often the situation occurs, against how often the work runs and what it costs | [New requirements](process/new_requirements.md), [Planning](process/planning.md) |
+| `risk-checker` | The risk level and its reasoning, against the requirement and similar requirements | [Risk](#risk) |
+| `plan-checker` | A plan against the requirement and the code | [Planning](process/planning.md) |
+| `test-checker` | Test cases against the requirement, and test code against the test cases and for soundness | [Tests](process/test_checks.md) |
+| `code-reviewer` | The change against the plan and the code checklist | [Implementation](process/implementation.md) |
+| `document-checker` | A document against the requirements, the code and the results of the release commit | [Documents](process/documents.md) |
 
-- Python, for the host project and for VOGON itself
-- GitHub, as the repository host
-- Jira, as the tracker
-- Xray, as the test manager
-- Claude Code, as the coding agent
+### Fix loop
 
-This is a deliberate narrowing (`DEC-004`). The records and the generated
-text name the role each product fills and never the product (`DEC-025`), so
-the products above appear in configuration and in this section only.
-Supporting a second tracker or a second test manager means an interface, and an
-interface written before the second implementation exists is guesswork.
+1. The coordinator gives the checker's findings to a worker, which fixes them
+   or disputes a finding with evidence.
+2. A fresh checker session checks the result.
+3. A disputed finding gets one reply from the checker. If the two still
+   disagree, both positions go to the developer.
+4. After three rounds, the findings still open go to the developer with their
+   evidence.
 
-This version is built quickly, used, and then changed. Where a choice is
-between the quick shape and the general one, it takes the quick shape.
+A finding that needs a decision from someone other than the developer goes to
+that person as [When a check fails](process/failed_checks.md) describes.
+
+### When a skill stops for a person
+
+- An approval or a signature. VOGON tells the role holder what is waiting and
+  where.
+- A choice that belongs to someone else, such as the Product Owner choosing
+  between contradicting requirements.
+- Once before work leaves the developer's branch for a place other people
+  read: before opening a pull request or writing to the tracker. The developer
+  gets a short report of what is about to be sent.
+
+Nothing else waits for confirmation.
+
+## Records
+
+Requirements, domain facts, constraints and decisions are markdown files in
+the host project's repository, under `vogon/`, in the format
+[Records](records.md) defines. The markdown file is what people read and
+review. Its frontmatter holds the record's identity and fixed attributes, and
+its `status` is `active`, `withdrawn` or `superseded_by: <id>`. Whether a
+requirement is approved, and what has been done to it, is not in the markdown.
+
+Meeting transcripts are never held. A summary in `vogon/sources/` records the
+meeting's id in the meeting system, its date and its participants, and is
+checked against the transcript before the transcript is deleted
+([Sources](sources.md)). The Product Owner's approval makes a statement a
+requirement; the meeting is only where it came from.
+
+A draft carries a temporary id until the developer's review. When the skill
+creates the tracker issues, it gives each requirement the next number not used
+on `main`, in an open pull request or in a tracker issue, creates the issue
+with that id in its title, and only then renames the draft. The tracker issue
+reserves the id for every developer, whatever branch they are on. If the
+tracker search then shows an earlier issue with the same id, the later one
+takes the next free number before anything else uses it.
+
+### Tracker issues and approval
+
+After the developer's review, `vogon:meetings` and `vogon:from-code` create one
+tracker issue per new requirement, holding its text and any finding that
+needs the Product Owner's choice. The tracker issue carries priority and
+assignee, and `vogon:next` reads and sets them.
+
+In the prototype, a requirement is approved when a pull request that adds or
+changes its file is approved on GitHub by the Product Owner and merged.
+
+In a deployment, the approval is the tracker issue's transition into an
+approved state. The Product Owner may edit the text in the tracker before
+approving it, and `vogon:implement` copies the approved text into the markdown
+file in the implementation pull request.
+
+The approved text is read from the system that holds the approval: in the
+prototype, the file at the merge commit of the approving pull request; in a
+deployment, the tracker text at the approval transition. A requirement whose
+text in that system has changed since its approval needs approval again, is
+reported by every skill that reads it, and is not offered as ready by
+`vogon:next`. In a deployment, a markdown file that differs from the approved
+tracker text is reported as waiting to be copied, and does not block the
+work. The `Accepted findings` block is not part of the compared text.
+
+### Accepted findings
+
+A finding the Product Owner accepts without changing the requirement stays on
+the record, in an `Accepted findings` block of the markdown, with the reason
+and the date ([When a check fails](process/failed_checks.md)). `vogon:next`
+lists it beside the requirement, `vogon:implement` shows it before planning,
+and the plan, the pull request and the test report cite it.
+
+## State of a requirement
+
+Each requirement has a state file beside its markdown file,
+`REQ-<MODULE>-<NUMBER>.json`, committed with it. It records what has been
+done to the requirement, one entry per step, each with the date and the
+GitHub object that shows it: a pull request, a commit, an issue. The format is
+in [Records](records.md#state-file).
+
+A skill writes an entry only for a step it performs, on the branch that does
+the work on that requirement: drafted, planned, test cases written,
+implemented. Approvals, merges, assignment and releases happen in GitHub and
+the tracker, and are read from there each time a skill needs them; they are
+never written to the state file. `vogon:next` reads state files and writes
+none. Only the branch working on a requirement edits its state file, so two
+branches do not edit the same one.
+
+The state file is a record of progress for people and skills to read. The
+evidence is in GitHub, the tracker, the test manager and the test results,
+never in the state file. Every skill compares the entries it reads with those
+systems before it acts, and reports a difference instead of trusting the
+file.
+
+## Risk
+
+Each requirement carries its risk from the moment it is drafted, so the
+Product Owner approves the risk with the requirement and the plan can size the
+testing to it. The frontmatter holds `gxp_impact` and `risk`, and the body has
+a `Risk` block with the reasoning ([Records](records.md#requirement)). The
+`risk-checker` compares the level with the reasoning and with similar
+requirements.
+
+The risk level decides the testing the plan calls for. A `high` requirement
+has its boundary values and error cases tested. A requirement with
+`gxp_impact: none` may be verified by inspection.
+
+At release, `vogon:release` compiles the risk assessment document from the
+risk fields and blocks of the requirements in the release. It does not assess
+risk again.
+
+## Tests and traceability
+
+A test names the requirements it verifies with a pytest marker,
+`@pytest.mark.req("REQ-PRN-12")`. The link is written on the test because
+whoever changes a test edits its marker in the same edit (`DEC-006`).
+Requirement ids are not written in implementation code. A commit names the
+requirements it implements.
+
+The approved test cases are the test specification. At release,
+`vogon:release` assembles the test specification document from them: from the
+`.tests.md` files and the acceptance criteria in the prototype, from the test
+manager in a deployment.
+
+Only results from runs after the Test Lead's approval count as evidence.
+
+## Deterministic code
+
+Code exists only where the output is validation evidence, or where a model's
+mistake would go unnoticed. None of it calls a model or the network.
+
+`vogon_pytest.py` is a pytest plugin. During a test run it writes each test's
+node id, the requirement ids from its marker, its outcome and its duration,
+keyed by the commit from `git rev-parse HEAD`. It records no commit when the
+working tree has uncommitted changes, because the code under test could not
+be identified. It writes the results in two forms:
+
+- `vogon/out/results/<commit>.json`, read by `vogon trace` and the skills;
+- `vogon/out/results/<commit>.xml`, in JUnit XML, carrying for each test the
+  tracker keys of its requirements, read from the tracker issue titles, in the
+  properties the test manager's import reads.
+
+`vogon/out/results/` is gitignored, so a run never leaves the working tree
+dirty. CI uploads both files as an artifact of the run.
+
+In a deployment, `vogon:release` uploads that XML file to the test manager
+unchanged. The test manager then produces the coverage and traceability
+reports (`DEC-003`). The model transmits the file and never writes results.
+
+`vogon trace <commit>` is used in the prototype, which has no test manager. It
+reads the requirement files and the results for a commit and writes the
+traceability matrix and the results table to `vogon/out/`: each requirement,
+its tests, their outcomes on that commit, and each requirement verified by test
+that has no test.
+
+The pytest plugin depends only on pytest and the standard library, because it
+runs in the host project's environment. There are no hooks. A skill reads
+`vogon.yaml` when it starts.
+
+## Release
+
+`vogon:release` takes a release commit. The host project's CI runs the full
+test suite on it with the pytest plugin, so the results are recorded against
+that commit, and the skill downloads the results from that run's artifact.
+The skill then:
+
+1. Drafts the URS, the risk assessment, the test specification, the design
+   specification, the test report and the validation summary report into
+   `vogon/documents/<release>/`, each from the requirements, the tests, the
+   code and the results of that commit. The URS is compiled from the approved
+   requirements in the release. The summary report states, against the
+   validation plan, what was done, what deviated and how each deviation was
+   handled (`DEC-027`).
+   Each document cites what it states.
+2. Has each document checked by a `document-checker`.
+3. In the prototype, writes the traceability matrix with `vogon trace`,
+   copies the results of the release commit into `vogon/documents/<release>/`
+   so git retains them, and opens a pull request with the documents. The
+   approving reviews by the Test Lead, the System Owner and the Quality
+   Manager are the prototype's sign-off. In a deployment,
+   imports the results into the test manager, files the documents and the
+   test manager's traceability report in the document system, and tells each
+   role holder what is waiting to be signed.
+4. After filing, reads the filed copies back and reports any that differ from
+   what was drafted or exported.
+
+The Test Lead approves the test specification, and the System Owner and the
+Quality Manager sign the package (step 17).
+
+The validation plan is drafted once per project by `vogon:setup`, kept in
+`vogon/documents/validation_plan.md`, and approved by the System Owner and the
+Quality Manager before any result counts as evidence. A change to its content
+is approved the same way (`DEC-027`).

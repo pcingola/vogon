@@ -30,6 +30,7 @@ process, and good enough is not compliant.
 - Icon, `images/03-vogon-icon.png` — avatars, favicon, bot identity.
 - Hero, `images/02-vogon-rejected-logo.png` — site hero, decks.
 - REJECTED stamp, `images/08-rejected-stamp.png` — the marketing page.
+- QR code, `images/15-vogon-qr.png` — links to https://pcingola.github.io/vogon/, icon in the centre (error correction H); slides and print.
 
 Terminal reduction of the stamp:
 

@@ -619,17 +619,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#tracked_as-holds-every-system-and-names-the-one-that-governs" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        tracked_as holds every system, and names the one that governs
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#status-is-about-the-statement-not-about-the-work" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -690,6 +679,34 @@
     <span class="md-ellipsis">
       
         Worked example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#state-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State file
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="State file">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#temporary-ids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Temporary ids
       
     </span>
   </a>
@@ -894,6 +911,62 @@
   
   
     <li class="md-nav__item">
+      <a href="process/steps.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Steps of the GxP process
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="process/setup.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setting up a project
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="process/failed_checks.html" class="md-nav__link">
         
   
@@ -1041,7 +1114,7 @@
   <span class="md-ellipsis">
     
   
-    Writing the code
+    Test cases, code and tests
   
 
     
@@ -1265,17 +1338,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#tracked_as-holds-every-system-and-names-the-one-that-governs" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        tracked_as holds every system, and names the one that governs
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#status-is-about-the-statement-not-about-the-work" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1336,6 +1398,34 @@
     <span class="md-ellipsis">
       
         Worked example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#state-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State file
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="State file">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#temporary-ids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Temporary ids
       
     </span>
   </a>
@@ -1427,7 +1517,7 @@ project's alike.</p>
 <tbody>
 <tr>
 <td><code>vogon/requirements/&lt;module&gt;/</code></td>
-<td>Requirement records, one directory per module</td>
+<td>Requirement records, one directory per module, each <code>REQ-&lt;MODULE&gt;-&lt;NUMBER&gt;.md</code> with its <a href="#state-file">state file</a> <code>REQ-&lt;MODULE&gt;-&lt;NUMBER&gt;.json</code>, and for a <code>high</code> or <code>medium</code> risk requirement its test cases <code>REQ-&lt;MODULE&gt;-&lt;NUMBER&gt;.tests.md</code>, beside it</td>
 </tr>
 <tr>
 <td><code>vogon/facts/</code></td>
@@ -1443,7 +1533,7 @@ project's alike.</p>
 </tr>
 <tr>
 <td><code>vogon/fake/FAKE-REQ.md</code></td>
-<td>When a change names <code>FAKE-REQ</code> in place of a record id: a change that implements no requirement, such as a typo fix (<code>REQ-TRC-9</code>). Written by <code>vogon init</code>; not a record</td>
+<td>When a change names <code>FAKE-REQ</code> in place of a record id: a change that implements no requirement, such as a typo fix (<code>REQ-TRC-9</code>). Written by <code>vogon:setup</code>; not a record</td>
 </tr>
 <tr>
 <td><code>vogon/sources/</code></td>
@@ -1454,12 +1544,12 @@ project's alike.</p>
 <td>Plans for changes, written before the code; <code>done/</code> holds the spent ones</td>
 </tr>
 <tr>
-<td><code>vogon/documents/</code></td>
-<td>Drafted documents of the validation package, filed in the document system and approved there (<code>DEC-023</code>)</td>
+<td><code>vogon/documents/&lt;release&gt;/</code></td>
+<td>Drafted documents of the validation package for one release</td>
 </tr>
 <tr>
 <td><code>vogon/out/</code></td>
-<td>Generated output. Never hand-edited</td>
+<td>Generated output. Never hand-edited. <code>vogon/out/results/</code> is gitignored</td>
 </tr>
 </tbody>
 </table>
@@ -1470,8 +1560,8 @@ to help. Facts, constraints and decisions are flat, because a fact is routinely
 cited by two modules and a constraint by all of them.</p>
 <p><code>vogon/</code> is visible rather than hidden under a dot-directory, because the records
 are reviewed in pull requests and read by people who have never run VOGON.
-<code>.vogon/</code> holds tool state — the last-seen tracker state, the trace collector's
-output — and is gitignored.</p>
+<code>vogon.yaml</code>, the project's configuration, sits at the repository root
+(<a href="process/setup.html">Setting up a project</a>).</p>
 <h2 id="deciding-which-one-a-sentence-is">Deciding which one a sentence is<a class="headerlink" href="#deciding-which-one-a-sentence-is" title="Permanent link">&para;</a></h2>
 <p>Applied to each sentence of a transcript, deck or procedure, in this order. The
 first match wins.</p>
@@ -1521,7 +1611,7 @@ body is what people read.</p>
 </tr>
 <tr>
 <td><code>status</code></td>
-<td><code>proposed</code>, <code>accepted</code>, <code>withdrawn</code>, or <code>superseded_by: &lt;id&gt;</code>, written as a mapping: <code>status: {superseded_by: DEC-024}</code></td>
+<td><code>active</code>, <code>withdrawn</code>, or <code>superseded_by: &lt;id&gt;</code>, written as a mapping: <code>status: {superseded_by: DEC-024}</code>. Whether a requirement is approved is not a status; it is read from the approving system and recorded in the state file</td>
 </tr>
 <tr>
 <td><code>source</code></td>
@@ -1534,10 +1624,6 @@ body is what people read.</p>
 <tr>
 <td><code>tags</code></td>
 <td>Free-form, for searching across modules. Optional</td>
-</tr>
-<tr>
-<td><code>tracked_as</code></td>
-<td>Where this record is registered outside the repository, as a map from the role of each system to the key the record has in it. One entry is <code>governs: &lt;role&gt;</code>, naming the role whose approval state counts. Absent until the record is registered anywhere</td>
 </tr>
 <tr>
 <td><code>depends_on</code></td>
@@ -1564,9 +1650,8 @@ find alongside the meeting.</p>
 <p>Order the list by authority, strongest first, using the <code>authority</code> each held
 document declares: <code>regulation</code>, <code>standard</code>, <code>procedure</code>, <code>project</code>,
 <code>informal</code>. The first entry is what a reader checks the record against; the
-later ones say who else confirmed it and where it was elicited. Where a
-meeting is cited, the transcript comes before its summary and the summary
-never replaces it. <a href="sources.html">Sources</a> has the rules the held documents
+later ones say who else confirmed it and where it was elicited. A meeting is
+cited by its summary, because the transcript is not held. <a href="sources.html">Sources</a> has the rules the held documents
 themselves follow.</p>
 <p>Citing a document means having read the passage. A path in <code>source</code> asserts
 that the document says this. Do not list a document because its title suggests
@@ -1588,28 +1673,12 @@ neither, and which of the four types usually carries it is said in the
 sections below.</p>
 <p>Paths resolve from the repository root and are checked, so a document moved
 without updating the records that point at it fails.</p>
-<h3 id="tracked_as-holds-every-system-and-names-the-one-that-governs"><code>tracked_as</code> holds every system, and names the one that governs<a class="headerlink" href="#tracked_as-holds-every-system-and-names-the-one-that-governs" title="Permanent link">&para;</a></h3>
-<p>A project runs more than one system, and the same record can be registered in
-several of them: the tracker that approves it, the test manager that plans
-tests against it, whatever a company's quality organisation adds. <code>tracked_as</code>
-records all of them, keyed by role, so a reader can reach any of them from the
-record.</p>
-<p>One role is named as governing. Approval state is read from that system and
-from no other, which is what <code>CON-003</code> requires: there is one answer to
-whether the record is approved. The other entries are addresses, and VOGON
-checks that each key still resolves without comparing what the systems say to
-each other. Where two systems hold the same statement and disagree, that is
-the project's disagreement to resolve, not something VOGON arbitrates.</p>
-<pre><code class="language-yaml">tracked_as:
-  governs: tracker
-  tracker: PROJ-412
-  test_manager: TEST-88
-</code></pre>
 <h3 id="status-is-about-the-statement-not-about-the-work">Status is about the statement, not about the work<a class="headerlink" href="#status-is-about-the-statement-not-about-the-work" title="Permanent link">&para;</a></h3>
 <p>Status says whether we are committed to the requirement, not whether anything
 has been built. There is deliberately no <code>implemented</code> value: it would be wrong
 the moment someone changed the code, and nobody would notice. Whether a
-requirement is built is answered by its link to a passing test.</p>
+requirement is built is answered by its link to a passing test, and the
+progress of the work is in the state file.</p>
 <h2 id="how-a-record-is-written">How a record is written<a class="headerlink" href="#how-a-record-is-written" title="Permanent link">&para;</a></h2>
 <p>Every record follows the <a href="writing.html">writing standard</a>, which is the same
 standard this documentation follows. Its reader is an engineer who knows
@@ -1670,12 +1739,12 @@ a requirement yet.</p>
 <td>One of <code>inspection</code>, <code>analysis</code>, <code>demonstration</code> or <code>test</code></td>
 </tr>
 <tr>
-<td><code>gxp_risk</code></td>
-<td>One of <code>safety</code>, <code>product quality</code>, <code>data integrity</code> or <code>none</code>. What a failure of this requirement would damage in a regulated project. It decides how much verification the requirement needs and is expensive to add retrospectively</td>
+<td><code>gxp_impact</code></td>
+<td>One of <code>patient safety</code>, <code>product quality</code>, <code>data integrity</code> or <code>none</code>. What a failure of this requirement would damage</td>
 </tr>
 <tr>
-<td><code>acceptance_by</code>, <code>acceptance_on</code></td>
-<td>Who accepted the acceptance block and when. Required where <code>gxp_risk</code> is not <code>none</code> or <code>verification</code> is <code>test</code>, and absent until a person has accepted it</td>
+<td><code>risk</code></td>
+<td>One of <code>high</code>, <code>medium</code> or <code>low</code>, from how badly a failure would damage it, how likely the failure is, and how likely it is to be detected. Absent where <code>gxp_impact</code> is <code>none</code>. It decides how much verification the requirement needs</td>
 </tr>
 </tbody>
 </table>
@@ -1687,6 +1756,12 @@ absence says the mechanism has not been settled.</p>
 <ul>
 <li><strong>What this does not require</strong> — the boundary. Usually the most useful block
   in the file.</li>
+<li><strong>Risk</strong> — the reasoning behind <code>risk</code>: what fails, how likely it is, and
+  how it would be detected. Absent where <code>gxp_impact</code> is <code>none</code>.</li>
+<li><strong>Accepted findings</strong> — present only when the Product Owner approved the
+  requirement with a check still failing. Each entry states the check, what
+  it found, the evidence, and the Product Owner's reason, with the date
+  (<a href="process/failed_checks.html">When a check fails</a>).</li>
 <li><strong>Acceptance</strong> — properties that hold for any project using VOGON, never
   facts about the files that happen to be on this machine. A criterion written
   around one repository describes a system that can only be demonstrated on
@@ -1694,19 +1769,18 @@ absence says the mechanism has not been settled.</p>
 </ul>
 <p>Where a value is expected, the acceptance block states it. It is worked out
 from the requirement and never read off a run of the code, because a value
-taken from the code makes the test that asserts it unable to fail. On a
-requirement carrying risk or verified by test the block is accepted by a named
-person before the record leaves <code>proposed</code>, and a test marker naming a requirement whose block
-has not been accepted fails the run. <code>DEC-024</code> has the reasoning.</p>
+taken from the code makes the test that asserts it unable to fail. The
+acceptance block is approved with the rest of the requirement.</p>
 <h3 id="worked-example">Worked example<a class="headerlink" href="#worked-example" title="Permanent link">&para;</a></h3>
 <pre><code class="language-markdown">---
 id: REQ-TRK-2
 type: requirement
 title: Report a record edited after its issue was approved
 modules: [TRK]
-status: accepted
+status: active
 verification: test
-gxp_risk: data integrity
+gxp_impact: data integrity
+risk: high
 depends_on: [CON-001, FACT-004]
 references:
   - src/docs/dev/architecture.md
@@ -1730,10 +1804,61 @@ withdrawing the existing approval.
 acceptance block gains a clause. The next run lists the record as requiring
 re-approval and writes nothing to the tracker.
 
+**Risk.** An unreported edit leaves the tracker showing approval of text
+nobody approved, which an audit finds as a data integrity failure. Edits
+after approval are common, and nothing else detects them.
+
 **Acceptance.** For any record whose content hash differs from the hash
 recorded at the time of approval, the record appears in the report and no
 write is issued for it.
 </code></pre>
+<h2 id="state-file">State file<a class="headerlink" href="#state-file" title="Permanent link">&para;</a></h2>
+<p>Each requirement has a state file beside its markdown file, named for the same
+id with <code>.json</code>. It records the steps a skill performed on the requirement, in
+the order they happened, each with its date and the object in the repository
+host that shows it. A skill appends an entry only for a step it performed, on
+the branch working on that requirement. Entries are never edited or removed.</p>
+<p>Approvals, merges, assignment and releases are not in the state file. They
+are read from the repository host and the tracker whenever a skill needs them.</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;REQ-PRN-12&quot;,
+  &quot;issue&quot;: &quot;214&quot;,
+  &quot;steps&quot;: [
+    {&quot;step&quot;: &quot;drafted&quot;, &quot;date&quot;: &quot;2026-09-15&quot;, &quot;pr&quot;: 230, &quot;source&quot;: &quot;vogon/sources/2026-09-15_barcode_printing.summary.md&quot;},
+    {&quot;step&quot;: &quot;planned&quot;, &quot;date&quot;: &quot;2026-09-22&quot;, &quot;pr&quot;: 241, &quot;plan&quot;: &quot;vogon/plans/plan_REQ-PRN-12.md&quot;},
+    {&quot;step&quot;: &quot;test_cases_written&quot;, &quot;date&quot;: &quot;2026-09-23&quot;, &quot;pr&quot;: 241, &quot;commit&quot;: &quot;a19c3d0&quot;},
+    {&quot;step&quot;: &quot;implemented&quot;, &quot;date&quot;: &quot;2026-09-25&quot;, &quot;pr&quot;: 241, &quot;commit&quot;: &quot;b77d031&quot;}
+  ]
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Rule</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>issue</code></td>
+<td>The requirement's key in the tracker</td>
+</tr>
+<tr>
+<td><code>step</code></td>
+<td><code>drafted</code>, <code>finding_accepted</code>, <code>planned</code>, <code>test_cases_written</code>, <code>implemented</code> or <code>withdrawn</code></td>
+</tr>
+<tr>
+<td><code>pr</code>, <code>commit</code></td>
+<td>The pull request and the commit that hold the step's work</td>
+</tr>
+</tbody>
+</table>
+<p>The state file is not evidence. Every skill compares the entries with the
+repository host and the tracker before it acts and reports any difference.</p>
+<h3 id="temporary-ids">Temporary ids<a class="headerlink" href="#temporary-ids" title="Permanent link">&para;</a></h3>
+<p>A draft carries a temporary id, <code>REQ-&lt;MODULE&gt;-NEW&lt;N&gt;</code>, until the developer's
+review. The final number is reserved by creating the tracker issue, and the
+file is renamed then (<a href="architecture.html#records">Architecture</a>).</p>
 <h2 id="domain-fact">Domain fact<a class="headerlink" href="#domain-fact" title="Permanent link">&para;</a></h2>
 <p>At <code>vogon/facts/FACT-NNN.md</code>. No acceptance criteria, and no <code>depends_on</code>: a
 fact is true on its own. Written in the plain present tense with no modal

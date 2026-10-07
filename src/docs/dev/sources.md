@@ -8,15 +8,15 @@ and how they are named. What the citation itself means is in
 ## One directory, flat, dated
 
 Every held document lives in `vogon/sources/`, with no subdirectories. A
-transcript, a slide deck, a regulation, an email and a summary sit side by
-side, and what kind of thing each one is comes from its frontmatter rather than
-from its directory. A meeting transcript is not filed differently from a
-standard because a record cites both the same way.
+meeting summary, a slide deck, a regulation and an email sit side by side, and
+what kind of thing each one is comes from its frontmatter rather than from its
+directory. A meeting summary is not filed differently from a standard because
+a record cites both the same way.
 
 The filename is the document's date, then a slug:
 
 ```
-vogon/sources/2026-09-17_requirements_workshop.md
+vogon/sources/2026-09-17_requirements_workshop.summary.md
 vogon/sources/2026-04-02_electronic_records_procedure.pdf
 ```
 
@@ -55,17 +55,17 @@ binary carries none, which is why the conversion exists.
 | --- | --- |
 | `title` | The document's own title, as it appears on it |
 | `date` | The document's date, matching the filename prefix |
-| `kind` | `transcript`, `summary`, `procedure`, `standard`, `regulation`, `deck`, `email` or `note` |
+| `kind` | `summary`, `procedure`, `standard`, `regulation`, `deck`, `email` or `note` |
 | `authority` | `regulation`, `standard`, `procedure`, `project` or `informal`. What weight a record may give it. See [below](#authority-decides-what-a-record-may-claim) |
 | `original` | The file this was converted from, where one exists |
-| `derived_from` | The document this was produced from, on a summary |
-| `participants` | Who was present, on a transcript or a summary of one |
+| `meeting_id` | The meeting's identifier in the meeting system, on a meeting summary |
+| `participants` | Who was present, as the meeting system lists them, on a meeting summary |
 | `retrieved_from` | Where it came from, for a document fetched from elsewhere: a URL, a system name |
 
 ## A held document is never edited
 
 Once a document is in `vogon/sources/` its content does not change. A corrected
-transcript, a reissued procedure, a second version of a deck: each is a new
+summary, a reissued procedure, a second version of a deck: each is a new
 file with its own date, and the records that cited the old one either keep
 citing it or are updated deliberately.
 
@@ -77,32 +77,26 @@ Typos are not an exception.
 
 ## Meetings
 
-A meeting becomes two held documents. The recording is transcribed, and the
-transcript is filed with `kind: transcript`, the meeting's date, and the
-participants. A summary is produced from that transcript and filed beside it.
-Records are drafted from the transcript.
-
-The recording itself is not held. It is large, it is often subject to a
-retention rule of its own, and the transcript is what a citation points at.
-
-## Summaries
-
-A transcript is long and nobody reads it twice. A summary of one is held
-alongside it, with `kind: summary` and `derived_from` naming the transcript:
+A meeting is held as one document: a summary of its transcript, with
+`kind: summary`, `authority: informal`, the meeting's date, its `meeting_id`
+and its participants.
 
 ```
-vogon/sources/2026-09-17_requirements_workshop.md
 vogon/sources/2026-09-17_requirements_workshop.summary.md
 ```
 
-A summary is a convenience, not an authority. Where a record's statement rests
-on something said in a meeting, the `source` list names the transcript; the
-summary may be listed after it, never instead of it. A summary that says
-something the transcript does not is a defect in the summary.
+The transcript and the recording are not held. The transcript is downloaded
+to a temporary directory outside the repository, summarised, checked against
+the summary, and deleted ([From meetings to requirements](process/meetings.md)).
+A transcript holds personal remarks and discussion unrelated to the project,
+and the meeting system keeps it under its own retention rule. The summary
+keeps every requirement, fact, constraint, decision and unanswered question
+the meeting stated, with the values given and who stated each.
 
-A summary is generated, and generated text is wrong in ways that read well. It
-is held so a person can find the passage that matters, and the passage is then
-read in the transcript.
+A summary that says something the transcript did not is a defect in the
+summary, and the check against the transcript exists to find it before the
+transcript is deleted. A requirement drafted from a summary becomes binding
+through the Product Owner's approval, not through the meeting.
 
 ## `authority` decides what a record may claim
 

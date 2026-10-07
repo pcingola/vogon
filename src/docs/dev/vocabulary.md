@@ -89,9 +89,9 @@ records, and the substitution is mechanical.
 | **CSV / CSA** | The two names for validating software in this industry; CSA is the FDA's more recent risk-based framing |
 | **URS** | User Requirements Specification: the controlled document holding approved requirements |
 | **RTM** | Requirements Traceability Matrix: requirement to design to test to result, for every requirement |
-| **Tracker** | The issue tracker holding requirements under approval. Jira in version 0.1 |
-| **Test manager** | The system holding test cases, test runs and results, which produces the coverage and traceability reports. Xray, a Jira plugin, in version 0.1 |
-| **Repository host** | The service holding the git repository and reviewing changes before they merge. GitHub in version 0.1 |
+| **Tracker** | The issue tracker holding the requirement issues, their priority and assignee, and in a deployment their approval. GitHub Issues in the prototype, Jira in a deployment |
+| **Test manager** | The system holding test cases, test runs and results, which produces the coverage and traceability reports. None in the prototype; Xray, a Jira plugin, in a deployment |
+| **Repository host** | The service holding the git repository and reviewing changes before they merge. GitHub |
 | **Document system** | The controlled document management system where the validation package is filed and signed |
 
 ## Who signs what

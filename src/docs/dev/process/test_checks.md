@@ -1,12 +1,15 @@
 # Checking the tests
 
-The agent does this before opening the pull request, and again whenever the
-requirement or its tests change. A separate agent, with no access to the
-code, checks the tests against the requirement; a second pass, with the
-code, checks that the tests are sound. Findings go back to the test-writing
-agent until none remain. The final report goes to the Test Lead with the tests.
+A separate agent, which did not write the tests, does two checks. It checks
+the test cases against the requirement before they go to the Test Lead. It
+checks the test code against the approved test cases, and for soundness,
+before the pull request is opened. Both run again whenever the requirement,
+the test cases or the tests change. It reads the requirement, the test cases,
+the tests and the code. Findings go back to the agent that wrote the tests
+until none remain. The report on the test cases goes to the Test Lead with
+them.
 
-Checks that the tests test the requirement:
+Checks that the test cases and the tests test the requirement:
 
 - Every acceptance criterion has a test.
 - The boundary values and error cases the requirement names are tested:
@@ -16,7 +19,9 @@ Checks that the tests test the requirement:
 - No assertion goes beyond the requirement, such as a check of an internal
   detail the requirement does not state, which fails when the code is
   restructured without being wrong.
-- Each test is linked to the requirement it verifies, and to no other.
+- Each test is linked to every requirement it verifies.
+- Every approved test case is carried out by a test that uses its inputs and
+  expected values.
 
 Checks that the tests are sound:
 
@@ -39,7 +44,7 @@ Checks that the tests are sound:
   allowed, malformed, non-ASCII.
 - A rejected input is rejected with the error the requirement states, not
   only "some error".
-- Each test checks one behaviour, and its name says which criterion.
+- Each test checks one behaviour, and its name says which.
 - No test is skipped or marked as an expected failure without a stated
   reason.
 - The test checks the project's code, not the behaviour of a library it
@@ -49,7 +54,6 @@ Checks that the tests are sound:
 - The tests run in CI on the build that will be released, and the results
   are recorded against that build.
 
-After the checks, if a developer later edits an expected value to make a
-failing test pass, the agent reports it on that pull request. On merge the agent
-registers the tests in the test manager, linked to the requirement issue, with the check
-report. The Test Lead approves them in the test manager.
+If an approved test case is later changed, or a test's expected value is
+edited away from its test case to make a failing test pass, the agent reports
+it on the pull request, and the change needs the Test Lead's approval again.

@@ -14,15 +14,15 @@ project's alike.
 
 | Path | Holds |
 | --- | --- |
-| `vogon/requirements/<module>/` | Requirement records, one directory per module |
+| `vogon/requirements/<module>/` | Requirement records, one directory per module, each `REQ-<MODULE>-<NUMBER>.md` with its [state file](#state-file) `REQ-<MODULE>-<NUMBER>.json`, and for a `high` or `medium` risk requirement its test cases `REQ-<MODULE>-<NUMBER>.tests.md`, beside it |
 | `vogon/facts/` | Every `FACT-` |
 | `vogon/constraints/` | Every `CON-` |
 | `vogon/decisions/` | Every `DEC-` |
-| `vogon/fake/FAKE-REQ.md` | When a change names `FAKE-REQ` in place of a record id: a change that implements no requirement, such as a typo fix (`REQ-TRC-9`). Written by `vogon init`; not a record |
+| `vogon/fake/FAKE-REQ.md` | When a change names `FAKE-REQ` in place of a record id: a change that implements no requirement, such as a typo fix (`REQ-TRC-9`). Written by `vogon:setup`; not a record |
 | `vogon/sources/` | Held copies of the documents records cite. See [Sources](sources.md) |
 | `vogon/plans/` | Plans for changes, written before the code; `done/` holds the spent ones |
-| `vogon/documents/` | Drafted documents of the validation package, filed in the document system and approved there (`DEC-023`) |
-| `vogon/out/` | Generated output. Never hand-edited |
+| `vogon/documents/<release>/` | Drafted documents of the validation package for one release |
+| `vogon/out/` | Generated output. Never hand-edited. `vogon/out/results/` is gitignored |
 
 Nothing depends on where a file sits. Identity is the id, the queryable
 structure is the frontmatter, and the directory exists so a person can browse.
@@ -32,8 +32,8 @@ cited by two modules and a constraint by all of them.
 
 `vogon/` is visible rather than hidden under a dot-directory, because the records
 are reviewed in pull requests and read by people who have never run VOGON.
-`.vogon/` holds tool state — the last-seen tracker state, the trace collector's
-output — and is gitignored.
+`vogon.yaml`, the project's configuration, sits at the repository root
+([Setting up a project](process/setup.md)).
 
 ## Deciding which one a sentence is
 
@@ -69,11 +69,10 @@ Frontmatter common to all four types:
 | `type` | `requirement`, `fact`, `constraint` or `decision` |
 | `title` | One line naming what the record is, in the words someone would search for. Not an allusion, not a question |
 | `modules` | Which modules it belongs to, as a list. A fact cited by two modules carries both |
-| `status` | `proposed`, `accepted`, `withdrawn`, or `superseded_by: <id>`, written as a mapping: `status: {superseded_by: DEC-024}` |
+| `status` | `active`, `withdrawn`, or `superseded_by: <id>`, written as a mapping: `status: {superseded_by: DEC-024}`. Whether a requirement is approved is not a status; it is read from the approving system and recorded in the state file |
 | `source` | Every held document that states this, as a list of paths. See [below](#source-lists-every-document-that-states-it). Absent on a record the project originated itself |
 | `reviewed_by`, `reviewed_on` | Who read it in detail and when. Absent until someone has |
 | `tags` | Free-form, for searching across modules. Optional |
-| `tracked_as` | Where this record is registered outside the repository, as a map from the role of each system to the key the record has in it. One entry is `governs: <role>`, naming the role whose approval state counts. Absent until the record is registered anywhere |
 | `depends_on` | The records this one rests on, by id. Absent on a fact, which rests on nothing |
 | `references` | The documents that say how this is realised, as a list of paths. Absent where no document does. See [below](#references-points-at-the-documentation) |
 
@@ -96,9 +95,8 @@ find alongside the meeting.
 Order the list by authority, strongest first, using the `authority` each held
 document declares: `regulation`, `standard`, `procedure`, `project`,
 `informal`. The first entry is what a reader checks the record against; the
-later ones say who else confirmed it and where it was elicited. Where a
-meeting is cited, the transcript comes before its summary and the summary
-never replaces it. [Sources](sources.md) has the rules the held documents
+later ones say who else confirmed it and where it was elicited. A meeting is
+cited by its summary, because the transcript is not held. [Sources](sources.md) has the rules the held documents
 themselves follow.
 
 Citing a document means having read the passage. A path in `source` asserts
@@ -128,34 +126,13 @@ sections below.
 Paths resolve from the repository root and are checked, so a document moved
 without updating the records that point at it fails.
 
-### `tracked_as` holds every system, and names the one that governs
-
-A project runs more than one system, and the same record can be registered in
-several of them: the tracker that approves it, the test manager that plans
-tests against it, whatever a company's quality organisation adds. `tracked_as`
-records all of them, keyed by role, so a reader can reach any of them from the
-record.
-
-One role is named as governing. Approval state is read from that system and
-from no other, which is what `CON-003` requires: there is one answer to
-whether the record is approved. The other entries are addresses, and VOGON
-checks that each key still resolves without comparing what the systems say to
-each other. Where two systems hold the same statement and disagree, that is
-the project's disagreement to resolve, not something VOGON arbitrates.
-
-```yaml
-tracked_as:
-  governs: tracker
-  tracker: PROJ-412
-  test_manager: TEST-88
-```
-
 ### Status is about the statement, not about the work
 
 Status says whether we are committed to the requirement, not whether anything
 has been built. There is deliberately no `implemented` value: it would be wrong
 the moment someone changed the code, and nobody would notice. Whether a
-requirement is built is answered by its link to a passing test.
+requirement is built is answered by its link to a passing test, and the
+progress of the work is in the state file.
 
 ## How a record is written
 
@@ -197,8 +174,8 @@ Frontmatter it adds:
 | Field | Rule |
 | --- | --- |
 | `verification` | One of `inspection`, `analysis`, `demonstration` or `test` |
-| `gxp_risk` | One of `safety`, `product quality`, `data integrity` or `none`. What a failure of this requirement would damage in a regulated project. It decides how much verification the requirement needs and is expensive to add retrospectively |
-| `acceptance_by`, `acceptance_on` | Who accepted the acceptance block and when. Required where `gxp_risk` is not `none` or `verification` is `test`, and absent until a person has accepted it |
+| `gxp_impact` | One of `patient safety`, `product quality`, `data integrity` or `none`. What a failure of this requirement would damage |
+| `risk` | One of `high`, `medium` or `low`, from how badly a failure would damage it, how likely the failure is, and how likely it is to be detected. Absent where `gxp_impact` is `none`. It decides how much verification the requirement needs |
 
 A requirement carries `references` where a document specifies the mechanism it
 is checked against — the schema, the marker format, the tracker rules. A
@@ -209,6 +186,12 @@ Body blocks it adds:
 
 - **What this does not require** — the boundary. Usually the most useful block
   in the file.
+- **Risk** — the reasoning behind `risk`: what fails, how likely it is, and
+  how it would be detected. Absent where `gxp_impact` is `none`.
+- **Accepted findings** — present only when the Product Owner approved the
+  requirement with a check still failing. Each entry states the check, what
+  it found, the evidence, and the Product Owner's reason, with the date
+  ([When a check fails](process/failed_checks.md)).
 - **Acceptance** — properties that hold for any project using VOGON, never
   facts about the files that happen to be on this machine. A criterion written
   around one repository describes a system that can only be demonstrated on
@@ -216,10 +199,8 @@ Body blocks it adds:
 
 Where a value is expected, the acceptance block states it. It is worked out
 from the requirement and never read off a run of the code, because a value
-taken from the code makes the test that asserts it unable to fail. On a
-requirement carrying risk or verified by test the block is accepted by a named
-person before the record leaves `proposed`, and a test marker naming a requirement whose block
-has not been accepted fails the run. `DEC-024` has the reasoning.
+taken from the code makes the test that asserts it unable to fail. The
+acceptance block is approved with the rest of the requirement.
 
 ### Worked example
 
@@ -229,9 +210,10 @@ id: REQ-TRK-2
 type: requirement
 title: Report a record edited after its issue was approved
 modules: [TRK]
-status: accepted
+status: active
 verification: test
-gxp_risk: data integrity
+gxp_impact: data integrity
+risk: high
 depends_on: [CON-001, FACT-004]
 references:
   - src/docs/dev/architecture.md
@@ -255,10 +237,53 @@ withdrawing the existing approval.
 acceptance block gains a clause. The next run lists the record as requiring
 re-approval and writes nothing to the tracker.
 
+**Risk.** An unreported edit leaves the tracker showing approval of text
+nobody approved, which an audit finds as a data integrity failure. Edits
+after approval are common, and nothing else detects them.
+
 **Acceptance.** For any record whose content hash differs from the hash
 recorded at the time of approval, the record appears in the report and no
 write is issued for it.
 ```
+
+## State file
+
+Each requirement has a state file beside its markdown file, named for the same
+id with `.json`. It records the steps a skill performed on the requirement, in
+the order they happened, each with its date and the object in the repository
+host that shows it. A skill appends an entry only for a step it performed, on
+the branch working on that requirement. Entries are never edited or removed.
+
+Approvals, merges, assignment and releases are not in the state file. They
+are read from the repository host and the tracker whenever a skill needs them.
+
+```json
+{
+  "id": "REQ-PRN-12",
+  "issue": "214",
+  "steps": [
+    {"step": "drafted", "date": "2026-09-15", "pr": 230, "source": "vogon/sources/2026-09-15_barcode_printing.summary.md"},
+    {"step": "planned", "date": "2026-09-22", "pr": 241, "plan": "vogon/plans/plan_REQ-PRN-12.md"},
+    {"step": "test_cases_written", "date": "2026-09-23", "pr": 241, "commit": "a19c3d0"},
+    {"step": "implemented", "date": "2026-09-25", "pr": 241, "commit": "b77d031"}
+  ]
+}
+```
+
+| Field | Rule |
+| --- | --- |
+| `issue` | The requirement's key in the tracker |
+| `step` | `drafted`, `finding_accepted`, `planned`, `test_cases_written`, `implemented` or `withdrawn` |
+| `pr`, `commit` | The pull request and the commit that hold the step's work |
+
+The state file is not evidence. Every skill compares the entries with the
+repository host and the tracker before it acts and reports any difference.
+
+### Temporary ids
+
+A draft carries a temporary id, `REQ-<MODULE>-NEW<N>`, until the developer's
+review. The final number is reserved by creating the tracker issue, and the
+file is renamed then ([Architecture](architecture.md#records)).
 
 ## Domain fact
 

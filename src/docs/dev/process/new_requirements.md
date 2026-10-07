@@ -109,9 +109,8 @@ When the checks are done:
 1. The agent commits the summaries and the drafted records to the
    developer's branch. How the work reaches `main` is the developer's choice. The usual
    case is one pull request per meeting batch holding the summaries and
-   all the records drafted from them, however many there are, merged
-   quickly because it is documentation the agent has already checked, so
-   that every developer can see and pick the new requirements. When the
+   all the records drafted from them, however many there are, so that every
+   developer can see and pick the new requirements. When the
    developer is going to implement all of them at once, the records go in
    the same pull request as the implementation, and there is one merge.
    Every pull request names the ids of the records it adds or implements.
@@ -127,7 +126,9 @@ When the checks are done:
    edit the developer makes is checked again against [From meetings to requirements](meetings.md) and
    [Checking the new requirements](new_requirements.md).
 3. With the developer's feedback applied, or once the developer says to go
-   ahead, the agent creates a tracker issue for each proposed requirement,
+   ahead, the agent gives each draft its final id, reserved by creating its
+   tracker issue, and renames the draft from its temporary id. It creates a
+   tracker issue for each proposed requirement,
    from the branch, in the tracker's state for items awaiting review, so
    the Product Owner's approval does not wait for a merge. Each issue holds
    the requirement's text and acceptance criteria, and any finding above
@@ -140,4 +141,10 @@ When the checks are done:
    rejected, it reads the tracker. No merge follows the approval.
 6. An edit the Product Owner made to the text in the tracker is copied into
    the record by the implementation pull request of that requirement
-   ([Writing the code](implementation.md)), so the code is built against the approved text.
+   ([Test cases, code and tests](implementation.md)), so the code is built against the approved text.
+
+Steps 4 to 6 describe a deployment, where the tracker records the approval.
+In the prototype, the tracker is GitHub Issues and holds priority and
+assignee only. The Product Owner approves the requirements by approving the
+pull request that adds them, edits the text in that pull request, and the
+pull request merges after the approval.
