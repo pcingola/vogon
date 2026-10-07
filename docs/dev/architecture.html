@@ -1442,7 +1442,7 @@ defines how every skill produces and checks its work.</p>
 <p>The host project is written in Python, tested with pytest, and kept in git.
 The coding agent is Claude Code. Skills name each external system by its role
 and never by product. The project names the system that fills each role in
-<a href="#project-process-files"><code>vogon/project/index.md</code></a>.</p>
+<a href="#project-process-files"><code>vogon/project/vogon.yaml</code></a>.</p>
 <table>
 <thead>
 <tr>
@@ -1459,12 +1459,12 @@ and never by product. The project names the system that fills each role in
 </tr>
 <tr>
 <td>Tracker</td>
-<td>None</td>
-<td>Jira</td>
+<td>The project's choice, for example GitHub Issues</td>
+<td>The project's choice, for example Jira</td>
 </tr>
 <tr>
 <td>Approval of requirements</td>
-<td><code>vogon approve</code>, recorded in <code>REQ-*.json</code></td>
+<td><code>vogon approve</code>, recorded in <code>REQ-*.json</code>; the tracker holds no approval</td>
 <td>Tracker workflow transition, cached in <code>REQ-*.json</code></td>
 </tr>
 <tr>
@@ -1513,7 +1513,7 @@ session, which is the main agent of <a href="loop.html">the loop</a>.</p>
 <tbody>
 <tr>
 <td><code>vogon:init</code></td>
-<td>Records the held validation plan, the role holders and the system for each role in <code>vogon/project/index.md</code></td>
+<td>Records the held validation plan, the role holders and the system for each role in <code>vogon/project/vogon.yaml</code></td>
 <td><a href="process/setup.html">Setup</a></td>
 </tr>
 <tr>
@@ -1658,7 +1658,7 @@ project comes from its validation plan, through the files in
 </thead>
 <tbody>
 <tr>
-<td><code>index.md</code></td>
+<td><code>vogon.yaml</code></td>
 <td>The validation plan (held copy and version); the role holders; the controlled and exempt work types; the system for each role; the plan version each other file was derived from</td>
 </tr>
 <tr>
@@ -1687,7 +1687,7 @@ project comes from its validation plan, through the files in
 </tr>
 </tbody>
 </table>
-<p><code>vogon:init</code> writes only <code>index.md</code>. The other files are derived when a skill
+<p><code>vogon:init</code> writes only <code>vogon.yaml</code>, from the commented template the plugin ships. The scripts read it, so it is YAML; the other files are markdown, read by the model. Each markdown file is written from a template that lists the topics in the table above. The other files are derived when a skill
 first needs them. A writing sub-agent drafts the file, and each statement cites
 a section of the plan. Evaluators check that each statement is supported and
 that the file is complete. Tracker names are read from an example item and
@@ -1719,7 +1719,7 @@ example "approve the last 10 requirements, then push". <code>vogon:approve</code
 only on such an explicit instruction. It lists the ids and titles it resolved,
 runs <code>vogon approve &lt;id&gt;...</code>, commits and pushes. <code>vogon approve</code> writes into
 each <code>REQ-*.json</code> the approver's git identity, the date and the hash of the
-approved <code>REQ-*.md</code>. If <code>index.md</code> does not list the user as Product Owner, the
+approved <code>REQ-*.md</code>. If <code>vogon.yaml</code> does not list the user as Product Owner, the
 script warns and still records the approval.</p>
 <p>In the real version the requirements go to the tracker, and the Product Owner
 approves each with the tracker's approval transition. The Product Owner may
