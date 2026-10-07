@@ -94,6 +94,14 @@ records, and the substitution is mechanical.
 | **Repository host** | The service holding the git repository and reviewing changes before they merge. GitHub |
 | **Document system** | The controlled document management system where the validation package is filed and signed |
 
+## Tests
+
+| Term | What it is |
+| --- | --- |
+| **Acceptance criteria** | The part of a requirement that states what must be tested. Approved with the requirement |
+| **Test** | A pytest function. Its `req` marker names the requirements it verifies. A test with a `req` marker is the test case for those requirements |
+| **Test procedure** | A document, not code: numbered steps in prose, each with its expected result, with an id and linked to its requirement. Projects call it a test script, test protocol or manual test case; VOGON says test procedure, because "script" reads as code. Written and approved as `tests.md` states |
+
 ## Who signs what
 
 A validated system's documents are signed by roles named in the validation
