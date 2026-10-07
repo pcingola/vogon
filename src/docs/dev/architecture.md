@@ -92,6 +92,7 @@ Each skill runs its work through [the loop](loop.md). The loops are:
 | --- | --- | --- |
 | `vogon:init`, any skill | One project process file | Each statement is supported by the cited plan section; the file covers every topic it must |
 | `vogon:requirements` | One summary per meeting, mail thread or chat channel | The summary against its source |
+| `vogon:requirements` | One extract per attached or shared file, from its markdown copy | The extract against the file |
 | `vogon:requirements` | Records with their risk fields | The requirement checklist |
 | `vogon:tests` | Test procedures | Each procedure against its requirement and, where generated, its tests |
 | `vogon:implement` | The plan for one requirement | The plan against the requirement and the code |
@@ -202,6 +203,14 @@ its date and its participants ([Sources](sources.md)), and the downloaded
 content is deleted. Records are drafted from the checked summary. The Product
 Owner's approval makes a statement a requirement; the meeting or message is
 only where it came from.
+
+Files attached to a mail, posted in a chat or shared in a meeting are
+documents, and are kept. Each is downloaded, filed in `vogon/sources/` as the
+original, and converted to a markdown copy beside it. Records cite the markdown
+copy. One sub-agent reads each file and returns what it states that bears on
+requirements, with the location of each statement, such as the slide or page.
+A long file, such as a presentation of 200 slides, is read only in that
+sub-agent's context, never in the main agent's.
 
 Code shows what the system does, and its history shows why. A requirement
 drafted from code alone describes the current behaviour, defects included, so

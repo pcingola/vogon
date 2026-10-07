@@ -1596,6 +1596,11 @@ items in its own files.</p>
 </tr>
 <tr>
 <td><code>vogon:requirements</code></td>
+<td>One extract per attached or shared file, from its markdown copy</td>
+<td>The extract against the file</td>
+</tr>
+<tr>
+<td><code>vogon:requirements</code></td>
 <td>Records with their risk fields</td>
 <td>The requirement checklist</td>
 </tr>
@@ -1741,6 +1746,13 @@ its date and its participants (<a href="sources.html">Sources</a>), and the down
 content is deleted. Records are drafted from the checked summary. The Product
 Owner's approval makes a statement a requirement; the meeting or message is
 only where it came from.</p>
+<p>Files attached to a mail, posted in a chat or shared in a meeting are
+documents, and are kept. Each is downloaded, filed in <code>vogon/sources/</code> as the
+original, and converted to a markdown copy beside it. Records cite the markdown
+copy. One sub-agent reads each file and returns what it states that bears on
+requirements, with the location of each statement, such as the slide or page.
+A long file, such as a presentation of 200 slides, is read only in that
+sub-agent's context, never in the main agent's.</p>
 <p>Code shows what the system does, and its history shows why. A requirement
 drafted from code alone describes the current behaviour, defects included, so
 an evaluator reports every requirement whose only source is the code, and the
