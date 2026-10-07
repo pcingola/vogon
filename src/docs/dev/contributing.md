@@ -5,12 +5,11 @@
 | Path | Contents |
 | --- | --- |
 | `.claude-plugin/` | The marketplace listing. |
-| `src/vogon/` | The Claude Code plugin: skills, references, templates, hooks, scripts. |
+| `src/vogon/` | The Claude Code plugin: skills, references, templates. |
 | `src/docs/` | Documentation source, markdown. What you are reading. |
 | `src/html/` | Marketing page source: `index.html`, `img/`. |
 | `docs/` | Build output. Rendered HTML, served by GitHub Pages. Never edit. |
 | `vogon/` | VOGON's own records: requirements, facts, constraints, decisions. |
-| `tests/` | Test suite. |
 | `tmp/` | Working notes and plans. Gitignored, local only. |
 | `assets/` | Brand originals. Never published. |
 | `.github/` | CI workflow. |
@@ -21,33 +20,13 @@
 ```sh
 uv sync
 git config core.hooksPath .githooks
-make test      # pytest, testpaths = ["tests"]
 ```
 
 `core.hooksPath` points git at the hooks committed in `.githooks/`. It is a
 local setting, so it is set once per clone.
 
-`pyproject.toml` exists for development only: it holds the dev dependency group
-and the pytest configuration.
-
-## Test markers
-
-Every test that verifies one of VOGON's own requirements carries the marker
-naming it, the same marker VOGON provides to host projects:
-
-```python
-import pytest
-
-@pytest.mark.req("REQ-ABC-1")
-def test_example():
-    ...
-```
-
-A test verifying several requirements names each: `@pytest.mark.req("REQ-ABC-2",
-"REQ-ABC-3")`. The expected values come from the requirement's acceptance
-criteria, never from a run of the code. The `req` marker is
-registered in `pyproject.toml` under `[tool.pytest.ini_options]`, so the suite
-runs under `--strict-markers` without the plugin loaded.
+`pyproject.toml` exists for development only: it holds the dev dependency
+group.
 
 ## Building the site
 
@@ -105,26 +84,22 @@ The repository is a Claude Code plugin marketplace.
 ```
 src/vogon/
 ├── .claude-plugin/plugin.json   name, version, description
-├── hooks/hooks.json             Claude Code hooks
 ├── references/                  rules shared by the skills
 ├── templates/                   templates of the host project's process files
-├── skills/
-│   ├── init/                    SKILL.md
-│   ├── requirements/            SKILL.md, references/
-│   ├── approve/                 SKILL.md
-│   ├── next/                    SKILL.md
-│   ├── tests/                   SKILL.md, references/
-│   ├── implement/               SKILL.md, references/
-│   └── release/                 SKILL.md
-└── scripts/
-    └── vogon                    vogon id, vogon approve, vogon trace
+└── skills/
+    ├── init/                    SKILL.md
+    ├── requirements/            SKILL.md, references/
+    ├── approve/                 SKILL.md
+    ├── next/                    SKILL.md
+    ├── tests/                   SKILL.md, references/
+    ├── implement/               SKILL.md, references/
+    └── release/                 SKILL.md
 ```
 
 [Architecture](architecture.md) describes the skills.
 
-The version is in `plugin.json` and nowhere else; `scripts/cli.py` reads it
-from there. There is no wheel and no PyPI release. Each script runs under
-`uv run --script` and declares its dependencies inline (PEP 723).
+The version is in `plugin.json` and nowhere else. There is no wheel and no
+PyPI release.
 
 Each release is tagged `v<version>`, with the version read from `plugin.json`,
 on the commit that sets it: `v0.1.0` for version `0.1.0`.

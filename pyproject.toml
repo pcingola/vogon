@@ -1,6 +1,6 @@
 # Development only. VOGON ships as a Claude Code plugin from src/vogon, and its
 # version is in src/vogon/.claude-plugin/plugin.json. This project is never
-# built or installed; it holds the dev dependencies and the pytest settings.
+# built or installed; it holds the dev dependencies.
 
 [project]
 name = "vogon-dev"
@@ -11,9 +11,4 @@ requires-python = ">=3.11"
 package = false
 
 [dependency-groups]
-dev = ["pytest>=8", "pyyaml>=6", "mkdocs>=1.6", "mkdocs-material>=9.5"]
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-pythonpath = ["src/vogon/scripts"]
-markers = ["req(*ids): the requirement ids the test verifies"]
+dev = ["mkdocs>=1.6", "mkdocs-material>=9.5"]

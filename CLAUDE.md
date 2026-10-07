@@ -46,15 +46,14 @@ vogon/
 │   └── html/        SOURCE — marketing page: index.html, img/, .nojekyll
 ├── docs/            OUTPUT — rendered HTML. generated. never hand-edited.
 ├── vogon/           RECORDS — VOGON's own requirements, facts, constraints, decisions
-├── tests/
 ├── tmp/             working notes: plans, brainstorming. gitignored, local only.
 ├── assets/          brand originals + their dark twins, 46 MB. never published.
 ├── .claude-plugin/  marketplace.json: the marketplace listing the plugin
-├── .github/         CI: tests and a strict site build on pushes to main and on pull requests
+├── .github/         CI: a strict site build on pushes to main and on pull requests
 ├── .githooks/       pre-commit: rebuilds docs/ when site source changes
 ├── mkdocs.yml       docs_dir: src/docs   site_dir: docs
 ├── Makefile         make site / make clean
-└── pyproject.toml   development only: dev dependencies, pytest
+└── pyproject.toml   development only: dev dependencies
 ```
 
 `src/` is source and `docs/` is output: never edit `docs/` and never put source

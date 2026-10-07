@@ -17,5 +17,4 @@ jobs:
         with:
           enable-cache: true
       - run: uv sync --group dev
-      - run: uv run --group dev pytest
       - run: uv run --group dev mkdocs build --strict

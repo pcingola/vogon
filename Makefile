@@ -1,4 +1,4 @@
-.PHONY: site clean serve test
+.PHONY: site clean serve
 
 # src/docs/*.md -> docs/, then the marketing page copied over the top.
 site: clean
@@ -10,6 +10,3 @@ clean:
 
 serve:
 	uv run --group dev mkdocs serve
-
-test:
-	uv run --group dev pytest

@@ -948,17 +948,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#test-markers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Test markers
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#building-the-site" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1067,17 +1056,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#test-markers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Test markers
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#building-the-site" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1154,7 +1132,7 @@
 </tr>
 <tr>
 <td><code>src/vogon/</code></td>
-<td>The Claude Code plugin: skills, references, templates, hooks, scripts.</td>
+<td>The Claude Code plugin: skills, references, templates.</td>
 </tr>
 <tr>
 <td><code>src/docs/</code></td>
@@ -1171,10 +1149,6 @@
 <tr>
 <td><code>vogon/</code></td>
 <td>VOGON's own records: requirements, facts, constraints, decisions.</td>
-</tr>
-<tr>
-<td><code>tests/</code></td>
-<td>Test suite.</td>
 </tr>
 <tr>
 <td><code>tmp/</code></td>
@@ -1197,26 +1171,11 @@
 <h2 id="development-environment">Development environment<a class="headerlink" href="#development-environment" title="Permanent link">&para;</a></h2>
 <pre><code class="language-sh">uv sync
 git config core.hooksPath .githooks
-make test      # pytest, testpaths = [&quot;tests&quot;]
 </code></pre>
 <p><code>core.hooksPath</code> points git at the hooks committed in <code>.githooks/</code>. It is a
 local setting, so it is set once per clone.</p>
-<p><code>pyproject.toml</code> exists for development only: it holds the dev dependency group
-and the pytest configuration.</p>
-<h2 id="test-markers">Test markers<a class="headerlink" href="#test-markers" title="Permanent link">&para;</a></h2>
-<p>Every test that verifies one of VOGON's own requirements carries the marker
-naming it, the same marker VOGON provides to host projects:</p>
-<pre><code class="language-python">import pytest
-
-@pytest.mark.req(&quot;REQ-ABC-1&quot;)
-def test_example():
-    ...
-</code></pre>
-<p>A test verifying several requirements names each: <code>@pytest.mark.req("REQ-ABC-2",
-"REQ-ABC-3")</code>. The expected values come from the requirement's acceptance
-criteria, never from a run of the code. The <code>req</code> marker is
-registered in <code>pyproject.toml</code> under <code>[tool.pytest.ini_options]</code>, so the suite
-runs under <code>--strict-markers</code> without the plugin loaded.</p>
+<p><code>pyproject.toml</code> exists for development only: it holds the dev dependency
+group.</p>
 <h2 id="building-the-site">Building the site<a class="headerlink" href="#building-the-site" title="Permanent link">&para;</a></h2>
 <pre><code class="language-sh">make site     # src/docs/ -&gt; docs/, then src/html/ copied over the top
 make serve    # live preview on http://127.0.0.1:8000
@@ -1257,24 +1216,20 @@ its theme CSS and JS into <code>docs/assets/</code>, which is unrelated to the t
 <code>./src/vogon</code>:</p>
 <pre><code>src/vogon/
 ├── .claude-plugin/plugin.json   name, version, description
-├── hooks/hooks.json             Claude Code hooks
 ├── references/                  rules shared by the skills
 ├── templates/                   templates of the host project's process files
-├── skills/
-│   ├── init/                    SKILL.md
-│   ├── requirements/            SKILL.md, references/
-│   ├── approve/                 SKILL.md
-│   ├── next/                    SKILL.md
-│   ├── tests/                   SKILL.md, references/
-│   ├── implement/               SKILL.md, references/
-│   └── release/                 SKILL.md
-└── scripts/
-    └── vogon                    vogon id, vogon approve, vogon trace
+└── skills/
+    ├── init/                    SKILL.md
+    ├── requirements/            SKILL.md, references/
+    ├── approve/                 SKILL.md
+    ├── next/                    SKILL.md
+    ├── tests/                   SKILL.md, references/
+    ├── implement/               SKILL.md, references/
+    └── release/                 SKILL.md
 </code></pre>
 <p><a href="architecture.html">Architecture</a> describes the skills.</p>
-<p>The version is in <code>plugin.json</code> and nowhere else; <code>scripts/cli.py</code> reads it
-from there. There is no wheel and no PyPI release. Each script runs under
-<code>uv run --script</code> and declares its dependencies inline (PEP 723).</p>
+<p>The version is in <code>plugin.json</code> and nowhere else. There is no wheel and no
+PyPI release.</p>
 <p>Each release is tagged <code>v&lt;version&gt;</code>, with the version read from <code>plugin.json</code>,
 on the commit that sets it: <code>v0.1.0</code> for version <code>0.1.0</code>.</p>
 <pre><code class="language-sh">claude plugin validate .           # the marketplace listing
