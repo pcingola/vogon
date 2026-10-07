@@ -132,6 +132,8 @@ the documentation describes the current code.
   Product Owner, as a change that needs approval again.
 - A plan for code, which the developers review and approve before any code
   is written.
+- An instruction from the developer while code is written. The developer can
+  stop the work, review a part or redirect it at any time.
 - A gap in the validation plan while a project process file is derived. The
   developer answers, and the file records the answer with their name and the
   date.
@@ -322,6 +324,14 @@ for them.
 5. The main agent reads each sub-agent's log and its output against the plan.
    It sends back work that leaves the part it was given, does less than the
    part, or changes what the plan does not name.
+
+The developer steers the work while it runs. They can stop it, ask to review
+each part before the next starts, or give an instruction about a part, such as
+a data structure to use or an approach to drop. The main agent passes the
+instruction to the sub-agents it concerns and logs it. An instruction that
+changes what the plan states is written into the plan, and the changed plan is
+approved again before the work it changes continues. Without instructions, the
+skill runs the plan to the end.
 
 All tests are written and pass before the pull request is opened. A person
 approves the pull request on the repository host.
