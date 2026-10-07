@@ -675,10 +675,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#length-limits" class="md-nav__link">
+  <a href="#length" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Length limits
+        Length
       
     </span>
   </a>
@@ -727,23 +727,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="State file">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#temporary-ids" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Temporary ids
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -773,6 +756,17 @@
     <span class="md-ellipsis">
       
         Decision
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test-procedure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test procedure
       
     </span>
   </a>
@@ -1394,10 +1388,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#length-limits" class="md-nav__link">
+  <a href="#length" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Length limits
+        Length
       
     </span>
   </a>
@@ -1446,23 +1440,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="State file">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#temporary-ids" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Temporary ids
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -1492,6 +1469,17 @@
     <span class="md-ellipsis">
       
         Decision
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test-procedure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test procedure
       
     </span>
   </a>
@@ -1529,9 +1517,6 @@
 <h1 id="records">Records<a class="headerlink" href="#records" title="Permanent link">&para;</a></h1>
 <p>How to write a requirement, a domain fact, a constraint or a decision. What
 those four words mean is in <a href="vocabulary.html">Vocabulary</a>.</p>
-<p>This format is VOGON's, not the host project's. VOGON supplies the schema, the
-id grammar and the checks; the host project supplies the module names, the
-records and the documents they cite.</p>
 <h2 id="layout">Layout<a class="headerlink" href="#layout" title="Permanent link">&para;</a></h2>
 <p>Records live in <code>vogon/</code>, in the host project's repository and in the VOGON
 project's alike.</p>
@@ -1544,8 +1529,12 @@ project's alike.</p>
 </thead>
 <tbody>
 <tr>
+<td><code>vogon/project/</code></td>
+<td><code>vogon.yaml</code>, the configuration, and the process files derived from the validation plan. See <a href="architecture.html#project-configuration-and-process-files">Architecture</a></td>
+</tr>
+<tr>
 <td><code>vogon/requirements/&lt;module&gt;/</code></td>
-<td>Requirement records, one directory per module, each <code>REQ-&lt;MODULE&gt;-&lt;NUMBER&gt;.md</code> with its <a href="#state-file">state file</a> <code>REQ-&lt;MODULE&gt;-&lt;NUMBER&gt;.json</code>, and for a <code>high</code> or <code>medium</code> risk requirement its test cases <code>REQ-&lt;MODULE&gt;-&lt;NUMBER&gt;.tests.md</code>, beside it</td>
+<td>Requirement records, one directory per module: each <code>REQ-&lt;MODULE&gt;-&lt;NUMBER&gt;.md</code> with its <a href="#state-file">state file</a> <code>REQ-&lt;MODULE&gt;-&lt;NUMBER&gt;.json</code> beside it</td>
 </tr>
 <tr>
 <td><code>vogon/facts/</code></td>
@@ -1561,57 +1550,54 @@ project's alike.</p>
 </tr>
 <tr>
 <td><code>vogon/fake/FAKE-REQ.md</code></td>
-<td>When a change names <code>FAKE-REQ</code> in place of a record id: a change that implements no requirement, such as a typo fix (<code>REQ-TRC-9</code>). Written by <code>vogon:setup</code>; not a record</td>
+<td>Named by a change that implements no requirement, such as a typo fix, in place of a record id. Written by <code>vogon:init</code>; not a record</td>
 </tr>
 <tr>
 <td><code>vogon/sources/</code></td>
-<td>Held copies of the documents records cite. See <a href="sources.html">Sources</a></td>
+<td>Held copies of the documents records cite: the validation plan, checked summaries of meetings, mail and chat, and attached files with their markdown copies. See <a href="sources.html">Sources</a></td>
 </tr>
 <tr>
 <td><code>vogon/plans/</code></td>
-<td>Plans for changes, written before the code; <code>done/</code> holds the spent ones</td>
+<td>Plans for code, approved by the developers before the code is written; <code>done/</code> holds the spent ones</td>
 </tr>
 <tr>
 <td><code>vogon/documents/&lt;release&gt;/</code></td>
-<td>Drafted documents of the validation package for one release</td>
+<td>Drafted documents for one release, where the project has no document system</td>
 </tr>
 <tr>
-<td><code>vogon/out/</code></td>
-<td>Generated output. Never hand-edited. <code>vogon/out/results/</code> is gitignored</td>
+<td><code>vogon/logs/</code></td>
+<td>Loop logs. Gitignored unless the project commits them</td>
+</tr>
+<tr>
+<td><code>vogon/tmp/</code></td>
+<td>Downloaded transcripts, mail and chat, deleted after their summary is checked. Gitignored</td>
 </tr>
 </tbody>
 </table>
-<p>Nothing depends on where a file sits. Identity is the id, the queryable
-structure is the frontmatter, and the directory exists so a person can browse.
-Requirements are grouped per module because there are enough of them for that
-to help. Facts, constraints and decisions are flat, because a fact is routinely
-cited by two modules and a constraint by all of them.</p>
-<p><code>vogon/</code> is visible rather than hidden under a dot-directory, because the records
-are reviewed in pull requests and read by people who have never run VOGON.
-<code>vogon.yaml</code>, the project's configuration, sits at the repository root
-(<a href="process/setup.html">Setting up a project</a>).</p>
+<p>A record's identity is its id, not its path. Requirements are grouped by
+module; facts, constraints and decisions are flat, because one is often cited
+by several modules.</p>
 <h2 id="deciding-which-one-a-sentence-is">Deciding which one a sentence is<a class="headerlink" href="#deciding-which-one-a-sentence-is" title="Permanent link">&para;</a></h2>
-<p>Applied to each sentence of a transcript, deck or procedure, in this order. The
-first match wins.</p>
+<p>Applied to each statement in a checked summary, a document or code, in this
+order. The first match wins.</p>
 <ol>
 <li>Could you write a test that our system fails? → <strong>requirement</strong>.</li>
 <li>Is it true whether or not we build anything? → <strong>domain fact</strong>.</li>
 <li>Is it a limit imposed from outside that we cannot trade away? → <strong>constraint</strong>.</li>
 <li>Did we choose it, among options? → <strong>decision</strong>. Choosing <em>not</em> to build
    something is a decision.</li>
-<li>Does nobody know the answer yet? → it is raised in conversation and answered
-   there, and it is not written down as a record.</li>
-<li>Is it only what somebody said? → it stays in the meeting summary and goes
-   nowhere else.</li>
+<li>Does nobody know the answer yet? → it goes to the developer as a question,
+   and it is not written down as a record.</li>
+<li>Is it only what somebody said? → it stays in the summary and goes nowhere
+   else.</li>
 </ol>
 <p>A single sentence often splits. "The test manager reports coverage from the
 link between a test issue and a requirement issue, so maintain that link from
 the test source" is a fact and a requirement, written as two records that link
 to each other.</p>
 <h2 id="the-shape-of-a-record">The shape of a record<a class="headerlink" href="#the-shape-of-a-record" title="Permanent link">&para;</a></h2>
-<p>YAML frontmatter followed by a markdown body. The frontmatter is what machines
-read — the indexes, the checks and any export are generated from it — and the
-body is what people read.</p>
+<p>YAML frontmatter, read by the skills and scripts, followed by a markdown body,
+read by people.</p>
 <p>Frontmatter common to all four types:</p>
 <table>
 <thead>
@@ -1627,7 +1613,7 @@ body is what people read.</p>
 </tr>
 <tr>
 <td><code>type</code></td>
-<td><code>requirement</code>, <code>fact</code>, <code>constraint</code> or <code>decision</code></td>
+<td><code>requirement</code>, <code>fact</code>, <code>constraint</code>, <code>decision</code>, or <code>test_procedure</code> for a <a href="#test-procedure">test procedure</a></td>
 </tr>
 <tr>
 <td><code>title</code></td>
@@ -1639,7 +1625,7 @@ body is what people read.</p>
 </tr>
 <tr>
 <td><code>status</code></td>
-<td><code>active</code>, <code>withdrawn</code>, or <code>superseded_by: &lt;id&gt;</code>, written as a mapping: <code>status: {superseded_by: DEC-024}</code>. Whether a requirement is approved is not a status; it is read from the approving system and recorded in the state file</td>
+<td><code>active</code>, <code>withdrawn</code>, or <code>superseded_by: &lt;id&gt;</code>, written as a mapping: <code>status: {superseded_by: DEC-024}</code>. Approval is not a status; it is in the state file</td>
 </tr>
 <tr>
 <td><code>source</code></td>
@@ -1666,66 +1652,38 @@ body is what people read.</p>
 <p>The body carries the statement as one sentence with no rationale in it, a
 description of a short paragraph saying what it means and what it does not
 cover, and one concrete example marked as illustration.</p>
-<p>An absent field is absent. Never <code>N/A</code>, never "none considered", never an empty
-list. A record with no example has no example block, and that hole is the
-signal that it has not been thought through.</p>
+<p>A field or block with nothing to say is omitted
+(<a href="writing.html">Writing standard</a>).</p>
 <h3 id="source-lists-every-document-that-states-it"><code>source</code> lists every document that states it<a class="headerlink" href="#source-lists-every-document-that-states-it" title="Permanent link">&para;</a></h3>
-<p><code>source</code> names every held document that supports the record, not only the one
-it was written from. A fact is true whether or not this project exists, so a
-fact that only a meeting attests to is either badly sourced or not a fact.
-Before writing one, look for the document that states it and cite what you
-find alongside the meeting.</p>
-<p>Order the list by authority, strongest first, using the <code>authority</code> each held
-document declares: <code>regulation</code>, <code>standard</code>, <code>procedure</code>, <code>project</code>,
-<code>informal</code>. The first entry is what a reader checks the record against; the
-later ones say who else confirmed it and where it was elicited. A meeting is
-cited by its summary, because the transcript is not held. <a href="sources.html">Sources</a> has the rules the held documents
-themselves follow.</p>
-<p>Citing a document means having read the passage. A path in <code>source</code> asserts
-that the document says this. Do not list a document because its title suggests
-it would.</p>
-<p>Where the documents disagree, both go in the list and the record says what the
-difference is. Where a meeting claims something no controlled document
-supports, the record says so in a sentence, and that sentence is the finding.</p>
-<p>A record the project originated itself — a requirement on VOGON's own
-behaviour, a decision taken in a design conversation — has no <code>source</code>. There
-is no document to cite, and inventing one is worse than the field's absence.</p>
+<p><code>source</code> names every held document that states the record, not only the one
+it was drafted from, ordered by <code>authority</code>, strongest first
+(<a href="sources.html#authority-decides-what-a-record-may-claim">Sources</a>). A path in
+<code>source</code> asserts that the document says this, so cite only a passage you have
+read. Where documents disagree, both are listed and the record states the
+difference; where only a meeting, mail or chat supports a claim, the record
+says so. A fact that only a meeting supports is either badly sourced or not a
+fact. A record the project originated itself has no <code>source</code>.</p>
 <h3 id="references-points-at-the-documentation"><code>references</code> points at the documentation<a class="headerlink" href="#references-points-at-the-documentation" title="Permanent link">&para;</a></h3>
-<p>A record says what must hold. It does not say how. <code>references</code> names the
-documents that do: the schema a decision settles, the format a requirement is
-checked against. A reader who needs the mechanism does not have to search for
-it.</p>
-<p>It is the reverse of <code>source</code>. <code>source</code> names what the record came from, and
-<code>references</code> names what elaborates it. A record may carry both, one, or
-neither, and which of the four types usually carries it is said in the
-sections below.</p>
-<p>Paths resolve from the repository root and are checked, so a document moved
-without updating the records that point at it fails.</p>
+<p>A record says what must hold, not how. <code>references</code> names the documents that
+say how, such as the schema a decision settles, as paths from the repository
+root. It is the reverse of <code>source</code>: <code>source</code> names what the record came from,
+<code>references</code> what elaborates it. An evaluator reports a path that does not
+resolve.</p>
 <h3 id="status-is-about-the-statement-not-about-the-work">Status is about the statement, not about the work<a class="headerlink" href="#status-is-about-the-statement-not-about-the-work" title="Permanent link">&para;</a></h3>
-<p>Status says whether we are committed to the requirement, not whether anything
-has been built. There is deliberately no <code>implemented</code> value: it would be wrong
-the moment someone changed the code, and nobody would notice. Whether a
-requirement is built is answered by its link to a passing test, and the
-progress of the work is in the state file.</p>
+<p>Status says whether we are committed to the statement, not whether anything
+has been built. Whether a requirement is built is shown by its passing tests;
+the progress of the work is in the state file.</p>
 <h2 id="how-a-record-is-written">How a record is written<a class="headerlink" href="#how-a-record-is-written" title="Permanent link">&para;</a></h2>
-<p>Every record follows the <a href="writing.html">writing standard</a>, which is the same
-standard this documentation follows. Its reader is an engineer who knows
-software and does not know the application domain or compliance, and that
-reader is the test every field has to pass.</p>
-<p>Two of its rules decide most reviews. Define or link every domain term at
-first use: no term appears in a record that the record has not either explained
-in a clause or linked to the fact that explains it. And a record is finished
-when that engineer could implement it without asking a question, not when it is
-comprehensive.</p>
-<h3 id="length-limits">Length limits<a class="headerlink" href="#length-limits" title="Permanent link">&para;</a></h3>
-<p>The body of a record, everything after the closing line of the frontmatter,
-has a maximum length in words, counted as runs of characters separated by
-whitespace. A body over the limit is reported (<code>REQ-REC-8</code>).</p>
+<p>Every record follows the <a href="writing.html">writing standard</a>.</p>
+<h3 id="length">Length<a class="headerlink" href="#length" title="Permanent link">&para;</a></h3>
+<p>Suggested lengths for the body, everything after the frontmatter. A record well
+over its suggested length usually states two things and is split into two
+records.</p>
 <table>
 <thead>
 <tr>
 <th>Type</th>
-<th>Maximum words in the body</th>
+<th>Suggested words in the body</th>
 </tr>
 </thead>
 <tbody>
@@ -1747,8 +1705,6 @@ whitespace. A body over the limit is reported (<code>REQ-REC-8</code>).</p>
 </tr>
 </tbody>
 </table>
-<p>A record over its limit usually states two things, and is split into two
-records.</p>
 <h2 id="requirement">Requirement<a class="headerlink" href="#requirement" title="Permanent link">&para;</a></h2>
 <p>At <code>vogon/requirements/&lt;module&gt;/REQ-&lt;MODULE&gt;-&lt;NUMBER&gt;.md</code>. Written as a MUST
 statement, solution-free. If the sentence cannot be failed by a test, it is not
@@ -1771,91 +1727,80 @@ a requirement yet.</p>
 <td>One of <code>patient safety</code>, <code>product quality</code>, <code>data integrity</code> or <code>none</code>. What a failure of this requirement would damage</td>
 </tr>
 <tr>
+<td><code>gxp_impact_reason</code></td>
+<td>Why that value: what a failure would damage, and how</td>
+</tr>
+<tr>
 <td><code>risk</code></td>
-<td>One of <code>high</code>, <code>medium</code> or <code>low</code>, from how badly a failure would damage it, how likely the failure is, and how likely it is to be detected. Absent where <code>gxp_impact</code> is <code>none</code>. It decides how much verification the requirement needs</td>
+<td>One of <code>high</code>, <code>medium</code> or <code>low</code>, from the severity of a failure, its probability, and how likely it is to be detected</td>
+</tr>
+<tr>
+<td><code>risk_reason</code></td>
+<td>Why that value: the severity, probability and detectability behind it</td>
 </tr>
 </tbody>
 </table>
-<p>A requirement carries <code>references</code> where a document specifies the mechanism it
-is checked against — the schema, the marker format, the tracker rules. A
-requirement whose mechanism is not written down anywhere carries none, and the
-absence says the mechanism has not been settled.</p>
+<p>The method and levels may differ per project; <code>requirements.md</code> states them
+where the validation plan does.</p>
 <p>Body blocks it adds:</p>
 <ul>
-<li><strong>What this does not require</strong> — the boundary. Usually the most useful block
-  in the file.</li>
-<li><strong>Risk</strong> — the reasoning behind <code>risk</code>: what fails, how likely it is, and
-  how it would be detected. Absent where <code>gxp_impact</code> is <code>none</code>.</li>
-<li><strong>Accepted findings</strong> — present only when the Product Owner approved the
-  requirement with a check still failing. Each entry states the check, what
-  it found, the evidence, and the Product Owner's reason, with the date
-  (<a href="process/failed_checks.html">When a check fails</a>).</li>
-<li><strong>Acceptance</strong> — properties that hold for any project using VOGON, never
-  facts about the files that happen to be on this machine. A criterion written
-  around one repository describes a system that can only be demonstrated on
-  that repository.</li>
+<li><strong>Out of scope</strong>: behaviour a reader might expect from the requirement that
+  it does not require, so that nobody builds or tests it.</li>
+<li><strong>Acceptance criteria</strong>: what must be tested. Each expected value is worked
+  out from the requirement and its sources, never read off a run of the code,
+  because a value taken from the code makes the test that asserts it unable to
+  fail. The acceptance criteria are approved with the requirement.</li>
 </ul>
-<p>Where a value is expected, the acceptance block states it. It is worked out
-from the requirement and never read off a run of the code, because a value
-taken from the code makes the test that asserts it unable to fail. The
-acceptance block is approved with the rest of the requirement.</p>
 <h3 id="worked-example">Worked example<a class="headerlink" href="#worked-example" title="Permanent link">&para;</a></h3>
 <pre><code class="language-markdown">---
-id: REQ-TRK-2
+id: REQ-PRN-12
 type: requirement
-title: Report a record edited after its issue was approved
-modules: [TRK]
+title: Print the sample id as a barcode on the tube label
+modules: [PRN]
 status: active
+source:
+  - vogon/sources/2026-09-15_sample_labelling.summary.md
 verification: test
 gxp_impact: data integrity
+gxp_impact_reason: A wrong barcode attaches a result to the wrong sample.
 risk: high
-depends_on: [CON-001, FACT-004]
-references:
-  - src/docs/dev/architecture.md
-tags: [tracker, approval]
+risk_reason: A mismatch harms the sample record, occurs whenever a label is
+  reprinted from stale data, and is not visible to the person applying it.
 ---
 
-# REQ-TRK-2 — Report a record edited after its issue was approved
+# REQ-PRN-12: Print the sample id as a barcode on the tube label
 
-**Requirement.** Where a record has changed since the tracker approved the
-issue it is tracked as, VOGON MUST report the record as requiring
-re-approval and MUST NOT push the change.
+**Requirement.** The label printer MUST encode the sample id stored for the
+tube, and only that id, in a Code 128 barcode on its label.
 
-Approval is recorded in the tracker against a specific version of the
-statement. An edit made afterwards is outside what anyone approved, and a
-silent push would leave the tracker asserting approval of text nobody read.
+**Out of scope.** The label layout, and printing labels for anything other
+than sample tubes.
 
-**What this does not require.** Deciding whether the change is material, and
-withdrawing the existing approval.
+**Example.** Sample S-2026-00417 is registered. Its tube label carries a
+barcode that a scanner reads as `S-2026-00417`.
 
-**Example.** A requirement is approved in the tracker on the 3rd. On the 5th its
-acceptance block gains a clause. The next run lists the record as requiring
-re-approval and writes nothing to the tracker.
+**Acceptance criteria.**
 
-**Risk.** An unreported edit leaves the tracker showing approval of text
-nobody approved, which an audit finds as a data integrity failure. Edits
-after approval are common, and nothing else detects them.
-
-**Acceptance.** For any record whose content hash differs from the hash
-recorded at the time of approval, the record appears in the report and no
-write is issued for it.
+- The barcode on a printed label decodes to the stored sample id.
+- A label reprinted after the sample id was corrected decodes to the
+  corrected id.
+- A sample with no stored id produces no label and an error.
 </code></pre>
 <h2 id="state-file">State file<a class="headerlink" href="#state-file" title="Permanent link">&para;</a></h2>
 <p>Each requirement has a state file beside its markdown file, named for the same
-id with <code>.json</code>. It records the steps a skill performed on the requirement, in
-the order they happened, each with its date and the object in the repository
-host that shows it. A skill appends an entry only for a step it performed, on
-the branch working on that requirement. Entries are never edited or removed.</p>
-<p>Approvals, merges, assignment and releases are not in the state file. They
-are read from the repository host and the tracker whenever a skill needs them.</p>
+id with <code>.json</code>. It records the requirement's approvals and every step done to
+it, each with its date and the pull request or commit that holds it. Entries
+are appended and never edited or removed; a new approval is a new entry.</p>
 <pre><code class="language-json">{
   &quot;id&quot;: &quot;REQ-PRN-12&quot;,
-  &quot;issue&quot;: &quot;214&quot;,
+  &quot;approvals&quot;: [
+    {&quot;by&quot;: &quot;Alice Smith &lt;alice@example.com&gt;&quot;, &quot;date&quot;: &quot;2026-09-18&quot;, &quot;hash&quot;: &quot;sha256:3f9a…&quot;, &quot;via&quot;: &quot;vogon approve&quot;}
+  ],
   &quot;steps&quot;: [
-    {&quot;step&quot;: &quot;drafted&quot;, &quot;date&quot;: &quot;2026-09-15&quot;, &quot;pr&quot;: 230, &quot;source&quot;: &quot;vogon/sources/2026-09-15_barcode_printing.summary.md&quot;},
-    {&quot;step&quot;: &quot;planned&quot;, &quot;date&quot;: &quot;2026-09-22&quot;, &quot;pr&quot;: 241, &quot;plan&quot;: &quot;vogon/plans/plan_REQ-PRN-12.md&quot;},
-    {&quot;step&quot;: &quot;test_cases_written&quot;, &quot;date&quot;: &quot;2026-09-23&quot;, &quot;pr&quot;: 241, &quot;commit&quot;: &quot;a19c3d0&quot;},
-    {&quot;step&quot;: &quot;implemented&quot;, &quot;date&quot;: &quot;2026-09-25&quot;, &quot;pr&quot;: 241, &quot;commit&quot;: &quot;b77d031&quot;}
+    {&quot;step&quot;: &quot;drafted&quot;, &quot;date&quot;: &quot;2026-09-15&quot;, &quot;pr&quot;: 230},
+    {&quot;step&quot;: &quot;planned&quot;, &quot;date&quot;: &quot;2026-09-22&quot;, &quot;pr&quot;: 241, &quot;plan&quot;: &quot;vogon/plans/plan_REQ-PRN-12.md&quot;, &quot;approved_by&quot;: &quot;Bob Jones &lt;bob@example.com&gt;&quot;},
+    {&quot;step&quot;: &quot;implemented&quot;, &quot;date&quot;: &quot;2026-09-25&quot;, &quot;pr&quot;: 241, &quot;commit&quot;: &quot;b77d031&quot;},
+    {&quot;step&quot;: &quot;released&quot;, &quot;date&quot;: &quot;2026-10-02&quot;, &quot;commit&quot;: &quot;c4e8a10&quot;, &quot;release&quot;: &quot;1.2&quot;}
   ]
 }
 </code></pre>
@@ -1869,11 +1814,15 @@ are read from the repository host and the tracker whenever a skill needs them.</
 <tbody>
 <tr>
 <td><code>issue</code></td>
-<td>The requirement's key in the tracker</td>
+<td>The requirement's key in the tracker, where a tracker holds it</td>
+</tr>
+<tr>
+<td><code>approvals</code></td>
+<td>Who approved, when, and the hash of <code>REQ-*.md</code> they approved. Written by <code>vogon approve</code>, or copied from the tracker in the real version (<code>via</code> names the tracker)</td>
 </tr>
 <tr>
 <td><code>step</code></td>
-<td><code>drafted</code>, <code>finding_accepted</code>, <code>planned</code>, <code>test_cases_written</code>, <code>implemented</code> or <code>withdrawn</code></td>
+<td><code>drafted</code>, <code>planned</code>, <code>test_procedures_written</code>, <code>implemented</code>, <code>released</code> or <code>withdrawn</code></td>
 </tr>
 <tr>
 <td><code>pr</code>, <code>commit</code></td>
@@ -1881,106 +1830,48 @@ are read from the repository host and the tracker whenever a skill needs them.</
 </tr>
 </tbody>
 </table>
-<p>The state file is not evidence. Every skill compares the entries with the
-repository host and the tracker before it acts and reports any difference.</p>
-<h3 id="temporary-ids">Temporary ids<a class="headerlink" href="#temporary-ids" title="Permanent link">&para;</a></h3>
-<p>A draft carries a temporary id, <code>REQ-&lt;MODULE&gt;-NEW&lt;N&gt;</code>, until the developer's
-review. The final number is reserved by creating the tracker issue, and the
-file is renamed then (<a href="architecture.html#records">Architecture</a>).</p>
+<p>The pull request, commit or tracker item an entry names is what counts. A skill
+checks it before acting on the entry and reports any difference.</p>
 <h2 id="domain-fact">Domain fact<a class="headerlink" href="#domain-fact" title="Permanent link">&para;</a></h2>
-<p>At <code>vogon/facts/FACT-NNN.md</code>. No acceptance criteria, and no <code>depends_on</code>: a
-fact is true on its own. Written in the plain present tense with no modal
-verb.</p>
-<p>Frontmatter it adds: <code>as_of</code>, the date it was observed or read, because facts
-about a system's behaviour go stale and a fact with no date cannot be
-re-checked.</p>
-<p>A fact normally carries no <code>references</code>. Nothing of ours specifies how the
-world works; what a fact needs is a <code>source</code> naming the document that states
-it.</p>
+<p>At <code>vogon/facts/FACT-NNN.md</code>. Written in the present tense with no modal verb.
+No acceptance criteria and no <code>depends_on</code>: a fact is true on its own.</p>
+<p>Frontmatter it adds: <code>as_of</code>, the date the fact was observed or read, so it
+can be checked again.</p>
 <h2 id="constraint">Constraint<a class="headerlink" href="#constraint" title="Permanent link">&para;</a></h2>
-<p>At <code>vogon/constraints/CON-NNN.md</code>. Its body says what it forbids or forces, and
-<code>modules</code> is usually every module, which is what makes it a constraint rather
-than a requirement.</p>
-<p>Frontmatter it adds: <code>imposed_by</code>, naming exactly what imposes it — a
-regulation, a numbered procedure, a standard, or a platform behaviour — and
-<code>lifts_when</code>, the condition under which it stops applying, or <code>permanent</code>.</p>
-<p><code>references</code> points at the document describing how the constraint is honoured
-in the design. <code>imposed_by</code> names what put the constraint there and is not a
-path; <code>references</code> names our own document and is.</p>
+<p>At <code>vogon/constraints/CON-NNN.md</code>. The body says what it forbids or forces.</p>
+<p>Frontmatter it adds: <code>imposed_by</code>, what imposes it (a regulation, a numbered
+procedure, a standard or a platform behaviour), and <code>lifts_when</code>, the condition
+under which it stops applying, or <code>permanent</code>.</p>
 <h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
-<p>At <code>vogon/decisions/DEC-NNN.md</code>. The body is the architecture decision record:
-context, the options and what each costs, the decision, the consequences
-including the ones accepted as bad, and an example. The example shows the
-decision playing out in a situation a reader recognises, which is how a
-reader checks they have understood the choice rather than the words.</p>
-<p>A decision states the choice, not the mechanism. Where the mechanism is
-written up, the decision carries <code>references</code> naming that document, so a
-reader who wants to know how the choice was realised does not have to search
-for it. A decision taken but not yet written up carries none, and that absence
-is the signal that the documentation is behind.</p>
-<p>A decision is never edited once accepted. It is superseded by a later decision
-that names it, and both files stay.</p>
+<p>At <code>vogon/decisions/DEC-NNN.md</code>. The body has the context, the options and
+what each costs, the decision, its consequences including the bad ones, and an
+example of the decision applied. A decision is never edited once accepted; a
+later decision supersedes it, and both files stay.</p>
+<h2 id="test-procedure">Test procedure<a class="headerlink" href="#test-procedure" title="Permanent link">&para;</a></h2>
+<p>Only where <code>tests.md</code> keeps test procedures in the repository. At
+<code>vogon/requirements/&lt;module&gt;/TP-&lt;MODULE&gt;-&lt;NUMBER&gt;.md</code>, beside the
+requirements it verifies, with its id from <code>vogon id TP &lt;module&gt;</code>. The
+frontmatter adds <code>verifies</code>, the requirement ids. The body is numbered steps,
+each with its expected result. Where test procedures are kept in the tracker,
+the tracker key is the id and VOGON writes no file.</p>
 <h2 id="identifiers">Identifiers<a class="headerlink" href="#identifiers" title="Permanent link">&para;</a></h2>
 <p>An id is a type, an optional module, and a number:</p>
 <pre><code>&lt;TYPE&gt;-&lt;NUMBER&gt;
 &lt;TYPE&gt;-&lt;MODULE&gt;-&lt;NUMBER&gt;
 </code></pre>
-<p><code>TYPE</code> is three or more uppercase letters and says which of the four kinds of
-record it is: <code>REQ</code>, <code>FACT</code>, <code>CON</code>, <code>DEC</code>. It comes first so that one pattern
-matches any id and no id is ambiguous in prose.</p>
-<p><code>MODULE</code> is optional and names the part of the system the record belongs to.
-Three uppercase letters is the suggested length, because an id is read inside a
-commit message and a test marker, but VOGON enforces only the shape: uppercase
-letters and digits. A project that does not use modules omits the segment.
-Where a record carries a module its <code>modules</code> frontmatter carries it too, and a
-record belonging to several modules still has at most one module in its id.</p>
-<p>The module names a project uses are listed in <code>vogon/modules.yaml</code>, one name to
-a line of description, and a record naming a module that is not in that file is
-reported. The file is committed, so the list is the team's and a new module is
-added in a reviewed change rather than by whoever mints the next id.</p>
-<pre><code class="language-yaml">TRK: Reading and writing the tracker, and reporting divergence
-REC: The record schema, id grammar, validation and indexes
-</code></pre>
-<p><code>NUMBER</code> is one or more digits, compared numerically, so <code>REQ-TRK-2</code> and
-<code>REQ-TRK-02</code> would be the same id and only one of them may exist.</p>
-<table>
-<thead>
-<tr>
-<th>Id</th>
-<th>Reads as</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>REQ-TRK-2</code></td>
-<td>Requirement 2 of the <code>TRK</code> module</td>
-</tr>
-<tr>
-<td><code>REQ-7</code></td>
-<td>Requirement 7, in a project using no modules</td>
-</tr>
-<tr>
-<td><code>FACT-004</code></td>
-<td>Domain fact 4</td>
-</tr>
-<tr>
-<td><code>CON-001</code></td>
-<td>Constraint 1</td>
-</tr>
-<tr>
-<td><code>DEC-007</code></td>
-<td>Decision 7</td>
-</tr>
-</tbody>
-</table>
-<p>Numbers are minted per type and module, so <code>REQ-TRK-2</code> and <code>REQ-REC-2</code> are
-different records and both are valid.</p>
-<p>An id is permanent. It is never reused, never renumbered, and never recycled
-after withdrawal. A withdrawn record keeps its file, with status <code>withdrawn</code>
-and the reason in it.</p>
-<p>The file is named for the id alone, <code>REQ-TRK-2.md</code>, not the id plus a title.
-Titles change; links should not break.</p>
-<p>A record's change history is its git history. There is no log file per record.</p>
+<p><code>TYPE</code> is <code>REQ</code>, <code>FACT</code>, <code>CON</code>, <code>DEC</code>, or <code>TP</code> for a test procedure. <code>MODULE</code> names the part of the system
+the record belongs to, in uppercase letters and digits; a project without
+modules omits it. The modules are listed in <code>vogon.yaml</code>, and a record may name
+only a listed module. <code>NUMBER</code> is compared numerically, so <code>REQ-PRN-12</code> and
+<code>REQ-PRN-012</code> are the same id. Numbers count separately per type and module.</p>
+<p><code>vogon id &lt;type&gt; &lt;module&gt;</code> gives the next number. It runs <code>git fetch</code> and reads
+the ids in the working tree, in every local and remote branch and in the
+history. Two branches that take an id before either pushes can get the same
+one; <code>vogon id</code> reports the duplicate on the pull request, and the later pull
+request renumbers before it merges.</p>
+<p>Once merged, an id is permanent: never reused or renumbered, also after
+withdrawal. The file is named for the id alone, such as <code>REQ-PRN-12.md</code>, so
+that a changed title breaks no link. A record's history is its git history.</p>
 
 
 
