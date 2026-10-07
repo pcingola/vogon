@@ -10,7 +10,7 @@ project's alike.
 
 | Path | Holds |
 | --- | --- |
-| `vogon/project/` | `vogon.yaml`, the configuration, and the process files derived from the validation plan. See [Architecture](architecture.md#project-configuration-and-process-files) |
+| `vogon/project/` | `vogon.yaml`, the configuration, and the process files derived from the validation plan. See [Architecture](architecture.md#project-configuration-and-process-files). `checklists/` holds the project's own versions of the default checklists |
 | `vogon/requirements/<module>/` | Requirement records, one directory per module: each `REQ-<MODULE>-<NUMBER>.md` with its [state file](#state-file) `REQ-<MODULE>-<NUMBER>.json` beside it |
 | `vogon/facts/` | Every `FACT-` |
 | `vogon/constraints/` | Every `CON-` |
@@ -196,9 +196,9 @@ are appended and never edited or removed; a new approval is a new entry.
   ],
   "steps": [
     {"step": "drafted", "date": "2026-09-15", "pr": 230},
-    {"step": "planned", "date": "2026-09-22", "pr": 241, "plan": "vogon/plans/plan_REQ-PRN-12.md", "approved_by": "Bob Jones <bob@example.com>"},
+    {"step": "planned", "date": "2026-09-22", "commit": "a12f9c0", "plan": "vogon/plans/plan_REQ-PRN-12.md", "approved_by": "Bob Jones <bob@example.com>"},
     {"step": "implemented", "date": "2026-09-25", "pr": 241, "commit": "b77d031"},
-    {"step": "released", "date": "2026-10-02", "commit": "c4e8a10", "release": "1.2"}
+    {"step": "released", "date": "2026-10-02", "pr": 252, "commit": "c4e8a10", "release": "1.2"}
   ]
 }
 ```
@@ -208,7 +208,10 @@ are appended and never edited or removed; a new approval is a new entry.
 | `issue` | The requirement's key in the tracker, where a tracker holds it |
 | `approvals` | Who approved, when, and the hash of `REQ-*.md` they approved. Written by `vogon approve`, or copied from the tracker in the real version (`via` names the tracker) |
 | `step` | `drafted`, `planned`, `test_procedures_written`, `implemented`, `released` or `withdrawn` |
-| `pr`, `commit` | The pull request and the commit that hold the step's work |
+| `pr`, `commit` | The pull request and the commit that hold the step's work. A `planned` entry has a `commit` and no `pr` |
+| `plan` | In a `planned` entry, the path of the approved plan |
+| `approved_by` | In a `planned` entry, the git identity of the developer who approved the plan |
+| `release` | In a `released` entry, the release the requirement is part of |
 
 The pull request, commit or tracker item an entry names is what counts. A skill
 checks it before acting on the entry and reports any difference.

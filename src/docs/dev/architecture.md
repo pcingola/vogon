@@ -75,14 +75,14 @@ deriving a missing one first and regenerating one whose plan version is older
 than the held plan. It then reads the requirements it concerns, their state
 files, and the pull requests, commits and tracker items those files link, and
 reports any difference between them. The linked source counts over the state
-file. Tasks happen weeks apart, by different developers, in any order. A skill
+file, except for an approval, which "Approval of requirements" decides. Tasks happen weeks apart, by different developers, in any order. A skill
 does not assume an earlier task ran. When one was skipped, the skill does what
 still applies and reports the gap, such as code merged with no plan.
 
 A skill's `SKILL.md` holds the task's steps, the loops it runs, what each
 sub-agent receives, and where it stops for a person. The default checklists
 are in the skill's `references/` directory. A project edits or removes their
-items in its own files.
+items in its own files, in `vogon/project/checklists/`.
 
 ### Loops
 
@@ -137,6 +137,9 @@ the documentation describes the current code.
 - A gap in the validation plan while a project process file is derived. The
   developer answers, and the file records the answer with their name and the
   date.
+- The tracker and test manager names read from example items while a project
+  process file is derived. The developer confirms them.
+- A required input the developer did not give. The skill asks for it.
 
 Nothing else waits for confirmation.
 
@@ -162,9 +165,9 @@ The markdown files in `vogon/project/` are VOGON's reading of the plan:
 
 | File | States |
 | --- | --- |
-| `tracking.md` | The controlled and exempt work types; the tracker item types for requirement, defect and test procedure; the fields for text, acceptance criteria and risk; the approval transitions; links; naming |
+| `tracking.md` | The controlled and exempt work types; the tracker item types for requirement, defect and test procedure; the fields for text, acceptance criteria and risk; the approval transitions; links; naming; where a test manager is configured, its item types, fields, links and naming |
 | `requirements.md` | The requirement form; the risk fields and method; who approves and when; what a change to an approved requirement triggers |
-| `tests.md` | What a test procedure is; who writes and approves it, and when; unit tests and formal tests; the formal test environment; how results are tied to a commit and an environment |
+| `tests.md` | What a test procedure is; who writes and approves it, and when; unit tests and formal tests; the formal test environment; how results are tied to a commit and an environment; the command that runs the test suite and where it runs ("Running the test suite") |
 | `traceability.md` | Who produces the matrix and from what; what it links; where it is approved |
 | `documents.md` | The documents VOGON drafts, with template, format, approvers and location; the documents left to the project |
 | `release.md` | The contents of a release; its preconditions; the steps recorded |
@@ -175,7 +178,8 @@ when a skill first needs it. A writing sub-agent drafts the file, and each
 statement cites a section of the plan. Evaluators check that each statement is
 supported and that the file is complete. A gap in the plan is asked of the
 developer, and the answer is recorded with their name and the date. Tracker
-names are read from an example item and confirmed by the developer. The file
+and test manager names are read from an example item and confirmed by the
+developer. The file
 is merged by pull request.
 
 ## Records
@@ -237,6 +241,11 @@ approves each with the tracker's approval transition. The Product Owner may
 edit the text in the tracker first. A skill syncs each approval, with the
 approved text, into `REQ-*.json`, which caches it so that skills do not query
 the tracker for every read, and copies the approved text into `REQ-*.md`.
+An approval in the tracker is synced when `REQ-*.json` holds it on the default
+branch. Until then the requirement is not approved, because the Product Owner
+may have edited the text in the tracker before approving it. An approval that
+an open pull request holds is reported as "sync pull request <n> not merged";
+any other unsynced approval is reported naming `vogon:approve` to sync it.
 
 A requirement whose markdown no longer matches its approved hash needs
 approval again. Every skill that reads it reports it, and `vogon:next` does not

@@ -1530,7 +1530,7 @@ project's alike.</p>
 <tbody>
 <tr>
 <td><code>vogon/project/</code></td>
-<td><code>vogon.yaml</code>, the configuration, and the process files derived from the validation plan. See <a href="architecture.html#project-configuration-and-process-files">Architecture</a></td>
+<td><code>vogon.yaml</code>, the configuration, and the process files derived from the validation plan. See <a href="architecture.html#project-configuration-and-process-files">Architecture</a>. <code>checklists/</code> holds the project's own versions of the default checklists</td>
 </tr>
 <tr>
 <td><code>vogon/requirements/&lt;module&gt;/</code></td>
@@ -1798,9 +1798,9 @@ are appended and never edited or removed; a new approval is a new entry.</p>
   ],
   &quot;steps&quot;: [
     {&quot;step&quot;: &quot;drafted&quot;, &quot;date&quot;: &quot;2026-09-15&quot;, &quot;pr&quot;: 230},
-    {&quot;step&quot;: &quot;planned&quot;, &quot;date&quot;: &quot;2026-09-22&quot;, &quot;pr&quot;: 241, &quot;plan&quot;: &quot;vogon/plans/plan_REQ-PRN-12.md&quot;, &quot;approved_by&quot;: &quot;Bob Jones &lt;bob@example.com&gt;&quot;},
+    {&quot;step&quot;: &quot;planned&quot;, &quot;date&quot;: &quot;2026-09-22&quot;, &quot;commit&quot;: &quot;a12f9c0&quot;, &quot;plan&quot;: &quot;vogon/plans/plan_REQ-PRN-12.md&quot;, &quot;approved_by&quot;: &quot;Bob Jones &lt;bob@example.com&gt;&quot;},
     {&quot;step&quot;: &quot;implemented&quot;, &quot;date&quot;: &quot;2026-09-25&quot;, &quot;pr&quot;: 241, &quot;commit&quot;: &quot;b77d031&quot;},
-    {&quot;step&quot;: &quot;released&quot;, &quot;date&quot;: &quot;2026-10-02&quot;, &quot;commit&quot;: &quot;c4e8a10&quot;, &quot;release&quot;: &quot;1.2&quot;}
+    {&quot;step&quot;: &quot;released&quot;, &quot;date&quot;: &quot;2026-10-02&quot;, &quot;pr&quot;: 252, &quot;commit&quot;: &quot;c4e8a10&quot;, &quot;release&quot;: &quot;1.2&quot;}
   ]
 }
 </code></pre>
@@ -1826,7 +1826,19 @@ are appended and never edited or removed; a new approval is a new entry.</p>
 </tr>
 <tr>
 <td><code>pr</code>, <code>commit</code></td>
-<td>The pull request and the commit that hold the step's work</td>
+<td>The pull request and the commit that hold the step's work. A <code>planned</code> entry has a <code>commit</code> and no <code>pr</code></td>
+</tr>
+<tr>
+<td><code>plan</code></td>
+<td>In a <code>planned</code> entry, the path of the approved plan</td>
+</tr>
+<tr>
+<td><code>approved_by</code></td>
+<td>In a <code>planned</code> entry, the git identity of the developer who approved the plan</td>
+</tr>
+<tr>
+<td><code>release</code></td>
+<td>In a <code>released</code> entry, the release the requirement is part of</td>
 </tr>
 </tbody>
 </table>

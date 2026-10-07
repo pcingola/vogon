@@ -1,0 +1,46 @@
+# VOGON configuration for this project: vogon/project/vogon.yaml
+#
+# vogon:init writes this file from this template. It holds configuration
+# only. How the project works comes from its validation plan, through the
+# process files in vogon/project/*.md.
+#
+# Remove a key that does not apply. Do not write a placeholder such as N/A.
+
+# The system that fills each role, by product name. Each role is optional:
+# omit a role the project does not have. The products below are examples.
+systems:
+  repository_host: GitHub
+  # tracker: Jira               # or GitHub Issues
+  # test_manager: Xray          # omit where there is none: vogon trace builds the matrix
+  # document_system: <the project's controlled document system>
+  #                             # omit where there is none: documents stay in the repository
+  # meetings: Teams             # or Google Meet
+  # mail: Outlook               # or Gmail
+  # chat: Teams                 # or Slack
+
+# The people who hold each approval role, as git identities "Name <email>".
+# vogon approve reads product_owner: it warns, and still records the approval,
+# when the approver is not listed.
+roles:
+  product_owner:
+    - Alice Smith <alice@example.com>
+  # Add the other roles the validation plan names, under the plan's own role
+  # names, for example:
+  # test_lead:
+  #   - Bob Jones <bob@example.com>
+  # platform_lead:
+  #   - Carol White <carol@example.com>
+
+# The modules of the system, in uppercase letters and digits. A record may
+# name only a listed module. A project without modules omits the key.
+modules:
+  - PRN
+
+# Project options.
+options:
+  # Commit the loop logs in vogon/logs/. Off by default, because the logs of
+  # the meeting loop quote transcripts.
+  commit_logs: false
+  # Allow mocks and mocking libraries in tests. Off unless the project
+  # authorizes them.
+  mocks_authorized: false

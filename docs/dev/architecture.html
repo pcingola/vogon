@@ -1566,13 +1566,13 @@ deriving a missing one first and regenerating one whose plan version is older
 than the held plan. It then reads the requirements it concerns, their state
 files, and the pull requests, commits and tracker items those files link, and
 reports any difference between them. The linked source counts over the state
-file. Tasks happen weeks apart, by different developers, in any order. A skill
+file, except for an approval, which "Approval of requirements" decides. Tasks happen weeks apart, by different developers, in any order. A skill
 does not assume an earlier task ran. When one was skipped, the skill does what
 still applies and reports the gap, such as code merged with no plan.</p>
 <p>A skill's <code>SKILL.md</code> holds the task's steps, the loops it runs, what each
 sub-agent receives, and where it stops for a person. The default checklists
 are in the skill's <code>references/</code> directory. A project edits or removes their
-items in its own files.</p>
+items in its own files, in <code>vogon/project/checklists/</code>.</p>
 <h3 id="loops">Loops<a class="headerlink" href="#loops" title="Permanent link">&para;</a></h3>
 <p>Each skill runs its work through <a href="loop.html">the loop</a>. The loops are:</p>
 <table>
@@ -1662,6 +1662,9 @@ the documentation describes the current code.</p>
 <li>A gap in the validation plan while a project process file is derived. The
   developer answers, and the file records the answer with their name and the
   date.</li>
+<li>The tracker and test manager names read from example items while a project
+  process file is derived. The developer confirms them.</li>
+<li>A required input the developer did not give. The skill asks for it.</li>
 </ul>
 <p>Nothing else waits for confirmation.</p>
 <h2 id="project-configuration-and-process-files">Project configuration and process files<a class="headerlink" href="#project-configuration-and-process-files" title="Permanent link">&para;</a></h2>
@@ -1689,7 +1692,7 @@ the host project's controlled document, and VOGON never edits either copy.</p>
 <tbody>
 <tr>
 <td><code>tracking.md</code></td>
-<td>The controlled and exempt work types; the tracker item types for requirement, defect and test procedure; the fields for text, acceptance criteria and risk; the approval transitions; links; naming</td>
+<td>The controlled and exempt work types; the tracker item types for requirement, defect and test procedure; the fields for text, acceptance criteria and risk; the approval transitions; links; naming; where a test manager is configured, its item types, fields, links and naming</td>
 </tr>
 <tr>
 <td><code>requirements.md</code></td>
@@ -1697,7 +1700,7 @@ the host project's controlled document, and VOGON never edits either copy.</p>
 </tr>
 <tr>
 <td><code>tests.md</code></td>
-<td>What a test procedure is; who writes and approves it, and when; unit tests and formal tests; the formal test environment; how results are tied to a commit and an environment</td>
+<td>What a test procedure is; who writes and approves it, and when; unit tests and formal tests; the formal test environment; how results are tied to a commit and an environment; the command that runs the test suite and where it runs ("Running the test suite")</td>
 </tr>
 <tr>
 <td><code>traceability.md</code></td>
@@ -1719,7 +1722,8 @@ when a skill first needs it. A writing sub-agent drafts the file, and each
 statement cites a section of the plan. Evaluators check that each statement is
 supported and that the file is complete. A gap in the plan is asked of the
 developer, and the answer is recorded with their name and the date. Tracker
-names are read from an example item and confirmed by the developer. The file
+and test manager names are read from an example item and confirmed by the
+developer. The file
 is merged by pull request.</p>
 <h2 id="records">Records<a class="headerlink" href="#records" title="Permanent link">&para;</a></h2>
 <p>Requirements, domain facts, constraints and decisions are markdown files in
@@ -1769,7 +1773,12 @@ script warns and still records the approval.</p>
 approves each with the tracker's approval transition. The Product Owner may
 edit the text in the tracker first. A skill syncs each approval, with the
 approved text, into <code>REQ-*.json</code>, which caches it so that skills do not query
-the tracker for every read, and copies the approved text into <code>REQ-*.md</code>.</p>
+the tracker for every read, and copies the approved text into <code>REQ-*.md</code>.
+An approval in the tracker is synced when <code>REQ-*.json</code> holds it on the default
+branch. Until then the requirement is not approved, because the Product Owner
+may have edited the text in the tracker before approving it. An approval that
+an open pull request holds is reported as "sync pull request <n> not merged";
+any other unsynced approval is reported naming <code>vogon:approve</code> to sync it.</p>
 <p>A requirement whose markdown no longer matches its approved hash needs
 approval again. Every skill that reads it reports it, and <code>vogon:next</code> does not
 offer it as ready.</p>
