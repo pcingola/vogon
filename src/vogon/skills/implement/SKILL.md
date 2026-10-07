@@ -75,9 +75,12 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
 9. Run the project's test suite as `tests.md` topic "Running the test suite"
    states. Where that topic states nothing, it is a gap: ask the developer and
    record the answer as `process-files.md` states. Give each failure to the writing
-   sub-agent of the part it concerns. The sub-agent fixes the code. It changes
-   an expected value only when the value does not follow from the requirement,
-   and cites the requirement text in its log. The part's evaluators check the
+   sub-agent of the part it concerns. The sub-agent fixes the code. It does not
+   delete, skip or weaken a test, or mark it as an expected failure, to make
+   the run pass. It changes an expected value only when the value does not
+   follow from the requirement, and cites the requirement text in its log.
+   Where the requirement itself is wrong, the sub-agent reports it; the
+   requirement is corrected and approved again before the test changes. The part's evaluators check the
    changed part again. Repeat until all tests pass; the round limit in
    `common.md` applies.
 10. Commit the code, tests and documentation on the working branch. Each

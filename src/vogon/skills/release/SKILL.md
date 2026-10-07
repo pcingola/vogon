@@ -116,7 +116,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
 
 | Writing sub-agent (agent definition) | Produces | Evaluators (agent definition) | Checklist or perspective |
 | --- | --- | --- | --- |
-| `vogon:vogon-writer` | One document `documents.md` lists, in its template and format | `vogon:vogon-checker`, one per document | Each statement is true of the requirements, the code and the JUnit XML results of the release commit, and cites what it rests on. The document follows its template and format. It states nothing the cited sources do not. |
+| `vogon:vogon-writer` | One document `documents.md` lists, in its template and format | `vogon:vogon-checker`, one per document | Each statement is true of the requirements, the code and the JUnit XML results of the release commit, and cites what it rests on. The document follows its template and format. It states nothing the cited sources do not. It names the release commit it was drafted from. It does not state that it was approved or signed and has no signature block; the document system or the pull request records the approval. |
 
 ## Stops for a person
 

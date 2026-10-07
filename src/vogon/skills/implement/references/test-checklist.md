@@ -14,6 +14,14 @@ requirement text it concerns.
 - [ ] Each expected value comes from the requirement or its acceptance
       criteria, or is worked out from them. An expected value that matches
       only what the code returns is a finding.
+- [ ] Where the requirement and its acceptance criteria give no expected
+      value, the test does not invent one. The writing sub-agent reports the
+      missing value; the requirement is corrected and approved again before a
+      test asserts it. An invented expected value is a finding.
+- [ ] No test was deleted, skipped, marked as an expected failure, or had an
+      assertion weakened or an expected value changed to make a run pass. Such
+      a change is a finding unless the writing sub-agent's log cites the
+      requirement text the old value contradicts.
 - [ ] The tests together cover every aspect of each requirement: every
       acceptance criterion, and each edge case and input combination the
       requirement states. An aspect no test checks is a finding.
