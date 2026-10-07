@@ -209,6 +209,6 @@ no other commands.
 
 | Command | Does |
 | --- | --- |
-| `vogon id <type> <module>` | Prints the next unused record id, read from the working tree, every local and remote branch and the history after `git fetch`. Detects a duplicate id on a pull request; the later pull request renumbers. |
+| `vogon id <type> <module>` | Prints the next unused record id, read from the working tree, every local and remote branch and the history after `git fetch`. With `--check`, reports each id new on the branch that the default branch or another local or remote branch also uses; the skill renumbers it before opening its pull request. |
 | `vogon approve <id>...` | Writes into each `REQ-*.json` the approver's git identity, the date and the hash of the approved `REQ-*.md`. Warns, and still records, when `vogon.yaml` does not list the user as Product Owner. |
 | `vogon trace <results.xml>` | Joins the `req` and `procedure` markers and the results of one commit's JUnit XML into the traceability matrix: each requirement, its procedures and tests, their results, the commit, and every requirement with no test. |

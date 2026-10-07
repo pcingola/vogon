@@ -108,7 +108,10 @@ never taken, stops and commands.
    the evaluators again on the changed records.
 10. Delete `vogon/tmp/requirements/`, with every download and extract in it.
     Commit the summaries, the filed originals and markdown copies and the
-    records on the working branch step 1 created. Push, and open the pull request on the
+    records on the working branch step 1 created.
+    Run `vogon id --check`. For each id it reports, take a new id from
+    `vogon id`, rename the record and its state file, and change every
+    reference to the old id on the branch. Push, and open the pull request on the
     repository host. The description lists the requirements drafted and
     changed, each changed requirement that needs approval again, and the loops
     run as `common.md` states.

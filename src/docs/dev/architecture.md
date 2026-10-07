@@ -193,8 +193,9 @@ A record gets its id when it is drafted, from `vogon id <type> <module>`.
 There are no temporary ids. The script runs `git fetch`, reads the ids used in
 the working tree, in every local and remote branch and in the history, and
 prints the next unused number. Two branches that take an id before either
-pushes can get the same one. The same script detects the duplicate on the pull
-request, and the later pull request renumbers before it merges.
+pushes can get the same one. A skill that opens a pull request adding records
+first runs `vogon id --check`, which reports each of the branch's new ids that
+another branch also uses, and renumbers them before it opens the pull request.
 
 `vogon:requirements` drafts records from any source the session can reach:
 meeting transcripts, mail threads, chat channels, documents, and existing code

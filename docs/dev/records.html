@@ -1409,10 +1409,6 @@ project's alike.</p>
 <td>Every <code>DEC-</code></td>
 </tr>
 <tr>
-<td><code>vogon/fake/FAKE-REQ.md</code></td>
-<td>Named by a change that implements no requirement, such as a typo fix, in place of a record id. Written by <code>vogon:init</code>; not a record</td>
-</tr>
-<tr>
 <td><code>vogon/sources/</code></td>
 <td>Held copies of the documents records cite: the validation plan, checked summaries of meetings, mail and chat, and attached files with their markdown copies. See <a href="sources.html">Sources</a></td>
 </tr>
@@ -1487,7 +1483,7 @@ read by people.</p>
 </tr>
 <tr>
 <td><code>status</code></td>
-<td><code>active</code>, <code>withdrawn</code>, or <code>superseded_by: &lt;id&gt;</code>, written as a mapping: <code>status: {superseded_by: DEC-024}</code>. A drafted record is <code>active</code>. A withdrawn record states the reason in its body. Approval is not a status; it is in the state file</td>
+<td><code>active</code>, <code>withdrawn</code>, or <code>superseded_by: &lt;id&gt;</code>, written as a mapping: <code>status: {superseded_by: DEC-024}</code>. A drafted record is <code>active</code>. A withdrawn record states the reason in its body</td>
 </tr>
 <tr>
 <td><code>source</code></td>
@@ -1511,9 +1507,10 @@ read by people.</p>
 </tr>
 </tbody>
 </table>
-<p>The body carries the statement as one sentence with no rationale in it, a
-description of a short paragraph saying what it means and what it does not
-cover, and one concrete example marked as illustration.</p>
+<p>The body carries the statement as one sentence with no rationale in it. A
+short paragraph says what the statement means where the sentence alone does
+not make that clear. A concrete example, marked <code>**Example.**</code>, illustrates
+it where one helps.</p>
 <p>No frontmatter key and no body line states that the record was approved or
 signed; approvals are in the <a href="#state-file">state file</a>.</p>
 <p>A field or block with nothing to say is omitted
@@ -1525,8 +1522,8 @@ it was drafted from, ordered by <code>authority</code>, strongest first
 <code>source</code> asserts that the document says this, so cite only a passage you have
 read. Where documents disagree, both are listed and the record states the
 difference; where only a meeting, mail or chat supports a claim, the record
-says so. A fact that only a meeting, mail or chat supports is either badly sourced or not a
-fact.</p>
+says so. A fact that only a meeting, mail or chat supports is either badly
+sourced or not a fact.</p>
 <h3 id="references-points-at-the-documentation"><code>references</code> points at the documentation<a class="headerlink" href="#references-points-at-the-documentation" title="Permanent link">&para;</a></h3>
 <p>A record says what must hold, not how. <code>references</code> names the documents that
 say how, such as the schema a decision settles, as paths from the repository
@@ -1610,12 +1607,11 @@ where the validation plan does.</p>
 <ul>
 <li><strong>Out of scope</strong>: behaviour a reader might expect from the requirement that
   it does not require, so that nobody builds or tests it.</li>
-<li><strong>Acceptance criteria</strong>: what must be tested. Each expected value is worked
-  out from the requirement and its sources, never read off a run of the code,
-  because a value taken from the code makes the test that asserts it unable to
-  fail. The acceptance criteria are approved with the requirement. A
-  requirement with <code>gxp_impact</code> other than <code>none</code>, or with
-  <code>verification: test</code>, has acceptance criteria.</li>
+<li><strong>Acceptance criteria</strong>: what must be tested. Every requirement has them.
+  Each expected value is worked out from the requirement and its sources,
+  never read off a run of the code, because a value taken from the code makes
+  the test that asserts it unable to fail. The acceptance criteria are
+  approved with the requirement.</li>
 </ul>
 <h3 id="worked-example">Worked example<a class="headerlink" href="#worked-example" title="Permanent link">&para;</a></h3>
 <pre><code class="language-markdown">---
@@ -1746,9 +1742,11 @@ only a listed module. <code>NUMBER</code> is compared numerically, so <code>REQ-
 <code>REQ-PRN-012</code> are the same id. Numbers count separately per type and module.</p>
 <p><code>vogon id &lt;type&gt; &lt;module&gt;</code> gives the next number. It runs <code>git fetch</code> and reads
 the ids in the working tree, in every local and remote branch and in the
-history. Two branches that take an id before either pushes can get the same
-one; <code>vogon id</code> reports the duplicate on the pull request, and the later pull
-request renumbers before it merges.</p>
+history. Two branches that take an id before either pushes can get the same one. A
+skill that opens a pull request adding records first runs
+<code>vogon id --check</code>, which reports each of the branch's new ids that the
+default branch or any other local or remote branch also uses. That pull
+request renumbers before it is opened.</p>
 <p>Once merged, an id is permanent: never reused or renumbered, also after
 withdrawal. The file is named for the id alone, such as <code>REQ-PRN-12.md</code>, so
 that a changed title breaks no link. A record's history is its git history.</p>

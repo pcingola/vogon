@@ -100,9 +100,7 @@ this order. The first match wins.
       has to be true and not how. A test can fail it.
 - [ ] `**Out of scope.**` states behaviour a reader might expect that the
       requirement does not require. Absent where there is none.
-- [ ] `**Acceptance criteria.**` states what must be tested. A requirement
-      with `gxp_impact` other than `none`, or with `verification: test`, has
-      it.
+- [ ] `**Acceptance criteria.**` is present and states what must be tested.
 - [ ] Every expected value in the acceptance criteria is stated as a value
       and is worked out from the requirement and its sources, never read off
       a run of the code.

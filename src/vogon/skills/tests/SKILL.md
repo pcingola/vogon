@@ -85,8 +85,11 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
    else in the test. Where the host project lacks the lines
    `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/conftest.md` states,
    add them as that file states, in the same commit.
-10. Commit the procedures and the marker changes, push, and open a pull request
-    on the repository host. If the branch has no commit yet, make an empty
+10. Commit the procedures and the marker changes. Where procedures are kept
+    in the repository, run `vogon id --check`; for each id it reports, take a
+    new id from `vogon id`, rename the procedure, and change every reference
+    to the old id on the branch. Push, and open a pull request on the
+    repository host. If the branch has no commit yet, make an empty
     commit that names the requirements. The description lists
     each procedure with the requirements it verifies and states the loops,
     rounds and open findings as `common.md` states.

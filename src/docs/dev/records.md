@@ -15,7 +15,6 @@ project's alike.
 | `vogon/facts/` | Every `FACT-` |
 | `vogon/constraints/` | Every `CON-` |
 | `vogon/decisions/` | Every `DEC-` |
-| `vogon/fake/FAKE-REQ.md` | Named by a change that implements no requirement, such as a typo fix, in place of a record id. Written by `vogon:init`; not a record |
 | `vogon/sources/` | Held copies of the documents records cite: the validation plan, checked summaries of meetings, mail and chat, and attached files with their markdown copies. See [Sources](sources.md) |
 | `vogon/plans/` | Plans for code, approved by the developers before the code is written; `done/` holds the spent ones |
 | `vogon/documents/<release>/` | Drafted documents for one release, where the project has no document system |
@@ -62,16 +61,17 @@ Frontmatter common to every record:
 | `type` | `requirement`, `fact`, `constraint`, `decision`, or `test_procedure` for a [test procedure](#test-procedure) |
 | `title` | One line naming what the record is, in the words someone would search for. Not an allusion, not a question |
 | `modules` | Which modules it belongs to, as a list. A fact cited by two modules carries both |
-| `status` | `active`, `withdrawn`, or `superseded_by: <id>`, written as a mapping: `status: {superseded_by: DEC-024}`. A drafted record is `active`. A withdrawn record states the reason in its body. Approval is not a status; it is in the state file |
+| `status` | `active`, `withdrawn`, or `superseded_by: <id>`, written as a mapping: `status: {superseded_by: DEC-024}`. A drafted record is `active`. A withdrawn record states the reason in its body |
 | `source` | Every held document that states this, as a list of paths. See [below](#source-lists-every-document-that-states-it). Absent on a record the project originated itself |
 | `reviewed_by`, `reviewed_on` | Who read it in detail and when. Absent until someone has |
 | `tags` | Free-form, for searching across modules. Optional |
 | `depends_on` | The records this one rests on, by id. Absent on a fact, which rests on nothing |
 | `references` | The documents that say how this is realised, as a list of paths. Absent where no document does. See [below](#references-points-at-the-documentation) |
 
-The body carries the statement as one sentence with no rationale in it, a
-description of a short paragraph saying what it means and what it does not
-cover, and one concrete example marked as illustration.
+The body carries the statement as one sentence with no rationale in it. A
+short paragraph says what the statement means where the sentence alone does
+not make that clear. A concrete example, marked `**Example.**`, illustrates
+it where one helps.
 
 No frontmatter key and no body line states that the record was approved or
 signed; approvals are in the [state file](#state-file).
@@ -87,8 +87,8 @@ it was drafted from, ordered by `authority`, strongest first
 `source` asserts that the document says this, so cite only a passage you have
 read. Where documents disagree, both are listed and the record states the
 difference; where only a meeting, mail or chat supports a claim, the record
-says so. A fact that only a meeting, mail or chat supports is either badly sourced or not a
-fact.
+says so. A fact that only a meeting, mail or chat supports is either badly
+sourced or not a fact.
 
 ### `references` points at the documentation
 
@@ -144,12 +144,11 @@ Body blocks it adds:
 
 - **Out of scope**: behaviour a reader might expect from the requirement that
   it does not require, so that nobody builds or tests it.
-- **Acceptance criteria**: what must be tested. Each expected value is worked
-  out from the requirement and its sources, never read off a run of the code,
-  because a value taken from the code makes the test that asserts it unable to
-  fail. The acceptance criteria are approved with the requirement. A
-  requirement with `gxp_impact` other than `none`, or with
-  `verification: test`, has acceptance criteria.
+- **Acceptance criteria**: what must be tested. Every requirement has them.
+  Each expected value is worked out from the requirement and its sources,
+  never read off a run of the code, because a value taken from the code makes
+  the test that asserts it unable to fail. The acceptance criteria are
+  approved with the requirement.
 
 ### Worked example
 
@@ -275,9 +274,11 @@ only a listed module. `NUMBER` is compared numerically, so `REQ-PRN-12` and
 
 `vogon id <type> <module>` gives the next number. It runs `git fetch` and reads
 the ids in the working tree, in every local and remote branch and in the
-history. Two branches that take an id before either pushes can get the same
-one; `vogon id` reports the duplicate on the pull request, and the later pull
-request renumbers before it merges.
+history. Two branches that take an id before either pushes can get the same one. A
+skill that opens a pull request adding records first runs
+`vogon id --check`, which reports each of the branch's new ids that the
+default branch or any other local or remote branch also uses. That pull
+request renumbers before it is opened.
 
 Once merged, an id is permanent: never reused or renumbered, also after
 withdrawal. The file is named for the id alone, such as `REQ-PRN-12.md`, so
