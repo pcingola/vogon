@@ -557,10 +557,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#project-process-files" class="md-nav__link">
+  <a href="#project-configuration-and-process-files" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Project process files
+        Project configuration and process files
       
     </span>
   </a>
@@ -1309,10 +1309,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#project-process-files" class="md-nav__link">
+  <a href="#project-configuration-and-process-files" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Project process files
+        Project configuration and process files
       
     </span>
   </a>
@@ -1442,7 +1442,7 @@ defines how every skill produces and checks its work.</p>
 <p>The host project is written in Python, tested with pytest, and kept in git.
 The coding agent is Claude Code. Skills name each external system by its role
 and never by product. The project names the system that fills each role in
-<a href="#project-process-files"><code>vogon/project/vogon.yaml</code></a>.</p>
+<a href="#project-configuration-and-process-files"><code>vogon/project/vogon.yaml</code></a>.</p>
 <table>
 <thead>
 <tr>
@@ -1524,7 +1524,7 @@ session, which is the main agent of <a href="loop.html">the loop</a>.</p>
 <tbody>
 <tr>
 <td><code>vogon:init</code></td>
-<td>Records the held validation plan, the role holders and the system for each role in <code>vogon/project/vogon.yaml</code></td>
+<td>Writes <code>vogon/project/vogon.yaml</code>: the system for each role, the role holders and the options; files the validation plan in <code>vogon/sources/</code></td>
 <td><a href="process/setup.html">Setup</a></td>
 </tr>
 <tr>
@@ -1660,11 +1660,21 @@ the documentation describes the current code.</p>
   date.</li>
 </ul>
 <p>Nothing else waits for confirmation.</p>
-<h2 id="project-process-files">Project process files<a class="headerlink" href="#project-process-files" title="Permanent link">&para;</a></h2>
+<h2 id="project-configuration-and-process-files">Project configuration and process files<a class="headerlink" href="#project-configuration-and-process-files" title="Permanent link">&para;</a></h2>
 <p>VOGON knows generic concepts: requirement, defect, test, test procedure,
-approval, and the steps done to a requirement. How these map onto a host
-project comes from its validation plan, through the files in
-<code>vogon/project/</code>:</p>
+approval, and the steps done to a requirement. How a host project uses them
+comes from its configuration and from its validation plan.</p>
+<p><code>vogon/project/vogon.yaml</code> is the configuration. It states the product that
+fills each role (tracker, test manager, document system, repository host,
+meetings, mail, chat), the people who hold each approval role, such as the
+Product Owner, and the project's options, such as whether logs are committed.
+<code>vogon:init</code> writes it from the commented template the plugin ships. It is
+YAML because the scripts read it: <code>vogon approve</code> reads the Product Owner list
+from it.</p>
+<p>The validation plan is filed in <code>vogon/sources/</code> as the original document and
+a markdown copy that the skills read (<a href="sources.html">Sources</a>). The plan stays
+the host project's controlled document, and VOGON never edits either copy.</p>
+<p>The markdown files in <code>vogon/project/</code> are VOGON's reading of the plan:</p>
 <table>
 <thead>
 <tr>
@@ -1674,12 +1684,8 @@ project comes from its validation plan, through the files in
 </thead>
 <tbody>
 <tr>
-<td><code>vogon.yaml</code></td>
-<td>The validation plan (held copy and version); the role holders; the controlled and exempt work types; the system for each role; the plan version each other file was derived from</td>
-</tr>
-<tr>
 <td><code>tracking.md</code></td>
-<td>The tracker item types for requirement, defect and test procedure; the fields for text, acceptance criteria and risk; the approval transitions; links; naming</td>
+<td>The controlled and exempt work types; the tracker item types for requirement, defect and test procedure; the fields for text, acceptance criteria and risk; the approval transitions; links; naming</td>
 </tr>
 <tr>
 <td><code>requirements.md</code></td>
@@ -1703,12 +1709,14 @@ project comes from its validation plan, through the files in
 </tr>
 </tbody>
 </table>
-<p><code>vogon:init</code> writes only <code>vogon.yaml</code>, from the commented template the plugin ships. The scripts read it, so it is YAML; the other files are markdown, read by the model. Each markdown file is written from a template that lists the topics in the table above. The other files are derived when a skill
-first needs them. A writing sub-agent drafts the file, and each statement cites
-a section of the plan. Evaluators check that each statement is supported and
-that the file is complete. Tracker names are read from an example item and
-confirmed by the developer. The file is merged by pull request. The plan stays
-the controlled document; the files are VOGON's reading of it.</p>
+<p>Each file is written from a template that lists its topics, and its
+frontmatter records the plan version it was derived from. A file is derived
+when a skill first needs it. A writing sub-agent drafts the file, and each
+statement cites a section of the plan. Evaluators check that each statement is
+supported and that the file is complete. A gap in the plan is asked of the
+developer, and the answer is recorded with their name and the date. Tracker
+names are read from an example item and confirmed by the developer. The file
+is merged by pull request.</p>
 <h2 id="records">Records<a class="headerlink" href="#records" title="Permanent link">&para;</a></h2>
 <p>Requirements, domain facts, constraints and decisions are markdown files in
 the host project's repository, under <code>vogon/</code>, in the format
@@ -1857,8 +1865,6 @@ The skill then:</p>
 <li>Records the release step in the state file of each requirement in the
    release.</li>
 </ol>
-<p>The validation plan is the host project's controlled document. VOGON holds a
-copy in <code>vogon/sources/</code> and never edits it.</p>
 
 
 

@@ -20,7 +20,7 @@ defines how every skill produces and checks its work.
 The host project is written in Python, tested with pytest, and kept in git.
 The coding agent is Claude Code. Skills name each external system by its role
 and never by product. The project names the system that fills each role in
-[`vogon/project/vogon.yaml`](#project-process-files).
+[`vogon/project/vogon.yaml`](#project-configuration-and-process-files).
 
 | Role | POC | Real version (example) |
 | --- | --- | --- |
@@ -59,7 +59,7 @@ session, which is the main agent of [the loop](loop.md).
 
 | Skill | Does | Process page |
 | --- | --- | --- |
-| `vogon:init` | Records the held validation plan, the role holders and the system for each role in `vogon/project/vogon.yaml` | [Setup](process/setup.md) |
+| `vogon:init` | Writes `vogon/project/vogon.yaml`: the system for each role, the role holders and the options; files the validation plan in `vogon/sources/` | [Setup](process/setup.md) |
 | `vogon:requirements` | Reads the selected sources, writes checked summaries of meetings, mail and chat, drafts records with their risk fields, checks them, opens the pull request, and in the real version sends the requirements to the tracker for approval | [Meetings](process/meetings.md), [New requirements](process/new_requirements.md) |
 | `vogon:approve` | Records the Product Owner's approval of the requirements they name, commits and pushes | [New requirements](process/new_requirements.md) |
 | `vogon:next` | Lists the approved requirements ready to start, lists the blocked ones with what blocks them, assigns the chosen one | [Next work](process/next_work.md) |
@@ -136,29 +136,43 @@ the documentation describes the current code.
 
 Nothing else waits for confirmation.
 
-## Project process files
+## Project configuration and process files
 
 VOGON knows generic concepts: requirement, defect, test, test procedure,
-approval, and the steps done to a requirement. How these map onto a host
-project comes from its validation plan, through the files in
-`vogon/project/`:
+approval, and the steps done to a requirement. How a host project uses them
+comes from its configuration and from its validation plan.
+
+`vogon/project/vogon.yaml` is the configuration. It states the product that
+fills each role (tracker, test manager, document system, repository host,
+meetings, mail, chat), the people who hold each approval role, such as the
+Product Owner, and the project's options, such as whether logs are committed.
+`vogon:init` writes it from the commented template the plugin ships. It is
+YAML because the scripts read it: `vogon approve` reads the Product Owner list
+from it.
+
+The validation plan is filed in `vogon/sources/` as the original document and
+a markdown copy that the skills read ([Sources](sources.md)). The plan stays
+the host project's controlled document, and VOGON never edits either copy.
+
+The markdown files in `vogon/project/` are VOGON's reading of the plan:
 
 | File | States |
 | --- | --- |
-| `vogon.yaml` | The validation plan (held copy and version); the role holders; the controlled and exempt work types; the system for each role; the plan version each other file was derived from |
-| `tracking.md` | The tracker item types for requirement, defect and test procedure; the fields for text, acceptance criteria and risk; the approval transitions; links; naming |
+| `tracking.md` | The controlled and exempt work types; the tracker item types for requirement, defect and test procedure; the fields for text, acceptance criteria and risk; the approval transitions; links; naming |
 | `requirements.md` | The requirement form; the risk fields and method; who approves and when; what a change to an approved requirement triggers |
 | `tests.md` | What a test procedure is; who writes and approves it, and when; unit tests and formal tests; the formal test environment; how results are tied to a commit and an environment |
 | `traceability.md` | Who produces the matrix and from what; what it links; where it is approved |
 | `documents.md` | The documents VOGON drafts, with template, format, approvers and location; the documents left to the project |
 | `release.md` | The contents of a release; its preconditions; the steps recorded |
 
-`vogon:init` writes only `vogon.yaml`, from the commented template the plugin ships. The scripts read it, so it is YAML; the other files are markdown, read by the model. Each markdown file is written from a template that lists the topics in the table above. The other files are derived when a skill
-first needs them. A writing sub-agent drafts the file, and each statement cites
-a section of the plan. Evaluators check that each statement is supported and
-that the file is complete. Tracker names are read from an example item and
-confirmed by the developer. The file is merged by pull request. The plan stays
-the controlled document; the files are VOGON's reading of it.
+Each file is written from a template that lists its topics, and its
+frontmatter records the plan version it was derived from. A file is derived
+when a skill first needs it. A writing sub-agent drafts the file, and each
+statement cites a section of the plan. Evaluators check that each statement is
+supported and that the file is complete. A gap in the plan is asked of the
+developer, and the answer is recorded with their name and the date. Tracker
+names are read from an example item and confirmed by the developer. The file
+is merged by pull request.
 
 ## Records
 
@@ -338,6 +352,3 @@ The skill then:
    drafted.
 6. Records the release step in the state file of each requirement in the
    release.
-
-The validation plan is the host project's controlled document. VOGON holds a
-copy in `vogon/sources/` and never edits it.
