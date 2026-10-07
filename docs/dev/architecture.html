@@ -1655,6 +1655,8 @@ the documentation describes the current code.</p>
   before the requirement is created or the pull request is opened. Only a
   finding on a requirement the Product Owner already approved goes back to the
   Product Owner, as a change that needs approval again.</li>
+<li>A plan for code, which the developers review and approve before any code
+  is written.</li>
 <li>A gap in the validation plan while a project process file is derived. The
   developer answers, and the file records the answer with their name and the
   date.</li>
@@ -1829,6 +1831,11 @@ for them.</p>
    parts to build and the tests that verify each, which refers to the
    requirements and the code rather than restating them. Evaluators check the
    plan against the requirements and the code.</li>
+<li>The skill stops, and the developers review the plan. A change they ask for
+   goes through the loop again. When a developer approves the plan, the skill
+   commits it and records the approval, with the developer's git identity and
+   the date, in the <code>planned</code> entry of each requirement's state file. No code
+   is written before the plan is approved.</li>
 <li>The main agent follows the plan. For each part it starts a sub-agent that
    writes that part's code, tests and documentation, given the plan, the
    requirements and the code it touches. Independent parts run in parallel.</li>

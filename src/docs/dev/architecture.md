@@ -130,6 +130,8 @@ the documentation describes the current code.
   before the requirement is created or the pull request is opened. Only a
   finding on a requirement the Product Owner already approved goes back to the
   Product Owner, as a change that needs approval again.
+- A plan for code, which the developers review and approve before any code
+  is written.
 - A gap in the validation plan while a project process file is derived. The
   developer answers, and the file records the answer with their name and the
   date.
@@ -307,12 +309,17 @@ for them.
    parts to build and the tests that verify each, which refers to the
    requirements and the code rather than restating them. Evaluators check the
    plan against the requirements and the code.
-2. The main agent follows the plan. For each part it starts a sub-agent that
+2. The skill stops, and the developers review the plan. A change they ask for
+   goes through the loop again. When a developer approves the plan, the skill
+   commits it and records the approval, with the developer's git identity and
+   the date, in the `planned` entry of each requirement's state file. No code
+   is written before the plan is approved.
+3. The main agent follows the plan. For each part it starts a sub-agent that
    writes that part's code, tests and documentation, given the plan, the
    requirements and the code it touches. Independent parts run in parallel.
-3. Evaluators check each part: the test checklist, the code checklist, and
+4. Evaluators check each part: the test checklist, the code checklist, and
    Claude Code's code review. VOGON has no code reviewer of its own.
-4. The main agent reads each sub-agent's log and its output against the plan.
+5. The main agent reads each sub-agent's log and its output against the plan.
    It sends back work that leaves the part it was given, does less than the
    part, or changes what the plan does not name.
 
