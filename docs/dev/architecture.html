@@ -1870,11 +1870,9 @@ approves the pull request on the repository host.</p>
 <p>A test run records the commit it tested as the suite name:</p>
 <pre><code>pytest --junitxml=results.xml -o junit_suite_name=$(git rev-parse HEAD)
 </code></pre>
-<p>Results from a working tree with uncommitted changes are not evidence, because
-the code under test cannot be identified. Where and how the suite runs is the
-project's choice, on a developer's machine or in any automated build, as long as
-the run produces this file. <code>tests.md</code> states which runs count as formal
-results.</p>
+<p>Where and how the suite runs is the project's choice. VOGON reads the file the
+run produces. If the run was made on a working tree with uncommitted changes,
+VOGON reports it, because the commit does not identify the code tested.</p>
 <p><code>traceability.md</code> states how the matrix is produced. Where a test manager
 exists, VOGON uploads the JUnit XML unchanged and the test manager produces the
 traceability report (<code>DEC-003</code>). Where none exists, <code>vogon trace &lt;results.xml&gt;</code>

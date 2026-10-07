@@ -357,11 +357,9 @@ A test run records the commit it tested as the suite name:
 pytest --junitxml=results.xml -o junit_suite_name=$(git rev-parse HEAD)
 ```
 
-Results from a working tree with uncommitted changes are not evidence, because
-the code under test cannot be identified. Where and how the suite runs is the
-project's choice, on a developer's machine or in any automated build, as long as
-the run produces this file. `tests.md` states which runs count as formal
-results.
+Where and how the suite runs is the project's choice. VOGON reads the file the
+run produces. If the run was made on a working tree with uncommitted changes,
+VOGON reports it, because the commit does not identify the code tested.
 
 `traceability.md` states how the matrix is produced. Where a test manager
 exists, VOGON uploads the JUnit XML unchanged and the test manager produces the
