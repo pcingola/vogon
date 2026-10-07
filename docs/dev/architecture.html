@@ -1543,7 +1543,7 @@ session, which is the main agent of <a href="loop.html">the loop</a>.</p>
 <td><a href="process/next_work.html">Next work</a></td>
 </tr>
 <tr>
-<td><code>vogon:test-scripts</code></td>
+<td><code>vogon:tests</code></td>
 <td>Writes the test scripts of approved requirements before development, or generates them from the existing tests, as <code>tests.md</code> states, and registers them for approval</td>
 <td><a href="process/test_checks.html">Tests</a></td>
 </tr>
@@ -1600,7 +1600,7 @@ items in its own files.</p>
 <td>The requirement checklist</td>
 </tr>
 <tr>
-<td><code>vogon:test-scripts</code></td>
+<td><code>vogon:tests</code></td>
 <td>Test scripts</td>
 <td>Each script against its requirement and, where generated, its tests</td>
 </tr>
@@ -1798,7 +1798,7 @@ combinations.</p>
 <p>A test script is a narrative test procedure with an id, linked to its
 requirement. <code>tests.md</code> states whether the project needs test scripts, whether
 they are written before the tests, from the requirement, or after, generated
-from the tests, and who approves them. <code>vogon:test-scripts</code> follows that
+from the tests, and who approves them. <code>vogon:tests</code> follows that
 order and imposes none of its own. Where scripts exist, each test also names its script,
 <code>@pytest.mark.script("&lt;script id&gt;")</code>. Where the validation plan needs a test
 document, such as a test specification, <code>vogon:release</code> prepares it from the
