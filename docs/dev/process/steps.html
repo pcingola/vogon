@@ -1085,9 +1085,9 @@
 
 <h1 id="steps-of-the-gxp-process">Steps of the GxP process<a class="headerlink" href="#steps-of-the-gxp-process" title="Permanent link">&para;</a></h1>
 <p>The steps a requirement goes through from source material to a signed
-release, agreed with GxP practitioners. Each requirement goes through them in
-this order. Different requirements are at different steps at the same time,
-and a project works on several at once.</p>
+release. Each requirement goes through them in this order. Different
+requirements are at different steps at the same time, and a project works on
+several at once.</p>
 <table>
 <thead>
 <tr>
@@ -1101,134 +1101,120 @@ and a project works on several at once.</p>
 <tbody>
 <tr>
 <td>1</td>
-<td>Install and configure</td>
-<td>The project configuration: the system for each role, the approval roles and who holds them; the validation plan, approved by the System Owner and the Quality Manager</td>
+<td>Configure</td>
+<td><code>vogon/project/vogon.yaml</code>: the system for each role, the role holders and the options; the validation plan filed in <code>vogon/sources/</code></td>
 <td>Developer, with VOGON</td>
-<td><code>vogon:setup</code></td>
+<td><code>vogon:init</code></td>
 </tr>
 <tr>
 <td>2</td>
-<td>File the source material</td>
-<td>Meeting summaries and source documents in the repository</td>
+<td>File the sources</td>
+<td>Checked summaries of meetings, mail and chat; attached and shared files with their markdown copies</td>
 <td>VOGON</td>
-<td><code>vogon:meetings</code></td>
+<td><code>vogon:requirements</code></td>
 </tr>
 <tr>
 <td>3</td>
 <td>Draft the records</td>
-<td>Requirements, facts, constraints and decisions</td>
+<td>Requirements with their acceptance criteria and risk fields; domain facts, constraints and decisions</td>
 <td>VOGON</td>
-<td><code>vogon:meetings</code>, <code>vogon:from-code</code></td>
+<td><code>vogon:requirements</code></td>
 </tr>
 <tr>
 <td>4</td>
-<td>Review and accept</td>
-<td>The records checked against each other for contradictions and duplicates, and a risk level with its reasoning for each requirement</td>
+<td>Check the records</td>
+<td>Records checked against the requirement checklist; findings that need a choice settled by the developer</td>
 <td>VOGON, then the developer</td>
-<td><code>vogon:meetings</code>, <code>vogon:from-code</code></td>
+<td><code>vogon:requirements</code></td>
 </tr>
 <tr>
 <td>5</td>
-<td>Register the requirements</td>
-<td>One tracker issue per requirement</td>
+<td>Send the requirements for approval</td>
+<td>The pull request with <code>REQ-*.md</code> and <code>REQ-*.json</code>; in the real version, the tracker items</td>
 <td>VOGON</td>
-<td><code>vogon:meetings</code>, <code>vogon:from-code</code></td>
+<td><code>vogon:requirements</code></td>
 </tr>
 <tr>
 <td>6</td>
 <td>Approve the requirements</td>
-<td>Requirements in an approved state</td>
-<td>Product Owner, in the tracker, or by pull request review in the prototype</td>
-<td></td>
+<td>The approval, recorded in <code>REQ-*.json</code></td>
+<td>Product Owner</td>
+<td><code>vogon:approve</code>, or the tracker in the real version</td>
 </tr>
 <tr>
 <td>7</td>
-<td>Plan the change</td>
-<td>A plan: what will be built, the interface the tests call, which tests cover which acceptance criteria</td>
+<td>Write the test procedures</td>
+<td>Test procedures, where <code>tests.md</code> requires them</td>
 <td>VOGON</td>
-<td><code>vogon:implement</code></td>
+<td><code>vogon:tests</code></td>
 </tr>
 <tr>
 <td>8</td>
-<td>Write the test cases</td>
-<td>Test cases: for each acceptance criterion, the cases covering it with their inputs and expected values, as formal as the requirement's risk calls for</td>
-<td>VOGON</td>
-<td><code>vogon:implement</code></td>
+<td>Approve the test procedures</td>
+<td>The approval, where <code>tests.md</code> states</td>
+<td>The roles <code>tests.md</code> names</td>
+<td></td>
 </tr>
 <tr>
 <td>9</td>
-<td>Check the test cases against the requirements</td>
-<td>For each requirement, the acceptance criteria no test covers, the expected values that differ from the requirement, the assertions the requirement does not support</td>
+<td>Plan</td>
+<td>A checked plan for one or more requirements</td>
 <td>VOGON</td>
 <td><code>vogon:implement</code></td>
 </tr>
 <tr>
 <td>10</td>
-<td>Register the test cases, draft the test specification</td>
-<td>The test cases sent to the Test Lead, in the test manager linked to their requirements in a deployment; the test case files are the test specification</td>
-<td>VOGON</td>
-<td><code>vogon:implement</code></td>
+<td>Approve the plan</td>
+<td>The approval, recorded in the <code>planned</code> entries of the state files</td>
+<td>Developers</td>
+<td></td>
 </tr>
 <tr>
 <td>11</td>
-<td>Approve the test cases</td>
-<td>Test cases and their test specification entries in an approved state</td>
-<td>Test Lead, in the test manager, or by pull request review in the prototype</td>
-<td></td>
+<td>Write the code, tests and documentation</td>
+<td>Code, tests and documentation for each part of the plan, checked, with all tests passing</td>
+<td>VOGON, steered by the developer if they choose</td>
+<td><code>vogon:implement</code></td>
 </tr>
 <tr>
 <td>12</td>
-<td>Write the code</td>
-<td>Code, test code and documentation, and commits naming the requirements they implement</td>
-<td>VOGON</td>
-<td><code>vogon:implement</code></td>
-</tr>
-<tr>
-<td>13</td>
-<td>Run the tests and make them pass</td>
-<td>Test results recorded against the commit tested</td>
-<td>VOGON</td>
-<td><code>vogon:implement</code></td>
-</tr>
-<tr>
-<td>14</td>
-<td>Review the change and merge it</td>
-<td>An approving review by a developer other than the author</td>
-<td>Code reviewer, on the repository host</td>
+<td>Approve the pull request</td>
+<td>The approval on the repository host</td>
+<td>A person</td>
 <td></td>
 </tr>
 <tr>
-<td>15</td>
-<td>Register the results, draft the documents</td>
-<td>Results in the test manager for the release build, and the URS, risk assessment, test specification, design specification, test report and validation summary report</td>
+<td>13</td>
+<td>Draft the release documents</td>
+<td>The documents <code>documents.md</code> lists, and the traceability matrix, for a release commit</td>
 <td>VOGON</td>
 <td><code>vogon:release</code></td>
 </tr>
 <tr>
-<td>16</td>
+<td>14</td>
 <td>File the evidence</td>
-<td>The traceability report and the results for the release build, in the document system</td>
+<td>The documents, the matrix and the results, where <code>documents.md</code> states</td>
 <td>VOGON</td>
 <td><code>vogon:release</code></td>
 </tr>
 <tr>
-<td>17</td>
+<td>15</td>
 <td>Sign off</td>
-<td>The signed validation package</td>
-<td>System Owner and Quality Manager, in the document system</td>
+<td>The signed documents</td>
+<td>The roles <code>documents.md</code> names</td>
 <td></td>
 </tr>
 </tbody>
 </table>
-<p>Step 12 does not wait for step 11. The code and the test code may be written
-before, during or after the approval of the test cases, in the order the
-developer works in. Step 11 must be done before the merge and before any
-result counts as evidence.</p>
-<p>The validation plan (step 1) and the URS and validation summary report (step
-15) were added to the agreed steps by <code>DEC-027</code>.</p>
-<p>Steps 6, 11, 14 and 17 are approvals, and so is the approval of the validation
-plan at step 1. A person gives each one in the system
-that records it, and VOGON gives none of them.</p>
+<p>Steps 7 and 8 come before step 9 or after step 11, as <code>tests.md</code> states. Before
+step 9, the test procedures are written from the requirements. After step 11,
+they are generated from the tests. A project that needs no test procedures
+skips both steps.</p>
+<p>Steps 6, 8, 10, 12 and 15 are approvals. A person gives each one, and VOGON
+gives none of them.</p>
+<p>Each step VOGON performs on a requirement is recorded in its <code>REQ-*.json</code>, with
+the date and the pull request or commit that holds the result
+(<a href="../architecture.html#state-of-a-requirement">Architecture</a>).</p>
 <p>Steps are sometimes done late or out of order. The step is then done with its
 real date, and the order in which the steps were actually done is reported:
 an approval given after what it governs was used shows in the report.</p>
