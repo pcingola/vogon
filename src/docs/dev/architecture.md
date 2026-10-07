@@ -63,11 +63,11 @@ session, which is the main agent of [the loop](loop.md).
 | `vogon:requirements` | Reads the selected sources, writes checked summaries of meetings, mail and chat, drafts records with their risk fields, checks them, opens the pull request, and in the real version sends the requirements to the tracker for approval | [Meetings](process/meetings.md), [New requirements](process/new_requirements.md) |
 | `vogon:approve` | Records the Product Owner's approval of the requirements they name, commits and pushes | [New requirements](process/new_requirements.md) |
 | `vogon:next` | Lists the approved requirements ready to start, lists the blocked ones with what blocks them, assigns the chosen one | [Next work](process/next_work.md) |
-| `vogon:tests` | Writes the test scripts of approved requirements before development, or generates them from the existing tests, as `tests.md` states, and registers them for approval | [Tests](process/test_checks.md) |
+| `vogon:tests` | Writes the test procedures of approved requirements before development, or generates them from the existing tests, as `tests.md` states, and registers them for approval | [Tests](process/test_checks.md) |
 | `vogon:implement` | Plans one requirement, writes its tests, code and documentation, has them reviewed, and opens the pull request | [Planning](process/planning.md), [Implementation](process/implementation.md), [Tests](process/test_checks.md) |
 | `vogon:release` | Drafts and checks the validation documents for a release commit, produces the traceability matrix, files the evidence | [Documents](process/documents.md) |
 
-Approvals of requirements, test scripts, pull requests and documents are
+Approvals of requirements, test procedures, pull requests and documents are
 given by people, and no skill gives them.
 
 Every skill starts the same way. It reads the project process files it needs,
@@ -93,7 +93,7 @@ Each skill runs its work through [the loop](loop.md). The loops are:
 | `vogon:init`, any skill | One project process file | Each statement is supported by the cited plan section; the file covers every topic it must |
 | `vogon:requirements` | One summary per meeting, mail thread or chat channel | The summary against its source |
 | `vogon:requirements` | Records with their risk fields | The requirement checklist |
-| `vogon:tests` | Test scripts | Each script against its requirement and, where generated, its tests |
+| `vogon:tests` | Test procedures | Each procedure against its requirement and, where generated, its tests |
 | `vogon:implement` | The plan for one requirement | The plan against the requirement and the code |
 | `vogon:implement` | Tests | The test checklist |
 | `vogon:implement` | Code and documentation | Claude Code's code review; the code checklist |
@@ -138,7 +138,7 @@ Nothing else waits for confirmation.
 
 ## Project process files
 
-VOGON knows generic concepts: requirement, defect, test, test script,
+VOGON knows generic concepts: requirement, defect, test, test procedure,
 approval, and the steps done to a requirement. How these map onto a host
 project comes from its validation plan, through the files in
 `vogon/project/`:
@@ -146,9 +146,9 @@ project comes from its validation plan, through the files in
 | File | States |
 | --- | --- |
 | `vogon.yaml` | The validation plan (held copy and version); the role holders; the controlled and exempt work types; the system for each role; the plan version each other file was derived from |
-| `tracking.md` | The tracker item types for requirement, defect and test script; the fields for text, acceptance criteria and risk; the approval transitions; links; naming |
+| `tracking.md` | The tracker item types for requirement, defect and test procedure; the fields for text, acceptance criteria and risk; the approval transitions; links; naming |
 | `requirements.md` | The requirement form; the risk fields and method; who approves and when; what a change to an approved requirement triggers |
-| `tests.md` | What a test script is; who writes and approves it, and when; unit tests and formal tests; the formal test environment; how results are tied to a commit and an environment |
+| `tests.md` | What a test procedure is; who writes and approves it, and when; unit tests and formal tests; the formal test environment; how results are tied to a commit and an environment |
 | `traceability.md` | Who produces the matrix and from what; what it links; where it is approved |
 | `documents.md` | The documents VOGON drafts, with template, format, approvers and location; the documents left to the project |
 | `release.md` | The contents of a release; its preconditions; the steps recorded |
@@ -264,14 +264,17 @@ combinations.
   authorized it, because needing a mock indicates a problem in the design. It
   writes no tests of library behaviour.
 
-A test script is a narrative test procedure with an id, linked to its
-requirement. `tests.md` states whether the project needs test scripts, whether
+A test procedure is a document: numbered steps in prose, each with its
+expected result, given an id and linked to its requirement. It is not code.
+Projects call it a test script, test protocol or manual test case; VOGON calls
+it a test procedure. `tests.md` states whether the project needs test
+procedures, whether
 they are written before the tests, from the requirement, or after, generated
 from the tests, and who approves them. `vogon:tests` follows that
-order and imposes none of its own. Where scripts exist, each test also names its script,
-`@pytest.mark.script("<script id>")`. Where the validation plan needs a test
+order and imposes none of its own. Where procedures exist, each test also names its procedure,
+`@pytest.mark.procedure("<procedure id>")`. Where the validation plan needs a test
 document, such as a test specification, `vogon:release` prepares it from the
-requirements, the scripts and the tests.
+requirements, the procedures and the tests.
 
 ## Code from a requirement
 
@@ -286,12 +289,12 @@ author approves the pull request on the repository host.
 ## Traceability
 
 A few lines in the host project's `conftest.py` copy each test's `req` and
-`script` marker ids into the JUnit XML properties:
+`procedure` marker ids into the JUnit XML properties:
 
 ```python
 def pytest_collection_modifyitems(items):
     for item in items:
-        for name in ("req", "script"):
+        for name in ("req", "procedure"):
             for marker in item.iter_markers(name):
                 for value in marker.args:
                     item.user_properties.append((name, value))
@@ -311,7 +314,7 @@ this way and keeps `results.xml` as an artifact of the run.
 exists, VOGON uploads the JUnit XML unchanged and the test manager produces the
 traceability report (`DEC-003`). Where none exists, `vogon trace <results.xml>`
 acts as a minimal test manager: it joins the markers and the results of that
-one commit into the matrix, listing each requirement, its scripts and tests,
+one commit into the matrix, listing each requirement, its procedures and tests,
 their results, the commit, and every requirement with no test. It manages no
 test cases and records no approvals. The matrix is evidence, so it always comes
 from this join or from the test manager, never from a model.

@@ -1544,7 +1544,7 @@ session, which is the main agent of <a href="loop.html">the loop</a>.</p>
 </tr>
 <tr>
 <td><code>vogon:tests</code></td>
-<td>Writes the test scripts of approved requirements before development, or generates them from the existing tests, as <code>tests.md</code> states, and registers them for approval</td>
+<td>Writes the test procedures of approved requirements before development, or generates them from the existing tests, as <code>tests.md</code> states, and registers them for approval</td>
 <td><a href="process/test_checks.html">Tests</a></td>
 </tr>
 <tr>
@@ -1559,7 +1559,7 @@ session, which is the main agent of <a href="loop.html">the loop</a>.</p>
 </tr>
 </tbody>
 </table>
-<p>Approvals of requirements, test scripts, pull requests and documents are
+<p>Approvals of requirements, test procedures, pull requests and documents are
 given by people, and no skill gives them.</p>
 <p>Every skill starts the same way. It reads the project process files it needs,
 deriving a missing one first and regenerating one whose plan version is older
@@ -1601,8 +1601,8 @@ items in its own files.</p>
 </tr>
 <tr>
 <td><code>vogon:tests</code></td>
-<td>Test scripts</td>
-<td>Each script against its requirement and, where generated, its tests</td>
+<td>Test procedures</td>
+<td>Each procedure against its requirement and, where generated, its tests</td>
 </tr>
 <tr>
 <td><code>vogon:implement</code></td>
@@ -1661,7 +1661,7 @@ the documentation describes the current code.</p>
 </ul>
 <p>Nothing else waits for confirmation.</p>
 <h2 id="project-process-files">Project process files<a class="headerlink" href="#project-process-files" title="Permanent link">&para;</a></h2>
-<p>VOGON knows generic concepts: requirement, defect, test, test script,
+<p>VOGON knows generic concepts: requirement, defect, test, test procedure,
 approval, and the steps done to a requirement. How these map onto a host
 project comes from its validation plan, through the files in
 <code>vogon/project/</code>:</p>
@@ -1679,7 +1679,7 @@ project comes from its validation plan, through the files in
 </tr>
 <tr>
 <td><code>tracking.md</code></td>
-<td>The tracker item types for requirement, defect and test script; the fields for text, acceptance criteria and risk; the approval transitions; links; naming</td>
+<td>The tracker item types for requirement, defect and test procedure; the fields for text, acceptance criteria and risk; the approval transitions; links; naming</td>
 </tr>
 <tr>
 <td><code>requirements.md</code></td>
@@ -1687,7 +1687,7 @@ project comes from its validation plan, through the files in
 </tr>
 <tr>
 <td><code>tests.md</code></td>
-<td>What a test script is; who writes and approves it, and when; unit tests and formal tests; the formal test environment; how results are tied to a commit and an environment</td>
+<td>What a test procedure is; who writes and approves it, and when; unit tests and formal tests; the formal test environment; how results are tied to a commit and an environment</td>
 </tr>
 <tr>
 <td><code>traceability.md</code></td>
@@ -1795,14 +1795,17 @@ combinations.</p>
   authorized it, because needing a mock indicates a problem in the design. It
   writes no tests of library behaviour.</li>
 </ul>
-<p>A test script is a narrative test procedure with an id, linked to its
-requirement. <code>tests.md</code> states whether the project needs test scripts, whether
+<p>A test procedure is a document: numbered steps in prose, each with its
+expected result, given an id and linked to its requirement. It is not code.
+Projects call it a test script, test protocol or manual test case; VOGON calls
+it a test procedure. <code>tests.md</code> states whether the project needs test
+procedures, whether
 they are written before the tests, from the requirement, or after, generated
 from the tests, and who approves them. <code>vogon:tests</code> follows that
-order and imposes none of its own. Where scripts exist, each test also names its script,
-<code>@pytest.mark.script("&lt;script id&gt;")</code>. Where the validation plan needs a test
+order and imposes none of its own. Where procedures exist, each test also names its procedure,
+<code>@pytest.mark.procedure("&lt;procedure id&gt;")</code>. Where the validation plan needs a test
 document, such as a test specification, <code>vogon:release</code> prepares it from the
-requirements, the scripts and the tests.</p>
+requirements, the procedures and the tests.</p>
 <h2 id="code-from-a-requirement">Code from a requirement<a class="headerlink" href="#code-from-a-requirement" title="Permanent link">&para;</a></h2>
 <p><code>vogon:implement</code> starts from a plan for the requirement: a checklist of what
 will be built, which refers to the requirement and the code rather than
@@ -1813,10 +1816,10 @@ written and pass before the pull request is opened. A developer other than the
 author approves the pull request on the repository host.</p>
 <h2 id="traceability">Traceability<a class="headerlink" href="#traceability" title="Permanent link">&para;</a></h2>
 <p>A few lines in the host project's <code>conftest.py</code> copy each test's <code>req</code> and
-<code>script</code> marker ids into the JUnit XML properties:</p>
+<code>procedure</code> marker ids into the JUnit XML properties:</p>
 <pre><code class="language-python">def pytest_collection_modifyitems(items):
     for item in items:
-        for name in (&quot;req&quot;, &quot;script&quot;):
+        for name in (&quot;req&quot;, &quot;procedure&quot;):
             for marker in item.iter_markers(name):
                 for value in marker.args:
                     item.user_properties.append((name, value))
@@ -1831,7 +1834,7 @@ this way and keeps <code>results.xml</code> as an artifact of the run.</p>
 exists, VOGON uploads the JUnit XML unchanged and the test manager produces the
 traceability report (<code>DEC-003</code>). Where none exists, <code>vogon trace &lt;results.xml&gt;</code>
 acts as a minimal test manager: it joins the markers and the results of that
-one commit into the matrix, listing each requirement, its scripts and tests,
+one commit into the matrix, listing each requirement, its procedures and tests,
 their results, the commit, and every requirement with no test. It manages no
 test cases and records no approvals. The matrix is evidence, so it always comes
 from this join or from the test manager, never from a model.</p>
