@@ -358,8 +358,10 @@ pytest --junitxml=results.xml -o junit_suite_name=$(git rev-parse HEAD)
 ```
 
 Results from a working tree with uncommitted changes are not evidence, because
-the code under test cannot be identified. The host project's CI runs the suite
-this way and keeps `results.xml` as an artifact of the run.
+the code under test cannot be identified. Where and how the suite runs is the
+project's choice, on a developer's machine or in any automated build, as long as
+the run produces this file. `tests.md` states which runs count as formal
+results.
 
 `traceability.md` states how the matrix is produced. Where a test manager
 exists, VOGON uploads the JUnit XML unchanged and the test manager produces the
@@ -372,7 +374,7 @@ from this join or from the test manager, never from a model.
 
 ## Release
 
-`vogon:release` takes a release commit and the results of the CI run on that
+`vogon:release` takes a release commit and the JUnit XML of a test run on that
 commit. `release.md` states what the release contains and its preconditions.
 The skill then:
 

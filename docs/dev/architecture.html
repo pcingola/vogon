@@ -1871,8 +1871,10 @@ approves the pull request on the repository host.</p>
 <pre><code>pytest --junitxml=results.xml -o junit_suite_name=$(git rev-parse HEAD)
 </code></pre>
 <p>Results from a working tree with uncommitted changes are not evidence, because
-the code under test cannot be identified. The host project's CI runs the suite
-this way and keeps <code>results.xml</code> as an artifact of the run.</p>
+the code under test cannot be identified. Where and how the suite runs is the
+project's choice, on a developer's machine or in any automated build, as long as
+the run produces this file. <code>tests.md</code> states which runs count as formal
+results.</p>
 <p><code>traceability.md</code> states how the matrix is produced. Where a test manager
 exists, VOGON uploads the JUnit XML unchanged and the test manager produces the
 traceability report (<code>DEC-003</code>). Where none exists, <code>vogon trace &lt;results.xml&gt;</code>
@@ -1882,7 +1884,7 @@ their results, the commit, and every requirement with no test. It manages no
 test cases and records no approvals. The matrix is evidence, so it always comes
 from this join or from the test manager, never from a model.</p>
 <h2 id="release">Release<a class="headerlink" href="#release" title="Permanent link">&para;</a></h2>
-<p><code>vogon:release</code> takes a release commit and the results of the CI run on that
+<p><code>vogon:release</code> takes a release commit and the JUnit XML of a test run on that
 commit. <code>release.md</code> states what the release contains and its preconditions.
 The skill then:</p>
 <ol>
