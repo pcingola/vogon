@@ -2,9 +2,9 @@
 
 `src/html/index.html` is standalone: no build step, copied verbatim into
 `docs/` by `make site`. It reads as an enterprise life-sciences SaaS page that
-is also a controlled document — a persistent document-control strip, SOP clause
-numbering (§1.0 …), square-cornered hairline panels, and one animation: the
-REJECTED stamp that lands when a change request is submitted.
+is also a controlled document. It has a persistent document-control strip, SOP
+clause numbering (§1.0 …), square-cornered hairline panels, and one animation:
+the REJECTED stamp that lands when a change request is submitted.
 
 ## Type and color
 
@@ -18,14 +18,16 @@ bar) uses the `--dark-ground*` tokens and stays dark in both themes.
 
 ## Images
 
-Images are WebP in `src/html/img/` (54 MB of PNG reduced to 2.2 MB), referenced
+Images are WebP in `src/html/img/`, referenced
 relatively as `img/…` so the paths survive the copy into `docs/`. Regenerate
 with ImageMagick from `assets/images/` after adding artwork.
 
 Most of the artwork was drawn on white paper, which glares on a dark page, so
 those figures have a dark twin: `assets/images/<name>_dark.png` is the original
 and `src/html/img/<name>_dark.webp` the web copy. Images 01–09, 12 and 13 have
-one. The twins were redrawn for dark ground. Flood fills and lightness
+a dark original. Images 04–07, 09, 12 and 13 have a dark web copy. Images 03 and
+08 are served dark through `emblem_dark.webp` and `stamp-alpha_dark.webp`.
+Images 01 and 02 have no dark web copy. The twins were redrawn for dark ground. Flood fills and lightness
 inversions were tried and rejected; regenerate the artwork instead.
 
 A dark twin must be the same pixel size as the light `.webp` beside it, because
@@ -37,15 +39,15 @@ magick assets/images/<name>_dark.png -resize '<W>x<H>!' \
   -quality 82 -define webp:method=6 src/html/img/<name>_dark.webp
 ```
 
-Where the aspect ratios differ — 04 is square in dark and 1200×1006 in light —
-centre-crop to the light ratio first (`-gravity center -crop 1254x1051+0+0
+Where the aspect ratios differ, as for 04, which is square in dark and
+1200×1006 in light, centre-crop to the light ratio first (`-gravity center -crop 1254x1051+0+0
 +repage`) rather than squashing.
 
 `emblem.webp` (03) and `stamp-alpha.webp` (08) are transparent cutouts and both
 are white-keyed: the vogon's white shirt and the paper inside the stamp frame
 went with the background. That reads correctly on cream and leaves holes on
-dark ground. Their dark counterparts come off the authored dark artwork
-instead — `emblem_dark.webp` is a circular mask of `03-vogon-icon_dark.png`,
+dark ground. Their dark counterparts are made from the authored dark artwork:
+`emblem_dark.webp` is a circular mask of `03-vogon-icon_dark.png`,
 and `stamp-alpha_dark.webp` takes its alpha from the brightest channel of
 `08-rejected-stamp_dark.png`. The footer stamp uses the dark one
 unconditionally because the footer is `--dark-ground` in both themes. The

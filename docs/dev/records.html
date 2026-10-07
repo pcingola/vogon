@@ -323,34 +323,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../user/scripts.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Scripts
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -827,34 +799,6 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="writing.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Writing standard
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
     
     
     
@@ -866,10 +810,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_7" >
         
           
-          <label class="md-nav__link" for="__nav_2_8" id="__nav_2_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2_7" id="__nav_2_7_label" tabindex="0">
             
   
   
@@ -887,8 +831,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2_8">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -906,34 +850,6 @@
   
     <li class="md-nav__item">
       <a href="process/index.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Development process
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="process/steps.html" class="md-nav__link">
         
   
   
@@ -989,14 +905,14 @@
   
   
     <li class="md-nav__item">
-      <a href="process/failed_checks.html" class="md-nav__link">
+      <a href="process/requirements.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    When a check fails
+    Requirements from sources
   
 
     
@@ -1017,14 +933,14 @@
   
   
     <li class="md-nav__item">
-      <a href="process/meetings.html" class="md-nav__link">
+      <a href="process/approval.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    From meetings to requirements
+    Approving requirements
   
 
     
@@ -1045,42 +961,14 @@
   
   
     <li class="md-nav__item">
-      <a href="process/new_requirements.html" class="md-nav__link">
+      <a href="process/test_procedures.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Checking the new requirements
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="process/next_work.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    What to work on next
+    Test procedures
   
 
     
@@ -1108,7 +996,7 @@
   <span class="md-ellipsis">
     
   
-    Planning one requirement
+    Planning
   
 
     
@@ -1136,35 +1024,7 @@
   <span class="md-ellipsis">
     
   
-    Test cases, code and tests
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="process/test_checks.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Checking the tests
+    Code, tests and documentation
   
 
     
@@ -1192,7 +1052,7 @@
   <span class="md-ellipsis">
     
   
-    Compliance documents
+    Release documents
   
 
     
@@ -1534,7 +1394,7 @@ project's alike.</p>
 </tr>
 <tr>
 <td><code>vogon/requirements/&lt;module&gt;/</code></td>
-<td>Requirement records, one directory per module: each <code>REQ-&lt;MODULE&gt;-&lt;NUMBER&gt;.md</code> with its <a href="#state-file">state file</a> <code>REQ-&lt;MODULE&gt;-&lt;NUMBER&gt;.json</code> beside it</td>
+<td>Requirement records, one directory per module: each <code>REQ-&lt;MODULE&gt;-&lt;NUMBER&gt;.md</code> with its <a href="#state-file">state file</a> <code>REQ-&lt;MODULE&gt;-&lt;NUMBER&gt;.json</code> beside it, and <a href="#test-procedure">test procedures</a> kept in the repository</td>
 </tr>
 <tr>
 <td><code>vogon/facts/</code></td>
@@ -1593,12 +1453,14 @@ order. The first match wins.</p>
 </ol>
 <p>A single sentence often splits. "The test manager reports coverage from the
 link between a test issue and a requirement issue, so maintain that link from
-the test source" is a fact and a requirement, written as two records that link
-to each other.</p>
+the test source" is a fact and a requirement, written as two records. The one
+that rests on the other names it in <code>depends_on</code>; here the requirement names
+the fact.</p>
+<p>A statement made in two sources is one record that cites both in <code>source</code>.</p>
 <h2 id="the-shape-of-a-record">The shape of a record<a class="headerlink" href="#the-shape-of-a-record" title="Permanent link">&para;</a></h2>
 <p>YAML frontmatter, read by the skills and scripts, followed by a markdown body,
 read by people.</p>
-<p>Frontmatter common to all four types:</p>
+<p>Frontmatter common to every record:</p>
 <table>
 <thead>
 <tr>
@@ -1625,7 +1487,7 @@ read by people.</p>
 </tr>
 <tr>
 <td><code>status</code></td>
-<td><code>active</code>, <code>withdrawn</code>, or <code>superseded_by: &lt;id&gt;</code>, written as a mapping: <code>status: {superseded_by: DEC-024}</code>. Approval is not a status; it is in the state file</td>
+<td><code>active</code>, <code>withdrawn</code>, or <code>superseded_by: &lt;id&gt;</code>, written as a mapping: <code>status: {superseded_by: DEC-024}</code>. A drafted record is <code>active</code>. A withdrawn record states the reason in its body. Approval is not a status; it is in the state file</td>
 </tr>
 <tr>
 <td><code>source</code></td>
@@ -1652,8 +1514,10 @@ read by people.</p>
 <p>The body carries the statement as one sentence with no rationale in it, a
 description of a short paragraph saying what it means and what it does not
 cover, and one concrete example marked as illustration.</p>
+<p>No frontmatter key and no body line states that the record was approved or
+signed; approvals are in the <a href="#state-file">state file</a>.</p>
 <p>A field or block with nothing to say is omitted
-(<a href="writing.html">Writing standard</a>).</p>
+(the writing standard, <code>src/vogon/references/writing.md</code>).</p>
 <h3 id="source-lists-every-document-that-states-it"><code>source</code> lists every document that states it<a class="headerlink" href="#source-lists-every-document-that-states-it" title="Permanent link">&para;</a></h3>
 <p><code>source</code> names every held document that states the record, not only the one
 it was drafted from, ordered by <code>authority</code>, strongest first
@@ -1661,8 +1525,8 @@ it was drafted from, ordered by <code>authority</code>, strongest first
 <code>source</code> asserts that the document says this, so cite only a passage you have
 read. Where documents disagree, both are listed and the record states the
 difference; where only a meeting, mail or chat supports a claim, the record
-says so. A fact that only a meeting supports is either badly sourced or not a
-fact. A record the project originated itself has no <code>source</code>.</p>
+says so. A fact that only a meeting, mail or chat supports is either badly sourced or not a
+fact.</p>
 <h3 id="references-points-at-the-documentation"><code>references</code> points at the documentation<a class="headerlink" href="#references-points-at-the-documentation" title="Permanent link">&para;</a></h3>
 <p>A record says what must hold, not how. <code>references</code> names the documents that
 say how, such as the schema a decision settles, as paths from the repository
@@ -1674,7 +1538,7 @@ resolve.</p>
 has been built. Whether a requirement is built is shown by its passing tests;
 the progress of the work is in the state file.</p>
 <h2 id="how-a-record-is-written">How a record is written<a class="headerlink" href="#how-a-record-is-written" title="Permanent link">&para;</a></h2>
-<p>Every record follows the <a href="writing.html">writing standard</a>.</p>
+<p>Every record follows the writing standard, <code>src/vogon/references/writing.md</code>.</p>
 <h3 id="length">Length<a class="headerlink" href="#length" title="Permanent link">&para;</a></h3>
 <p>Suggested lengths for the body, everything after the frontmatter. A record well
 over its suggested length usually states two things and is split into two
@@ -1749,7 +1613,9 @@ where the validation plan does.</p>
 <li><strong>Acceptance criteria</strong>: what must be tested. Each expected value is worked
   out from the requirement and its sources, never read off a run of the code,
   because a value taken from the code makes the test that asserts it unable to
-  fail. The acceptance criteria are approved with the requirement.</li>
+  fail. The acceptance criteria are approved with the requirement. A
+  requirement with <code>gxp_impact</code> other than <code>none</code>, or with
+  <code>verification: test</code>, has acceptance criteria.</li>
 </ul>
 <h3 id="worked-example">Worked example<a class="headerlink" href="#worked-example" title="Permanent link">&para;</a></h3>
 <pre><code class="language-markdown">---
@@ -1852,20 +1718,22 @@ can be checked again.</p>
 <h2 id="constraint">Constraint<a class="headerlink" href="#constraint" title="Permanent link">&para;</a></h2>
 <p>At <code>vogon/constraints/CON-NNN.md</code>. The body says what it forbids or forces.</p>
 <p>Frontmatter it adds: <code>imposed_by</code>, what imposes it (a regulation, a numbered
-procedure, a standard or a platform behaviour), and <code>lifts_when</code>, the condition
-under which it stops applying, or <code>permanent</code>.</p>
+procedure, a standard or a platform behaviour, named and never given as a
+path), and <code>lifts_when</code>, the condition under which it stops applying, or
+<code>permanent</code>.</p>
 <h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
 <p>At <code>vogon/decisions/DEC-NNN.md</code>. The body has the context, the options and
 what each costs, the decision, its consequences including the bad ones, and an
-example of the decision applied. A decision is never edited once accepted; a
+example of the decision applied. A decision is never edited once merged; a
 later decision supersedes it, and both files stay.</p>
 <h2 id="test-procedure">Test procedure<a class="headerlink" href="#test-procedure" title="Permanent link">&para;</a></h2>
 <p>Only where <code>tests.md</code> keeps test procedures in the repository. At
 <code>vogon/requirements/&lt;module&gt;/TP-&lt;MODULE&gt;-&lt;NUMBER&gt;.md</code>, beside the
 requirements it verifies, with its id from <code>vogon id TP &lt;module&gt;</code>. The
 frontmatter adds <code>verifies</code>, the requirement ids. The body is numbered steps,
-each with its expected result. Where test procedures are kept in the tracker,
-the tracker key is the id and VOGON writes no file.</p>
+each with its expected result, worked out from the requirement and its
+sources and never read off a run of the code. Where test procedures are kept
+in the tracker, the tracker key is the id and VOGON writes no file.</p>
 <h2 id="identifiers">Identifiers<a class="headerlink" href="#identifiers" title="Permanent link">&para;</a></h2>
 <p>An id is a type, an optional module, and a number:</p>
 <pre><code>&lt;TYPE&gt;-&lt;NUMBER&gt;

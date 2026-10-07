@@ -5,8 +5,15 @@ to each drafted requirement.
 
 Each requirement:
 
-- [ ] makes sense in practice: it solves a real problem, and its cost fits how
-      often the situation occurs;
+- [ ] makes sense in practice. The evaluator states, from the sources, the
+      records and what is known of the systems involved: the situation the
+      requirement responds to and how often it occurs; how often the work the
+      requirement asks for runs and what each run costs; and what goes wrong, for whom, if
+      the requirement is not met. It is a finding when the work runs far more
+      often than the situation occurs, when meeting the requirement costs
+      more than the failure it prevents, when a cheaper form meets the same
+      need (checking once at setup, on change or on failure), or when it adds
+      steps, confirmations or files to a person's work that nobody would miss;
 - [ ] contradicts no other requirement, constraint or decision, including
       those in open pull requests;
 - [ ] does not contradict the project's design as its decision records state

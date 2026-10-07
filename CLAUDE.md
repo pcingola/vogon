@@ -15,7 +15,7 @@ writes, and not anything VOGON generates in a user's project.
 Applies to everything except the marketing page: `CLAUDE.md`, `src/docs/`,
 `vogon/`, `README.md`, CLI output, comments, commit messages and working notes,
 and everything VOGON generates. The full statement,
-including what a checker can enforce, is `src/docs/dev/writing.md`; it is the
+including what a checker can enforce, is `src/vogon/references/writing.md`; it is the
 same standard, written for the reader rather than for this file. Standard
 Technical English: plain declarative sentences, precise terms,
 the shortest wording that is still exact.
@@ -50,7 +50,7 @@ vogon/
 ├── tmp/             working notes: plans, brainstorming. gitignored, local only.
 ├── assets/          brand originals + their dark twins, 46 MB. never published.
 ├── .claude-plugin/  marketplace.json: the marketplace listing the plugin
-├── .github/         CI: tests and a strict site build on every push
+├── .github/         CI: tests and a strict site build on pushes to main and on pull requests
 ├── .githooks/       pre-commit: rebuilds docs/ when site source changes
 ├── mkdocs.yml       docs_dir: src/docs   site_dir: docs
 ├── Makefile         make site / make clean
@@ -68,7 +68,7 @@ at `docs/`.
 `src/docs/dev/` is the current description of the system. Read
 `dev/contributing.md` before changing the build, publishing or packaging,
 `dev/site.md` before editing `src/html/index.html`, `dev/architecture.md`
-before changing what the system does, and `dev/writing.md` before writing any
+before changing what the system does, and `src/vogon/references/writing.md` before writing any
 prose that ships, including records.
 
 ## Records

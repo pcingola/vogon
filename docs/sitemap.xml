@@ -33,11 +33,11 @@
          <lastmod>2026-10-07</lastmod>
     </url>
     <url>
-         <loc>https://example.github.io/vogon/dev/writing.html</loc>
+         <loc>https://example.github.io/vogon/dev/process/index.html</loc>
          <lastmod>2026-10-07</lastmod>
     </url>
     <url>
-         <loc>https://example.github.io/vogon/dev/process/index.html</loc>
+         <loc>https://example.github.io/vogon/dev/process/approval.html</loc>
          <lastmod>2026-10-07</lastmod>
     </url>
     <url>
@@ -45,23 +45,7 @@
          <lastmod>2026-10-07</lastmod>
     </url>
     <url>
-         <loc>https://example.github.io/vogon/dev/process/failed_checks.html</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
          <loc>https://example.github.io/vogon/dev/process/implementation.html</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://example.github.io/vogon/dev/process/meetings.html</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://example.github.io/vogon/dev/process/new_requirements.html</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://example.github.io/vogon/dev/process/next_work.html</loc>
          <lastmod>2026-10-07</lastmod>
     </url>
     <url>
@@ -69,15 +53,15 @@
          <lastmod>2026-10-07</lastmod>
     </url>
     <url>
+         <loc>https://example.github.io/vogon/dev/process/requirements.html</loc>
+         <lastmod>2026-10-07</lastmod>
+    </url>
+    <url>
          <loc>https://example.github.io/vogon/dev/process/setup.html</loc>
          <lastmod>2026-10-07</lastmod>
     </url>
     <url>
-         <loc>https://example.github.io/vogon/dev/process/steps.html</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://example.github.io/vogon/dev/process/test_checks.html</loc>
+         <loc>https://example.github.io/vogon/dev/process/test_procedures.html</loc>
          <lastmod>2026-10-07</lastmod>
     </url>
     <url>
@@ -86,10 +70,6 @@
     </url>
     <url>
          <loc>https://example.github.io/vogon/user/install.html</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://example.github.io/vogon/user/scripts.html</loc>
          <lastmod>2026-10-07</lastmod>
     </url>
 </urlset>

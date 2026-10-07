@@ -48,7 +48,8 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
      `2026-09-01_validation_plan_v0_1.pdf`;
    - copies the original unchanged to `vogon/sources/<date>_<slug>.<ext>`,
      and writes the markdown copy beside it as `<date>_<slug>.md`, with the
-     frontmatter `sources.md` states. A plan that is already markdown is held
+     frontmatter `sources.md` states, `kind: plan` and
+     `authority: procedure`. A plan that is already markdown is held
      once;
    - stops and reports, without writing, if either path exists, or if a held
      file in `vogon/sources/` has the same content. A held plan is never
@@ -58,8 +59,13 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
 5. Read the repository and the connectors, and propose values:
    - `repository_host`: from the host of `git remote get-url origin`;
    - every other role: from the MCP servers connected to the session. Propose
-     a server for each role it can fill. Where two servers can fill one role,
-     propose both and let the developer choose;
+     a server for each role it can fill. A server is proposed for a role only
+     when it provides the operations the skills need from that role, such as
+     reading and creating items and reading transitions for a tracker,
+     uploading results for a test manager, and filing documents for a
+     document system; report each operation a proposed server lacks. Where
+     two servers can fill one role, propose both and let the developer
+     choose;
    - `modules`: one per top-level package of the source tree, in uppercase
      letters and digits;
    - `roles`: `product_owner` and each approval role the plan names, under
@@ -109,9 +115,9 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
 
 ## Loops
 
-| Writing sub-agent (agent definition) | Produces | Evaluators (agent definition) | Checklist or perspective |
+| Writing sub-agent | Produces | Evaluators | Checklist or perspective |
 | --- | --- | --- | --- |
-| Plan filer (`vogon:vogon-writer`) | The original and the markdown copy of the validation plan in `vogon/sources/` | Copy check (`vogon:vogon-checker`), which reads the original itself | The copy holds every section, heading number, table, list and sentence of the original, in its order and wording, and adds nothing; the frontmatter date, title and file names match the original and `sources.md` |
+| Plan filer | The original and the markdown copy of the validation plan in `vogon/sources/` | Copy check, which reads the original itself | The copy holds every section, heading number, table, list and sentence of the original, in its order and wording, and adds nothing; the frontmatter date, title and file names match the original and `sources.md` |
 
 `vogon.yaml`, `FAKE-REQ.md` and the `.gitignore` lines have no loop.
 

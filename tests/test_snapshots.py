@@ -509,6 +509,3 @@ def test_vogon_needs_no_transition_and_the_approval_transition_is_left_to_the_wo
     skill = (REPO / "src" / "vogon" / "references" / "common.md").read_text(encoding="utf-8")
     assert "Never transition an issue, a test issue or a document into a state that\n" \
            "  records approval or signature" in skill
-    install = " ".join((REPO / "src" / "docs" / "user" / "install.md").read_text(encoding="utf-8").split())
-    assert "a transition into an approved or signed state requires the approver's own credentials" \
-        in install

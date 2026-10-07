@@ -22,7 +22,6 @@ nav:
   - User guide:
       - user/index.md
       - Installation: user/install.md
-      - Scripts: user/scripts.md
   - Developer guide:
       - dev/index.md
       - Architecture: dev/architecture.md
@@ -30,19 +29,15 @@ nav:
       - Vocabulary: dev/vocabulary.md
       - Records: dev/records.md
       - Sources: dev/sources.md
-      - Writing standard: dev/writing.md
       - Development process:
           - dev/process/index.md
-          - Steps of the GxP process: dev/process/steps.md
           - Setting up a project: dev/process/setup.md
-          - When a check fails: dev/process/failed_checks.md
-          - From meetings to requirements: dev/process/meetings.md
-          - Checking the new requirements: dev/process/new_requirements.md
-          - What to work on next: dev/process/next_work.md
-          - Planning one requirement: dev/process/planning.md
-          - Test cases, code and tests: dev/process/implementation.md
-          - Checking the tests: dev/process/test_checks.md
-          - Compliance documents: dev/process/documents.md
+          - Requirements from sources: dev/process/requirements.md
+          - Approving requirements: dev/process/approval.md
+          - Test procedures: dev/process/test_procedures.md
+          - Planning: dev/process/planning.md
+          - Code, tests and documentation: dev/process/implementation.md
+          - Release documents: dev/process/documents.md
       - Marketing page: dev/site.md
       - Contributing: dev/contributing.md
 

@@ -118,9 +118,9 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
 This skill produces no work, so it runs no loop of its own. A process file
 derived in step 1 goes through the loop in `process-files.md`.
 
-| Writing sub-agent (agent definition) | Produces | Evaluators (agent definition) | Checklist or perspective |
+| Writing sub-agent | Produces | Evaluators | Checklist or perspective |
 | --- | --- | --- | --- |
-| `vogon:vogon-writer`, only to derive a missing or outdated process file | `vogon/project/tests.md` or `vogon/project/tracking.md` | `vogon:vogon-checker` | Support and completeness, as `process-files.md` states |
+| Process file writer, only to derive a missing or outdated process file | `vogon/project/tests.md` or `vogon/project/tracking.md` | Support evaluator; completeness evaluator | As `process-files.md` states |
 
 ## Stops for a person
 

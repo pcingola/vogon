@@ -323,34 +323,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../user/scripts.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Scripts
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -586,34 +558,6 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="writing.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Writing standard
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
     
     
     
@@ -625,10 +569,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_7" >
         
           
-          <label class="md-nav__link" for="__nav_2_8" id="__nav_2_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2_7" id="__nav_2_7_label" tabindex="0">
             
   
   
@@ -646,8 +590,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2_8">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -665,34 +609,6 @@
   
     <li class="md-nav__item">
       <a href="process/index.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Development process
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="process/steps.html" class="md-nav__link">
         
   
   
@@ -748,14 +664,14 @@
   
   
     <li class="md-nav__item">
-      <a href="process/failed_checks.html" class="md-nav__link">
+      <a href="process/requirements.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    When a check fails
+    Requirements from sources
   
 
     
@@ -776,14 +692,14 @@
   
   
     <li class="md-nav__item">
-      <a href="process/meetings.html" class="md-nav__link">
+      <a href="process/approval.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    From meetings to requirements
+    Approving requirements
   
 
     
@@ -804,42 +720,14 @@
   
   
     <li class="md-nav__item">
-      <a href="process/new_requirements.html" class="md-nav__link">
+      <a href="process/test_procedures.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Checking the new requirements
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="process/next_work.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    What to work on next
+    Test procedures
   
 
     
@@ -867,7 +755,7 @@
   <span class="md-ellipsis">
     
   
-    Planning one requirement
+    Planning
   
 
     
@@ -895,35 +783,7 @@
   <span class="md-ellipsis">
     
   
-    Test cases, code and tests
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="process/test_checks.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Checking the tests
+    Code, tests and documentation
   
 
     
@@ -951,7 +811,7 @@
   <span class="md-ellipsis">
     
   
-    Compliance documents
+    Release documents
   
 
     
@@ -1195,9 +1055,9 @@
 <h1 id="marketing-page">Marketing page<a class="headerlink" href="#marketing-page" title="Permanent link">&para;</a></h1>
 <p><code>src/html/index.html</code> is standalone: no build step, copied verbatim into
 <code>docs/</code> by <code>make site</code>. It reads as an enterprise life-sciences SaaS page that
-is also a controlled document — a persistent document-control strip, SOP clause
-numbering (§1.0 …), square-cornered hairline panels, and one animation: the
-REJECTED stamp that lands when a change request is submitted.</p>
+is also a controlled document. It has a persistent document-control strip, SOP
+clause numbering (§1.0 …), square-cornered hairline panels, and one animation:
+the REJECTED stamp that lands when a change request is submitted.</p>
 <h2 id="type-and-color">Type and color<a class="headerlink" href="#type-and-color" title="Permanent link">&para;</a></h2>
 <p>Archivo for display, Source Sans 3 for body, IBM Plex Mono for document
 metadata and CLI, Source Serif 4 italic for quotes.</p>
@@ -1206,13 +1066,15 @@ oxblood <code>#971A1C</code>, stamp <code>#BF100F</code>, slate <code>#6E7B82</c
 dark are both defined on <code>:root</code>. Fixed dark chrome (nav strip, footer, consent
 bar) uses the <code>--dark-ground*</code> tokens and stays dark in both themes.</p>
 <h2 id="images">Images<a class="headerlink" href="#images" title="Permanent link">&para;</a></h2>
-<p>Images are WebP in <code>src/html/img/</code> (54 MB of PNG reduced to 2.2 MB), referenced
+<p>Images are WebP in <code>src/html/img/</code>, referenced
 relatively as <code>img/…</code> so the paths survive the copy into <code>docs/</code>. Regenerate
 with ImageMagick from <code>assets/images/</code> after adding artwork.</p>
 <p>Most of the artwork was drawn on white paper, which glares on a dark page, so
 those figures have a dark twin: <code>assets/images/&lt;name&gt;_dark.png</code> is the original
 and <code>src/html/img/&lt;name&gt;_dark.webp</code> the web copy. Images 01–09, 12 and 13 have
-one. The twins were redrawn for dark ground. Flood fills and lightness
+a dark original. Images 04–07, 09, 12 and 13 have a dark web copy. Images 03 and
+08 are served dark through <code>emblem_dark.webp</code> and <code>stamp-alpha_dark.webp</code>.
+Images 01 and 02 have no dark web copy. The twins were redrawn for dark ground. Flood fills and lightness
 inversions were tried and rejected; regenerate the artwork instead.</p>
 <p>A dark twin must be the same pixel size as the light <code>.webp</code> beside it, because
 <code>index.html</code> carries one <code>width</code>/<code>height</code> pair for both sources:</p>
@@ -1220,14 +1082,14 @@ inversions were tried and rejected; regenerate the artwork instead.</p>
 magick assets/images/&lt;name&gt;_dark.png -resize '&lt;W&gt;x&lt;H&gt;!' \
   -quality 82 -define webp:method=6 src/html/img/&lt;name&gt;_dark.webp
 </code></pre>
-<p>Where the aspect ratios differ — 04 is square in dark and 1200×1006 in light —
-centre-crop to the light ratio first (<code>-gravity center -crop 1254x1051+0+0
+<p>Where the aspect ratios differ, as for 04, which is square in dark and
+1200×1006 in light, centre-crop to the light ratio first (<code>-gravity center -crop 1254x1051+0+0
 +repage</code>) rather than squashing.</p>
 <p><code>emblem.webp</code> (03) and <code>stamp-alpha.webp</code> (08) are transparent cutouts and both
 are white-keyed: the vogon's white shirt and the paper inside the stamp frame
 went with the background. That reads correctly on cream and leaves holes on
-dark ground. Their dark counterparts come off the authored dark artwork
-instead — <code>emblem_dark.webp</code> is a circular mask of <code>03-vogon-icon_dark.png</code>,
+dark ground. Their dark counterparts are made from the authored dark artwork:
+<code>emblem_dark.webp</code> is a circular mask of <code>03-vogon-icon_dark.png</code>,
 and <code>stamp-alpha_dark.webp</code> takes its alpha from the brightest channel of
 <code>08-rejected-stamp_dark.png</code>. The footer stamp uses the dark one
 unconditionally because the footer is <code>--dark-ground</code> in both themes. The

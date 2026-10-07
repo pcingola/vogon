@@ -50,10 +50,10 @@ If no validation plan is held, stop and tell the developer to file it with
    field names, transition names and link names from the items, list them for
    the developer, and ask the developer to confirm them, a stop `common.md`
    lists. Give the confirmed names to the writing sub-agent.
-3. Start a writing sub-agent with the `vogon:vogon-writer` definition. Give it
-   the template, the held plan's markdown copy, the plan version, the confirmed
-   tracker and test manager names where step 2 applies, the output path, its log path and the
-   logs of earlier rounds. When the file is derived again, also give it the
+3. Start a writing sub-agent. Give it the template, the held plan's markdown
+   copy, the plan version, the confirmed tracker and test manager names where
+   step 2 applies, the output path, its log path and the logs of earlier
+   rounds. When the file is derived again, also give it the
    existing file. The writing sub-agent:
    - fills the frontmatter: `plan_source`, the path of the held plan's
      markdown copy; `plan_version`, the version from step 1; `derived_on`, the
@@ -68,8 +68,7 @@ If no validation plan is held, stop and tell the developer to file it with
    - when the file is derived again, keeps each recorded answer whose topic the
      new plan still does not state, with its name and date, and drops an
      answer the new plan now covers.
-4. Start two evaluating sub-agents with the `vogon:vogon-checker` definition.
-   Give each the file, the template, the held plan's markdown copy, its log
+4. Start two evaluating sub-agents. Give each the file, the template, the held plan's markdown copy, its log
    path and the logs of earlier rounds.
    - Support: each statement says what its cited plan section says, and
      nothing more. A statement with no citation and no recorded answer is a

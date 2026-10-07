@@ -323,34 +323,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../user/scripts.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Scripts
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -710,34 +682,6 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="writing.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Writing standard
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
     
     
     
@@ -749,10 +693,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_7" >
         
           
-          <label class="md-nav__link" for="__nav_2_8" id="__nav_2_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2_7" id="__nav_2_7_label" tabindex="0">
             
   
   
@@ -770,8 +714,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2_8">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -789,34 +733,6 @@
   
     <li class="md-nav__item">
       <a href="process/index.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Development process
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="process/steps.html" class="md-nav__link">
         
   
   
@@ -872,14 +788,14 @@
   
   
     <li class="md-nav__item">
-      <a href="process/failed_checks.html" class="md-nav__link">
+      <a href="process/requirements.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    When a check fails
+    Requirements from sources
   
 
     
@@ -900,14 +816,14 @@
   
   
     <li class="md-nav__item">
-      <a href="process/meetings.html" class="md-nav__link">
+      <a href="process/approval.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    From meetings to requirements
+    Approving requirements
   
 
     
@@ -928,42 +844,14 @@
   
   
     <li class="md-nav__item">
-      <a href="process/new_requirements.html" class="md-nav__link">
+      <a href="process/test_procedures.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Checking the new requirements
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="process/next_work.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    What to work on next
+    Test procedures
   
 
     
@@ -991,7 +879,7 @@
   <span class="md-ellipsis">
     
   
-    Planning one requirement
+    Planning
   
 
     
@@ -1019,35 +907,7 @@
   <span class="md-ellipsis">
     
   
-    Test cases, code and tests
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="process/test_checks.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Checking the tests
+    Code, tests and documentation
   
 
     
@@ -1075,7 +935,7 @@
   <span class="md-ellipsis">
     
   
-    Compliance documents
+    Release documents
   
 
     
@@ -1414,15 +1274,15 @@ records, and the substitution is mechanical.</p>
 </tr>
 <tr>
 <td><strong>Tracker</strong></td>
-<td>The issue tracker holding the requirement issues, their priority and assignee, and in a deployment their approval. GitHub Issues in the prototype, Jira in a deployment</td>
+<td>The issue tracker holding work items such as requirements, their priority and assignee, and where the project uses it for approval, their approval. For example Jira or GitHub Issues</td>
 </tr>
 <tr>
 <td><strong>Test manager</strong></td>
-<td>The system holding test cases, test runs and results, which produces the coverage and traceability reports. None in the prototype; Xray, a Jira plugin, in a deployment</td>
+<td>The system holding test cases, test runs and results, which produces the coverage and traceability reports. For example Xray. A project may have none</td>
 </tr>
 <tr>
 <td><strong>Repository host</strong></td>
-<td>The service holding the git repository and reviewing changes before they merge. GitHub</td>
+<td>The service holding the git repository and reviewing changes before they merge. For example GitHub</td>
 </tr>
 <tr>
 <td><strong>Document system</strong></td>
@@ -1455,10 +1315,11 @@ records, and the substitution is mechanical.</p>
 </table>
 <h2 id="who-signs-what">Who signs what<a class="headerlink" href="#who-signs-what" title="Permanent link">&para;</a></h2>
 <p>A validated system's documents are signed by roles named in the validation
-plan; a separate approval matrix says which person holds each role. A host
-project configures, in <code>vogon.yaml</code>, the role that gives each approval and the
-people who hold each role, so records and generated documents name the role
-and never the person (<code>DEC-018</code>).</p>
+plan; a separate approval matrix says which person holds each role. Which role
+gives each approval comes from the host project's validation plan, as its
+project process files state it. <code>vogon.yaml</code> lists the people who hold each
+role, so records and generated documents name the role and never the person.
+The roles below are common ones; a project uses the roles its plan names.</p>
 <table>
 <thead>
 <tr>
@@ -1506,12 +1367,12 @@ and never the person (<code>DEC-018</code>).</p>
 <tr>
 <td><strong>Product Owner</strong></td>
 <td>One named person who owns the backlog and decides what gets built next</td>
-<td>Approves the requirements in the tracker, in the default configuration. Where the procedure gives that approval to the Business Process Owner, the configuration says so</td>
+<td>Approves the requirements where the validation plan gives this role that approval. Where the plan gives it to another role, such as the Business Process Owner, <code>requirements.md</code> says so</td>
 </tr>
 <tr>
 <td><strong>Test Lead</strong></td>
-<td>One of the engineers, named to review the test cases</td>
-<td>Approves the test issues in the test manager and the test specification in the document system, in the default configuration. Never approves test cases they wrote</td>
+<td>One of the engineers, named to review the test procedures</td>
+<td>Approves the test procedures and test documents the validation plan assigns to this role, as <code>tests.md</code> and <code>documents.md</code> state. Never approves test procedures they wrote</td>
 </tr>
 <tr>
 <td><strong>Code reviewer</strong></td>

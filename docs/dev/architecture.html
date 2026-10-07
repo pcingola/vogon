@@ -323,34 +323,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../user/scripts.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Scripts
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -782,34 +754,6 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="writing.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Writing standard
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
     
     
     
@@ -821,10 +765,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_7" >
         
           
-          <label class="md-nav__link" for="__nav_2_8" id="__nav_2_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2_7" id="__nav_2_7_label" tabindex="0">
             
   
   
@@ -842,8 +786,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2_8">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -861,34 +805,6 @@
   
     <li class="md-nav__item">
       <a href="process/index.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Development process
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="process/steps.html" class="md-nav__link">
         
   
   
@@ -944,14 +860,14 @@
   
   
     <li class="md-nav__item">
-      <a href="process/failed_checks.html" class="md-nav__link">
+      <a href="process/requirements.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    When a check fails
+    Requirements from sources
   
 
     
@@ -972,14 +888,14 @@
   
   
     <li class="md-nav__item">
-      <a href="process/meetings.html" class="md-nav__link">
+      <a href="process/approval.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    From meetings to requirements
+    Approving requirements
   
 
     
@@ -1000,42 +916,14 @@
   
   
     <li class="md-nav__item">
-      <a href="process/new_requirements.html" class="md-nav__link">
+      <a href="process/test_procedures.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Checking the new requirements
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="process/next_work.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    What to work on next
+    Test procedures
   
 
     
@@ -1063,7 +951,7 @@
   <span class="md-ellipsis">
     
   
-    Planning one requirement
+    Planning
   
 
     
@@ -1091,35 +979,7 @@
   <span class="md-ellipsis">
     
   
-    Test cases, code and tests
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="process/test_checks.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Checking the tests
+    Code, tests and documentation
   
 
     
@@ -1147,7 +1007,7 @@
   <span class="md-ellipsis">
     
   
-    Compliance documents
+    Release documents
   
 
     
@@ -1427,8 +1287,7 @@
 <h1 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h1>
 <p>VOGON is a Claude Code plugin installed into a host project: the repository of
 a regulated (GxP) software project. It carries out the
-<a href="process/steps.html">steps of the GxP process</a> that do not need a person, as the
-pages of <a href="process/index.html">Development process</a> describe them. The plugin is
+<a href="process/index.html">steps of the GxP process</a> that do not need a person. The plugin is
 a set of skills that work together, the sub-agents they start, and hooks where
 a task needs one. Small scripts do the work that must give the same result
 every time: <code>vogon id</code> allocates record ids, <code>vogon approve</code> records an
@@ -1530,27 +1389,27 @@ session, which is the main agent of <a href="loop.html">the loop</a>.</p>
 <tr>
 <td><code>vogon:requirements</code></td>
 <td>Reads the selected sources, writes checked summaries of meetings, mail and chat, drafts records with their risk fields, checks them, opens the pull request, and in the real version sends the requirements to the tracker for approval</td>
-<td><a href="process/meetings.html">Meetings</a>, <a href="process/new_requirements.html">New requirements</a></td>
+<td><a href="process/requirements.html">Requirements from sources</a></td>
 </tr>
 <tr>
 <td><code>vogon:approve</code></td>
 <td>Records the Product Owner's approval of the requirements they name, commits and pushes</td>
-<td><a href="process/new_requirements.html">New requirements</a></td>
+<td><a href="process/approval.html">Approving requirements</a></td>
 </tr>
 <tr>
 <td><code>vogon:next</code></td>
 <td>Lists the approved requirements ready to start, lists the blocked ones with what blocks them, assigns the chosen one</td>
-<td><a href="process/next_work.html">Next work</a></td>
+<td><a href="process/planning.html">Planning</a></td>
 </tr>
 <tr>
 <td><code>vogon:tests</code></td>
 <td>Writes the test procedures of approved requirements before development, or generates them from the existing tests, as <code>tests.md</code> states, and registers them for approval</td>
-<td><a href="process/test_checks.html">Tests</a></td>
+<td><a href="process/test_procedures.html">Test procedures</a></td>
 </tr>
 <tr>
 <td><code>vogon:implement</code></td>
 <td>Plans one or more requirements, or takes their plan, writes the code, tests and documentation part by part, has them reviewed, and opens the pull request</td>
-<td><a href="process/planning.html">Planning</a>, <a href="process/implementation.html">Implementation</a>, <a href="process/test_checks.html">Tests</a></td>
+<td><a href="process/planning.html">Planning</a>, <a href="process/implementation.html">Code, tests and documentation</a></td>
 </tr>
 <tr>
 <td><code>vogon:release</code></td>

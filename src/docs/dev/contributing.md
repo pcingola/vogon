@@ -5,13 +5,16 @@
 | Path | Contents |
 | --- | --- |
 | `.claude-plugin/` | The marketplace listing. |
-| `src/vogon/` | The Claude Code plugin: skills, subagents, hooks, scripts. |
+| `src/vogon/` | The Claude Code plugin: skills, references, templates, hooks, scripts. |
 | `src/docs/` | Documentation source, markdown. What you are reading. |
 | `src/html/` | Marketing page source: `index.html`, `img/`. |
 | `docs/` | Build output. Rendered HTML, served by GitHub Pages. Never edit. |
 | `vogon/` | VOGON's own records: requirements, facts, constraints, decisions. |
 | `tests/` | Test suite. |
+| `tmp/` | Working notes and plans. Gitignored, local only. |
 | `assets/` | Brand originals. Never published. |
+| `.github/` | CI workflow. |
+| `.githooks/` | The pre-commit hook that rebuilds `docs/`. |
 
 ## Development environment
 
@@ -24,9 +27,8 @@ make test      # pytest, testpaths = ["tests"]
 `core.hooksPath` points git at the hooks committed in `.githooks/`. It is a
 local setting, so it is set once per clone.
 
-Tests import the script modules from `src/vogon/scripts/` through pytest's
-`pythonpath`. `pyproject.toml` exists for development only: it holds the dev
-dependency group and the pytest configuration.
+`pyproject.toml` exists for development only: it holds the dev dependency group
+and the pytest configuration.
 
 ## Test markers
 
@@ -36,14 +38,14 @@ naming it, the same marker VOGON provides to host projects:
 ```python
 import pytest
 
-@pytest.mark.req("REQ-CLI-1")
-def test_warning_alone_exits_zero():
+@pytest.mark.req("REQ-ABC-1")
+def test_example():
     ...
 ```
 
-A test verifying several requirements names each: `@pytest.mark.req("REQ-TRC-2",
-"REQ-TRC-3")`. The expected values come from the requirement's acceptance
-block, never from a run of the code (`DEC-024`). The `req` marker is
+A test verifying several requirements names each: `@pytest.mark.req("REQ-ABC-2",
+"REQ-ABC-3")`. The expected values come from the requirement's acceptance
+criteria, never from a run of the code. The `req` marker is
 registered in `pyproject.toml` under `[tool.pytest.ini_options]`, so the suite
 runs under `--strict-markers` without the plugin loaded.
 
@@ -72,8 +74,8 @@ output is committed.
 
 ## CI
 
-`.github/workflows/ci.yml` runs the tests and a strict site build on every push
-and pull request. A broken link or a page missing from the navigation fails the
+`.github/workflows/ci.yml` runs the tests and a strict site build on pushes to
+`main` and on pull requests. A broken link or a page missing from the navigation fails the
 build, because `mkdocs build --strict` treats warnings as errors.
 
 ## Publishing
@@ -103,29 +105,29 @@ The repository is a Claude Code plugin marketplace.
 ```
 src/vogon/
 ├── .claude-plugin/plugin.json   name, version, description
-├── skills/<skill>/              SKILL.md and references/, one directory per skill
-├── agents/                      one definition per worker and checker
+├── hooks/hooks.json             Claude Code hooks
+├── references/                  rules shared by the skills
+├── templates/                   templates of the host project's process files
+├── skills/
+│   ├── init/                    SKILL.md
+│   ├── requirements/            SKILL.md, references/
+│   ├── approve/                 SKILL.md
+│   ├── next/                    SKILL.md
+│   ├── tests/                   SKILL.md, references/
+│   ├── implement/               SKILL.md, references/
+│   └── release/                 SKILL.md
 └── scripts/
-    ├── vogon                    vogon trace
-    └── pytest_plugin/           vogon_pytest.py only
+    └── vogon                    vogon id, vogon approve, vogon trace
 ```
 
-[Architecture](architecture.md) lists the skills, the workers and the
-checkers.
-
-`scripts/pytest_plugin/` holds `vogon_pytest.py` and nothing else. `vogon
-trace` puts that directory on the host project's `PYTHONPATH`, so any module
-added beside it becomes importable by the host's tests and can replace an
-installed module of the same name. Script modules go in `scripts/`.
+[Architecture](architecture.md) describes the skills.
 
 The version is in `plugin.json` and nowhere else; `scripts/cli.py` reads it
 from there. There is no wheel and no PyPI release. Each script runs under
 `uv run --script` and declares its dependencies inline (PEP 723).
 
 Each release is tagged `v<version>`, with the version read from `plugin.json`,
-on the commit that sets it: `v0.1.0` for version `0.1.0`. A host project's CI
-checks out the VOGON repository at the tag of the plugin version it has
-installed, so a release without its tag cannot be checked in CI.
+on the commit that sets it: `v0.1.0` for version `0.1.0`.
 
 ```sh
 claude plugin validate .           # the marketplace listing

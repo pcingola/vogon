@@ -2,8 +2,7 @@
 
 Applies to records, plans, documents, summaries, test names and docstrings,
 commit messages, pull request descriptions and every tracker field. Each item
-below is a rule the text meets or fails. `vogon check` enforces the
-mechanical part on records; the rest is checked by reading.
+below is a rule the text meets or fails.
 
 ## The reader
 
@@ -29,6 +28,8 @@ act on it without asking a question, not when it is comprehensive.
       That holds for definitions, reasons and consequences as well.
 - [ ] A statement no input supports is not written. A cited passage says what
       the text says it does.
+- [ ] An unsupported statement found in a revision is fixed by deleting it or
+      by citing the input that states it, never by adding a new explanation.
 - [ ] No sentence that could be deleted without changing what the reader
       understands.
 - [ ] The weight of a fact is left to the reader. No word or phrase from the
@@ -65,7 +66,7 @@ Matched ignoring case, on whole words, outside code spans and code blocks.
       steps. An unresolved question is asked of the person, not written down.
 - [ ] An absent field is absent: no `N/A`, `n/a`, `NA`, `TBD`, `TODO`,
       `none considered`, `-`, `null`, empty string or empty list. `none` only
-      as a `gxp_risk` value.
+      as a `gxp_impact` value.
 
 ## Counts
 
@@ -81,5 +82,6 @@ Matched ignoring case, on whole words, outside code spans and code blocks.
 
 - [ ] A record description longer than a short paragraph is split into two
       records.
-- [ ] A record body is within its word limit: requirement 300, fact 200,
-      constraint 200, decision 600.
+- [ ] A record body longer than its suggested length (requirement 300 words,
+      fact 200, constraint 200, decision 600) has no sentence that can be cut
+      without losing a statement. The length is a suggestion, not a limit.

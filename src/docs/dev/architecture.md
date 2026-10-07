@@ -2,8 +2,7 @@
 
 VOGON is a Claude Code plugin installed into a host project: the repository of
 a regulated (GxP) software project. It carries out the
-[steps of the GxP process](process/steps.md) that do not need a person, as the
-pages of [Development process](process/index.md) describe them. The plugin is
+[steps of the GxP process](process/index.md) that do not need a person. The plugin is
 a set of skills that work together, the sub-agents they start, and hooks where
 a task needs one. Small scripts do the work that must give the same result
 every time: `vogon id` allocates record ids, `vogon approve` records an
@@ -60,11 +59,11 @@ session, which is the main agent of [the loop](loop.md).
 | Skill | Does | Process page |
 | --- | --- | --- |
 | `vogon:init` | Writes `vogon/project/vogon.yaml`: the system for each role, the role holders and the options; files the validation plan in `vogon/sources/` | [Setup](process/setup.md) |
-| `vogon:requirements` | Reads the selected sources, writes checked summaries of meetings, mail and chat, drafts records with their risk fields, checks them, opens the pull request, and in the real version sends the requirements to the tracker for approval | [Meetings](process/meetings.md), [New requirements](process/new_requirements.md) |
-| `vogon:approve` | Records the Product Owner's approval of the requirements they name, commits and pushes | [New requirements](process/new_requirements.md) |
-| `vogon:next` | Lists the approved requirements ready to start, lists the blocked ones with what blocks them, assigns the chosen one | [Next work](process/next_work.md) |
-| `vogon:tests` | Writes the test procedures of approved requirements before development, or generates them from the existing tests, as `tests.md` states, and registers them for approval | [Tests](process/test_checks.md) |
-| `vogon:implement` | Plans one or more requirements, or takes their plan, writes the code, tests and documentation part by part, has them reviewed, and opens the pull request | [Planning](process/planning.md), [Implementation](process/implementation.md), [Tests](process/test_checks.md) |
+| `vogon:requirements` | Reads the selected sources, writes checked summaries of meetings, mail and chat, drafts records with their risk fields, checks them, opens the pull request, and in the real version sends the requirements to the tracker for approval | [Requirements from sources](process/requirements.md) |
+| `vogon:approve` | Records the Product Owner's approval of the requirements they name, commits and pushes | [Approving requirements](process/approval.md) |
+| `vogon:next` | Lists the approved requirements ready to start, lists the blocked ones with what blocks them, assigns the chosen one | [Planning](process/planning.md) |
+| `vogon:tests` | Writes the test procedures of approved requirements before development, or generates them from the existing tests, as `tests.md` states, and registers them for approval | [Test procedures](process/test_procedures.md) |
+| `vogon:implement` | Plans one or more requirements, or takes their plan, writes the code, tests and documentation part by part, has them reviewed, and opens the pull request | [Planning](process/planning.md), [Code, tests and documentation](process/implementation.md) |
 | `vogon:release` | Drafts and checks the validation documents for a release commit, produces the traceability matrix, files the evidence | [Documents](process/documents.md) |
 
 Approvals of requirements, test procedures, pull requests and documents are

@@ -11,7 +11,9 @@ have changed. Each item the part fails is a finding, with the file and line.
 - [ ] The code does nothing the requirements and the plan entry do not ask
       for.
 - [ ] The code is well written: clear names, one responsibility per function
-      and class, no duplicated logic, errors handled where they occur.
+      and class, no duplicated logic.
+- [ ] Errors are handled where they enter the system. No error is caught and
+      silently discarded.
 - [ ] The code is not overengineered: no abstraction, option, layer or
       extension point that no requirement uses.
 - [ ] Structured data uses defined data structures and classes, such as
@@ -20,6 +22,12 @@ have changed. Each item the part fails is a finding, with the file and line.
 - [ ] The code follows the language's other best practices and the host
       project's existing conventions, such as its use of type hints,
       formatting, imports, error types and module layout.
+- [ ] Data that the regulation requires to be trustworthy stays so: no data
+      is lost or overwritten without a trace, timestamps are in one time zone,
+      and every change to regulated data is attributable to a user.
+- [ ] No secret, credential or personal data is in the code or the test data.
+- [ ] Inputs from outside the system are validated.
+- [ ] No debugging code, commented-out code or unused code is left.
 - [ ] Requirement ids do not appear in implementation code.
 - [ ] The documentation describes the code as it is after the change. A
       document, docstring or comment that describes removed or changed

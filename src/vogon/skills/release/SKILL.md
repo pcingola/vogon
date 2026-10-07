@@ -60,9 +60,8 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
    Sub-agents read the requirements, test procedures, tests and code there,
    never from the current branch. Read the test procedures from where
    `tests.md` keeps them: the repository, the tracker or the test manager.
-7. Draft each document. Start one writing sub-agent per document with the
-   `vogon:vogon-writer` definition, in parallel. Give it the document's entry
-   in `documents.md`, its template and format, the requirements in the
+7. Draft each document. Start one writing sub-agent per document, in
+   parallel. Give it the document's entry in `documents.md`, its template and format, the requirements in the
    release with their state files, the test procedures, the tests, the code,
    the JUnit XML, the output path, its log path and the logs of earlier
    rounds. The sub-agent writes the document in its template and format, and
@@ -70,9 +69,9 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
    result it rests on. Output path: `vogon/tmp/<release>/` when `vogon.yaml`
    names a document system; otherwise the location `common.md` "Systems by
    role" names, on the working branch.
-8. Check each document. Start one evaluating sub-agent per document with the
-   `vogon:vogon-checker` definition, with the perspective in the Loops table.
-   Run the loop as `common.md` states.
+8. Check each document. Start one evaluating sub-agent per document, with
+   the perspective in the Loops table, and give it the other drafted
+   documents of the release. Run the loop as `common.md` states.
 9. Produce the traceability matrix as `traceability.md` states. A role with no
    system in `vogon.yaml` is replaced as `common.md` "Systems by role" states.
    - A test manager is configured: upload the JUnit XML unchanged to it. The
@@ -114,9 +113,9 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
 
 ## Loops
 
-| Writing sub-agent (agent definition) | Produces | Evaluators (agent definition) | Checklist or perspective |
+| Writing sub-agent | Produces | Evaluators | Checklist or perspective |
 | --- | --- | --- | --- |
-| `vogon:vogon-writer` | One document `documents.md` lists, in its template and format | `vogon:vogon-checker`, one per document | Each statement is true of the requirements, the code and the JUnit XML results of the release commit, and cites what it rests on. The document follows its template and format. It states nothing the cited sources do not. It names the release commit it was drafted from. It does not state that it was approved or signed and has no signature block; the document system or the pull request records the approval. |
+| One per document | One document `documents.md` lists, in its template and format | One per document | Each statement is true of the requirements, the code and the JUnit XML results of the release commit, and cites what it rests on. The document follows its template and format. It states nothing the cited sources do not. It names the release commit it was drafted from. It does not state that it was approved or signed and has no signature block; the document system or the pull request records the approval. It agrees with the other documents of the release: the same requirements, the same risk values, the same commit. Every requirement or document in the release that was edited after its approval is reported. |
 
 ## Stops for a person
 

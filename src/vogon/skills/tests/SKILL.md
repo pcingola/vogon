@@ -99,10 +99,10 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
 
 ## Loops
 
-| Writing sub-agent (agent definition) | Produces | Evaluators (agent definition) | Checklist or perspective |
+| Writing sub-agent | Produces | Evaluators | Checklist or perspective |
 | --- | --- | --- | --- |
-| One per requirement (`vogon:vogon-writer`) | The test procedures of that requirement, one draft file each | Checklist evaluator (`vogon:vogon-checker`) | The procedure checklist, applied to each procedure against its requirement and its sources |
-| | | Tests evaluator (`vogon:vogon-checker`), after development only | Each procedure against the tests it was generated from: every such test is covered by a step, each step matches what its test does, and every difference between a test's assertion and the requirement is reported |
+| One per requirement | The test procedures of that requirement, one draft file each | Checklist evaluator | The procedure checklist, applied to each procedure against its requirement and its sources |
+| | | Tests evaluator, after development only | Each procedure against the tests it was generated from: every such test is covered by a step, each step matches what its test does, and every difference between a test's assertion and the requirement is reported |
 
 ## Stops for a person
 

@@ -1,69 +1,53 @@
-# Development process
+# Steps of the GxP process
 
-What happens in a regulated software project from a meeting to a signed
-release, and what an agent does at each point to help the people doing it.
-The agent is Claude Code, working in the developer's repository, with access
-to the meeting system, the tracker, the test manager, the repository host
-and the document system through MCP servers.
+The steps a requirement goes through from source material to a signed
+release. Each requirement goes through them in this order. Different
+requirements are at different steps at the same time, and a project works on
+several at once.
 
-The agent does the work and reports what it did. It stops for a person in
-three cases: where the regulation requires a named person's approval, where
-a choice belongs to someone else, such as the Product Owner choosing between
-two contradicting requirements, and once before work the developer asked for
-leaves the repository for a system other people read, such as the tracker.
-At that point the developer gets a short review of what is about to be sent.
-It does not ask for confirmation of steps it can check itself.
+| # | Step | Produces | Done by | Skill |
+| --- | --- | --- | --- | --- |
+| 1 | Configure | `vogon/project/vogon.yaml`: the system for each role, the role holders and the options; the validation plan filed in `vogon/sources/` | Developer, with VOGON | `vogon:init` |
+| 2 | File the sources | Checked summaries of meetings, mail and chat; attached and shared files with their markdown copies | VOGON | `vogon:requirements` |
+| 3 | Draft the records | Requirements with their acceptance criteria and risk fields; domain facts, constraints and decisions | VOGON | `vogon:requirements` |
+| 4 | Check the records | Records checked against the requirement checklist; findings that need a choice settled by the developer | VOGON, then the developer | `vogon:requirements` |
+| 5 | Send the requirements for approval | The pull request with `REQ-*.md` and `REQ-*.json`; in the real version, the tracker items | VOGON | `vogon:requirements` |
+| 6 | Approve the requirements | The approval, recorded in `REQ-*.json` | Product Owner | `vogon:approve`, or the tracker in the real version |
+| 7 | Write the test procedures | Test procedures, where `tests.md` requires them | VOGON | `vogon:tests` |
+| 8 | Approve the test procedures | The approval, where `tests.md` states | The roles `tests.md` names | |
+| 9 | Plan | A checked plan for one or more requirements | VOGON | `vogon:implement` |
+| 10 | Approve the plan | The approval, recorded in the `planned` entries of the state files | Developers | |
+| 11 | Write the code, tests and documentation | Code, tests and documentation for each part of the plan, checked, with all tests passing | VOGON, steered by the developer if they choose | `vogon:implement` |
+| 12 | Approve the pull request | The approval on the repository host | A person | |
+| 13 | Draft the release documents | The documents `documents.md` lists, and the traceability matrix, for a release commit | VOGON | `vogon:release` |
+| 14 | File the evidence | The documents, the matrix and the results, where `documents.md` states | VOGON | `vogon:release` |
+| 15 | Sign off | The signed documents | The roles `documents.md` names | |
 
-Every piece of work the agent produces is checked by a second agent that did
-not produce it. The checks are listed on each page. A finding goes back to
-the agent that did the work until none remain; a finding that needs a
-person's choice goes to that person.
+Steps 7 and 8 come before step 9 or after step 11, as `tests.md` states. Before
+step 9, the test procedures are written from the requirements. After step 11,
+they are generated from the tests. A project that needs no test procedures
+skips both steps.
 
-## People and systems
+Steps 6, 8, 10, 12 and 15 are approvals. A person gives each one, and VOGON
+gives none of them.
 
-| Role | Does |
+Each step VOGON performs on a requirement is recorded in its `REQ-*.json`, with
+the date and the pull request or commit that holds the result
+([Architecture](../architecture.md#state-of-a-requirement)).
+
+Steps are sometimes done late or out of order. The step is then done with its
+real date, and the order in which the steps were actually done is reported:
+an approval given after what it governs was used shows in the report.
+
+The pages of this section describe how the steps are carried out.
+[Architecture](../architecture.md) describes the skills and holds their rules.
+
+| Steps | Page |
 | --- | --- |
-| Developer | Builds the system; there are several |
-| Product Owner | Accepts requirements and sets priority |
-| Test Lead | Approves test cases and the test specification |
-| System Owner | Signs the release |
-| Quality Manager | Signs the release |
-
-| System | Holds |
-| --- | --- |
-| Meeting system | Meetings and their transcripts |
-| Git and the repository host | Requirements as text, plans, code, tests, documentation; pull request reviews |
-| Tracker | The requirement issues, their approval, priority and assignee |
-| Test manager | Test cases, their approval, and test results per build |
-| Document system | Validation documents and their signatures |
-
-The agent never approves or signs anything. Each approval is given by the
-person who holds it, in the system that records it.
-
-## Pages
-
-- [Steps of the GxP process](steps.md): the steps every requirement goes through, in order
-- [Setting up a project](setup.md)
-- [When a check fails](failed_checks.md): the handling every page below uses when a check fails
-- [From meetings to requirements](meetings.md)
-- [Checking the new requirements](new_requirements.md)
-- [What to work on next](next_work.md)
-- [Planning one requirement](planning.md)
-- [Test cases, code and tests](implementation.md)
-- [Checking the tests](test_checks.md)
-- [Compliance documents](documents.md)
-
-## Rules for every step
-
-- Steps happen weeks apart, by different people, in different orders. The
-  agent works out where a requirement stands each time it is asked, by
-  reading git, the tracker, the test manager and the document system as
-  they are then.
-- When a step was skipped, for example code merged without a plan or tests
-  never checked, the agent does the step that still makes sense, such as
-  checking the tests, and reports the gap.
-- On a project with existing code, the agent drafts requirements from the
-  code and its documentation, marked as describing existing behaviour, and
-  the same checks and approvals apply from then on.
-- The agent stops for a person only for an approval or a choice that is
-  theirs. Everything else it does and reports.
+| 1 | [Setting up a project](setup.md) |
+| 2 to 5 | [Requirements from sources](requirements.md) |
+| 6 | [Approving requirements](approval.md) |
+| 7 and 8 | [Test procedures](test_procedures.md) |
+| 9 and 10 | [Planning](planning.md) |
+| 11 and 12 | [Code, tests and documentation](implementation.md) |
+| 13 to 15 | [Release documents](documents.md) |

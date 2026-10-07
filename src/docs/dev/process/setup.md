@@ -1,64 +1,63 @@
 # Setting up a project
 
-A developer installs VOGON into the project's repository and asks the agent to
-set it up. This is step 1 of the [steps](steps.md), done once per project and
-again when a system or a role holder changes.
+Step 1 of the [steps](index.md). A developer installs the plugin into the
+project's repository and runs `vogon:init`. It is run once per project, and
+again when a system, a role holder or the validation plan changes.
 
-1. The agent finds, among the MCP servers connected to Claude Code, the server
-   for each system role: meeting system, repository host, tracker, test
-   manager, document system. With one candidate it uses it. With several, the developer
-   chooses, because only the developer knows which one company policy
-   requires.
-2. For the tracker and the test manager, it reads the workflow through the
-   chosen server and proposes as approved the states whose names say approval
-   or signature, and reports a transition into an approved state that does
-   not make the approver re-enter their credentials, because such a
-   transition is not an electronic signature.
-3. It asks the developer for the people holding each role, as emails, the
-   developers included.
-4. It shows everything it filled in as one list. The developer confirms or
-   corrects it in one answer.
-5. It writes `vogon.yaml` at the root of the repository and commits it.
-6. It drafts the validation plan into `vogon/documents/validation_plan.md`:
-   the system and its GAMP category, the roles and their holders, the systems
-   used, the documents each release produces, how risk sets the testing, and
-   what must hold for release. A second agent checks it. The plan goes to the
-   System Owner and the Quality Manager for approval: by pull request review
-   in the prototype, in the document system in a deployment. No result counts
-   as evidence before the plan is approved (`DEC-027`).
+## Configuration
 
-```yaml
-systems:
-  meeting_system: {server: acme-meetings}
-  repository_host: {server: github}
-  tracker: {server: github, approved_states: [Approved]}
-roles:
-  developer: [dev@example.com, dev2@example.com]
-  product_owner: [po@example.com]
-  test_lead: [testlead@example.com]
-  system_owner: [owner@example.com]
-  quality_manager: [qm@example.com]
-```
+`vogon:init` proposes a value for each entry of `vogon/project/vogon.yaml`:
 
-The roles are the ones the [steps](steps.md) use. Where a company's procedure
-gives an approval to another role from [Vocabulary](../vocabulary.md#who-signs-what),
-such as requirements approved by the Business Process Owner, the role holding
-that approval is listed under the name the procedure uses, in place of the
-default.
+- the system for each role (tracker, test manager, document system,
+  repository host, meetings, mail, chat), from the git remote and the MCP
+  servers connected to the session. Where two servers can fill one role, the
+  developer chooses;
+- the modules, one per top-level package of the source tree;
+- the approval roles the validation plan names, under the plan's own names,
+  and the Product Owner;
+- the project options, such as whether logs are committed.
 
-A system role is reached only through the server named for it. A role absent
-from `systems` is not used, and the steps that need it report that they were
-skipped.
+The developer confirms or corrects every value and gives the holder of each
+role, in one answer. A role the project does not have is left out, and a skill
+that needs it reports what it skipped. `vogon:init` writes the file from the
+commented template the plugin ships.
 
-Checks on the configuration:
+For the tracker and the test manager, `vogon:init` reads the approval workflow
+and reports each approval transition that does not make the approver re-enter
+their credentials, because such a transition is not an electronic signature
+under 21 CFR Part 11. It changes nothing in either system.
 
-- Every role that gives an approval in the [steps](steps.md) has at least one
-  holder.
-- No person holds both the Quality Manager role and the developer or Test
-  Lead role.
-- Each configured server provides the operations the skills need from its
-  role: reading and creating issues, reading transitions, registering tests,
-  importing results, filing documents.
+## The validation plan
 
-Later, every skill that reads an approval reports one given by someone who
-does not hold the role, or by an author of what was approved (`CON-002`).
+The validation plan is the host project's controlled document. `vogon:init`
+files it in `vogon/sources/` as the original, unchanged, and a markdown copy
+beside it, named by the plan's own date with its version in the slug
+([Sources](../sources.md)). A plan already held is never overwritten; a new
+version is filed beside the old one.
+
+`vogon:init` commits the configuration and the filed plan on a branch and
+opens a pull request. A person approves it on the repository host.
+
+## Project process files
+
+The markdown files in `vogon/project/` state how VOGON works in this project:
+`tracking.md`, `requirements.md`, `tests.md`, `traceability.md`,
+`documents.md` and `release.md`. The table in
+[Architecture](../architecture.md#project-configuration-and-process-files)
+says what each states. `vogon:init` does not write them.
+
+A file is derived when a skill first needs it, before the skill does its task:
+
+1. A writing sub-agent drafts the file from its template, and each statement
+   cites a section of the plan.
+2. Evaluators check that each statement is supported by the cited section and
+   that the file covers every topic of its template.
+3. A topic the plan does not settle is asked of the developer. The answer is
+   written into the file with the developer's name and the date.
+4. Tracker and test manager names, such as item types and transitions, are
+   read from an example item and confirmed by the developer.
+5. The file goes in the pull request of the skill that derived it.
+
+Each file records in its frontmatter the plan version it was derived from.
+When the held plan is newer, the next skill that reads the file derives it
+again before acting.

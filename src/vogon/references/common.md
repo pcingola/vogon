@@ -64,12 +64,20 @@ pass of writing, evaluating and judging.
 - A sub-agent does one task: write, check, review or judge. It runs in its
   own context and is given every input it needs. Independent units of work
   run in parallel.
-- A writing sub-agent produces or revises the work on the working branch. A
-  revision fixes the findings it was given and changes nothing else.
+- A writing sub-agent produces or revises the work on the working branch. It
+  changes only the output files its prompt names. A revision fixes the
+  findings it was given and changes nothing else.
 - Every loop has at least one evaluating sub-agent. An evaluator takes one
   perspective, such as one checklist, consistency with the code, or a reading
   as the Product Owner. It reports findings, each with its evidence, and
   never changes the work.
+- An evaluator applies every item of its checklist to the whole of every file
+  it is given, in every round. It goes through a table row by row, applying
+  every item to a row before the next row.
+- A finding is a failure against the evaluator's checklist or perspective. A
+  better wording, or content no item asks for, is not a finding.
+- A finding says what fails, not a rewrite, precisely enough that the writing
+  sub-agent can fix it without asking a question.
 
 A judge sub-agent assigns each finding a level if the loop has one;
 otherwise the main agent does. The main agent can change a level.
@@ -100,6 +108,10 @@ Logs:
   `vogon/logs/<yyyymmdd_hhmmss>_<task>.log.md` with its full output:
   findings, decisions, what it changed. Its first lines state what it found
   or changed and why.
+- An evaluator's log lists its findings one per line, as
+  `<file>:<line> | <item> | <what fails>`, or states `No findings.`
+- A writing sub-agent's log on a revision states, for each finding, the
+  change made or why it could not be made.
 - The main agent writes one entry in the main log in `vogon/logs/` for each
   sub-agent run and each decision, immediately after it:
   `- yyyymmdd hh:MM: <decision>. <what happened>. <why>.` Take the timestamp

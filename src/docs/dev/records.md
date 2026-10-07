@@ -11,7 +11,7 @@ project's alike.
 | Path | Holds |
 | --- | --- |
 | `vogon/project/` | `vogon.yaml`, the configuration, and the process files derived from the validation plan. See [Architecture](architecture.md#project-configuration-and-process-files). `checklists/` holds the project's own versions of the default checklists |
-| `vogon/requirements/<module>/` | Requirement records, one directory per module: each `REQ-<MODULE>-<NUMBER>.md` with its [state file](#state-file) `REQ-<MODULE>-<NUMBER>.json` beside it |
+| `vogon/requirements/<module>/` | Requirement records, one directory per module: each `REQ-<MODULE>-<NUMBER>.md` with its [state file](#state-file) `REQ-<MODULE>-<NUMBER>.json` beside it, and [test procedures](#test-procedure) kept in the repository |
 | `vogon/facts/` | Every `FACT-` |
 | `vogon/constraints/` | Every `CON-` |
 | `vogon/decisions/` | Every `DEC-` |
@@ -43,15 +43,18 @@ order. The first match wins.
 
 A single sentence often splits. "The test manager reports coverage from the
 link between a test issue and a requirement issue, so maintain that link from
-the test source" is a fact and a requirement, written as two records that link
-to each other.
+the test source" is a fact and a requirement, written as two records. The one
+that rests on the other names it in `depends_on`; here the requirement names
+the fact.
+
+A statement made in two sources is one record that cites both in `source`.
 
 ## The shape of a record
 
 YAML frontmatter, read by the skills and scripts, followed by a markdown body,
 read by people.
 
-Frontmatter common to all four types:
+Frontmatter common to every record:
 
 | Field | Rule |
 | --- | --- |
@@ -59,7 +62,7 @@ Frontmatter common to all four types:
 | `type` | `requirement`, `fact`, `constraint`, `decision`, or `test_procedure` for a [test procedure](#test-procedure) |
 | `title` | One line naming what the record is, in the words someone would search for. Not an allusion, not a question |
 | `modules` | Which modules it belongs to, as a list. A fact cited by two modules carries both |
-| `status` | `active`, `withdrawn`, or `superseded_by: <id>`, written as a mapping: `status: {superseded_by: DEC-024}`. Approval is not a status; it is in the state file |
+| `status` | `active`, `withdrawn`, or `superseded_by: <id>`, written as a mapping: `status: {superseded_by: DEC-024}`. A drafted record is `active`. A withdrawn record states the reason in its body. Approval is not a status; it is in the state file |
 | `source` | Every held document that states this, as a list of paths. See [below](#source-lists-every-document-that-states-it). Absent on a record the project originated itself |
 | `reviewed_by`, `reviewed_on` | Who read it in detail and when. Absent until someone has |
 | `tags` | Free-form, for searching across modules. Optional |
@@ -70,8 +73,11 @@ The body carries the statement as one sentence with no rationale in it, a
 description of a short paragraph saying what it means and what it does not
 cover, and one concrete example marked as illustration.
 
+No frontmatter key and no body line states that the record was approved or
+signed; approvals are in the [state file](#state-file).
+
 A field or block with nothing to say is omitted
-([Writing standard](writing.md)).
+(the writing standard, `src/vogon/references/writing.md`).
 
 ### `source` lists every document that states it
 
@@ -81,8 +87,8 @@ it was drafted from, ordered by `authority`, strongest first
 `source` asserts that the document says this, so cite only a passage you have
 read. Where documents disagree, both are listed and the record states the
 difference; where only a meeting, mail or chat supports a claim, the record
-says so. A fact that only a meeting supports is either badly sourced or not a
-fact. A record the project originated itself has no `source`.
+says so. A fact that only a meeting, mail or chat supports is either badly sourced or not a
+fact.
 
 ### `references` points at the documentation
 
@@ -100,7 +106,7 @@ the progress of the work is in the state file.
 
 ## How a record is written
 
-Every record follows the [writing standard](writing.md).
+Every record follows the writing standard, `src/vogon/references/writing.md`.
 
 ### Length
 
@@ -141,7 +147,9 @@ Body blocks it adds:
 - **Acceptance criteria**: what must be tested. Each expected value is worked
   out from the requirement and its sources, never read off a run of the code,
   because a value taken from the code makes the test that asserts it unable to
-  fail. The acceptance criteria are approved with the requirement.
+  fail. The acceptance criteria are approved with the requirement. A
+  requirement with `gxp_impact` other than `none`, or with
+  `verification: test`, has acceptance criteria.
 
 ### Worked example
 
@@ -229,14 +237,15 @@ can be checked again.
 At `vogon/constraints/CON-NNN.md`. The body says what it forbids or forces.
 
 Frontmatter it adds: `imposed_by`, what imposes it (a regulation, a numbered
-procedure, a standard or a platform behaviour), and `lifts_when`, the condition
-under which it stops applying, or `permanent`.
+procedure, a standard or a platform behaviour, named and never given as a
+path), and `lifts_when`, the condition under which it stops applying, or
+`permanent`.
 
 ## Decision
 
 At `vogon/decisions/DEC-NNN.md`. The body has the context, the options and
 what each costs, the decision, its consequences including the bad ones, and an
-example of the decision applied. A decision is never edited once accepted; a
+example of the decision applied. A decision is never edited once merged; a
 later decision supersedes it, and both files stay.
 
 ## Test procedure
@@ -245,8 +254,9 @@ Only where `tests.md` keeps test procedures in the repository. At
 `vogon/requirements/<module>/TP-<MODULE>-<NUMBER>.md`, beside the
 requirements it verifies, with its id from `vogon id TP <module>`. The
 frontmatter adds `verifies`, the requirement ids. The body is numbered steps,
-each with its expected result. Where test procedures are kept in the tracker,
-the tracker key is the id and VOGON writes no file.
+each with its expected result, worked out from the requirement and its
+sources and never read off a run of the code. Where test procedures are kept
+in the tracker, the tracker key is the id and VOGON writes no file.
 
 ## Identifiers
 

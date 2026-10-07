@@ -39,8 +39,15 @@ never taken, stops and commands.
    `common.md` "Stops for a person" states.
 2. Read the requirement checklist, `requirement-checklist.md`, as `common.md`
    "Project checklists" states.
-3. Meetings, mail and chat. Start one writing sub-agent per meeting, mail
-   thread or chat channel, in parallel. Give each sub-agent its own
+3. Meetings, mail and chat. Where the developer names a date range and a
+   topic rather than ids, choose the meetings, mail threads and chat channels
+   in that range from their title, their participants and a summary of their
+   content. Match the participants against the role holders `vogon.yaml`
+   lists: a source attended by them is likely about the project, and
+   one with none of them is likely not. Keep a source whose title looks
+   unrelated when its participants and content are the project's. Then start
+   one writing sub-agent per meeting, mail thread or chat channel, in
+   parallel. Give each sub-agent its own
    directory, `vogon/tmp/requirements/<n>/`, where `<n>` is a number the main
    agent assigns and no other sub-agent of the run uses. Each:
    - downloads the transcript, thread or channel messages through the system
@@ -49,12 +56,16 @@ never taken, stops and commands.
      and with frontmatter as `sources.md` states, with `kind: summary`,
      `authority: informal`, the `participants`, and in `retrieved_from` the
      system and the source's id in it. The date is the meeting's date, or for
-     a thread or channel the date of the latest message summarised. The
-     transcript is not held, so the summary has no `derived_from`.
+     a thread or channel the date of the latest message summarised. A
+     statement proposed and then rejected or changed later in the same
+     meeting, thread or channel is summarised as it ended. The summary holds
+     nothing personal: no personal remarks, no health or HR matters, no
+     opinions about people.
 4. For each summary, start an evaluating sub-agent that checks the summary
    against its downloaded source: every statement of the summary is supported
-   by the source, and nothing in the source that bears on requirements is
-   left out. Run the loop. Delete each download once its summary is checked,
+   by the source, nothing in the source that bears on requirements is left
+   out, each statement is as it ended, and nothing personal is in it. Run the
+   loop. Delete each download once its summary is checked,
    and in every case before the skill ends. A summary left with an open high
    finding is not committed, and no record is drafted from it.
 5. Attached and shared files. For each file attached to a mail, posted in a
@@ -82,7 +93,9 @@ never taken, stops and commands.
    - takes each id from `vogon id <type> <module>`, omitting the module for
      `FACT`, `CON` and `DEC`, and in a project without modules;
    - changes an existing record in place when a source changes it, and lists
-     in its log each changed requirement that has an approval;
+     in its log each changed requirement that has an approval. A statement
+     changed in a later meeting, thread or channel is recorded as the latest
+     summary states it;
    - lists in its log, for each record, the sources and code it was drafted
      from.
 8. Start the two evaluating sub-agents of the records loop (see Loops) and
@@ -114,18 +127,20 @@ never taken, stops and commands.
     `drafted` entry with the date from `date '+%Y-%m-%d'` and the pull request
     number in `pr`, as `common.md` "State-file entries" states. Commit and
     push the state files to the same branch.
-13. Tell the Product Owner which requirements wait for approval, and where:
+13. Tell the developer which sources were used, which were left out and why,
+    and which meetings had no transcript.
+14. Tell the Product Owner which requirements wait for approval, and where:
     the tracker items or the pull request with `vogon:approve`, as `common.md`
     "Approval of a requirement" decides.
 
 ## Loops
 
-| Writing sub-agent (agent definition) | Produces | Evaluators (agent definition) | Checklist or perspective |
+| Writing sub-agent | Produces | Evaluators | Checklist or perspective |
 | --- | --- | --- | --- |
-| One per meeting, mail thread or chat channel (`vogon:vogon-writer`) | Summary in `vogon/sources/` | One per summary (`vogon:vogon-checker`) | The summary against its downloaded source: each statement supported, nothing bearing on requirements left out |
-| One per attached, shared or named file (`vogon:vogon-writer`) | Original and markdown copy in `vogon/sources/`; extract in `vogon/tmp/requirements/<n>/` | One per extract (`vogon:vogon-checker`) | The extract against the file: each statement at its stated location, nothing bearing on requirements left out |
-| Records (`vogon:vogon-writer`) | Records with risk fields | Requirement checklist (`vogon:vogon-checker`) | The checklist of step 2, against the drafted records, the existing records, the records in open pull requests and the cited sources |
-| | | Code-only source (`vogon:vogon-checker`) | Reports every requirement whose only source is code, its git history, pull requests or issues, read from the writer's log and the record's `source`. The developer confirms that the behaviour is intended |
+| One per meeting, mail thread or chat channel | Summary in `vogon/sources/` | One per summary | The summary against its downloaded source: each statement supported, nothing bearing on requirements left out, each statement as it ended, nothing personal |
+| One per attached, shared or named file | Original and markdown copy in `vogon/sources/`; extract in `vogon/tmp/requirements/<n>/` | One per extract | The extract against the file: each statement at its stated location, nothing bearing on requirements left out |
+| Records | Records with risk fields | Requirement checklist | The checklist of step 2, against the drafted records, the existing records, the records in open pull requests and the cited sources |
+| | | Code-only source | Reports every requirement whose only source is code, its git history, pull requests or issues, read from the writer's log and the record's `source`. The developer confirms that the behaviour is intended |
 
 ## Stops for a person
 
@@ -167,9 +182,7 @@ The pull request also carries any process file derived, per `process-files.md`.
   process file is missing or older than the held plan.
 - `${CLAUDE_PLUGIN_ROOT}/references/writing.md`: every sub-agent.
 - `${CLAUDE_PLUGIN_ROOT}/references/sources.md`: summary and file writers and
-  their evaluators, for file names, frontmatter and markdown copies. Where it
-  says to file a transcript or to draft records from the transcript, this
-  skill applies instead.
+  their evaluators, for file names, frontmatter and markdown copies.
 - `${CLAUDE_PLUGIN_ROOT}/references/records.md`: the records writer and both
   records evaluators.
 - `${CLAUDE_PLUGIN_ROOT}/skills/requirements/references/requirement-checklist.md`:

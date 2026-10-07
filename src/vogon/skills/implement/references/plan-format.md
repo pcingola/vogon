@@ -46,6 +46,13 @@ Omit a section only when nothing in it applies.
   exists only to support another part, and says which.
 - Nothing in the plan goes beyond the requirements. A part that builds what no
   requirement asks for is removed.
+- The plan reuses existing code and does not write a second version of it.
+- The plan lists the existing tests the change breaks, and what changes in
+  each.
+- Where the change touches data already stored, the plan states what happens
+  to it: migration, compatibility with older records, and the audit trail.
+- Where the change touches data integrity or security, the plan names the
+  risks it carries for them.
 - Tests follow the host project's existing test conventions: framework, layout
   and style.
 - Each test names its requirements in `@pytest.mark.req("<id>", ...)` and,

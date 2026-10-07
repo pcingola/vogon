@@ -42,15 +42,15 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
 2. If no plan was given, go to step 3. If a plan was given and each
    requirement's state file has a `planned` entry for that plan whose commit
    holds the plan as it is now, go to step 6. Otherwise the plan is stale or
-   not approved: start the plan writer (`vogon:vogon-writer`) with that plan
-   to revise it, then go to step 4.
-3. Start a writing sub-agent (`vogon:vogon-writer`) to
-   write `vogon/plans/plan_<slug>.md` in the format of
+   not approved: start the plan writer with that plan to revise it, then go
+   to step 4.
+3. Start a writing sub-agent, the plan writer, to write
+   `vogon/plans/plan_<slug>.md` in the format of
    `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/plan-format.md`. Give it
    the requirements, their state files, the test procedures, the code it
    touches and `tests.md`.
-4. Start the plan evaluators (`vogon:vogon-checker`) and run the loop as
-   `common.md` states. A question only a developer can answer goes to the
+4. Start the plan evaluators (see Loops) and run the loop as `common.md`
+   states. A question only a developer can answer goes to the
    developer running the skill, and the answer goes to the writing sub-agent.
 5. Stop for the developers' review of the plan. Tell them the plan path and
    the findings left open. A change a developer asks for goes to the writing
@@ -59,14 +59,16 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
    commit the plan on the working branch, push the branch, and append a
    `planned` entry to each requirement's state file (see Outputs). Commit and
    push the state files.
-6. Follow the plan. For each part, start a writing sub-agent
-   (`vogon:vogon-test-writer`) that writes the part's code, tests and
-   documentation. Give it the plan, the part's number, the requirements and
-   their acceptance criteria, the test procedures, and the code the part
+6. Follow the plan. For each part, start a writing sub-agent that writes the
+   part's code, tests and documentation. Give it the plan, the part's number,
+   the requirements and their acceptance criteria, the test procedures, and the code the part
    touches. Start parts that do not depend on each other in parallel. The
    sub-agent writes each test and its expected values from the requirement and
    its acceptance criteria, never from a run of the code, and marks each test
-   with its requirements and procedures as `plan-format.md` states.
+   with its requirements and procedures as `plan-format.md` states. It calls
+   only the interfaces the plan names. Where the part needs an interface the
+   plan does not name, the sub-agent reports it and does not invent one; the
+   plan is changed through steps 4 and 5.
 7. When a part is written, start its evaluators (see Loops) and run the loop
    for that part.
 8. Read each writing sub-agent's log and output against the plan. Send back
@@ -111,13 +113,12 @@ Without instructions, the skill runs the plan to the end.
 
 ## Loops
 
-| Writing sub-agent (agent definition) | Produces | Evaluators (agent definition) | Checklist or perspective |
+| Writing sub-agent | Produces | Evaluators | Checklist or perspective |
 | --- | --- | --- | --- |
-| Plan writer (`vogon:vogon-writer`) | `vogon/plans/plan_<slug>.md` | Plan against the requirements (`vogon:vogon-checker`) | Every acceptance criterion is covered by a part and a test; no part goes beyond the requirements; the plan follows `plan-format.md` |
-| | | Plan against the code (`vogon:vogon-checker`) | The paths, modules and interfaces the plan names exist or are created by a part; the parts fit the code as it is; test conventions match the project's |
-| Part writer (`vogon:vogon-test-writer`), one per part | The part's code, tests and documentation | Test checker (`vogon:vogon-test-checker`) | `test-checklist.md` |
-| | | Code checker (`vogon:vogon-checker`) | `code-checklist.md` |
-| | | Code reviewer (a sub-agent running Claude Code's `code-review` skill on the part's diff, without `--fix`) | Claude Code's code review. VOGON has no code reviewer of its own |
+| Plan writer | `vogon/plans/plan_<slug>.md` | Plan against the requirements | Every acceptance criterion is covered by a part and a test; no part goes beyond the requirements; the plan follows `plan-format.md` |
+| | | Plan against the code | The paths, modules and interfaces the plan names exist or are created by a part; the parts fit the code as it is; the plan reuses existing code; it lists the existing tests the change breaks; it states what happens to stored data; it names the data integrity and security risks; test conventions match the project's |
+| Part writer, one per part | The part's code, tests and documentation | Test checker | `test-checklist.md` |
+| | | Code reviewer (a sub-agent running Claude Code's `code-review` skill on the part's diff, without `--fix`) | Claude Code's code review, then `code-checklist.md`. VOGON has no code reviewer of its own |
 
 ## Stops for a person
 
@@ -169,6 +170,6 @@ from `date '+%Y-%m-%d'`. A plan approved again after a change gets a new
 | Plan writer, plan evaluators | `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/plan-format.md`, `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/conftest.md` |
 | Part writer | `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/plan-format.md`, `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/conftest.md`, `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/test-checklist.md`, `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/code-checklist.md` |
 | Test checker | `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/test-checklist.md` |
-| Code checker | `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/code-checklist.md` |
+| Code reviewer | `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/code-checklist.md` |
 
 Each checklist is replaced by the project's version as `common.md` "Project checklists" states.
