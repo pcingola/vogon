@@ -64,7 +64,7 @@ session, which is the main agent of [the loop](loop.md).
 | `vogon:approve` | Records the Product Owner's approval of the requirements they name, commits and pushes | [New requirements](process/new_requirements.md) |
 | `vogon:next` | Lists the approved requirements ready to start, lists the blocked ones with what blocks them, assigns the chosen one | [Next work](process/next_work.md) |
 | `vogon:tests` | Writes the test procedures of approved requirements before development, or generates them from the existing tests, as `tests.md` states, and registers them for approval | [Tests](process/test_checks.md) |
-| `vogon:implement` | Plans one requirement, writes its tests, code and documentation, has them reviewed, and opens the pull request | [Planning](process/planning.md), [Implementation](process/implementation.md), [Tests](process/test_checks.md) |
+| `vogon:implement` | Plans one or more requirements, or takes their plan, writes the code, tests and documentation part by part, has them reviewed, and opens the pull request | [Planning](process/planning.md), [Implementation](process/implementation.md), [Tests](process/test_checks.md) |
 | `vogon:release` | Drafts and checks the validation documents for a release commit, produces the traceability matrix, files the evidence | [Documents](process/documents.md) |
 
 Approvals of requirements, test procedures, pull requests and documents are
@@ -95,9 +95,8 @@ Each skill runs its work through [the loop](loop.md). The loops are:
 | `vogon:requirements` | One extract per attached or shared file, from its markdown copy | The extract against the file |
 | `vogon:requirements` | Records with their risk fields | The requirement checklist |
 | `vogon:tests` | Test procedures | Each procedure against its requirement and, where generated, its tests |
-| `vogon:implement` | The plan for one requirement | The plan against the requirement and the code |
-| `vogon:implement` | Tests | The test checklist |
-| `vogon:implement` | Code and documentation | Claude Code's code review; the code checklist |
+| `vogon:implement` | The plan for one or more requirements | The plan against the requirements and the code |
+| `vogon:implement` | Code, tests and documentation for one part of the plan | The test checklist; the code checklist; Claude Code's code review |
 | `vogon:release` | One validation document | The document against the requirements, the code and the results of the release commit |
 
 The default requirement checklist holds that each
@@ -299,15 +298,26 @@ order and imposes none of its own. Where procedures exist, each test also names 
 document, such as a test specification, `vogon:release` prepares it from the
 requirements, the procedures and the tests.
 
-## Code from a requirement
+## Code from requirements
 
-`vogon:implement` starts from a plan for the requirement: a checklist of what
-will be built, which refers to the requirement and the code rather than
-restating them. It writes the tests,
-the code and the documentation, and runs Claude Code's code review as an
-evaluator in the loop. VOGON has no code reviewer of its own. All tests are
-written and pass before the pull request is opened. A developer other than the
-author approves the pull request on the repository host.
+`vogon:implement` takes one or more approved requirements, or an existing plan
+for them.
+
+1. If there is no plan, a writing sub-agent writes one: a checklist of the
+   parts to build and the tests that verify each, which refers to the
+   requirements and the code rather than restating them. Evaluators check the
+   plan against the requirements and the code.
+2. The main agent follows the plan. For each part it starts a sub-agent that
+   writes that part's code, tests and documentation, given the plan, the
+   requirements and the code it touches. Independent parts run in parallel.
+3. Evaluators check each part: the test checklist, the code checklist, and
+   Claude Code's code review. VOGON has no code reviewer of its own.
+4. The main agent reads each sub-agent's log and its output against the plan.
+   It sends back work that leaves the part it was given, does less than the
+   part, or changes what the plan does not name.
+
+All tests are written and pass before the pull request is opened. A person
+approves the pull request on the repository host.
 
 ## Traceability
 
