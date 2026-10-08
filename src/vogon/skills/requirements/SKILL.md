@@ -33,9 +33,8 @@ names a tracker. Sub-agents read
    original and its markdown copy, as `sources.md` states, and writes to its
    directory an extract: each statement that bears on requirements, with its
    page or slide.
-5. Check each summary and each extract in its loop. Delete each download once
-   its summary is checked. A summary or extract with an open high finding is
-   not committed, and no record is drafted from it.
+5. Check each summary and each extract in its loop. A summary or extract with
+   an open high finding is not committed, and no record is drafted from it.
 6. A writing sub-agent drafts the records from the checked summaries and
    extracts, the markdown copies, the named code and the existing records,
    as `records.md` states, with the form, risk fields and method of

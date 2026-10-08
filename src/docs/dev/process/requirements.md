@@ -21,7 +21,8 @@ gitignored, and never committed. One writing sub-agent per meeting, thread or
 channel writes a summary, and an evaluator checks it against the download:
 every statement is supported, and nothing that bears on requirements is left
 out. The checked summary is filed in `vogon/sources/` with the source's id in
-its system, its date and its participants. The download is then deleted.
+its system, its date and its participants. The downloads are deleted before
+the skill commits.
 
 An attached or shared file, and a document the developer names, is a document
 and is kept. It is filed in `vogon/sources/` as the original with a markdown

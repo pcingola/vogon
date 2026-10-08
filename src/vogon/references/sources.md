@@ -85,8 +85,8 @@ its `source` documents in the order of this table, strongest first.
 - [ ] The summary holds nothing personal: no personal remarks, no health or
       HR matters, no opinions about people.
 - [ ] The summary is written in its own words, not the source's.
-- [ ] The download is deleted once the summary is checked. Records are drafted
-      from the checked summary.
+- [ ] Records are drafted from the checked summary. The download is deleted
+      before the skill commits.
 
 ## Attached and shared files
 

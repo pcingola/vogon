@@ -91,7 +91,7 @@ vogon/sources/2026-09-17_requirements_workshop.summary.md
 The recording is not downloaded. The transcript, the mail and the chat
 messages are downloaded to `vogon/tmp/`, which is gitignored, and never
 committed. A summary is written from them and checked against them, and they
-are deleted once the summary is checked. A
+are deleted before the skill commits. A
 transcript holds personal remarks and discussion unrelated to the project,
 some countries restrict keeping it, and the meeting system keeps it under its
 own retention rule. The summary keeps every requirement, fact, constraint,
