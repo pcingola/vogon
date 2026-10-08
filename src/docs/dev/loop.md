@@ -49,8 +49,9 @@ level.
 The main agent decides whether another round runs, from the current work, the
 logs of every round and its own reading. An open high finding means another
 round. Open medium and low findings alone do not. The main agent may still run
-a round for an error it sees itself, and may stop when the same finding stays
-open across rounds.
+a round for an error it sees itself. It may stop before round 5 when the same
+high finding stays open across rounds; it then reports the error as after 5
+rounds.
 
 After 5 rounds the main agent stops and reports an error that states each
 finding still open and why it was not resolved.
@@ -72,6 +73,6 @@ from `date` and is never estimated. The entry quotes the text concerned and
 cites the sub-agent log it rests on.
 
 Logs are written to `vogon/logs/`, which is gitignored by default because the
-logs of the meeting loop quote transcripts. A project may configure them to be
-committed. Every pull request a skill opens states in its description which
+logs of the meeting, mail and chat loops quote their content. A project may
+configure them to be committed. Every pull request a skill opens states in its description which
 loops ran, how many rounds each took, and the findings left open.

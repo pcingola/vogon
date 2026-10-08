@@ -191,18 +191,17 @@ barcode that a scanner reads as `S-2026-00417`.
 ## State file
 
 Each requirement has a state file beside its markdown file, named for the same
-id with `.json`. It records the requirement's approvals and every step done to
-it, each with its date and the pull request or commit that holds it. Entries
-are appended and never edited or removed; a new approval is a new entry.
+id with `.json`. It records every step done to the requirement, its approvals
+included, each with its date and the pull request or commit that holds it.
+Entries are appended in order and never edited or removed. A requirement is
+approved when an `approved` entry follows its latest `changed` entry.
 
 ```json
 {
   "id": "REQ-PRN-12",
-  "approvals": [
-    {"by": "Alice Smith <alice@example.com>", "date": "2026-09-18", "hash": "sha256:3f9a…", "via": "vogon approve"}
-  ],
   "steps": [
     {"step": "drafted", "date": "2026-09-15", "pr": 230},
+    {"step": "approved", "date": "2026-09-18", "by": "Alice Smith <alice@example.com>", "via": "vogon approve"},
     {"step": "planned", "date": "2026-09-22", "commit": "a12f9c0", "plan": "vogon/plans/plan_REQ-PRN-12.md", "approved_by": "Bob Jones <bob@example.com>"},
     {"step": "implemented", "date": "2026-09-25", "pr": 241, "commit": "b77d031"},
     {"step": "released", "date": "2026-10-02", "pr": 252, "commit": "c4e8a10", "release": "1.2"}
@@ -213,9 +212,9 @@ are appended and never edited or removed; a new approval is a new entry.
 | Field | Rule |
 | --- | --- |
 | `issue` | The requirement's key in the tracker, where a tracker holds it |
-| `approvals` | Who approved, when, and the hash of `REQ-*.md` they approved. Written by `vogon approve`, or copied from the tracker in the real version (`via` names the tracker) |
-| `step` | `drafted`, `planned`, `test_procedures_written`, `implemented`, `released` or `withdrawn` |
-| `pr`, `commit` | The pull request and the commit that hold the step's work. A `planned` entry has a `commit` and no `pr` |
+| `step` | `drafted`, `approved`, `changed`, `planned`, `test_procedures_written`, `implemented`, `released` or `withdrawn` |
+| `by`, `via` | In an `approved` entry, the approver as `Name <email>`, and `vogon approve` or the tracker's name from `vogon.yaml`. Written by `vogon approve`, or copied from the tracker |
+| `pr`, `commit` | The pull request and the commit that hold the step's work. A `planned` entry has a `commit` and no `pr`. A `changed` entry names the pull request that changed `REQ-*.md` |
 | `plan` | In a `planned` entry, the path of the approved plan |
 | `approved_by` | In a `planned` entry, the git identity of the developer who approved the plan |
 | `release` | In a `released` entry, the release the requirement is part of |

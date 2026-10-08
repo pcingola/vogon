@@ -1625,26 +1625,27 @@ developer confirms that the behaviour is intended.</p>
 <p>In the POC the Product Owner approves in their own Claude Code session, for
 example "approve the last 10 requirements, then push". <code>vogon:approve</code> acts
 only on such an explicit instruction. It lists the ids and titles it resolved,
-runs <code>vogon approve &lt;id&gt;...</code>, commits and pushes. <code>vogon approve</code> writes into
-each <code>REQ-*.json</code> the approver's git identity, the date and the hash of the
-approved <code>REQ-*.md</code>. If <code>vogon.yaml</code> does not list the user as Product Owner, the
+runs <code>vogon approve &lt;id&gt;...</code>, commits and pushes. <code>vogon approve</code> appends to
+each <code>REQ-*.json</code> an <code>approved</code> entry with the approver's git identity and the
+date. If <code>vogon.yaml</code> does not list the user as Product Owner, the
 script warns and still records the approval.</p>
 <p>In the real version the requirements go to the tracker, and the Product Owner
-approves each with the tracker's approval transition. The Product Owner may
-edit the text in the tracker first. A skill syncs each approval, with the
-approved text, into <code>REQ-*.json</code>, which caches it so that skills do not query
-the tracker for every read, and copies the approved text into <code>REQ-*.md</code>.
-An approval in the tracker is synced when <code>REQ-*.json</code> holds it on the default
-branch. Until then the requirement is not approved, because the Product Owner
-may have edited the text in the tracker before approving it. An approval that
-an open pull request holds is reported as "sync pull request <n> not merged";
-any other unsynced approval is reported naming <code>vogon:approve</code> to sync it.</p>
-<p>A requirement whose markdown no longer matches its approved hash needs
-approval again. Every skill that reads it reports it, and <code>vogon:next</code> does not
-offer it as ready.</p>
+approves each with the tracker's approval transition. The tracker is the
+source: the item's status is the approval. The Product Owner may edit the text
+in the tracker first. <code>vogon:approve</code> syncs each approval into <code>REQ-*.json</code>,
+which caches it so that skills do not query the tracker for every read, and
+copies the approved text into <code>REQ-*.md</code>. A skill that finds an approval not
+yet synced reports it, and works from the text of a requirement only once it
+is synced.</p>
+<p>A skill never changes an approved requirement without the agreement of the
+developer running it. A change goes in a pull request that appends a
+<code>changed</code> entry to <code>REQ-*.json</code> and lists the requirement as needing approval
+again. Without a tracker, the requirement is approved again when an
+<code>approved</code> entry follows the <code>changed</code> entry; with a tracker, when the item is
+approved again. Until then <code>vogon:next</code> does not offer it as ready.</p>
 <h2 id="state-of-a-requirement">State of a requirement<a class="headerlink" href="#state-of-a-requirement" title="Permanent link">&para;</a></h2>
-<p><code>REQ-&lt;MODULE&gt;-&lt;NUMBER&gt;.json</code> records the state of the requirement: its cached
-approvals and every step done to it (drafted, planned, test cases written,
+<p><code>REQ-&lt;MODULE&gt;-&lt;NUMBER&gt;.json</code> records the state of the requirement: every step
+done to it (drafted, approved, changed, planned, test procedures written,
 implemented, released), each with its date and the pull request or commit that
 holds it. The format is in <a href="records.html#state-file">Records</a>.</p>
 <p>The pull request, commit or tracker item an entry links is the evidence, and

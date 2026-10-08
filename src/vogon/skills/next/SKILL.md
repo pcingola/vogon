@@ -45,8 +45,8 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
 3. Check each remaining requirement against the sources it links, as
    `common.md` states.
    - Approval. Decide whether the requirement is approved, has a tracker
-     approval not yet synced, or needs approval again because its text
-     changed, as `common.md` "Approval of a requirement" states. The approval
+     approval not yet synced, or needs approval again because a `changed`
+     entry follows its latest approval, as `common.md` "Approval of a requirement" states. The approval
      is stale in the last case.
    - Implemented. The requirement is implemented when an `implemented` step
      links a merged pull request or a commit on the default branch, and the

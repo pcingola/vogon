@@ -92,19 +92,21 @@ never taken, stops and commands.
      markdown copies and summaries in `source`;
    - takes each id from `vogon id <type> <module>`, omitting the module for
      `FACT`, `CON` and `DEC`, and in a project without modules;
-   - changes an existing record in place when a source changes it, and lists
-     in its log each changed requirement that has an approval. A statement
+   - changes an existing record in place when a source changes it, except
+     an approved requirement, as `common.md` "Approval of a requirement"
+     defines it: for that it writes the proposed change into its log and
+     leaves the file unchanged. A statement
      changed in a later meeting, thread or channel is recorded as the latest
      summary states it;
    - lists in its log, for each record, the sources and code it was drafted
      from.
 8. Start the two evaluating sub-agents of the records loop (see Loops) and
    run the loop.
-9. Take every finding that needs a choice, and every question from step 7, to
-   the developer with its evidence, before any record is committed. Take a
-   finding on a requirement that is approved, as `common.md` "Approval of a
-   requirement" defines it, to the Product Owner instead, as a change that
-   needs approval again. Give the answers to the writing sub-agent and run
+9. Take every finding that needs a choice, every question from step 7 and
+   every proposed change to an approved requirement to the developer with its
+   evidence, before any record is committed. The writing sub-agent applies a
+   change to an approved requirement only when the developer agrees. Give
+   the answers to the writing sub-agent and run
    the evaluators again on the changed records.
 10. Delete `vogon/tmp/requirements/`, with every download and extract in it.
     Commit the summaries, the filed originals and markdown copies and the
@@ -128,8 +130,10 @@ never taken, stops and commands.
 12. Write beside each new requirement its state file `REQ-*.json` with the
     `id`, the tracker item's key in `issue` where step 11 created one, and one
     `drafted` entry with the date from `date '+%Y-%m-%d'` and the pull request
-    number in `pr`, as `common.md` "State-file entries" states. Commit and
-    push the state files to the same branch.
+    number in `pr`, as `common.md` "State-file entries" states. Append a
+    `changed` entry, with the same date and `pr`, to the state file of each
+    approved requirement the pull request changes. Commit and push the state
+    files to the same branch.
 13. Tell the developer which sources were used, which were left out and why,
     and which meetings had no transcript.
 14. Tell the Product Owner which requirements wait for approval, and where:
@@ -150,8 +154,9 @@ never taken, stops and commands.
 - A finding that needs a choice, a question no source answers, and a
   requirement whose only source is code: the developer running the skill,
   before any record is committed.
-- A finding on a requirement the Product Owner already approved: the Product
-  Owner, as a change that needs approval again.
+- A change to a requirement the Product Owner already approved: the
+  developer running the skill agrees to it first; the Product Owner then
+  approves it again.
 - The approval of the drafted requirements: the Product Owner is told what is
   waiting and where.
 - No source named: the developer running the skill is asked for the
@@ -169,6 +174,7 @@ never taken, stops and commands.
 | `vogon/sources/<yyyy-mm-dd>_<slug>.<ext>` and `.md` | The original file and its markdown copy, as `sources.md` states | File writers |
 | `vogon/requirements/<module>/REQ-<MODULE>-<NUMBER>.md` | Requirement record, `records.md` | Records writer |
 | `vogon/requirements/<module>/REQ-<MODULE>-<NUMBER>.json` | State file, `records.md`: `id`; `issue` where a tracker holds the item; `steps` with one entry `{"step": "drafted", "date": "<yyyy-mm-dd>", "pr": <number>}` | Main agent, after the pull request is opened |
+| `vogon/requirements/<module>/REQ-<MODULE>-<NUMBER>.json` of a changed approved requirement | Appended entry `{"step": "changed", "date": "<yyyy-mm-dd>", "pr": <number>}` | Main agent, after the pull request is opened |
 | `vogon/facts/FACT-NNN.md`, `vogon/constraints/CON-NNN.md`, `vogon/decisions/DEC-NNN.md` | Records, `records.md` | Records writer |
 | `vogon/logs/` | One log per sub-agent run, and the main log, as `common.md` states | Sub-agents; main agent |
 | Repository host | Working branch and pull request | Main agent |

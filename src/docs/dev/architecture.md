@@ -231,30 +231,31 @@ developer confirms that the behaviour is intended.
 In the POC the Product Owner approves in their own Claude Code session, for
 example "approve the last 10 requirements, then push". `vogon:approve` acts
 only on such an explicit instruction. It lists the ids and titles it resolved,
-runs `vogon approve <id>...`, commits and pushes. `vogon approve` writes into
-each `REQ-*.json` the approver's git identity, the date and the hash of the
-approved `REQ-*.md`. If `vogon.yaml` does not list the user as Product Owner, the
+runs `vogon approve <id>...`, commits and pushes. `vogon approve` appends to
+each `REQ-*.json` an `approved` entry with the approver's git identity and the
+date. If `vogon.yaml` does not list the user as Product Owner, the
 script warns and still records the approval.
 
 In the real version the requirements go to the tracker, and the Product Owner
-approves each with the tracker's approval transition. The Product Owner may
-edit the text in the tracker first. A skill syncs each approval, with the
-approved text, into `REQ-*.json`, which caches it so that skills do not query
-the tracker for every read, and copies the approved text into `REQ-*.md`.
-An approval in the tracker is synced when `REQ-*.json` holds it on the default
-branch. Until then the requirement is not approved, because the Product Owner
-may have edited the text in the tracker before approving it. An approval that
-an open pull request holds is reported as "sync pull request <n> not merged";
-any other unsynced approval is reported naming `vogon:approve` to sync it.
+approves each with the tracker's approval transition. The tracker is the
+source: the item's status is the approval. The Product Owner may edit the text
+in the tracker first. `vogon:approve` syncs each approval into `REQ-*.json`,
+which caches it so that skills do not query the tracker for every read, and
+copies the approved text into `REQ-*.md`. A skill that finds an approval not
+yet synced reports it, and works from the text of a requirement only once it
+is synced.
 
-A requirement whose markdown no longer matches its approved hash needs
-approval again. Every skill that reads it reports it, and `vogon:next` does not
-offer it as ready.
+A skill never changes an approved requirement without the agreement of the
+developer running it. A change goes in a pull request that appends a
+`changed` entry to `REQ-*.json` and lists the requirement as needing approval
+again. Without a tracker, the requirement is approved again when an
+`approved` entry follows the `changed` entry; with a tracker, when the item is
+approved again. Until then `vogon:next` does not offer it as ready.
 
 ## State of a requirement
 
-`REQ-<MODULE>-<NUMBER>.json` records the state of the requirement: its cached
-approvals and every step done to it (drafted, planned, test cases written,
+`REQ-<MODULE>-<NUMBER>.json` records the state of the requirement: every step
+done to it (drafted, approved, changed, planned, test procedures written,
 implemented, released), each with its date and the pull request or commit that
 holds it. The format is in [Records](records.md#state-file).
 

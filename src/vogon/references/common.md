@@ -18,8 +18,8 @@ Every VOGON skill reads this file before it starts.
    different developers, in any order. When one was skipped, do what still
    applies and report the gap with the real dates, such as code merged with
    no plan.
-5. Report every requirement whose `REQ-*.md` no longer matches its approved
-   hash, as "Approval of a requirement" defines it. It needs approval again.
+5. Report every requirement changed since its latest approval, as "Approval
+   of a requirement" defines it. It needs approval again.
 
 ## Approval of a requirement
 
@@ -27,18 +27,20 @@ Every VOGON skill reads this file before it starts.
   for the requirement item type. Otherwise `vogon approve` records them.
   Whenever `vogon.yaml` names a tracker, read `tracking.md` to decide which
   applies.
-- The approved hash is `sha256:` followed by the SHA-256 hex digest of the
-  bytes of `REQ-*.md` (`shasum -a 256`).
-- A requirement is approved when the hash of its latest `approvals` entry in
-  `REQ-*.json` on the default branch matches `REQ-*.md` on the default
-  branch. Otherwise it needs approval again.
-- Where a tracker holds approvals, read the requirement's tracker item. An
-  approval in the tracker is synced when `REQ-*.json` holds it on the default
-  branch. Until then the requirement is not approved, because the Product
-  Owner may have edited the text in the tracker before approving it. Report
-  an approval that an open pull request holds as "sync pull request <n> not
-  merged"; report any other unsynced approval naming `vogon:approve` to sync
-  it.
+- Where `vogon approve` records approvals, a requirement is approved when
+  `REQ-*.json` on the default branch has an `approved` entry after its latest
+  `changed` entry, if it has one. Report an `approved` entry that only an
+  open pull request holds.
+- Where a tracker holds approvals, the tracker item's status is the
+  approval. Read it. Where `REQ-*.json` on the default branch does not yet
+  hold that approval, report it naming `vogon:approve`, which copies the
+  approved text into `REQ-*.md`. A skill that works from the text of an
+  approved requirement, such as `vogon:tests` or `vogon:implement`, works
+  only from synced text.
+- A skill never changes an approved requirement without the agreement of the
+  developer running it. With that agreement it changes `REQ-*.md`, appends a
+  `changed` entry to `REQ-*.json` in the same pull request, and the pull
+  request lists the requirement as needing approval again.
 
 ## Project checklists
 
@@ -92,8 +94,9 @@ Stop rules:
 
 - An open high finding means another round. Open medium and low findings
   alone do not.
-- The main agent may run a round for an error it sees itself, and may stop
-  when the same finding stays open across rounds.
+- The main agent may run a round for an error it sees itself. It may stop
+  before round 5 when the same high finding stays open across rounds; it
+  then reports the error as after 5 rounds.
 - After 5 rounds, stop and report an error that states each finding still
   open and why it was not resolved.
 - A finding that needs a choice the loop cannot make goes to the person the
@@ -118,8 +121,9 @@ Logs:
   from `date`; never estimate it. The entry quotes the text concerned and
   cites the sub-agent log it rests on.
 - `vogon/logs/` is gitignored unless `options.commit_logs` in `vogon.yaml`
-  is true, because the logs of the meeting loop quote transcripts. When it is
-  true, every commit a skill makes includes the logs the skill wrote.
+  is true, because the logs of the meeting, mail and chat loops quote their
+  content. When it is true, every commit a skill makes includes the logs the
+  skill wrote.
 - Every pull request a skill opens states in its description which loops ran,
   how many rounds each took, and the findings left open.
 
@@ -210,5 +214,5 @@ no other commands.
 | Command | Does |
 | --- | --- |
 | `vogon id <type> <module>` | Prints the next unused record id, read from the working tree, every local and remote branch and the history after `git fetch`. With `--check`, reports each id new on the branch that the default branch or another local or remote branch also uses; the skill renumbers it before opening its pull request. |
-| `vogon approve <id>...` | Writes into each `REQ-*.json` the approver's git identity, the date and the hash of the approved `REQ-*.md`. Warns, and still records, when `vogon.yaml` does not list the user as Product Owner. |
+| `vogon approve <id>...` | Appends to each `REQ-*.json` an `approved` entry with the approver's git identity and the date. Warns, and still records, when `vogon.yaml` does not list the user as Product Owner. |
 | `vogon trace <results.xml>` | Joins the `req` and `procedure` markers and the results of one commit's JUnit XML into the traceability matrix: each requirement, its procedures and tests, their results, the commit, and every requirement with no test. |

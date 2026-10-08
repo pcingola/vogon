@@ -1650,16 +1650,15 @@ barcode that a scanner reads as `S-2026-00417`.
 </code></pre>
 <h2 id="state-file">State file<a class="headerlink" href="#state-file" title="Permanent link">&para;</a></h2>
 <p>Each requirement has a state file beside its markdown file, named for the same
-id with <code>.json</code>. It records the requirement's approvals and every step done to
-it, each with its date and the pull request or commit that holds it. Entries
-are appended and never edited or removed; a new approval is a new entry.</p>
+id with <code>.json</code>. It records every step done to the requirement, its approvals
+included, each with its date and the pull request or commit that holds it.
+Entries are appended in order and never edited or removed. A requirement is
+approved when an <code>approved</code> entry follows its latest <code>changed</code> entry.</p>
 <pre><code class="language-json">{
   &quot;id&quot;: &quot;REQ-PRN-12&quot;,
-  &quot;approvals&quot;: [
-    {&quot;by&quot;: &quot;Alice Smith &lt;alice@example.com&gt;&quot;, &quot;date&quot;: &quot;2026-09-18&quot;, &quot;hash&quot;: &quot;sha256:3f9a…&quot;, &quot;via&quot;: &quot;vogon approve&quot;}
-  ],
   &quot;steps&quot;: [
     {&quot;step&quot;: &quot;drafted&quot;, &quot;date&quot;: &quot;2026-09-15&quot;, &quot;pr&quot;: 230},
+    {&quot;step&quot;: &quot;approved&quot;, &quot;date&quot;: &quot;2026-09-18&quot;, &quot;by&quot;: &quot;Alice Smith &lt;alice@example.com&gt;&quot;, &quot;via&quot;: &quot;vogon approve&quot;},
     {&quot;step&quot;: &quot;planned&quot;, &quot;date&quot;: &quot;2026-09-22&quot;, &quot;commit&quot;: &quot;a12f9c0&quot;, &quot;plan&quot;: &quot;vogon/plans/plan_REQ-PRN-12.md&quot;, &quot;approved_by&quot;: &quot;Bob Jones &lt;bob@example.com&gt;&quot;},
     {&quot;step&quot;: &quot;implemented&quot;, &quot;date&quot;: &quot;2026-09-25&quot;, &quot;pr&quot;: 241, &quot;commit&quot;: &quot;b77d031&quot;},
     {&quot;step&quot;: &quot;released&quot;, &quot;date&quot;: &quot;2026-10-02&quot;, &quot;pr&quot;: 252, &quot;commit&quot;: &quot;c4e8a10&quot;, &quot;release&quot;: &quot;1.2&quot;}
@@ -1679,16 +1678,16 @@ are appended and never edited or removed; a new approval is a new entry.</p>
 <td>The requirement's key in the tracker, where a tracker holds it</td>
 </tr>
 <tr>
-<td><code>approvals</code></td>
-<td>Who approved, when, and the hash of <code>REQ-*.md</code> they approved. Written by <code>vogon approve</code>, or copied from the tracker in the real version (<code>via</code> names the tracker)</td>
+<td><code>step</code></td>
+<td><code>drafted</code>, <code>approved</code>, <code>changed</code>, <code>planned</code>, <code>test_procedures_written</code>, <code>implemented</code>, <code>released</code> or <code>withdrawn</code></td>
 </tr>
 <tr>
-<td><code>step</code></td>
-<td><code>drafted</code>, <code>planned</code>, <code>test_procedures_written</code>, <code>implemented</code>, <code>released</code> or <code>withdrawn</code></td>
+<td><code>by</code>, <code>via</code></td>
+<td>In an <code>approved</code> entry, the approver as <code>Name &lt;email&gt;</code>, and <code>vogon approve</code> or the tracker's name from <code>vogon.yaml</code>. Written by <code>vogon approve</code>, or copied from the tracker</td>
 </tr>
 <tr>
 <td><code>pr</code>, <code>commit</code></td>
-<td>The pull request and the commit that hold the step's work. A <code>planned</code> entry has a <code>commit</code> and no <code>pr</code></td>
+<td>The pull request and the commit that hold the step's work. A <code>planned</code> entry has a <code>commit</code> and no <code>pr</code>. A <code>changed</code> entry names the pull request that changed <code>REQ-*.md</code></td>
 </tr>
 <tr>
 <td><code>plan</code></td>

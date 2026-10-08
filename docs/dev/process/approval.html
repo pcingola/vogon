@@ -1065,22 +1065,24 @@ committed. The Product Owner approves in their own Claude Code session with an
 explicit instruction, for example "approve the last 10 requirements, then
 push". <code>vogon:approve</code> lists the ids and titles it resolved, runs
 <code>vogon approve &lt;id&gt;...</code>, commits and pushes.</p>
-<p><code>vogon approve</code> writes into each <code>REQ-*.json</code> the approver's git identity, the
-date and the hash of the approved <code>REQ-*.md</code>. If <code>vogon.yaml</code> does not list the
+<p><code>vogon approve</code> appends to each <code>REQ-*.json</code> an <code>approved</code> entry with the
+approver's git identity and the date. If <code>vogon.yaml</code> does not list the
 user as Product Owner, it warns and still records the approval. A git identity
 is not re-entered at approval, so this approval is not an electronic signature
 under 21 CFR Part 11.</p>
 <h2 id="with-a-tracker">With a tracker<a class="headerlink" href="#with-a-tracker" title="Permanent link">&para;</a></h2>
 <p>The requirements are tracker items, created in step 5. The Product Owner may
 edit the text in the tracker, then approves each item with the tracker's
-approval transition. A skill syncs each approval, with the approved text, into
-<code>REQ-*.json</code>, and copies the approved text into <code>REQ-*.md</code>. A requirement
-counts as approved once <code>REQ-*.json</code> holds the approval on the default branch.
-Skills report an approval that is in the tracker and not yet synced.</p>
+approval transition. The item's status is the approval. <code>vogon:approve</code> syncs
+each approval into <code>REQ-*.json</code> and copies the approved text into <code>REQ-*.md</code>.
+Skills report an approval that is in the tracker and not yet synced, and work
+from a requirement's text only once it is synced.</p>
 <h2 id="after-a-change">After a change<a class="headerlink" href="#after-a-change" title="Permanent link">&para;</a></h2>
-<p>A requirement whose <code>REQ-*.md</code> no longer matches its approved hash needs
-approval again. Every skill that reads it reports it, and <code>vogon:next</code> does not
-offer it as ready. <code>requirements.md</code> states what else a change to an approved
+<p>A skill changes an approved requirement only with the agreement of the
+developer running it. The pull request with the change appends a <code>changed</code>
+entry to <code>REQ-*.json</code> and lists the requirement as needing approval again.
+Until the Product Owner approves it again, <code>vogon:next</code> does not offer it as
+ready. <code>requirements.md</code> states what else a change to an approved
 requirement triggers, such as a tracker transition.</p>
 
 

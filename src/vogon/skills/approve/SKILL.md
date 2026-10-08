@@ -82,7 +82,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
    field: it has not been sent to the tracker.
 5. For each selected requirement, read its tracker item. For each transition
    that `tracking.md` names as the approval of a requirement and that has no
-   entry in `approvals` with the same date and approver, on the default branch
+   `approved` entry with the same date and approver, on the default branch
    or in an open pull request:
    1. Take the approved text: the values of the fields `tracking.md` names
       for the requirement text, the acceptance criteria and the risk fields,
@@ -94,10 +94,8 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
       holds it, word for word. If a value cannot be placed in one block or
       field, record nothing for the requirement and report it to the
       developer with both texts.
-   3. Append an approval entry to `REQ-*.json` as Outputs and `common.md`
-      "State-file entries" state. Take
-      `hash` from `REQ-*.md` as written in step 5.2, as `common.md` "Approval
-      of a requirement" states.
+   3. Append an `approved` entry to `REQ-*.json` as Outputs and `common.md`
+      "State-file entries" state.
    4. If the approver is not listed in `vogon.yaml` under the role
       `tracking.md` names for the transition, report it.
 6. Report each tracker item that left the approved state after an approval
@@ -141,22 +139,21 @@ derived in step 1 goes through the loop in `process-files.md`.
 
 | Path or system | Format | When |
 | --- | --- | --- |
-| `vogon/requirements/<module>/REQ-*.json` | An entry appended to `approvals` | When an approval is recorded or synced |
+| `vogon/requirements/<module>/REQ-*.json` | An `approved` entry appended to `steps` | When an approval is recorded or synced |
 | `vogon/requirements/<module>/REQ-*.md` | Blocks and frontmatter fields replaced with the approved text from the tracker | A tracker holds approvals |
 | Commit pushed to the current branch on the repository host | The changed state files | No tracker holds approvals and no process file derived |
 | Branch and pull request on the repository host | The changed state files and the process file derived, per `process-files.md` | No tracker holds approvals and a process file derived |
 | Branch and pull request on the repository host | The changed records, with the description in step 7 of "A tracker holds approvals", and any process file derived, per `process-files.md` | A tracker holds approvals |
 | `vogon/logs/` main log | Entries as `common.md` states | Always |
 
-An approval entry has these fields:
+An `approved` entry has these fields:
 
+- `step`: `approved`.
 - `by`: the approver as `Name <email>`. Without a tracker, the git identity
   `vogon approve` reads. With a tracker, the user who performed the
   transition, as the tracker records them.
 - `date`: the date of the approval, `yyyy-mm-dd`. With a tracker, the date of
   the transition.
-- `hash`: the approved hash, as `common.md` "Approval of a requirement"
-  states.
 - `via`: `vogon approve` without a tracker; the tracker's name from
   `vogon.yaml` with a tracker.
 

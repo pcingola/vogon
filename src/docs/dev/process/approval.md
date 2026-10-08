@@ -13,8 +13,8 @@ explicit instruction, for example "approve the last 10 requirements, then
 push". `vogon:approve` lists the ids and titles it resolved, runs
 `vogon approve <id>...`, commits and pushes.
 
-`vogon approve` writes into each `REQ-*.json` the approver's git identity, the
-date and the hash of the approved `REQ-*.md`. If `vogon.yaml` does not list the
+`vogon approve` appends to each `REQ-*.json` an `approved` entry with the
+approver's git identity and the date. If `vogon.yaml` does not list the
 user as Product Owner, it warns and still records the approval. A git identity
 is not re-entered at approval, so this approval is not an electronic signature
 under 21 CFR Part 11.
@@ -23,14 +23,16 @@ under 21 CFR Part 11.
 
 The requirements are tracker items, created in step 5. The Product Owner may
 edit the text in the tracker, then approves each item with the tracker's
-approval transition. A skill syncs each approval, with the approved text, into
-`REQ-*.json`, and copies the approved text into `REQ-*.md`. A requirement
-counts as approved once `REQ-*.json` holds the approval on the default branch.
-Skills report an approval that is in the tracker and not yet synced.
+approval transition. The item's status is the approval. `vogon:approve` syncs
+each approval into `REQ-*.json` and copies the approved text into `REQ-*.md`.
+Skills report an approval that is in the tracker and not yet synced, and work
+from a requirement's text only once it is synced.
 
 ## After a change
 
-A requirement whose `REQ-*.md` no longer matches its approved hash needs
-approval again. Every skill that reads it reports it, and `vogon:next` does not
-offer it as ready. `requirements.md` states what else a change to an approved
+A skill changes an approved requirement only with the agreement of the
+developer running it. The pull request with the change appends a `changed`
+entry to `REQ-*.json` and lists the requirement as needing approval again.
+Until the Product Owner approves it again, `vogon:next` does not offer it as
+ready. `requirements.md` states what else a change to an approved
 requirement triggers, such as a tracker transition.
