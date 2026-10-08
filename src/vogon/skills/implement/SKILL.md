@@ -142,7 +142,6 @@ Without instructions, the skill runs the plan to the end.
 | --- | --- | --- |
 | `vogon/plans/plan_<slug>.md` | Markdown, in the format of `plan-format.md` | Plan writer |
 | Host project code, tests and documentation | As the plan states, in the project's conventions | Part writers |
-| Host `conftest.py` and pytest configuration | As `conftest.md` states, only where the project lacks a change | Part writers |
 | `vogon/requirements/<module>/REQ-*.json` | Appended `steps` entries, below | Main agent |
 | `vogon/logs/<yyyymmdd_hhmmss>_<task>.log.md`, main log | As `common.md` states | Each sub-agent, main agent |
 | Repository host | A working branch with the plan commit, the code commits and the state-file commits; one pull request | Main agent |
@@ -167,8 +166,8 @@ from `date '+%Y-%m-%d'`. A plan approved again after a change gets a new
 | Sub-agent | Reads |
 | --- | --- |
 | Every sub-agent | `${CLAUDE_PLUGIN_ROOT}/references/writing.md` |
-| Plan writer, plan evaluators | `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/plan-format.md`, `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/conftest.md` |
-| Part writer | `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/plan-format.md`, `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/conftest.md`, `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/test-checklist.md`, `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/code-checklist.md` |
+| Plan writer, plan evaluators | `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/plan-format.md`, `${CLAUDE_PLUGIN_ROOT}/references/conftest.md` |
+| Part writer | `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/plan-format.md`, `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/test-checklist.md`, `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/code-checklist.md` |
 | Test checker | `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/test-checklist.md` |
 | Code reviewer | `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/code-checklist.md` |
 

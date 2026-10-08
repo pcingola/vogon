@@ -58,8 +58,8 @@ Omit a section only when nothing in it applies.
 - Each test names its requirements in `@pytest.mark.req("<id>", ...)` and,
   where procedures exist, its procedures in
   `@pytest.mark.procedure("<id>", ...)`. Where the host project lacks a change
-  that `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/conftest.md` states,
-  the plan has a part that makes it as that file states.
+  that `${CLAUDE_PLUGIN_ROOT}/references/conftest.md` states, the plan
+  reports it as that file states and adds no part for it.
 - Requirement ids are not written in implementation code. Commits name them.
 - The plan describes design, not code. A code block of a few lines is allowed
   only where prose cannot state an interface or a data structure.

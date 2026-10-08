@@ -1084,8 +1084,11 @@ files it in <code>vogon/sources/</code> as the original, unchanged, and a markdo
 beside it, named by the plan's own date with its version in the slug
 (<a href="../sources.html">Sources</a>). A plan already held is never overwritten; a new
 version is filed beside the old one.</p>
-<p><code>vogon:init</code> commits the configuration and the filed plan on a branch and
-opens a pull request. A person approves it on the repository host.</p>
+<p><code>vogon:init</code> also adds to the host project's <code>conftest.py</code> the lines that copy
+each test's <code>req</code> and <code>procedure</code> markers into the JUnit XML, where they are
+missing (<a href="../architecture.html#traceability">Architecture</a>).</p>
+<p><code>vogon:init</code> commits the configuration, the filed plan, the <code>.gitignore</code> lines
+and the <code>conftest.py</code> lines on a branch and opens a pull request. A person approves it on the repository host.</p>
 <h2 id="project-process-files">Project process files<a class="headerlink" href="#project-process-files" title="Permanent link">&para;</a></h2>
 <p>The markdown files in <code>vogon/project/</code> state how VOGON works in this project:
 <code>tracking.md</code>, <code>requirements.md</code>, <code>tests.md</code>, <code>traceability.md</code>,

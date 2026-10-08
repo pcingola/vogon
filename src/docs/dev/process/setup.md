@@ -35,8 +35,12 @@ beside it, named by the plan's own date with its version in the slug
 ([Sources](../sources.md)). A plan already held is never overwritten; a new
 version is filed beside the old one.
 
-`vogon:init` commits the configuration and the filed plan on a branch and
-opens a pull request. A person approves it on the repository host.
+`vogon:init` also adds to the host project's `conftest.py` the lines that copy
+each test's `req` and `procedure` markers into the JUnit XML, where they are
+missing ([Architecture](../architecture.md#traceability)).
+
+`vogon:init` commits the configuration, the filed plan, the `.gitignore` lines
+and the `conftest.py` lines on a branch and opens a pull request. A person approves it on the repository host.
 
 ## Project process files
 

@@ -1,7 +1,9 @@
 # Test markers in the host project
 
-The changes below copy the marker ids into the JUnit XML properties. Make each
-change the host project lacks; skip one whose lines are present.
+The changes below copy the marker ids into the JUnit XML properties.
+`vogon:init` makes each change the host project lacks and skips one whose
+lines are present. A skill that writes or reads markers reports a missing
+change and names `vogon:init` to add it.
 
 ## conftest.py
 

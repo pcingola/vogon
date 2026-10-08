@@ -1042,7 +1042,7 @@ writes that part's code, tests and documentation, given the plan, the
 requirements and the code it touches. Independent parts run in parallel. Each
 test names the requirements it verifies in its <code>req</code> marker. Where the host
 project's <code>conftest.py</code> lacks the lines that copy the markers into the JUnit
-XML, the skill adds them.</p>
+XML, which <code>vogon:init</code> adds, the skill reports it.</p>
 <p>Three evaluators check each part: the test checklist, the code checklist
 (<a href="../architecture.html#loops">Architecture</a>), and Claude Code's code review. The
 main agent also reads each sub-agent's output against the plan and sends back

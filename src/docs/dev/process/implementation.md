@@ -11,7 +11,7 @@ writes that part's code, tests and documentation, given the plan, the
 requirements and the code it touches. Independent parts run in parallel. Each
 test names the requirements it verifies in its `req` marker. Where the host
 project's `conftest.py` lacks the lines that copy the markers into the JUnit
-XML, the skill adds them.
+XML, which `vogon:init` adds, the skill reports it.
 
 Three evaluators check each part: the test checklist, the code checklist
 ([Architecture](../architecture.md#loops)), and Claude Code's code review. The

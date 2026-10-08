@@ -82,9 +82,9 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
      it back, report any difference, and delete the draft.
 9. After development, add `@pytest.mark.procedure("<procedure id>")` to each
    test a procedure was generated from that does not name it. Change nothing
-   else in the test. Where the host project lacks the lines
-   `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/conftest.md` states,
-   add them as that file states, in the same commit.
+   else in the test. Where the host project lacks a change
+   `${CLAUDE_PLUGIN_ROOT}/references/conftest.md` states, report it as that
+   file states.
 10. Commit the procedures and the marker changes. Where procedures are kept
     in the repository, run `vogon id --check`; for each id it reports, take a
     new id from `vogon id`, rename the procedure, and change every reference
@@ -129,7 +129,6 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
 | Test procedure, kept in the repository | `vogon/requirements/<module>/TP-<MODULE>-<NUMBER>.md` | Markdown with YAML frontmatter, as step 7 states |
 | Test procedure, kept in the tracker or test manager | An item in that system, created as `tracking.md` states; its key is the id | The system's item, linked to the requirement's item |
 | `procedure` marker, after development | The test files the procedures were generated from | `@pytest.mark.procedure("<procedure id>")` |
-| Host `conftest.py` and pytest configuration, after development | As `conftest.md` states, only where the project lacks the lines | Python and the project's pytest configuration format |
 | State entry | `REQ-*.json` `steps` | `{"step": "test_procedures_written", "date": "<yyyy-mm-dd>", "pr": <number>}` |
 | Pull request | Repository host | The procedures, the marker changes and the state entries |
 | Sub-agent logs and main log | `vogon/logs/` | As `common.md` states |
@@ -140,6 +139,6 @@ And any process file derived, per `process-files.md`.
 
 | Read by | Files |
 | --- | --- |
-| Main agent | `${CLAUDE_PLUGIN_ROOT}/references/common.md`, `${CLAUDE_PLUGIN_ROOT}/references/process-files.md`, `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/conftest.md` |
+| Main agent | `${CLAUDE_PLUGIN_ROOT}/references/common.md`, `${CLAUDE_PLUGIN_ROOT}/references/process-files.md`, `${CLAUDE_PLUGIN_ROOT}/references/conftest.md` |
 | Writing sub-agent | `${CLAUDE_PLUGIN_ROOT}/references/records.md`, `${CLAUDE_PLUGIN_ROOT}/references/sources.md`, `${CLAUDE_PLUGIN_ROOT}/references/writing.md`, `${CLAUDE_PLUGIN_ROOT}/skills/tests/references/procedure-checklist.md` or the project's version |
 | Evaluators | The checklist, `${CLAUDE_PLUGIN_ROOT}/references/records.md`, `${CLAUDE_PLUGIN_ROOT}/references/writing.md` |

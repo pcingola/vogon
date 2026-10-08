@@ -1383,7 +1383,7 @@ session, which is the main agent of <a href="loop.html">the loop</a>.</p>
 <tbody>
 <tr>
 <td><code>vogon:init</code></td>
-<td>Writes <code>vogon/project/vogon.yaml</code>: the system for each role, the role holders and the options; files the validation plan in <code>vogon/sources/</code></td>
+<td>Writes <code>vogon/project/vogon.yaml</code>: the system for each role, the role holders and the options; files the validation plan in <code>vogon/sources/</code>; adds the <code>.gitignore</code> lines and the <code>conftest.py</code> marker lines</td>
 <td><a href="process/setup.html">Setup</a></td>
 </tr>
 <tr>
@@ -1728,8 +1728,8 @@ skill runs the plan to the end.</p>
 <p>All tests are written and pass before the pull request is opened. A person
 approves the pull request on the repository host.</p>
 <h2 id="traceability">Traceability<a class="headerlink" href="#traceability" title="Permanent link">&para;</a></h2>
-<p>A few lines in the host project's <code>conftest.py</code> copy each test's <code>req</code> and
-<code>procedure</code> marker ids into the JUnit XML properties:</p>
+<p>A few lines in the host project's <code>conftest.py</code>, added by <code>vogon:init</code>, copy
+each test's <code>req</code> and <code>procedure</code> marker ids into the JUnit XML properties:</p>
 <pre><code class="language-python">def pytest_collection_modifyitems(items):
     for item in items:
         for name in (&quot;req&quot;, &quot;procedure&quot;):

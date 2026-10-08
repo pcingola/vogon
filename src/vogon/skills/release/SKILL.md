@@ -44,7 +44,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
      `git status --porcelain` there. Otherwise report that it could not be
      checked.
    - Report a JUnit XML with no `req` property: the host project lacks the
-     lines `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/conftest.md`
+     lines `${CLAUDE_PLUGIN_ROOT}/references/conftest.md`
      states, and the matrix shows every requirement as untested.
    - Report and continue. These findings do not stop the skill.
 4. Read `release.md`. Determine the release contents as it states them,
@@ -159,6 +159,6 @@ External writes:
 
 - Main agent: `${CLAUDE_PLUGIN_ROOT}/references/common.md`,
   `${CLAUDE_PLUGIN_ROOT}/references/process-files.md`,
-  `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/conftest.md`.
+  `${CLAUDE_PLUGIN_ROOT}/references/conftest.md`.
 - Writing and evaluating sub-agents: `${CLAUDE_PLUGIN_ROOT}/references/writing.md`,
   `${CLAUDE_PLUGIN_ROOT}/references/records.md`.

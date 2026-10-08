@@ -58,7 +58,7 @@ session, which is the main agent of [the loop](loop.md).
 
 | Skill | Does | Process page |
 | --- | --- | --- |
-| `vogon:init` | Writes `vogon/project/vogon.yaml`: the system for each role, the role holders and the options; files the validation plan in `vogon/sources/` | [Setup](process/setup.md) |
+| `vogon:init` | Writes `vogon/project/vogon.yaml`: the system for each role, the role holders and the options; files the validation plan in `vogon/sources/`; adds the `.gitignore` lines and the `conftest.py` marker lines | [Setup](process/setup.md) |
 | `vogon:requirements` | Reads the selected sources, writes checked summaries of meetings, mail and chat, drafts records with their risk fields, checks them, opens the pull request, and in the real version sends the requirements to the tracker for approval | [Requirements from sources](process/requirements.md) |
 | `vogon:approve` | Records the Product Owner's approval of the requirements they name, commits and pushes | [Approving requirements](process/approval.md) |
 | `vogon:next` | Lists the approved requirements ready to start, lists the blocked ones with what blocks them, assigns the chosen one | [Planning](process/planning.md) |
@@ -349,8 +349,8 @@ approves the pull request on the repository host.
 
 ## Traceability
 
-A few lines in the host project's `conftest.py` copy each test's `req` and
-`procedure` marker ids into the JUnit XML properties:
+A few lines in the host project's `conftest.py`, added by `vogon:init`, copy
+each test's `req` and `procedure` marker ids into the JUnit XML properties:
 
 ```python
 def pytest_collection_modifyitems(items):

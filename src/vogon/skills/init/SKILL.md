@@ -7,9 +7,9 @@ description: Sets VOGON up in a host project. Writes vogon/project/vogon.yaml, f
 
 Sets VOGON up in a host project, and updates the setup when it runs again.
 It writes `vogon/project/vogon.yaml`, files the validation plan in
-`vogon/sources/`, adds the VOGON lines to the host `.gitignore`, reports
-approval transitions that are not electronic signatures, and opens a pull
-request. Use it once per project
+`vogon/sources/`, adds the VOGON lines to the host `.gitignore` and the test
+marker lines to the host `conftest.py`, reports approval transitions that are
+not electronic signatures, and opens a pull request. Use it once per project
 before any other VOGON skill, and again when a system, role holder or module
 changes or a new version of the validation plan is issued. It writes no
 project process file: a skill derives each one when it first needs it.
@@ -75,7 +75,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
    value that differs from what the repository and connectors now show.
 6. Ask the developer, in one message, to confirm or correct each proposed
    value and to give each role holder. Ask also for the tracker project and
-   test manager project whose approval workflow step 9 reads, where those
+   test manager project whose approval workflow step 10 reads, where those
    systems are configured. A role the developer says the project does not
    have is omitted from `vogon.yaml`; "Systems by role" in `common.md` states
    how a skill handles a role with no system.
@@ -87,20 +87,23 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
 8. In `.gitignore` at the repository root, add `vogon/tmp/` if it is not
    present. Add or remove the `vogon/logs/` line so that `.gitignore` matches
    the Logs rule in `common.md` for the current `options.commit_logs`.
-9. For each of the tracker and the test manager that `vogon.yaml` names,
-   read through its connector the workflow of the project the developer
-   gave in step 6. Where neither is configured, skip this step and report
-   it, as "Systems by role" in `common.md` states. List each transition that
-   records an approval. Report each one whose screen, validator or condition
-   does not make the approver re-enter their credentials: it is not an
-   electronic signature under 21 CFR Part 11. If the connector cannot read the workflow configuration,
-   report that the check could not be made. Change nothing in either system.
-10. Commit the files of steps 3 to 8 on the working branch, with the logs as
+9. Make each change `${CLAUDE_PLUGIN_ROOT}/references/conftest.md` states
+   that the host project lacks: the `conftest.py` lines and the marker
+   registration. Skip a change whose lines are present.
+10. For each of the tracker and the test manager that `vogon.yaml` names,
+    read through its connector the workflow of the project the developer
+    gave in step 6. Where neither is configured, skip this step and report
+    it, as "Systems by role" in `common.md` states. List each transition that
+    records an approval. Report each one whose screen, validator or condition
+    does not make the approver re-enter their credentials: it is not an
+    electronic signature under 21 CFR Part 11. If the connector cannot read
+    the workflow configuration, report that the check could not be made. Change nothing in either system.
+11. Commit the files of steps 3 to 9 on the working branch, with the logs as
     the Logs rule in `common.md` states. Push and open a pull request on the
     repository host. The description states the systems, role holders and
     modules written, the plan's path and version, the lines changed in
-    `.gitignore`, the report of step 9, and the loop and findings as `common.md`
-    states. Tell the developer that the pull request waits for review on the
+    `.gitignore` and `conftest.py`, the report of step 10, and the loop and
+    findings as `common.md` states. Tell the developer that the pull request waits for review on the
     repository host.
 
 ## Loops
@@ -109,7 +112,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
 | --- | --- | --- | --- |
 | Plan filer | The original and the markdown copy of the validation plan in `vogon/sources/` | Copy check, which reads the original itself | The copy holds every section, heading number, table, list and sentence of the original, in its order and wording, and adds nothing; the frontmatter date, title and file names match the original and `sources.md` |
 
-`vogon.yaml` and the `.gitignore` lines have no loop.
+`vogon.yaml`, the `.gitignore` lines and the `conftest.py` changes have no loop.
 
 ## Stops for a person
 
@@ -129,9 +132,10 @@ The questions of steps 2 and 6 ask for this skill's inputs.
 | `vogon/sources/<date>_<slug>.<ext>` | The plan's original, unchanged | Plan filer |
 | `vogon/sources/<date>_<slug>.md` | Markdown copy of the plan, frontmatter as `sources.md` states | Plan filer |
 | `.gitignore` | `vogon/tmp/`, and `vogon/logs/` as the Logs rule in `common.md` states | Main agent |
+| Host `conftest.py` and pytest configuration | As `conftest.md` states, only where the project lacks a change | Main agent |
 | `vogon/logs/<yyyymmdd_hhmmss>_<task>.log.md` | Markdown, one per sub-agent run | Each sub-agent |
 | `vogon/logs/` main log | One entry per sub-agent run and decision, as `common.md` states | Main agent |
-| Repository host | The working branch and the pull request of step 10 | Main agent |
+| Repository host | The working branch and the pull request of step 11 | Main agent |
 
 No `REQ-*.json` entry: the skill concerns no requirement. The tracker and the
 test manager are read only.
@@ -144,3 +148,4 @@ test manager are read only.
 - `${CLAUDE_PLUGIN_ROOT}/references/writing.md`: plan filer and copy check,
   as `common.md` requires.
 - `${CLAUDE_PLUGIN_ROOT}/templates/vogon.yaml`: main agent, step 7.
+- `${CLAUDE_PLUGIN_ROOT}/references/conftest.md`: main agent, step 9.
