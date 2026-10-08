@@ -22,12 +22,14 @@ project's controlled document. Never edit the plan or its markdown copy.
 The held plan is the markdown copy of the validation plan in `vogon/sources/`
 (`${CLAUDE_PLUGIN_ROOT}/references/sources.md`). If several versions are held,
 the held plan is the one with the latest document date. It is newer than a
-process file when its path differs from the file's `plan_source` and its date
-is later, or when the version it states differs from the file's
-`plan_version`.
+process file when the file has no `plan_source`, when its path differs from
+the file's `plan_source` and its date is later, or when the version it states
+differs from the file's `plan_version`.
 
-If no validation plan is held, stop and tell the developer to file it with
-`vogon:init`.
+If no validation plan is held, derive the file without one: skip step 1,
+leave `plan_source` and `plan_version` out of the frontmatter, and every topic
+of the template is a gap that step 6 asks the developer. When a plan is filed
+later, the file is derived again from it.
 
 ## Inputs
 
@@ -68,8 +70,8 @@ If no validation plan is held, stop and tell the developer to file it with
    - when the file is derived again, keeps each recorded answer whose topic the
      new plan still does not state, with its name and date, and drops an
      answer the new plan now covers.
-4. Start two evaluating sub-agents. Give each the file, the template, the held plan's markdown copy, its log
-   path and the logs of earlier rounds.
+4. Start two evaluating sub-agents. Give each the file, the template, the
+   held plan's markdown copy, its log path and the logs of earlier rounds.
    - Support: each statement says what its cited plan section says, and
      nothing more. A statement with no citation and no recorded answer is a
      finding. A statement that adds a step, approval, field or tool the cited
@@ -88,13 +90,15 @@ If no validation plan is held, stop and tell the developer to file it with
    The name is the developer's git identity and the date comes from `date`.
    Run the evaluators again on the changed file.
 7. Commit the file on the skill's working branch, which the skill creates or
-   checks out in its first step, before the file is derived. The
-   file goes in the skill's one pull request, whose description also states the plan path and version and the
-   loops run for the file, their rounds and the findings left open, as
-   `common.md` states. A person merges it. If the skill ends without opening
-   its own pull request, push the working branch and open a pull request for
-   it. A skill that opens its pull request later from the same branch pushes
-   to the open one instead.
+   checks out in its first step, before the file is derived. The file goes in
+   the skill's one pull request, whose description also states the plan path
+   and version and the loops run for the file, their rounds and the findings
+   left open, as `common.md` states. A person merges it. A skill whose task
+   opens no pull request, such as `vogon:next`, pushes the working branch and
+   opens a pull request for the file. A skill that stops before its own pull
+   request, such as `vogon:implement` before its tests pass, opens none: it
+   reports the branch, and the file goes in the pull request when the skill
+   runs again.
 8. Continue the skill's own task on the same branch, with the file as written
    there.
 

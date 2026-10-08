@@ -37,7 +37,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
 2. If the developer did not give the plan's location, ask for it. On a
    later run with no new plan, skip to step 5. If the project has no plan
    yet, skip to step 5 and report that a skill that needs a project process
-   file stops until a plan is filed.
+   file asks the developer its topics until a plan is filed.
 3. File the plan in the loop under Loops. The writing sub-agent fetches the
    original itself, through the system that holds it, so the plan never
    enters the main agent's context. It:
