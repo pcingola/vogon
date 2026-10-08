@@ -80,6 +80,10 @@ its `source` documents in the order of this table, strongest first.
 - [ ] The summary keeps every requirement, fact, constraint, decision and
       unanswered question the source states that bears on requirements, with
       the values given and who stated each.
+- [ ] A statement proposed and then rejected or changed later in the same
+      source is summarised as it ended.
+- [ ] The summary holds nothing personal: no personal remarks, no health or
+      HR matters, no opinions about people.
 - [ ] The summary is written in its own words, not the source's.
 - [ ] The download is deleted once the summary is checked. Records are drafted
       from the checked summary.
