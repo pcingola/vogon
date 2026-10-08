@@ -15,9 +15,7 @@ Each requirement:
       need (checking once at setup, on change or on failure), or when it adds
       steps, confirmations or files to a person's work that nobody would miss;
 - [ ] contradicts no other requirement, constraint or decision, including
-      those in open pull requests;
-- [ ] does not contradict the project's design as its decision records state
-      it, or names the decision it reverses;
+      those in open pull requests, unless it names the decision it reverses;
 - [ ] is not a duplicate and is not already covered by another requirement;
 - [ ] can be tested, and every expected value comes from the source;
 - [ ] states one thing, with one reading;
