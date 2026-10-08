@@ -221,8 +221,8 @@ sub-agent's context, never in the main agent's.
 
 Code shows what the system does, and its history shows why. A requirement
 drafted from code alone describes the current behaviour, defects included, so
-an evaluator reports every requirement whose only source is the code, and the
-developer confirms that the behaviour is intended.
+the skill takes every requirement whose only source is the code to the
+developer, who confirms that the behaviour is intended.
 
 ## Approval of requirements
 

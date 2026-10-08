@@ -43,8 +43,10 @@ names a tracker. Sub-agents read
    to an approved requirement goes in its log as a proposal; the file is not
    changed. Its log lists the sources of each record.
 7. Run the records loop.
-8. Take each finding that needs a choice, each question and each proposed
-   change to an approved requirement to the developer. Apply the answers and
+8. Take to the developer each finding that needs a choice, each question,
+   each proposed change to an approved requirement, and each requirement
+   whose only source is code, as the records writer's log lists it, for the
+   developer to confirm that the behaviour is intended. Apply the answers and
    run the evaluators again on the changed records.
 9. Delete `vogon/tmp/requirements/`. Run `vogon id --check` and renumber
    every id it reports. Commit, push and open the pull request. Its
@@ -69,4 +71,3 @@ names a tracker. Sub-agents read
 | Extract, one per file | One per extract | Each statement is in the file at its location; none that bears on requirements is left out |
 | Records | Requirement checklist | `requirement-checklist.md`, against the drafted records, existing records, records in open pull requests and the cited sources |
 | | Record format | `records.md`, against the drafted records |
-| | Code-only source | Lists each requirement whose only source is code. The developer confirms the behaviour is intended |

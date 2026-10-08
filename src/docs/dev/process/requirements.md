@@ -46,8 +46,9 @@ acceptance criteria and its four risk fields. Each record takes its id from
 Two evaluators check the drafts. One applies the requirement checklist
 ([Architecture](../architecture.md#loops)) against the drafts, the existing
 records, the records in open pull requests and the cited sources. The other
-reports every requirement whose only source is the code, because code shows
-current behaviour, defects included.
+checks the record format. The writer's log lists the sources of each record,
+so the main agent knows every requirement whose only source is the code,
+which shows current behaviour, defects included.
 
 The loop fixes what it can. A finding that needs a choice, a question no
 source answers, and a requirement drawn from code alone go to the developer
