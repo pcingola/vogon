@@ -39,7 +39,7 @@ modules:
 # Project options.
 options:
   # Commit the loop logs in vogon/logs/. Off by default, because the logs of
-  # the meeting loop quote transcripts.
+  # the meeting, mail and chat loops quote their content.
   commit_logs: false
   # Allow mocks and mocking libraries in tests. Off unless the project
   # authorizes them.
