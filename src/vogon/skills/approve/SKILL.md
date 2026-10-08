@@ -81,7 +81,8 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
    with an `issue` field. Report each active requirement with no `issue`
    field: it has not been sent to the tracker.
 5. For each selected requirement, read its tracker item. For each transition
-   that `tracking.md` names as the approval of a requirement and that has no
+   that `tracking.md` names as the approval of a requirement, that is dated
+   after the latest `changed` entry of `REQ-*.json`, if any, and that has no
    `approved` entry with the same date and approver, on the default branch
    or in an open pull request:
    1. Take the approved text: the values of the fields `tracking.md` names

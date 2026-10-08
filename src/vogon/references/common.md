@@ -27,16 +27,15 @@ Every VOGON skill reads this file before it starts.
   for the requirement item type. Otherwise `vogon approve` records them.
   Whenever `vogon.yaml` names a tracker, read `tracking.md` to decide which
   applies.
-- Where `vogon approve` records approvals, a requirement is approved when
-  `REQ-*.json` on the default branch has an `approved` entry after its latest
-  `changed` entry, if it has one. Report an `approved` entry that only an
-  open pull request holds.
-- Where a tracker holds approvals, the tracker item's status is the
-  approval. Read it. Where `REQ-*.json` on the default branch does not yet
-  hold that approval, report it naming `vogon:approve`, which copies the
-  approved text into `REQ-*.md`. A skill that works from the text of an
-  approved requirement, such as `vogon:tests` or `vogon:implement`, works
-  only from synced text.
+- A requirement is approved when `REQ-*.json` on the default branch has an
+  `approved` entry after its latest `changed` entry, if any. `vogon approve`
+  writes that entry, or, where a tracker holds approvals, `vogon:approve`
+  copies it from the tracker with the approved text. Report an `approved`
+  entry that only an open pull request holds.
+- Where a tracker holds approvals, also read the item's status. Report an
+  approval the tracker shows that `REQ-*.json` does not yet hold, naming
+  `vogon:approve`, and an `approved` entry whose tracker item no longer shows
+  approval.
 - A skill never changes an approved requirement without the agreement of the
   developer running it. With that agreement it changes `REQ-*.md`, appends a
   `changed` entry to `REQ-*.json` in the same pull request, and the pull
