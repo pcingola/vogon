@@ -49,7 +49,6 @@ vogon/
 ├── tmp/             working notes: plans, brainstorming. gitignored, local only.
 ├── assets/          brand originals + their dark twins, 46 MB. never published.
 ├── .claude-plugin/  marketplace.json: the marketplace listing the plugin
-├── .github/         CI: a strict site build on pushes to main and on pull requests
 ├── .githooks/       pre-commit: rebuilds docs/ when site source changes
 ├── mkdocs.yml       docs_dir: src/docs   site_dir: docs
 ├── Makefile         make site / make clean
