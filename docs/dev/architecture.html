@@ -1293,7 +1293,8 @@ a task needs one. Small scripts do the work that must give the same result
 every time: <code>vogon id</code> allocates record ids, <code>vogon approve</code> records an
 approval, and <code>vogon trace</code> builds the traceability matrix. Test results come
 from pytest's own JUnit XML. All model work is done by Claude Code, and the
-Python code calls no language model (<code>DEC-005</code>).</p>
+Python code calls no language model (<code>DEC-005</code>). The design follows the
+<a href="index.html#principles">principles</a>.</p>
 <p><a href="vocabulary.html">Vocabulary</a> defines the terms used here. <a href="records.html">Records</a>
 defines the record format and the requirement state file. <a href="loop.html">The loop</a>
 defines how every skill produces and checks its work.</p>
@@ -1363,9 +1364,7 @@ the test manager and the document system. A tracker or test manager transition
 is an electronic signature only when the workflow makes the approver re-enter
 their credentials at that transition; <code>vogon:init</code> reports a workflow that
 does not.</p>
-<p>VOGON never decides an approval and never signs (<code>CON-001</code>). In the POC the
-Product Owner gives the approval in their own Claude Code session, and
-<code>vogon:approve</code> records it only on that explicit instruction. A change to a
+<p>VOGON never decides an approval and never signs (<code>CON-001</code>). A change to a
 live system is recorded and approved in the host project's own change control
 system; its requirements, tests and release documents go through the same
 skills (<code>DEC-026</code>).</p>
@@ -1430,8 +1429,12 @@ does not assume an earlier task ran. When one was skipped, the skill does what
 still applies and reports the gap, such as code merged with no plan.</p>
 <p>A skill's <code>SKILL.md</code> holds the task's steps, the loops it runs, what each
 sub-agent receives, and where it stops for a person. The default checklists
-are in the skill's <code>references/</code> directory. A project edits or removes their
-items in its own files, in <code>vogon/project/checklists/</code>.</p>
+are in the skill's <code>references/</code> directory. They include checks that reviews
+often skip: whether a requirement makes sense in practice, with its cost
+weighed against how often the situation occurs; whether a test checks the
+requirement's intent rather than what the code does; and whether the code is
+overengineered. A project edits or removes their items in its own files, in
+<code>vogon/project/checklists/</code>.</p>
 <h3 id="loops">Loops<a class="headerlink" href="#loops" title="Permanent link">&para;</a></h3>
 <p>Each skill runs its work through <a href="loop.html">the loop</a>. The loops are:</p>
 <table>
@@ -1485,47 +1488,15 @@ items in its own files, in <code>vogon/project/checklists/</code>.</p>
 </tr>
 </tbody>
 </table>
-<p>The default requirement checklist holds that each
-requirement:</p>
-<ul>
-<li>makes sense in practice: it solves a real problem, and its cost fits how
-  often the situation occurs;</li>
-<li>contradicts no other requirement, constraint or decision, including those in
-  open pull requests;</li>
-<li>does not contradict the project's design as its decision records state it,
-  or names the decision it reverses;</li>
-<li>is not a duplicate and is not already covered by another requirement;</li>
-<li>can be tested, and every expected value comes from the source;</li>
-<li>states one thing, with one reading;</li>
-<li>has <code>gxp_impact</code> and <code>risk</code> values that follow from their reasons.</li>
-</ul>
-<p>The default test checklist holds that each test checks the requirement and its
-intent rather than trivial code behaviour, that no test uses a mock unless the
-project authorized it, that the tests together cover every aspect of the
-requirement, and that no test checks the behaviour of a library.</p>
-<p>The default code checklist holds that the code covers the requirements, is
-well written and not overengineered, uses defined data structures and classes
-instead of dictionaries, follows the language's other best practices, and that
-the documentation describes the current code.</p>
 <h3 id="when-a-skill-stops-for-a-person">When a skill stops for a person<a class="headerlink" href="#when-a-skill-stops-for-a-person" title="Permanent link">&para;</a></h3>
-<ul>
-<li>An approval. The skill tells the role holder what is waiting and where.</li>
-<li>A finding that needs a choice. It goes to the developer running the skill,
-  before the requirement is created or the pull request is opened. Only a
-  finding on a requirement the Product Owner already approved goes back to the
-  Product Owner, as a change that needs approval again.</li>
-<li>A plan for code, which the developers review and approve before any code
-  is written.</li>
-<li>An instruction from the developer while code is written, if the developer
-  chooses to give one.</li>
-<li>A gap in the validation plan while a project process file is derived. The
-  developer answers, and the file records the answer with their name and the
-  date.</li>
-<li>The tracker and test manager names read from example items while a project
-  process file is derived. The developer confirms them.</li>
-<li>A required input the developer did not give. The skill asks for it.</li>
-</ul>
-<p>Nothing else waits for confirmation.</p>
+<p>A skill stops for an approval, for the plan review before code, and, while a
+process file is derived, for a gap in the validation plan and for the tracker
+names it read. Each is described in its own section. It also stops for a
+finding that needs a choice, which goes to the developer running the skill
+before the requirement is created or the pull request is opened; a finding on
+a requirement the Product Owner already approved goes to the Product Owner, as
+a change that needs approval again. It asks for a required input the developer
+did not give. Nothing else waits for confirmation.</p>
 <h2 id="project-configuration-and-process-files">Project configuration and process files<a class="headerlink" href="#project-configuration-and-process-files" title="Permanent link">&para;</a></h2>
 <p>VOGON knows generic concepts: requirement, defect, test, test procedure,
 approval, and the steps done to a requirement. How a host project uses them

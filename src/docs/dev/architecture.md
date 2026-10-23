@@ -8,7 +8,8 @@ a task needs one. Small scripts do the work that must give the same result
 every time: `vogon id` allocates record ids, `vogon approve` records an
 approval, and `vogon trace` builds the traceability matrix. Test results come
 from pytest's own JUnit XML. All model work is done by Claude Code, and the
-Python code calls no language model (`DEC-005`).
+Python code calls no language model (`DEC-005`). The design follows the
+[principles](index.md#principles).
 
 [Vocabulary](vocabulary.md) defines the terms used here. [Records](records.md)
 defines the record format and the requirement state file. [The loop](loop.md)
@@ -44,9 +45,7 @@ is an electronic signature only when the workflow makes the approver re-enter
 their credentials at that transition; `vogon:init` reports a workflow that
 does not.
 
-VOGON never decides an approval and never signs (`CON-001`). In the POC the
-Product Owner gives the approval in their own Claude Code session, and
-`vogon:approve` records it only on that explicit instruction. A change to a
+VOGON never decides an approval and never signs (`CON-001`). A change to a
 live system is recorded and approved in the host project's own change control
 system; its requirements, tests and release documents go through the same
 skills (`DEC-026`).
@@ -80,8 +79,12 @@ still applies and reports the gap, such as code merged with no plan.
 
 A skill's `SKILL.md` holds the task's steps, the loops it runs, what each
 sub-agent receives, and where it stops for a person. The default checklists
-are in the skill's `references/` directory. A project edits or removes their
-items in its own files, in `vogon/project/checklists/`.
+are in the skill's `references/` directory. They include checks that reviews
+often skip: whether a requirement makes sense in practice, with its cost
+weighed against how often the situation occurs; whether a test checks the
+requirement's intent rather than what the code does; and whether the code is
+overengineered. A project edits or removes their items in its own files, in
+`vogon/project/checklists/`.
 
 ### Loops
 
@@ -98,49 +101,16 @@ Each skill runs its work through [the loop](loop.md). The loops are:
 | `vogon:implement` | Code, tests and documentation for one part of the plan | The test checklist; the code checklist; Claude Code's code review |
 | `vogon:release` | One validation document | The document against the requirements, the code and the results of the release commit |
 
-The default requirement checklist holds that each
-requirement:
-
-- makes sense in practice: it solves a real problem, and its cost fits how
-  often the situation occurs;
-- contradicts no other requirement, constraint or decision, including those in
-  open pull requests;
-- does not contradict the project's design as its decision records state it,
-  or names the decision it reverses;
-- is not a duplicate and is not already covered by another requirement;
-- can be tested, and every expected value comes from the source;
-- states one thing, with one reading;
-- has `gxp_impact` and `risk` values that follow from their reasons.
-
-The default test checklist holds that each test checks the requirement and its
-intent rather than trivial code behaviour, that no test uses a mock unless the
-project authorized it, that the tests together cover every aspect of the
-requirement, and that no test checks the behaviour of a library.
-
-The default code checklist holds that the code covers the requirements, is
-well written and not overengineered, uses defined data structures and classes
-instead of dictionaries, follows the language's other best practices, and that
-the documentation describes the current code.
-
 ### When a skill stops for a person
 
-- An approval. The skill tells the role holder what is waiting and where.
-- A finding that needs a choice. It goes to the developer running the skill,
-  before the requirement is created or the pull request is opened. Only a
-  finding on a requirement the Product Owner already approved goes back to the
-  Product Owner, as a change that needs approval again.
-- A plan for code, which the developers review and approve before any code
-  is written.
-- An instruction from the developer while code is written, if the developer
-  chooses to give one.
-- A gap in the validation plan while a project process file is derived. The
-  developer answers, and the file records the answer with their name and the
-  date.
-- The tracker and test manager names read from example items while a project
-  process file is derived. The developer confirms them.
-- A required input the developer did not give. The skill asks for it.
-
-Nothing else waits for confirmation.
+A skill stops for an approval, for the plan review before code, and, while a
+process file is derived, for a gap in the validation plan and for the tracker
+names it read. Each is described in its own section. It also stops for a
+finding that needs a choice, which goes to the developer running the skill
+before the requirement is created or the pull request is opened; a finding on
+a requirement the Product Owner already approved goes to the Product Owner, as
+a change that needs approval again. It asks for a required input the developer
+did not give. Nothing else waits for confirmation.
 
 ## Project configuration and process files
 

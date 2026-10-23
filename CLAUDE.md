@@ -4,6 +4,19 @@ VOGON (Validated Operations & Governance OrchestratioN) is an AI agent for the
 bureaucratic side of GxP software development: requirements, validation, risk,
 traceability, change control, and audit evidence.
 
+## Principles
+
+1. VOGON helps and gets out of the way. It does not impose heavy workflows or
+   bureaucracy.
+2. The process comes from the host project's validation plan, not from VOGON.
+3. A skipped or late step is reported, never blocked.
+4. VOGON never approves or signs. People do.
+5. Evidence never comes from a model.
+6. All work is reviewed by a different agent.
+
+A change that breaks one of these is wrong. The same list opens
+`src/docs/dev/index.md`.
+
 The marketing page, `src/html/index.html`, is written in corporate satire,
 defined in `assets/brand.md`. Read that file before editing it. That voice
 applies to that page and to nothing else: not the README, not CLI output, not
