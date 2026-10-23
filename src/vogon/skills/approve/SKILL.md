@@ -78,8 +78,8 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
    Tell the Product Owner to approve it in the tracker with the transition
    `tracking.md` names, and continue with the sync.
 4. Select the requirements: those the person names, or every `REQ-*.json`
-   with an `issue` field. Report each active requirement with no `issue`
-   field: it has not been sent to the tracker.
+   with an entry that has an `issue` field. Report each active requirement
+   with no such entry: it has not been sent to the tracker.
 5. For each selected requirement, read its tracker item. For each transition
    that `tracking.md` names as the approval of a requirement, that is dated
    after the latest `changed` entry of `REQ-*.json`, if any, and that has no

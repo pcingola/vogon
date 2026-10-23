@@ -1,35 +1,19 @@
 # Test procedures
 
-Steps 7 and 8 of the [steps](index.md). A test procedure is a document:
-numbered steps in prose, each with its expected result, with an id and linked
-to the requirements it verifies ([Architecture](../architecture.md#tests)).
+Step 6 of the [steps](index.md). A developer runs `vogon:tests` to write the
+[test procedures](../vocabulary.md) of approved requirements; other requirements are reported and left out. The steps are in
+`src/vogon/skills/tests/SKILL.md`.
 
-The project's `tests.md` decides:
+`tests.md` states whether the project needs test procedures, whether they are
+written before development from the requirement or generated after it from
+the tests, where they are kept (repository, tracker or test manager), the
+formal test environment they run in, and who approves them. Every expected
+result comes from the requirement and its sources, never from the code, a test
+or a run of the code.
 
-- whether the project needs test procedures. If it does not, both steps are
-  skipped;
-- whether they are written before development, from the requirement, or after
-  it, generated from the tests;
-- where they are kept: the repository, the tracker or the test manager;
-- who approves them, and when.
-
-## Step 7: write the procedures
-
-A developer runs `vogon:tests` for one or more approved requirements. One
-writing sub-agent per requirement writes its procedures. Each expected result
-comes from the requirement and its sources, never from the code or a run of
-it. A procedure generated from tests reports each test whose assertion
-differs from the requirement. An evaluator checks each procedure against its
-requirement and, where generated, its tests.
-
-Each procedure gets its id in the repository from `vogon id TP <module>`, or
-as the key of its item in the tracker or test manager. After development, each
-test a procedure was generated from names it in a
-`@pytest.mark.procedure("<id>")` marker. The skill opens a pull request and
-adds a `test_procedures_written` entry to each requirement's `REQ-*.json`.
-
-## Step 8: approve the procedures
-
-The roles `tests.md` names approve the procedures, in the pull request or in
-the tracker or test manager. `vogon:tests` tells each of them what waits for
-their approval and where.
+Procedures kept in the repository are `vogon/requirements/<module>/TP-*.md`
+with ids from `vogon id TP <module>`; procedures kept in the tracker or test manager
+take the item key as id. Generated procedures are named in each source test's
+`procedure` marker. The skill opens a pull request, appends a
+`test_procedures_written` entry to each `REQ-*.json`, and tells the roles
+`tests.md` names what waits for their approval and where.

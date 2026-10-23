@@ -1,22 +1,20 @@
 # Vocabulary
 
-What the words mean. How to write a record is in [Records](records.md).
+How to write a record is in [Records](records.md).
 
-This file exists because projects call four different kinds of statement
-"requirements" and keep them in one list under one numbering scheme. Rows
-stating what the system must do sit next to rows stating how a third-party
-platform behaves, next to a decision not to build something. Most of those rows
-cannot be tested, and a module file reads as a transcript.
+Projects often keep four kinds of statement in one requirements list under one
+numbering. Most of those rows cannot be tested. VOGON keeps them as four kinds
+of record.
 
 ## The two projects
 
 VOGON is one codebase installed into another, and both keep records in `vogon/`
 in the same format, so the two are named apart.
 
-**VOGON project** — this repository. VOGON's own code, documentation and
+**VOGON project**: this repository. VOGON's own code, documentation and
 records.
 
-**Host project** — a project VOGON is installed into, holding that project's
+**Host project**: a project VOGON is installed into, holding that project's
 own code, tests and records. **User project** means the same thing; host
 project is the term used in the documentation.
 
@@ -25,28 +23,27 @@ A statement about `vogon/` applies to both unless it names one.
 ## The four kinds of record
 
 Everything written down that the system will be built from is one of four
-things. Each has its own id namespace and its own file.
+things. Each has its own id namespace and its own file. A test procedure is
+also a record, of type `TP`, defined under Tests below.
 
-**Requirement** — something the system must do. Written as a MUST statement
-saying what has to be true rather than how to achieve it, and phrased so that a
-test could fail it. Ids are `REQ-<MODULE>-<NUMBER>`.
+**Requirement**: something the system must do. Written as a MUST statement
+saying what has to be true and not how, so that a test could fail it. Ids are
+`REQ-<MODULE>-<NUMBER>`, or `REQ-<NUMBER>` in a project without modules.
 
-**Domain fact** — something true whether or not this project exists. "A test
+**Domain fact**: something true whether or not this project exists. "A test
 issue in the test manager is linked to the requirement issue it verifies" is a
-fact; nobody on
-the project chose it and no test of ours can fail it. Prefix `FACT-`.
+fact; nobody on the project chose it and no test of ours can fail it. Prefix `FACT-`.
 
-**Constraint** — a limit imposed from outside that design cannot trade away: a
+**Constraint**: a limit imposed from outside that design cannot trade away: a
 regulation, a company procedure, or a platform behaviour. "Approval cannot be
 performed by a machine account" is a constraint. Prefix `CON-`.
 
-**Decision** — a choice made among options, recorded with what the options cost
+**Decision**: a choice made among options, recorded with what the options cost
 and what the choice commits us to. Choosing *not* to build something is a
 decision. Prefix `DEC-`.
 
-A fifth thing, the **elicitation record**, is the meeting summary or source
-document a record came from. It is evidence, cited by records, and never a
-record itself.
+The checked summary or held document a record came from is a source
+([Sources](sources.md)). Records cite it; it is never a record itself.
 
 ## Verbs
 
@@ -62,16 +59,12 @@ binding, so an ordinary "must" or "should" in prose carries no weight.
 | *(no modal verb)* | A statement of fact, about the world or about something outside our control |
 
 "Results imported into the test manager sometimes arrive without a build
-identifier" has no modal verb, so it is a domain fact. "VOGON MUST reject a result import with no
-build identifier" is the requirement beside it.
+identifier" has no modal verb, so it is a domain fact. "VOGON MUST reject a
+result import with no build identifier" is the requirement beside it.
 
-"shall" is not used here. ISO/IEC/IEEE 29148 uses it, and the ISO drafting
-rules it follows forbid "must" as an alternative, but those rules govern how ISO
-standards are written. No regulation in this field, and no part of GAMP 5, EU
-Annex 11 or 21 CFR Part 11, says which modal verb a requirement uses; they
-require that it be unambiguous, testable, uniquely identified and traceable. A
-formal User Requirements Specification in "shall" is generated from these
-records, and the substitution is mechanical.
+VOGON writes MUST, not "shall". ISO/IEC/IEEE 29148 uses "shall"; GAMP 5, EU
+Annex 11 and 21 CFR Part 11 prescribe no modal verb, only that a requirement be
+unambiguous, testable, uniquely identified and traceable.
 
 ## Compliance terms
 
@@ -105,35 +98,34 @@ records, and the substitution is mechanical.
 ## Who signs what
 
 A validated system's documents are signed by roles named in the validation
-plan; a separate approval matrix says which person holds each role. Which role
-gives each approval comes from the host project's validation plan, as its
-project process files state it. `vogon.yaml` lists the people who hold each
-role, so records and generated documents name the role and never the person.
-The roles below are common ones; a project uses the roles its plan names.
+plan. The skills use the Product Owner role, `product_owner` in `vogon.yaml`,
+for the approval of requirements. Every other approval
+comes from the plan, as the project process files state it. `vogon.yaml` lists
+the people who hold each role, so records and generated documents name the
+role and never the person. The roles below are common ones; a project uses the
+roles its plan names.
 
 | Role | What this person normally does | Formal role in validation |
 | --- | --- | --- |
 | **System Owner** | One named person on the IT side. Answers for the software for as long as it runs: available, supported, secure, and changed only through change control | Signs the technical documents and chairs the change control board. Cannot be empty at release |
-| **Business Process Owner** | One named person from the business side who knows how the work is actually done and answers for that process | Decides the finished system is fit to use, and approves the requirements where the procedure assigns that approval to this role. Cannot be empty at release |
+| **Business Process Owner** | One named person from the business side who knows how the work is done and answers for that process | Decides the finished system is fit to use. Cannot be empty at release |
 | **IT Quality Manager** | One named person outside the build team. Checks that the validation process was followed: documents exist, were approved before use, and agree with each other | Signs the validation plan and the summary report. Must be independent of the people building the system |
 | **Business Quality Manager** | One named person outside the build team, on the business side. Checks that the process the system supports still complies | Signs alongside the IT Quality Manager, under the same independence rule |
 | **Change control board** | A standing group that meets after release. For each proposed change it decides whether the change is allowed and what has to be re-tested before it ships | The mechanism by which a validated system is allowed to change. Required once the system is live |
 | **Validation lead** | One named person who writes the validation plan and the summary report and assembles the evidence into a package someone can audit | Author, not approver |
 | **Subject Matter Expert** | Anyone who knows the domain or the technology well enough to write or review a document. Not an appointment | Writes and reviews documents. Never approves them, because an approver may not be the author |
-| **Product Owner** | One named person who owns the backlog and decides what gets built next | Approves the requirements where the validation plan gives this role that approval. Where the plan gives it to another role, such as the Business Process Owner, `requirements.md` says so |
+| **Product Owner** | One named person who owns the backlog and decides what gets built next | Approves the requirements, with `vogon:approve` or in the tracker. `vogon.yaml` lists the holders under `product_owner` |
 | **Test Lead** | One of the engineers, named to review the test procedures | Approves the test procedures and test documents the validation plan assigns to this role, as `tests.md` and `documents.md` state. Never approves test procedures they wrote |
 | **Code reviewer** | Any engineer other than the author of a change | Approves the change on the repository host before it merges |
 
-These are not rubber stamps and they are not headcount. A signature names who
-is answerable if the thing turns out to be wrong, which is why the approver of
-a document may not be its author. One person can hold several roles, subject to
-two rules: Quality is independent of the people building the system, and nobody
-approves their own work.
+The approver of a document answers for it and may not be its author. One
+person may hold several roles, provided Quality is independent of the people
+building the system and nobody approves their own work.
 
 An electronic signature is not a typed name or a pasted image. The signer
 re-enters their own credentials, and what is stored against that version of
 that record is their printed name, the date and time, and what the signature
-means — authored, reviewed or approved. It cannot be moved onto a later edit.
+means: authored, reviewed or approved. It cannot be moved onto a later edit.
 
 ## Where these terms come from
 
@@ -142,9 +134,9 @@ means — authored, reviewed or approved. It cannot be moved onto a later edit.
   verification method, status), the characteristics a well-formed requirement
   has, and `constraint` as a defined term. Its "shall" convention is [not
   followed here](#verbs).
-- **RFC 2119 and RFC 8174** — MUST, SHOULD and MAY, and the rule that only the
+- **RFC 2119 and RFC 8174**: MUST, SHOULD and MAY, and the rule that only the
   uppercase forms are binding.
-- **ISPE GAMP 5, Second Edition (2022)** — user requirement, the requirements
+- **ISPE GAMP 5, Second Edition (2022)**: user requirement, the requirements
   traceability matrix, and per-requirement risk classification.
 - **The architecture decision record** is a convention from a 2011 post by
   Michael Nygard, not a standard.

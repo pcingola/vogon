@@ -447,34 +447,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../loop.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The loop
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../vocabulary.html" class="md-nav__link">
         
   
@@ -571,10 +543,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_7" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" checked>
         
           
-          <label class="md-nav__link" for="__nav_2_7" id="__nav_2_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
             
   
   
@@ -592,8 +564,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_7_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_2_7">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -647,24 +619,6 @@
         
       
       
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Setting up a project
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
       <a href="setup.html" class="md-nav__link md-nav__link--active">
         
   
@@ -681,58 +635,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Configuration
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#the-validation-plan" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The validation plan
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#project-process-files" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Project process files
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -998,47 +900,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Configuration
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#the-validation-plan" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The validation plan
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#project-process-files" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Project process files
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -1055,61 +916,22 @@
 
 
 <h1 id="setting-up-a-project">Setting up a project<a class="headerlink" href="#setting-up-a-project" title="Permanent link">&para;</a></h1>
-<p>Step 1 of the <a href="index.html">steps</a>. A developer installs the plugin into the
-project's repository and runs <code>vogon:init</code>. It is run once per project, and
-again when a system, a role holder or the validation plan changes.</p>
-<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h2>
-<p><code>vogon:init</code> proposes a value for each entry of <code>vogon/project/vogon.yaml</code>:</p>
-<ul>
-<li>the system for each role (tracker, test manager, document system,
-  repository host, meetings, mail, chat), from the git remote and the MCP
-  servers connected to the session. Where two servers can fill one role, the
-  developer chooses;</li>
-<li>the modules, one per top-level package of the source tree;</li>
-<li>the approval roles the validation plan names, under the plan's own names,
-  and the Product Owner;</li>
-<li>the project options, such as whether logs are committed.</li>
-</ul>
-<p>The developer confirms or corrects every value and gives the holder of each
-role, in one answer. A role the project does not have is left out, and a skill
-that needs it reports what it skipped. <code>vogon:init</code> writes the file from the
-commented template the plugin ships.</p>
-<p>For the tracker and the test manager, <code>vogon:init</code> reads the approval workflow
-and reports each approval transition that does not make the approver re-enter
-their credentials, because such a transition is not an electronic signature
-under 21 CFR Part 11. It changes nothing in either system.</p>
-<h2 id="the-validation-plan">The validation plan<a class="headerlink" href="#the-validation-plan" title="Permanent link">&para;</a></h2>
-<p>The validation plan is the host project's controlled document. <code>vogon:init</code>
-files it in <code>vogon/sources/</code> as the original, unchanged, and a markdown copy
-beside it, named by the plan's own date with its version in the slug
-(<a href="../sources.html">Sources</a>). A plan already held is never overwritten; a new
-version is filed beside the old one.</p>
-<p><code>vogon:init</code> also adds to the host project's <code>conftest.py</code> the lines that copy
-each test's <code>req</code> and <code>procedure</code> markers into the JUnit XML, where they are
-missing (<a href="../architecture.html#traceability">Architecture</a>).</p>
-<p><code>vogon:init</code> commits the configuration, the filed plan, the <code>.gitignore</code> lines
-and the <code>conftest.py</code> lines on a branch and opens a pull request. A person approves it on the repository host.</p>
-<h2 id="project-process-files">Project process files<a class="headerlink" href="#project-process-files" title="Permanent link">&para;</a></h2>
-<p>The markdown files in <code>vogon/project/</code> state how VOGON works in this project:
-<code>tracking.md</code>, <code>requirements.md</code>, <code>tests.md</code>, <code>traceability.md</code>,
-<code>documents.md</code> and <code>release.md</code>. The table in
+<p>Step 1 of the <a href="index.html">steps</a>. A developer installs the plugin and runs
+<code>vogon:init</code>, once per project and again when a system, role holder or module
+changes or a new version of the validation plan is issued. The steps are in
+<code>src/vogon/skills/init/SKILL.md</code>.</p>
+<p><code>vogon:init</code> proposes the values of <code>vogon/project/vogon.yaml</code> from the
+repository and the MCP servers of the session; the developer confirms them and
+names the role holders. It files the validation plan in <code>vogon/sources/</code>
+(<a href="../sources.html">Sources</a>), adds the <code>.gitignore</code> lines and the <code>conftest.py</code>
+changes of <code>src/vogon/references/conftest.md</code>, reports each approval transition
+that is not an electronic signature, and opens a pull request, which a person
+approves on the repository host.</p>
+<p><code>vogon:init</code> writes no project process file. A skill derives each process file
+when it first needs it, and again when the held plan is newer, as
 <a href="../architecture.html#project-configuration-and-process-files">Architecture</a>
-says what each states. <code>vogon:init</code> does not write them.</p>
-<p>A file is derived when a skill first needs it, before the skill does its task:</p>
-<ol>
-<li>A writing sub-agent drafts the file from its template, and each statement
-   cites a section of the plan.</li>
-<li>Evaluators check that each statement is supported by the cited section and
-   that the file covers every topic of its template.</li>
-<li>A topic the plan does not settle is asked of the developer. The answer is
-   written into the file with the developer's name and the date.</li>
-<li>Tracker and test manager names, such as item types and transitions, are
-   read from an example item and confirmed by the developer.</li>
-<li>The file goes in the pull request of the skill that derived it.</li>
-</ol>
-<p>Each file records in its frontmatter the plan version it was derived from.
-When the held plan is newer, the next skill that reads the file derives it
-again before acting.</p>
+describes. With no plan held, every topic of a process file is asked of the
+developer.</p>
 
 
 

@@ -447,34 +447,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../loop.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The loop
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../vocabulary.html" class="md-nav__link">
         
   
@@ -571,10 +543,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_7" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" checked>
         
           
-          <label class="md-nav__link" for="__nav_2_7" id="__nav_2_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
             
   
   
@@ -592,8 +564,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_7_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_2_7">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -703,24 +675,6 @@
         
       
       
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Approving requirements
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
       <a href="approval.html" class="md-nav__link md-nav__link--active">
         
   
@@ -737,58 +691,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#without-a-tracker" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Without a tracker
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#with-a-tracker" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        With a tracker
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#after-a-change" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        After a change
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -998,47 +900,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#without-a-tracker" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Without a tracker
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#with-a-tracker" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        With a tracker
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#after-a-change" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        After a change
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -1055,35 +916,23 @@
 
 
 <h1 id="approving-requirements">Approving requirements<a class="headerlink" href="#approving-requirements" title="Permanent link">&para;</a></h1>
-<p>Step 6 of the <a href="index.html">steps</a>. The Product Owner approves each requirement,
-with its acceptance criteria and risk fields, before development. VOGON records
-the approval and never gives it. The rule is in
-<a href="../architecture.html#approval-of-requirements">Architecture</a>.</p>
-<h2 id="without-a-tracker">Without a tracker<a class="headerlink" href="#without-a-tracker" title="Permanent link">&para;</a></h2>
-<p>The requirements and their approvals are in <code>REQ-*.md</code> and <code>REQ-*.json</code>, both
-committed. The Product Owner approves in their own Claude Code session with an
-explicit instruction, for example "approve the last 10 requirements, then
-push". <code>vogon:approve</code> lists the ids and titles it resolved, runs
-<code>vogon approve &lt;id&gt;...</code>, commits and pushes.</p>
-<p><code>vogon approve</code> appends to each <code>REQ-*.json</code> an <code>approved</code> entry with the
-approver's git identity and the date. If <code>vogon.yaml</code> does not list the
-user as Product Owner, it warns and still records the approval. A git identity
-is not re-entered at approval, so this approval is not an electronic signature
-under 21 CFR Part 11.</p>
-<h2 id="with-a-tracker">With a tracker<a class="headerlink" href="#with-a-tracker" title="Permanent link">&para;</a></h2>
-<p>The requirements are tracker items, created in step 5. The Product Owner may
-edit the text in the tracker, then approves each item with the tracker's
-approval transition. The item's status is the approval. <code>vogon:approve</code> syncs
-each approval into <code>REQ-*.json</code> and copies the approved text into <code>REQ-*.md</code>.
-Skills report an approval that is in the tracker and not yet synced, and work
-from a requirement's text only once it is synced.</p>
-<h2 id="after-a-change">After a change<a class="headerlink" href="#after-a-change" title="Permanent link">&para;</a></h2>
-<p>A skill changes an approved requirement only with the agreement of the
-developer running it. The pull request with the change appends a <code>changed</code>
-entry to <code>REQ-*.json</code> and lists the requirement as needing approval again.
-Until the Product Owner approves it again, <code>vogon:next</code> does not offer it as
-ready. <code>requirements.md</code> states what else a change to an approved
-requirement triggers, such as a tracker transition.</p>
+<p>Step 5 of the <a href="index.html">steps</a>. The Product Owner approves each requirement,
+with its acceptance criteria and risk fields, when <code>requirements.md</code> states.
+VOGON records the approval and never gives it
+(<a href="../architecture.html#approval-of-requirements">Architecture</a>). The steps are in
+<code>src/vogon/skills/approve/SKILL.md</code>.</p>
+<p>Where no tracker holds approvals, the Product Owner gives an explicit
+instruction in their own Claude Code session, such as "approve the last 10
+requirements, then push". <code>vogon:approve</code> resolves it to ids, runs
+<code>vogon approve</code>, commits and pushes. An instruction whose readings resolve to
+different sets of ids records nothing. The approval is not an electronic
+signature (<a href="../architecture.html#scope-and-roles">Architecture</a>).</p>
+<p>Where a tracker holds approvals, the Product Owner approves each item with the
+tracker's approval transition, and may edit the text first. <code>vogon:approve</code>
+does not record an approval itself. It copies each approval made after the
+latest change, with the text as it stood at that transition, into
+<code>REQ-*.json</code> and <code>REQ-*.md</code>, in a pull request that a person merges. The
+approval counts once it is on the default branch.</p>
 
 
 

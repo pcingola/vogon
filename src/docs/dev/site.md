@@ -3,8 +3,10 @@
 `src/html/index.html` is standalone: no build step, copied verbatim into
 `docs/` by `make site`. It reads as an enterprise life-sciences SaaS page that
 is also a controlled document. It has a persistent document-control strip, SOP
-clause numbering (§1.0 …), square-cornered hairline panels, and one animation:
-the REJECTED stamp that lands when a change request is submitted.
+clause numbering (§1.0 …), square-cornered hairline panels, and two animations
+that run together when a change request is submitted: the REJECTED stamp
+lands (`slam`) and its card shakes (`shk`). Both are off under
+`prefers-reduced-motion`.
 
 ## Type and color
 
@@ -23,12 +25,10 @@ relatively as `img/…` so the paths survive the copy into `docs/`. Regenerate
 with ImageMagick from `assets/images/` after adding artwork.
 
 Most of the artwork was drawn on white paper, which glares on a dark page, so
-those figures have a dark twin: `assets/images/<name>_dark.png` is the original
-and `src/html/img/<name>_dark.webp` the web copy. Images 01–09, 12 and 13 have
-a dark original. Images 04–07, 09, 12 and 13 have a dark web copy. Images 03 and
-08 are served dark through `emblem_dark.webp` and `stamp-alpha_dark.webp`.
-Images 01 and 02 have no dark web copy. The twins were redrawn for dark ground. Flood fills and lightness
-inversions were tried and rejected; regenerate the artwork instead.
+those figures have a dark twin, `assets/images/<name>_dark.png`, served as
+`src/html/img/<name>_dark.webp` where one exists. 03 and 08 are served dark as
+`emblem_dark.webp` and `stamp-alpha_dark.webp`. The twins were redrawn for
+dark ground; flood fills and lightness inversions were tried and rejected.
 
 A dark twin must be the same pixel size as the light `.webp` beside it, because
 `index.html` carries one `width`/`height` pair for both sources:
@@ -56,7 +56,10 @@ cream card.
 
 A figure with a dark twin is served through `<picture>` with
 `media="(prefers-color-scheme: dark)"`, in `index.html` and in the README.
-There is no theme toggle, so the media query is the only mechanism.
+There is no theme toggle, so the media query is the only mechanism that
+switches images. The CSS also has `:root[data-theme="dark"]` and
+`:not([data-theme="light"])` rules, but nothing sets `data-theme`, so only the
+`prefers-color-scheme` branch takes effect.
 
 ## Lightbox
 
@@ -65,7 +68,7 @@ role="button" tabindex="0">` and the lightbox picks it up, captioned from the
 image's `data-ref`. The footer REJECTED stamp is one of these.
 
 The lightbox fits a figure whole and never enlarges it past its own pixels, so
-a 1200px figure stops at 1200px on a wide monitor instead of going soft.
+a 1200px figure stops at 1200px on a wide monitor instead of being blurred by upscaling.
 Portrait figures are the exception: VGN-PROC-001 is a tall chart containing
 body text, and fitted to the dialog height it is unreadable. A figure taller
 than it is wide is sized to the dialog width instead, capped at 1.5× its own

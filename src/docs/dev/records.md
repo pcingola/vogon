@@ -1,7 +1,6 @@
 # Records
 
-How to write a requirement, a domain fact, a constraint or a decision. What
-those four words mean is in [Vocabulary](vocabulary.md).
+[Vocabulary](vocabulary.md) defines the four kinds of record.
 
 ## Layout
 
@@ -19,136 +18,58 @@ project's alike.
 | `vogon/plans/` | Plans for code, approved by the developers before the code is written; `done/` holds the spent ones |
 | `vogon/documents/<release>/` | Drafted documents for one release, where the project has no document system |
 | `vogon/logs/` | Loop logs. Gitignored unless the project commits them |
-| `vogon/tmp/` | Downloaded transcripts, mail and chat, deleted after their summary is checked. Gitignored |
+| `vogon/tmp/` | Working files deleted before the skill finishes: downloaded transcripts, mail and chat, draft test procedures, draft release documents and the release checkout. Gitignored |
 
 A record's identity is its id, not its path. Requirements are grouped by
 module; facts, constraints and decisions are flat, because one is often cited
 by several modules.
 
-## Deciding which one a sentence is
+## Rules
 
-Applied to each statement in a checked summary, a document or code, in this
-order. The first match wins.
+The rules a writing sub-agent and an evaluator apply to every record are in
+`src/vogon/references/records.md`: how a sentence is classified, the id and
+file name, each frontmatter field, the body blocks of each type and the
+suggested lengths. Every record also follows the writing standard,
+`src/vogon/references/writing.md`.
 
-1. Could you write a test that our system fails? → **requirement**.
-2. Is it true whether or not we build anything? → **domain fact**.
-3. Is it a limit imposed from outside that we cannot trade away? → **constraint**.
-4. Did we choose it, among options? → **decision**. Choosing *not* to build
-   something is a decision.
-5. Does nobody know the answer yet? → it goes to the developer as a question,
-   and it is not written down as a record.
-6. Is it only what somebody said? → it stays in the summary and goes nowhere
-   else.
+A sentence often states two kinds of record. "The test manager reports
+coverage from the link between a test issue and a requirement issue, so
+maintain that link from the test source" is a fact and a requirement, written
+as two records; the requirement names the fact in `depends_on`.
 
-A single sentence often splits. "The test manager reports coverage from the
-link between a test issue and a requirement issue, so maintain that link from
-the test source" is a fact and a requirement, written as two records. The one
-that rests on the other names it in `depends_on`; here the requirement names
-the fact.
-
-A statement made in two sources is one record that cites both in `source`.
-
-## The shape of a record
-
-YAML frontmatter, read by the skills and scripts, followed by a markdown body,
-read by people.
-
-Frontmatter common to every record:
-
-| Field | Rule |
-| --- | --- |
-| `id` | Namespaced, permanent, never reused. A withdrawn record keeps its id and its file |
-| `type` | `requirement`, `fact`, `constraint`, `decision`, or `test_procedure` for a [test procedure](#test-procedure) |
-| `title` | One line naming what the record is, in the words someone would search for. Not an allusion, not a question |
-| `modules` | Which modules it belongs to, as a list. A fact cited by two modules carries both |
-| `status` | `active`, `withdrawn`, or `superseded_by: <id>`, written as a mapping: `status: {superseded_by: DEC-024}`. A drafted record is `active`. A withdrawn record states the reason in its body |
-| `source` | Every held document that states this, as a list of paths. See [below](#source-lists-every-document-that-states-it). Absent on a record the project originated itself |
-| `reviewed_by`, `reviewed_on` | Who read it in detail and when. Absent until someone has |
-| `tags` | Free-form, for searching across modules. Optional |
-| `depends_on` | The records this one rests on, by id. Absent on a fact, which rests on nothing |
-| `references` | The documents that say how this is realised, as a list of paths. Absent where no document does. See [below](#references-points-at-the-documentation) |
-
-The body carries the statement as one sentence with no rationale in it. A
-short paragraph says what the statement means where the sentence alone does
-not make that clear. A concrete example, marked `**Example.**`, illustrates
-it where one helps.
-
-No frontmatter key and no body line states that the record was approved or
-signed; approvals are in the [state file](#state-file).
-
-A field or block with nothing to say is omitted
-(the writing standard, `src/vogon/references/writing.md`).
-
-### `source` lists every document that states it
+YAML frontmatter is read by the skills and scripts, and the markdown body by
+people. No field and no body line states that a record was approved or
+signed: approvals are in the [state file](#state-file).
 
 `source` names every held document that states the record, not only the one
-it was drafted from, ordered by `authority`, strongest first
-([Sources](sources.md#authority-decides-what-a-record-may-claim)). A path in
-`source` asserts that the document says this, so cite only a passage you have
-read. Where documents disagree, both are listed and the record states the
-difference; where only a meeting, mail or chat supports a claim, the record
-says so. A fact that only a meeting, mail or chat supports is either badly
-sourced or not a fact.
+it was drafted from, strongest `authority` first ([Sources](sources.md#authority)).
+A path in `source` asserts that the document says this, so only a passage that
+was read is cited.
 
-### `references` points at the documentation
+`references` names the documents that say how the record is realised, such as
+the schema a decision settles. `source` names what the record came from;
+`references` names what elaborates it.
 
-A record says what must hold, not how. `references` names the documents that
-say how, such as the schema a decision settles, as paths from the repository
-root. It is the reverse of `source`: `source` names what the record came from,
-`references` what elaborates it. An evaluator reports a path that does not
-resolve.
+### Status
 
-### Status is about the statement, not about the work
-
-Status says whether we are committed to the statement, not whether anything
-has been built. Whether a requirement is built is shown by its passing tests;
-the progress of the work is in the state file.
-
-## How a record is written
-
-Every record follows the writing standard, `src/vogon/references/writing.md`.
-
-### Length
-
-Suggested lengths for the body, everything after the frontmatter. A record well
-over its suggested length usually states two things and is split into two
-records.
-
-| Type | Suggested words in the body |
-| --- | --- |
-| Requirement | 300 |
-| Domain fact | 200 |
-| Constraint | 200 |
-| Decision | 600 |
+`status` records whether the project is committed to the statement: `active`,
+`withdrawn` or `{superseded_by: <id>}`. A record is never deleted. Build
+progress is in the state file and the passing tests.
 
 ## Requirement
 
-At `vogon/requirements/<module>/REQ-<MODULE>-<NUMBER>.md`. Written as a MUST
-statement, solution-free. If the sentence cannot be failed by a test, it is not
-a requirement yet.
+At `vogon/requirements/<module>/REQ-<MODULE>-<NUMBER>.md`.
 
-Frontmatter it adds:
-
-| Field | Rule |
-| --- | --- |
-| `verification` | One of `inspection`, `analysis`, `demonstration` or `test` |
-| `gxp_impact` | One of `patient safety`, `product quality`, `data integrity` or `none`. What a failure of this requirement would damage |
-| `gxp_impact_reason` | Why that value: what a failure would damage, and how |
-| `risk` | One of `high`, `medium` or `low`, from the severity of a failure, its probability, and how likely it is to be detected |
-| `risk_reason` | Why that value: the severity, probability and detectability behind it |
-
-The method and levels may differ per project; `requirements.md` states them
-where the validation plan does.
-
-Body blocks it adds:
-
-- **Out of scope**: behaviour a reader might expect from the requirement that
-  it does not require, so that nobody builds or tests it.
-- **Acceptance criteria**: what must be tested. Every requirement has them.
-  Each expected value is worked out from the requirement and its sources,
-  never read off a run of the code, because a value taken from the code makes
-  the test that asserts it unable to fail. The acceptance criteria are
-  approved with the requirement.
+The requirement adds `verification`, the four risk fields (`gxp_impact`,
+`gxp_impact_reason`, `risk`, `risk_reason`), and the body blocks
+`**Requirement.**`, `**Out of scope.**` and `**Acceptance criteria.**`.
+`**Out of scope.**` names what the requirement does not cover, so that nobody
+builds or tests it. The
+risk method and levels come from `requirements.md` where the validation plan
+states them. Each expected value in the acceptance criteria is worked out from
+the requirement and its sources, never read off a run of the code, because a
+value taken from the code makes the test that asserts it unable to fail. The
+acceptance criteria are approved with the requirement.
 
 ### Worked example
 
@@ -191,10 +112,10 @@ barcode that a scanner reads as `S-2026-00417`.
 ## State file
 
 Each requirement has a state file beside its markdown file, named for the same
-id with `.json`. It records every step done to the requirement, its approvals
-included, each with its date and the pull request or commit that holds it.
-Entries are appended in order and never edited or removed. A requirement is
-approved when an `approved` entry follows its latest `changed` entry.
+id with `.json`. It records every step done to the requirement, in order.
+Entries are appended and never edited or removed. The fields of each entry are
+in `src/vogon/references/common.md`, "State-file entries", and the skill that
+writes it.
 
 ```json
 {
@@ -209,52 +130,34 @@ approved when an `approved` entry follows its latest `changed` entry.
 }
 ```
 
-| Field | Rule |
-| --- | --- |
-| `issue` | The requirement's key in the tracker, where a tracker holds it |
-| `step` | `drafted`, `approved`, `changed`, `planned`, `test_procedures_written`, `implemented`, `released` or `withdrawn` |
-| `by`, `via` | In an `approved` entry, the approver as `Name <email>`, and `vogon approve` or the tracker's name from `vogon.yaml`. Written by `vogon approve`, or copied from the tracker |
-| `pr`, `commit` | The pull request and the commit that hold the step's work. A `planned` entry has a `commit` and no `pr`. A `changed` entry names the pull request that changed `REQ-*.md` |
-| `plan` | In a `planned` entry, the path of the approved plan |
-| `approved_by` | In a `planned` entry, the git identity of the developer who approved the plan |
-| `release` | In a `released` entry, the release the requirement is part of |
+The steps are `drafted`, `approved`, `changed`, `planned`,
+`test_procedures_written`, `implemented` and `released`. A withdrawal is the
+record's `status`, not a step. An `approved` entry names no pull
+request or commit, and a `planned` entry names a commit and no pull request.
 
-The pull request, commit or tracker item an entry names is what counts. A skill
-checks it before acting on the entry and reports any difference.
+A requirement is approved when the state file on the default branch has an
+`approved` entry after its latest `changed` entry; an `approved` entry that
+only an open pull request holds does not count. For every other entry, the
+pull request, commit or tracker item it names counts over the entry: a skill
+checks it before acting and reports any difference
+(`src/vogon/references/common.md`, "Start of every skill" and "Approval of a
+requirement").
 
-## Domain fact
+## Domain fact, constraint and decision
 
-At `vogon/facts/FACT-NNN.md`. Written in the present tense with no modal verb.
-No acceptance criteria and no `depends_on`: a fact is true on its own.
-
-Frontmatter it adds: `as_of`, the date the fact was observed or read, so it
-can be checked again.
-
-## Constraint
-
-At `vogon/constraints/CON-NNN.md`. The body says what it forbids or forces.
-
-Frontmatter it adds: `imposed_by`, what imposes it (a regulation, a numbered
-procedure, a standard or a platform behaviour, named and never given as a
-path), and `lifts_when`, the condition under which it stops applying, or
-`permanent`.
-
-## Decision
-
-At `vogon/decisions/DEC-NNN.md`. The body has the context, the options and
-what each costs, the decision, its consequences including the bad ones, and an
-example of the decision applied. A decision is never edited once merged; a
-later decision supersedes it, and both files stay.
+A fact is at `vogon/facts/FACT-<NUMBER>.md`, a constraint at
+`vogon/constraints/CON-<NUMBER>.md`, a decision at
+`vogon/decisions/DEC-<NUMBER>.md`, with no module in the id. A fact carries `as_of`, the date it was observed, so
+it can be checked again. A constraint carries `imposed_by` and `lifts_when`. A
+merged decision is never edited; a later decision supersedes it, and both
+files stay.
 
 ## Test procedure
 
-Only where `tests.md` keeps test procedures in the repository. At
-`vogon/requirements/<module>/TP-<MODULE>-<NUMBER>.md`, beside the
-requirements it verifies, with its id from `vogon id TP <module>`. The
-frontmatter adds `verifies`, the requirement ids. The body is numbered steps,
-each with its expected result, worked out from the requirement and its
-sources and never read off a run of the code. Where test procedures are kept
-in the tracker, the tracker key is the id and VOGON writes no file.
+Where `tests.md` keeps test procedures in the repository, each is at
+`vogon/requirements/<module>/TP-<MODULE>-<NUMBER>.md`, beside the requirements
+it verifies, which its `verifies` field lists. Where they are kept in the
+tracker or test manager, the item key is the id and VOGON writes no file.
 
 ## Identifiers
 
@@ -265,19 +168,16 @@ An id is a type, an optional module, and a number:
 <TYPE>-<MODULE>-<NUMBER>
 ```
 
-`TYPE` is `REQ`, `FACT`, `CON`, `DEC`, or `TP` for a test procedure. `MODULE` names the part of the system
-the record belongs to, in uppercase letters and digits; a project without
-modules omits it. The modules are listed in `vogon.yaml`, and a record may name
-only a listed module. `NUMBER` is compared numerically, so `REQ-PRN-12` and
-`REQ-PRN-012` are the same id. Numbers count separately per type and module.
+`TYPE` is `REQ`, `FACT`, `CON`, `DEC`, or `TP` for a test procedure. `MODULE`
+names the part of the system the record belongs to, in uppercase letters and
+digits; facts, constraints and decisions, and every record of a project
+without modules, omit it. The modules are listed in `vogon.yaml`, and a record may name
+only a listed module. `NUMBER` is compared numerically when ids are ordered. Numbers count separately per type and module.
 
-`vogon id <type> <module>` gives the next number. It runs `git fetch` and reads
-the ids in the working tree, in every local and remote branch and in the
-history. Two branches that take an id before either pushes can get the same one. A
-skill that opens a pull request adding records first runs
-`vogon id --check`, which reports each of the branch's new ids that the
-default branch or any other local or remote branch also uses. That pull
-request renumbers before it is opened.
+`vogon id <type> <module>` gives the next number from every branch and the
+history. Two branches can take the same id before either pushes, so a skill
+runs `vogon id --check` and renumbers before it opens its pull request
+(`src/vogon/references/common.md`, "Commands").
 
 Once merged, an id is permanent: never reused or renumbered, also after
 withdrawal. The file is named for the id alone, such as `REQ-PRN-12.md`, so

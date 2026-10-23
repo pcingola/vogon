@@ -447,34 +447,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../loop.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The loop
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../vocabulary.html" class="md-nav__link">
         
   
@@ -571,10 +543,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_7" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" checked>
         
           
-          <label class="md-nav__link" for="__nav_2_7" id="__nav_2_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
             
   
   
@@ -592,8 +564,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_7_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_2_7">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -787,24 +759,6 @@
         
       
       
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Code, tests and documentation
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
       <a href="implementation.html" class="md-nav__link md-nav__link--active">
         
   
@@ -821,47 +775,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#step-11-write-the-code-tests-and-documentation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Step 11: write the code, tests and documentation
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#step-12-approve-the-pull-request" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Step 12: approve the pull request
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -987,36 +900,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#step-11-write-the-code-tests-and-documentation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Step 11: write the code, tests and documentation
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#step-12-approve-the-pull-request" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Step 12: approve the pull request
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -1033,34 +916,22 @@
 
 
 <h1 id="code-tests-and-documentation">Code, tests and documentation<a class="headerlink" href="#code-tests-and-documentation" title="Permanent link">&para;</a></h1>
-<p>Steps 11 and 12 of the <a href="index.html">steps</a>. <code>vogon:implement</code> continues from the
-approved plan (<a href="planning.html">Planning</a>). The rules are in
-<a href="../architecture.html#code-from-requirements">Architecture</a>.</p>
-<h2 id="step-11-write-the-code-tests-and-documentation">Step 11: write the code, tests and documentation<a class="headerlink" href="#step-11-write-the-code-tests-and-documentation" title="Permanent link">&para;</a></h2>
-<p>The main agent follows the plan. For each part it starts a sub-agent that
-writes that part's code, tests and documentation, given the plan, the
-requirements and the code it touches. Independent parts run in parallel. Each
-test names the requirements it verifies in its <code>req</code> marker. Where the host
-project's <code>conftest.py</code> lacks the lines that copy the markers into the JUnit
-XML, which <code>vogon:init</code> adds, the skill reports it.</p>
-<p>Three evaluators check each part: the test checklist, the code checklist
-(<a href="../architecture.html#loops">Architecture</a>), and Claude Code's code review. The
-main agent also reads each sub-agent's output against the plan and sends back
-work that leaves its part, does less than its part, or changes what the plan
-does not name.</p>
-<p>The developer may steer the work or leave it to run. A developer who steers
-can stop it, ask to review each part before the next starts, or give an
-instruction about a part. The main agent passes the instruction to the
-sub-agents it concerns and logs it. Without instructions, the skill runs the
-plan to the end.</p>
-<p>All tests are written and pass before the pull request is opened. Where and
-how the test suite runs is the project's choice, as <code>tests.md</code> states. The
-pull request description names the requirements implemented and states the
-loops run, their rounds and the findings left open. The skill adds an
-<code>implemented</code> entry to each requirement's <code>REQ-*.json</code>.</p>
-<h2 id="step-12-approve-the-pull-request">Step 12: approve the pull request<a class="headerlink" href="#step-12-approve-the-pull-request" title="Permanent link">&para;</a></h2>
-<p>A code reviewer approves the pull request on the repository host, as the
-project's own practice requires. VOGON gives no approval.</p>
+<p>Step 9 of the <a href="index.html">steps</a>. <code>vogon:implement</code> continues from the approved
+plan (<a href="planning.html">Planning</a>). The design is in
+<a href="../architecture.html#code-from-requirements">Architecture</a> and the steps in
+<code>src/vogon/skills/implement/SKILL.md</code>.</p>
+<p>One writing sub-agent per part of the plan writes its code, tests and
+documentation. Its evaluators check it: one applies
+<code>src/vogon/skills/implement/references/test-checklist.md</code>, the other runs
+Claude Code's code review on the part's diff and then applies
+<code>src/vogon/skills/implement/references/code-checklist.md</code>. The developer may
+steer the work or leave it to run.</p>
+<p>The skill runs the test suite as <code>tests.md</code> states. A failure is fixed in the
+code; a test is never deleted, skipped or weakened to make the run pass. All
+tests pass before the pull request is opened. The skill opens the pull
+request and then appends an <code>implemented</code> entry to each requirement's
+<code>REQ-*.json</code>; the entry counts once the pull request is merged. A person
+approves the pull request on the repository host.</p>
 
 
 

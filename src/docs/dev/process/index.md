@@ -1,53 +1,29 @@
 # Steps of the GxP process
 
-The steps a requirement goes through from source material to a signed
-release. Each requirement goes through them in this order. Different
-requirements are at different steps at the same time, and a project works on
-several at once.
+The steps a requirement goes through from source material to signed release,
+in order. Different requirements are at different steps at the same time.
 
-| # | Step | Produces | Done by | Skill |
+| # | Step | Produces | Skill | Approved by |
 | --- | --- | --- | --- | --- |
-| 1 | Configure | `vogon/project/vogon.yaml`: the system for each role, the role holders and the options; the validation plan filed in `vogon/sources/` | Developer, with VOGON | `vogon:init` |
-| 2 | File the sources | Checked summaries of meetings, mail and chat; attached and shared files with their markdown copies | VOGON | `vogon:requirements` |
-| 3 | Draft the records | Requirements with their acceptance criteria and risk fields; domain facts, constraints and decisions | VOGON | `vogon:requirements` |
-| 4 | Check the records | Records checked against the requirement checklist; findings that need a choice settled by the developer | VOGON, then the developer | `vogon:requirements` |
-| 5 | Send the requirements for approval | The pull request with `REQ-*.md` and `REQ-*.json`; in the real version, the tracker items | VOGON | `vogon:requirements` |
-| 6 | Approve the requirements | The approval, recorded in `REQ-*.json` | Product Owner | `vogon:approve`, or the tracker in the real version |
-| 7 | Write the test procedures | Test procedures, where `tests.md` requires them | VOGON | `vogon:tests` |
-| 8 | Approve the test procedures | The approval, where `tests.md` states | The roles `tests.md` names | |
-| 9 | Plan | A checked plan for one or more requirements | VOGON | `vogon:implement` |
-| 10 | Approve the plan | The approval, recorded in the `planned` entries of the state files | Developers | |
-| 11 | Write the code, tests and documentation | Code, tests and documentation for each part of the plan, checked, with all tests passing | VOGON, steered by the developer if they choose | `vogon:implement` |
-| 12 | Approve the pull request | The approval on the repository host | A person | |
-| 13 | Draft the release documents | The documents `documents.md` lists, and the traceability matrix, for a release commit | VOGON | `vogon:release` |
-| 14 | File the evidence | The documents, the matrix and the results, where `documents.md` states | VOGON | `vogon:release` |
-| 15 | Sign off | The signed documents | The roles `documents.md` names | |
+| 1 | [Configure](setup.md) | `vogon/project/vogon.yaml`, the validation plan in `vogon/sources/`, the `.gitignore` and `conftest.py` lines | `vogon:init` | A person, on the pull request |
+| 2 | [File the sources](requirements.md) | Checked summaries of meetings, mail and chat; filed documents with their markdown copies | `vogon:requirements` | |
+| 3 | [Draft and check the records](requirements.md) | Requirements with acceptance criteria and risk fields; facts, constraints and decisions | `vogon:requirements` | |
+| 4 | [Send the requirements for approval](requirements.md) | The pull request with `REQ-*.md` and `REQ-*.json`; tracker items where a tracker is configured | `vogon:requirements` | |
+| 5 | [Approve the requirements](approval.md) | An `approved` entry in `REQ-*.json` | `vogon:approve` | Product Owner |
+| 6 | [Write the test procedures](test_procedures.md) | Test procedures, where `tests.md` requires them | `vogon:tests` | The roles `tests.md` names |
+| 7 | [Choose a requirement](planning.md) | The ready and blocked lists; the tracker item assigned | `vogon:next` | |
+| 8 | [Plan](planning.md) | A checked plan, and a `planned` entry once approved | `vogon:implement` | A developer |
+| 9 | [Write the code, tests and documentation](implementation.md) | Checked code, tests and documentation, all tests passing, in one pull request | `vogon:implement` | A person, on the repository host |
+| 10 | [Release](documents.md) | The documents `documents.md` lists, the traceability matrix and the results, filed | `vogon:release` | The roles `documents.md` names |
 
-Steps 7 and 8 come before step 9 or after step 11, as `tests.md` states. Before
-step 9, the test procedures are written from the requirements. After step 11,
-they are generated from the tests. A project that needs no test procedures
-skips both steps.
+Step 6 comes before step 7 or after step 9, as `tests.md` states. A project
+that needs no test procedures skips it.
 
-Steps 6, 8, 10, 12 and 15 are approvals. A person gives each one, and VOGON
-gives none of them.
+A change to an approved requirement appends a `changed` entry to its
+`REQ-*.json`, and the requirement returns to step 5. `vogon:next` does not
+offer it as ready until it is approved again.
 
-Each step VOGON performs on a requirement is recorded in its `REQ-*.json`, with
-the date and the pull request or commit that holds the result
-([Architecture](../architecture.md#state-of-a-requirement)).
+`REQ-*.json` records the steps done to each requirement
+([Records](../records.md#state-file)). A step done late or out of order is
+done with its real date, and the skill reports the gap with the real dates.
 
-Steps are sometimes done late or out of order. The step is then done with its
-real date, and the order in which the steps were actually done is reported:
-an approval given after what it governs was used shows in the report.
-
-The pages of this section describe how the steps are carried out.
-[Architecture](../architecture.md) describes the skills and holds their rules.
-
-| Steps | Page |
-| --- | --- |
-| 1 | [Setting up a project](setup.md) |
-| 2 to 5 | [Requirements from sources](requirements.md) |
-| 6 | [Approving requirements](approval.md) |
-| 7 and 8 | [Test procedures](test_procedures.md) |
-| 9 and 10 | [Planning](planning.md) |
-| 11 and 12 | [Code, tests and documentation](implementation.md) |
-| 13 to 15 | [Release documents](documents.md) |

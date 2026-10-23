@@ -25,7 +25,6 @@ nav:
   - Developer guide:
       - dev/index.md
       - Architecture: dev/architecture.md
-      - The loop: dev/loop.md
       - Vocabulary: dev/vocabulary.md
       - Records: dev/records.md
       - Sources: dev/sources.md

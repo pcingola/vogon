@@ -26,8 +26,8 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
   descriptions and commits.
 - The `REQ-*.json` files on each pushed branch that is not merged, after
   `git fetch`, for their `planned` entries.
-- The tracker item of each requirement whose `REQ-*.json` has an `issue`
-  field: its approval transitions, priority, assignee and linked test
+- The tracker item of each requirement whose `REQ-*.json` has an entry with
+  an `issue` field: its approval transitions, priority, assignee and linked test
   procedures.
 - The developer's choice: one or more requirement ids, given with the request
   or after the list. The choice is the input. Do not ask for a confirmation.
@@ -41,7 +41,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
    `${CLAUDE_PLUGIN_ROOT}/references/process-files.md` states. Every later
    commit of the run goes on that branch.
 2. Leave out every requirement whose `status` is `withdrawn` or
-   `superseded_by`, or whose `REQ-*.json` has a `withdrawn` step.
+   `superseded_by`.
 3. Check each remaining requirement against the sources it links, as
    `common.md` states.
    - Approval. Decide whether the requirement is approved, has a tracker
@@ -98,10 +98,10 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
    - Then the differences and gaps from steps 1 to 4, with their real dates.
 7. Assign each requirement the developer chooses.
    - Where `vogon.yaml` names a tracker and the requirement's `REQ-*.json` has
-     an `issue` field, set the assignee of that tracker item to the developer
+     an entry with an `issue` field, set the assignee of that tracker item to the developer
      running the skill: the user the tracker connection is authenticated as.
      Read the item back and report its assignee.
-   - Where the requirement has no `issue` field, or no tracker is configured,
+   - Where the requirement has no entry with an `issue` field, or no tracker is configured,
      report the choice and write nothing.
    - Where the chosen requirement is blocked, assign it as chosen and repeat
      its reasons from step 4.

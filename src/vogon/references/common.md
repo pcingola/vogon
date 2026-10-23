@@ -53,6 +53,18 @@ Append each entry to a `REQ-*.json` once and never edit it. Where the entry
 records a pull request, open the pull request first, then append the entry
 with its `pr`, commit and push to the same branch.
 
+- `drafted`: `{"step": "drafted", "date": "<yyyy-mm-dd>", "pr": <number>}`,
+  with `"issue": "<tracker key>"` where `vogon:requirements` created a tracker
+  item.
+- `changed`: `{"step": "changed", "date": "<yyyy-mm-dd>", "pr": <number>}`,
+  naming the pull request that changed `REQ-*.md`, with `"issue": "<tracker
+  key>"` where `vogon:requirements` created the requirement's first tracker
+  item with this change. That entry is also written for a requirement that
+  is not approved.
+- The other entries are defined by the skill that writes them: `approved` by
+  `vogon:approve`, `planned` and `implemented` by `vogon:implement`,
+  `test_procedures_written` by `vogon:tests`, `released` by `vogon:release`.
+
 ## The loop
 
 Every skill that produces work runs it in a loop of rounds. A round is one

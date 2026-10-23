@@ -57,7 +57,9 @@ names a tracker. Sub-agents read
 11. Write the state files as `common.md` "State-file entries" states: a
     `drafted` entry for each new requirement, with `issue` where step 10
     created an item, and a `changed` entry for each changed approved
-    requirement. Commit and push.
+    requirement. A changed requirement whose first tracker item step 10
+    created gets a `changed` entry with `issue`, approved or not. Commit and
+    push.
 12. Tell the developer which sources were used, which were left out and why,
     and which meetings had no transcript. Tell the Product Owner which
     requirements wait for approval and where.

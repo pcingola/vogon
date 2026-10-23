@@ -447,34 +447,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../loop.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The loop
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../vocabulary.html" class="md-nav__link">
         
   
@@ -571,10 +543,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_7" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" checked>
         
           
-          <label class="md-nav__link" for="__nav_2_7" id="__nav_2_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
             
   
   
@@ -592,8 +564,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_7_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_2_7">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -944,180 +916,99 @@
 
 
 <h1 id="steps-of-the-gxp-process">Steps of the GxP process<a class="headerlink" href="#steps-of-the-gxp-process" title="Permanent link">&para;</a></h1>
-<p>The steps a requirement goes through from source material to a signed
-release. Each requirement goes through them in this order. Different
-requirements are at different steps at the same time, and a project works on
-several at once.</p>
+<p>The steps a requirement goes through from source material to signed release,
+in order. Different requirements are at different steps at the same time.</p>
 <table>
 <thead>
 <tr>
 <th>#</th>
 <th>Step</th>
 <th>Produces</th>
-<th>Done by</th>
 <th>Skill</th>
+<th>Approved by</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>1</td>
-<td>Configure</td>
-<td><code>vogon/project/vogon.yaml</code>: the system for each role, the role holders and the options; the validation plan filed in <code>vogon/sources/</code></td>
-<td>Developer, with VOGON</td>
+<td><a href="setup.html">Configure</a></td>
+<td><code>vogon/project/vogon.yaml</code>, the validation plan in <code>vogon/sources/</code>, the <code>.gitignore</code> and <code>conftest.py</code> lines</td>
 <td><code>vogon:init</code></td>
+<td>A person, on the pull request</td>
 </tr>
 <tr>
 <td>2</td>
-<td>File the sources</td>
-<td>Checked summaries of meetings, mail and chat; attached and shared files with their markdown copies</td>
-<td>VOGON</td>
+<td><a href="requirements.html">File the sources</a></td>
+<td>Checked summaries of meetings, mail and chat; filed documents with their markdown copies</td>
 <td><code>vogon:requirements</code></td>
+<td></td>
 </tr>
 <tr>
 <td>3</td>
-<td>Draft the records</td>
-<td>Requirements with their acceptance criteria and risk fields; domain facts, constraints and decisions</td>
-<td>VOGON</td>
+<td><a href="requirements.html">Draft and check the records</a></td>
+<td>Requirements with acceptance criteria and risk fields; facts, constraints and decisions</td>
 <td><code>vogon:requirements</code></td>
+<td></td>
 </tr>
 <tr>
 <td>4</td>
-<td>Check the records</td>
-<td>Records checked against the requirement checklist; findings that need a choice settled by the developer</td>
-<td>VOGON, then the developer</td>
+<td><a href="requirements.html">Send the requirements for approval</a></td>
+<td>The pull request with <code>REQ-*.md</code> and <code>REQ-*.json</code>; tracker items where a tracker is configured</td>
 <td><code>vogon:requirements</code></td>
+<td></td>
 </tr>
 <tr>
 <td>5</td>
-<td>Send the requirements for approval</td>
-<td>The pull request with <code>REQ-*.md</code> and <code>REQ-*.json</code>; in the real version, the tracker items</td>
-<td>VOGON</td>
-<td><code>vogon:requirements</code></td>
+<td><a href="approval.html">Approve the requirements</a></td>
+<td>An <code>approved</code> entry in <code>REQ-*.json</code></td>
+<td><code>vogon:approve</code></td>
+<td>Product Owner</td>
 </tr>
 <tr>
 <td>6</td>
-<td>Approve the requirements</td>
-<td>The approval, recorded in <code>REQ-*.json</code></td>
-<td>Product Owner</td>
-<td><code>vogon:approve</code>, or the tracker in the real version</td>
+<td><a href="test_procedures.html">Write the test procedures</a></td>
+<td>Test procedures, where <code>tests.md</code> requires them</td>
+<td><code>vogon:tests</code></td>
+<td>The roles <code>tests.md</code> names</td>
 </tr>
 <tr>
 <td>7</td>
-<td>Write the test procedures</td>
-<td>Test procedures, where <code>tests.md</code> requires them</td>
-<td>VOGON</td>
-<td><code>vogon:tests</code></td>
+<td><a href="planning.html">Choose a requirement</a></td>
+<td>The ready and blocked lists; the tracker item assigned</td>
+<td><code>vogon:next</code></td>
+<td></td>
 </tr>
 <tr>
 <td>8</td>
-<td>Approve the test procedures</td>
-<td>The approval, where <code>tests.md</code> states</td>
-<td>The roles <code>tests.md</code> names</td>
-<td></td>
+<td><a href="planning.html">Plan</a></td>
+<td>A checked plan, and a <code>planned</code> entry once approved</td>
+<td><code>vogon:implement</code></td>
+<td>A developer</td>
 </tr>
 <tr>
 <td>9</td>
-<td>Plan</td>
-<td>A checked plan for one or more requirements</td>
-<td>VOGON</td>
+<td><a href="implementation.html">Write the code, tests and documentation</a></td>
+<td>Checked code, tests and documentation, all tests passing, in one pull request</td>
 <td><code>vogon:implement</code></td>
+<td>A person, on the repository host</td>
 </tr>
 <tr>
 <td>10</td>
-<td>Approve the plan</td>
-<td>The approval, recorded in the <code>planned</code> entries of the state files</td>
-<td>Developers</td>
-<td></td>
-</tr>
-<tr>
-<td>11</td>
-<td>Write the code, tests and documentation</td>
-<td>Code, tests and documentation for each part of the plan, checked, with all tests passing</td>
-<td>VOGON, steered by the developer if they choose</td>
-<td><code>vogon:implement</code></td>
-</tr>
-<tr>
-<td>12</td>
-<td>Approve the pull request</td>
-<td>The approval on the repository host</td>
-<td>A person</td>
-<td></td>
-</tr>
-<tr>
-<td>13</td>
-<td>Draft the release documents</td>
-<td>The documents <code>documents.md</code> lists, and the traceability matrix, for a release commit</td>
-<td>VOGON</td>
+<td><a href="documents.html">Release</a></td>
+<td>The documents <code>documents.md</code> lists, the traceability matrix and the results, filed</td>
 <td><code>vogon:release</code></td>
-</tr>
-<tr>
-<td>14</td>
-<td>File the evidence</td>
-<td>The documents, the matrix and the results, where <code>documents.md</code> states</td>
-<td>VOGON</td>
-<td><code>vogon:release</code></td>
-</tr>
-<tr>
-<td>15</td>
-<td>Sign off</td>
-<td>The signed documents</td>
 <td>The roles <code>documents.md</code> names</td>
-<td></td>
 </tr>
 </tbody>
 </table>
-<p>Steps 7 and 8 come before step 9 or after step 11, as <code>tests.md</code> states. Before
-step 9, the test procedures are written from the requirements. After step 11,
-they are generated from the tests. A project that needs no test procedures
-skips both steps.</p>
-<p>Steps 6, 8, 10, 12 and 15 are approvals. A person gives each one, and VOGON
-gives none of them.</p>
-<p>Each step VOGON performs on a requirement is recorded in its <code>REQ-*.json</code>, with
-the date and the pull request or commit that holds the result
-(<a href="../architecture.html#state-of-a-requirement">Architecture</a>).</p>
-<p>Steps are sometimes done late or out of order. The step is then done with its
-real date, and the order in which the steps were actually done is reported:
-an approval given after what it governs was used shows in the report.</p>
-<p>The pages of this section describe how the steps are carried out.
-<a href="../architecture.html">Architecture</a> describes the skills and holds their rules.</p>
-<table>
-<thead>
-<tr>
-<th>Steps</th>
-<th>Page</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td><a href="setup.html">Setting up a project</a></td>
-</tr>
-<tr>
-<td>2 to 5</td>
-<td><a href="requirements.html">Requirements from sources</a></td>
-</tr>
-<tr>
-<td>6</td>
-<td><a href="approval.html">Approving requirements</a></td>
-</tr>
-<tr>
-<td>7 and 8</td>
-<td><a href="test_procedures.html">Test procedures</a></td>
-</tr>
-<tr>
-<td>9 and 10</td>
-<td><a href="planning.html">Planning</a></td>
-</tr>
-<tr>
-<td>11 and 12</td>
-<td><a href="implementation.html">Code, tests and documentation</a></td>
-</tr>
-<tr>
-<td>13 to 15</td>
-<td><a href="documents.html">Release documents</a></td>
-</tr>
-</tbody>
-</table>
+<p>Step 6 comes before step 7 or after step 9, as <code>tests.md</code> states. A project
+that needs no test procedures skips it.</p>
+<p>A change to an approved requirement appends a <code>changed</code> entry to its
+<code>REQ-*.json</code>, and the requirement returns to step 5. <code>vogon:next</code> does not
+offer it as ready until it is approved again.</p>
+<p><code>REQ-*.json</code> records the steps done to each requirement
+(<a href="../records.html#state-file">Records</a>). A step done late or out of order is
+done with its real date, and the skill reports the gap with the real dates.</p>
 
 
 

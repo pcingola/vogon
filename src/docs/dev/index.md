@@ -15,7 +15,6 @@ Documentation for people working on VOGON itself.
 ## Pages
 
 - [Architecture](architecture.md)
-- [The loop](loop.md)
 - [Vocabulary](vocabulary.md)
 - [Records](records.md)
 - [Sources](sources.md)

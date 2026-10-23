@@ -6,13 +6,12 @@
 | --- | --- |
 | `.claude-plugin/` | The marketplace listing. |
 | `src/vogon/` | The Claude Code plugin: skills, references, templates. |
-| `src/docs/` | Documentation source, markdown. What you are reading. |
+| `src/docs/` | Documentation source, markdown. |
 | `src/html/` | Marketing page source: `index.html`, `img/`. |
 | `docs/` | Build output. Rendered HTML, served by GitHub Pages. Never edit. |
 | `vogon/` | VOGON's own records: requirements, facts, constraints, decisions. |
 | `tmp/` | Working notes and plans. Gitignored, local only. |
 | `assets/` | Brand originals. Never published. |
-| `.github/` | CI workflow. |
 | `.githooks/` | The pre-commit hook that rebuilds `docs/`. |
 
 ## Development environment
@@ -36,26 +35,16 @@ make serve    # live preview on http://127.0.0.1:8000
 make clean    # rm -rf docs/
 ```
 
-`docs/` is generated and committed, because GitHub Pages deploy-from-a-branch
-serves exactly what is in git. You do not run `make site` for that: the
-`.githooks/pre-commit` hook rebuilds `docs/` and stages it whenever a commit
-touches `src/docs/`, `src/html/` or `mkdocs.yml`, so the rendered HTML is
-always the render of the source committed beside it. A failing build aborts
-the commit.
+`docs/` is committed because Pages serves it from git. `.githooks/pre-commit`
+rebuilds and stages it when a commit touches `src/docs/`, `src/html/` or
+`mkdocs.yml`. A failed build aborts the commit, and `--strict` makes a broken
+link fail it. A hand edit inside `docs/`
+is overwritten by the next build.
 
-Do not hand-edit anything inside `docs/`; the next build overwrites it without
-asking.
-
-mkdocs and mkdocs-material are pinned in the `dev` dependency group and run
-through `uv run --group dev`, so `uv.lock` fixes the renderer version. Do not
-call `uvx mkdocs`: it resolves a fresh version each time, and the rendered
-output is committed.
-
-## CI
-
-`.github/workflows/ci.yml` runs the tests and a strict site build on pushes to
-`main` and on pull requests. A broken link or a page missing from the navigation fails the
-build, because `mkdocs build --strict` treats warnings as errors.
+mkdocs and mkdocs-material are in the `dev` dependency group, run through
+`uv run --group dev`, and `uv.lock` fixes their versions. `uvx mkdocs`
+resolves a fresh version each time, and the rendered output is committed, so
+it is not used.
 
 ## Publishing
 
@@ -78,7 +67,7 @@ its theme CSS and JS into `docs/assets/`, which is unrelated to the top-level
 ## The plugin
 
 The repository is a Claude Code plugin marketplace.
-`.claude-plugin/marketplace.json` lists one plugin, `vogon`, with source
+`.claude-plugin/marketplace.json` lists the plugin `vogon`, with source
 `./src/vogon`:
 
 ```
