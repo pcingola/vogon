@@ -1,46 +1,44 @@
 # Vocabulary
 
-How to write a record is in [Records](records.md).
-
 Projects often keep four kinds of statement in one requirements list under one
 numbering. Most of those rows cannot be tested. VOGON keeps them as four kinds
 of record.
 
 ## The two projects
 
-VOGON is one codebase installed into another, and both keep records in `vogon/`
-in the same format, so the two are named apart.
+VOGON is one codebase installed into another, so the two are named apart.
 
-**VOGON project**: this repository. VOGON's own code, documentation and
-records.
+**VOGON project**: this repository. VOGON's own code and documentation, and
+its constraints and decisions in `vogon/`.
 
 **Host project**: a project VOGON is installed into, holding that project's
 own code, tests and records. **User project** means the same thing; host
 project is the term used in the documentation.
 
-A statement about `vogon/` applies to both unless it names one.
-
 ## The four kinds of record
 
 Everything written down that the system will be built from is one of four
-things. Each has its own id namespace and its own file. A test procedure is
-also a record, of type `TP`, defined under Tests below.
+kinds of record. Each has its own id namespace and its own file
+([Records](records.md)). Test procedures are records too, with the id prefix
+`TP`, but they describe how a requirement is verified and are defined under
+Tests below.
 
 **Requirement**: something the system must do. Written as a MUST statement
 saying what has to be true and not how, so that a test could fail it. Ids are
 `REQ-<MODULE>-<NUMBER>`, or `REQ-<NUMBER>` in a project without modules.
 
 **Domain fact**: something true whether or not this project exists. "A test
-issue in the test manager is linked to the requirement issue it verifies" is a
-fact; nobody on the project chose it and no test of ours can fail it. Prefix `FACT-`.
+item in the test manager is linked to the tracker item of the requirement it
+verifies" is a fact; nobody on the project chose it and no project test can
+fail it. Prefix `FACT-`.
 
 **Constraint**: a limit imposed from outside that design cannot trade away: a
 regulation, a company procedure, or a platform behaviour. "Approval cannot be
 performed by a machine account" is a constraint. Prefix `CON-`.
 
 **Decision**: a choice made among options, recorded with what the options cost
-and what the choice commits us to. Choosing *not* to build something is a
-decision. Prefix `DEC-`.
+and what the choice commits the project to. Choosing *not* to build something is
+a decision. Prefix `DEC-`.
 
 The checked summary or held document a record came from is a source
 ([Sources](sources.md)). Records cite it; it is never a record itself.
@@ -56,7 +54,7 @@ binding, so an ordinary "must" or "should" in prose carries no weight.
 | **MUST**, **MUST NOT** | A requirement. Binding. The only form a requirement record is written in |
 | **SHOULD**, **SHOULD NOT** | A recommendation. Not binding, and not a requirement |
 | **MAY** | Permission |
-| *(no modal verb)* | A statement of fact, about the world or about something outside our control |
+| *(no modal verb)* | A statement of fact, about the world or about something outside the project's control |
 
 "Results imported into the test manager sometimes arrive without a build
 identifier" has no modal verb, so it is a domain fact. "VOGON MUST reject a
@@ -78,13 +76,13 @@ unambiguous, testable, uniquely identified and traceable.
 | **21 CFR Part 11** | The US regulation on electronic records and electronic signatures |
 | **EU Annex 11** | The European counterpart to Part 11 |
 | **ALCOA+** | A checklist of properties regulated data must have: attributable, legible, contemporaneous, original, accurate, plus complete, consistent, enduring, available |
-| **Validation** | Producing evidence that you specified what the system should do, built to that, and verified it |
+| **Validation** | Producing evidence that the project specified what the system should do, built to that, and verified it |
 | **CSV / CSA** | The two names for validating software in this industry; CSA is the FDA's more recent risk-based framing |
 | **URS** | User Requirements Specification: the controlled document holding approved requirements |
 | **RTM** | Requirements Traceability Matrix: requirement to design to test to result, for every requirement |
-| **Tracker** | The issue tracker holding work items such as requirements, their priority and assignee, and where the project uses it for approval, their approval. For example Jira or GitHub Issues |
-| **Test manager** | The system holding test cases, test runs and results, which produces the coverage and traceability reports. For example Xray. A project may have none |
-| **Repository host** | The service holding the git repository and reviewing changes before they merge. For example GitHub |
+| **Tracker** | The issue tracker holding work items such as requirements, with their priority and assignee. Where the project approves in the tracker, it also holds the approvals. VOGON 0.1 is tested with Jira |
+| **Test manager** | The system holding test cases, test runs and results, which produces the coverage and traceability reports. VOGON 0.1 is tested with Xray. A project may have none |
+| **Repository host** | The service holding the git repository and reviewing changes before they merge. VOGON 0.1 is tested with GitHub |
 | **Document system** | The controlled document management system where the validation package is filed and signed |
 
 ## Tests
@@ -98,23 +96,24 @@ unambiguous, testable, uniquely identified and traceable.
 ## Who signs what
 
 A validated system's documents are signed by roles named in the validation
-plan. The skills use the Product Owner role, `product_owner` in `vogon.yaml`,
-for the approval of requirements. Every other approval
-comes from the plan, as the project process files state it. `vogon.yaml` lists
+plan, as the project process files state them. The requirement approver is
+the role named in `requirements.md` "Approval", or the Product Owner
+(`product_owner` in `vogon.yaml`) when it names none
+(`src/vogon/references/lifecycle.md` "Requirement approver"). `vogon.yaml` lists
 the people who hold each role, so records and generated documents name the
 role and never the person. The roles below are common ones; a project uses the
 roles its plan names.
 
 | Role | What this person normally does | Formal role in validation |
 | --- | --- | --- |
-| **System Owner** | One named person on the IT side. Answers for the software for as long as it runs: available, supported, secure, and changed only through change control | Signs the technical documents and chairs the change control board. Cannot be empty at release |
-| **Business Process Owner** | One named person from the business side who knows how the work is done and answers for that process | Decides the finished system is fit to use. Cannot be empty at release |
+| **System Owner** | One named person on the IT side. Answers for the software for as long as it runs: available, supported, secure, and changed only through change control | Signs the technical documents and chairs the change control board. Must be held by a named person at release |
+| **Business Process Owner** | One named person from the business side who knows how the work is done and answers for that process | Decides the finished system is fit to use. Must be held by a named person at release |
 | **IT Quality Manager** | One named person outside the build team. Checks that the validation process was followed: documents exist, were approved before use, and agree with each other | Signs the validation plan and the summary report. Must be independent of the people building the system |
 | **Business Quality Manager** | One named person outside the build team, on the business side. Checks that the process the system supports still complies | Signs alongside the IT Quality Manager, under the same independence rule |
 | **Change control board** | A standing group that meets after release. For each proposed change it decides whether the change is allowed and what has to be re-tested before it ships | The mechanism by which a validated system is allowed to change. Required once the system is live |
 | **Validation lead** | One named person who writes the validation plan and the summary report and assembles the evidence into a package someone can audit | Author, not approver |
 | **Subject Matter Expert** | Anyone who knows the domain or the technology well enough to write or review a document. Not an appointment | Writes and reviews documents. Never approves them, because an approver may not be the author |
-| **Product Owner** | One named person who owns the backlog and decides what gets built next | Approves the requirements, with `vogon:approve` or in the tracker. `vogon.yaml` lists the holders under `product_owner` |
+| **Product Owner** | One named person who owns the backlog and decides what gets built next | Approves the requirements where `requirements.md` names this role or no role, with `vogon:approve` or in the tracker. `vogon.yaml` lists the holders under `product_owner` |
 | **Test Lead** | One of the engineers, named to review the test procedures | Approves the test procedures and test documents the validation plan assigns to this role, as `tests.md` and `documents.md` state. Never approves test procedures they wrote |
 | **Code reviewer** | Any engineer other than the author of a change | Approves the change on the repository host before it merges |
 

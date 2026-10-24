@@ -1,77 +1,55 @@
 # Records
 
-[Vocabulary](vocabulary.md) defines the four kinds of record.
+[Vocabulary](vocabulary.md) defines the four kinds of record. The rules a
+writing sub-agent and an evaluator apply to every record, including ids,
+paths, frontmatter fields and body blocks, are in
+`src/vogon/references/records.md`. Every record also follows
+`src/vogon/references/writing.md`.
 
 ## Layout
 
-Records live in `vogon/`, in the host project's repository and in the VOGON
-project's alike.
+VOGON creates this layout under `vogon/` in a host project. This repository's
+`vogon/` holds VOGON's own constraints and decisions in the same format.
 
 | Path | Holds |
 | --- | --- |
-| `vogon/project/` | `vogon.yaml`, the configuration, and the process files derived from the validation plan. See [Architecture](architecture.md#project-configuration-and-process-files). `checklists/` holds the project's own versions of the default checklists |
-| `vogon/requirements/<module>/` | Requirement records, one directory per module: each `REQ-<MODULE>-<NUMBER>.md` with its [state file](#state-file) `REQ-<MODULE>-<NUMBER>.json` beside it, and [test procedures](#test-procedure) kept in the repository |
-| `vogon/facts/` | Every `FACT-` |
-| `vogon/constraints/` | Every `CON-` |
-| `vogon/decisions/` | Every `DEC-` |
-| `vogon/sources/` | Held copies of the documents records cite: the validation plan, checked summaries of meetings, mail and chat, and attached files with their markdown copies. See [Sources](sources.md) |
-| `vogon/plans/` | Plans for code, approved by the developers before the code is written; `done/` holds the spent ones |
+| `vogon/project/` | `vogon.yaml` and the process files derived from the validation plan ([Architecture](architecture.md#project-configuration-and-process-files)); `checklists/` holds the project's own versions of the default checklists |
+| `vogon/requirements/<module>/` | Requirements `REQ-*.md`, each with its [state file](#state-file) `REQ-*.json` beside it, and the test procedures kept in the repository. A project without modules uses `vogon/requirements/` |
+| `vogon/facts/` | Domain facts |
+| `vogon/constraints/` | Constraints |
+| `vogon/decisions/` | Decisions |
+| `vogon/sources/` | Held copies of the documents records cite ([Sources](sources.md)) |
+| `vogon/plans/` | Plans for code, which the developers are asked to approve before the code is written; `done/` holds the spent ones |
 | `vogon/documents/<release>/` | Drafted documents for one release, where the project has no document system |
 | `vogon/logs/` | Loop logs. Gitignored unless the project commits them |
-| `vogon/tmp/` | Working files deleted before the skill finishes: downloaded transcripts, mail and chat, draft test procedures, draft release documents and the release checkout. Gitignored |
+| `vogon/tmp/` | Working files deleted before the skill finishes, such as downloaded transcripts and draft documents. Gitignored |
 
-A record's identity is its id, not its path. Requirements are grouped by
-module; facts, constraints and decisions are flat, because one is often cited
-by several modules.
+Requirements are grouped by module. Facts, constraints and decisions are
+flat, because one is often cited by several modules.
 
-## Rules
+## Format
 
-The rules a writing sub-agent and an evaluator apply to every record are in
-`src/vogon/references/records.md`: how a sentence is classified, the id and
-file name, each frontmatter field, the body blocks of each type and the
-suggested lengths. Every record also follows the writing standard,
-`src/vogon/references/writing.md`.
+YAML frontmatter is read by the skills and the commands, and the markdown
+body by people. Approval is not a field and not a status:
+`src/vogon/references/lifecycle.md` "Approval" states where an approval is
+recorded.
 
-A sentence often states two kinds of record. "The test manager reports
-coverage from the link between a test issue and a requirement issue, so
-maintain that link from the test source" is a fact and a requirement, written
-as two records; the requirement names the fact in `depends_on`.
+`source` names the held documents a record came from, and `references` the
+documents that say how it is realised, such as the schema a decision settles.
+A path in `source` asserts that the document says what the record says, so
+only a passage that was read is cited.
 
-YAML frontmatter is read by the skills and scripts, and the markdown body by
-people. No field and no body line states that a record was approved or
-signed: approvals are in the [state file](#state-file).
+`status` records whether the project is committed to the statement. A record
+is never deleted: a withdrawn or superseded record keeps its file and its id.
+Build progress is in the state file and the passing tests.
 
-`source` names every held document that states the record, not only the one
-it was drafted from, strongest `authority` first ([Sources](sources.md#authority)).
-A path in `source` asserts that the document says this, so only a passage that
-was read is cited.
-
-`references` names the documents that say how the record is realised, such as
-the schema a decision settles. `source` names what the record came from;
-`references` names what elaborates it.
-
-### Status
-
-`status` records whether the project is committed to the statement: `active`,
-`withdrawn` or `{superseded_by: <id>}`. A record is never deleted. Build
-progress is in the state file and the passing tests.
+A fact carries `as_of`, the date it was observed, so that it can be checked
+again.
 
 ## Requirement
 
-At `vogon/requirements/<module>/REQ-<MODULE>-<NUMBER>.md`.
-
-The requirement adds `verification`, the four risk fields (`gxp_impact`,
-`gxp_impact_reason`, `risk`, `risk_reason`), and the body blocks
-`**Requirement.**`, `**Out of scope.**` and `**Acceptance criteria.**`.
 `**Out of scope.**` names what the requirement does not cover, so that nobody
-builds or tests it. The
-risk method and levels come from `requirements.md` where the validation plan
-states them. Each expected value in the acceptance criteria is worked out from
-the requirement and its sources, never read off a run of the code, because a
-value taken from the code makes the test that asserts it unable to fail. The
-acceptance criteria are approved with the requirement.
-
-### Worked example
+builds or tests it. The acceptance criteria are approved with the requirement.
 
 ```markdown
 ---
@@ -112,57 +90,24 @@ barcode that a scanner reads as `S-2026-00417`.
 ## State file
 
 Each requirement has a state file beside its markdown file, named for the same
-id with `.json`. It records every step done to the requirement, in order.
-Entries are appended and never edited or removed. A withdrawal is the
-record's `status`, not a step. Every entry and its fields are defined in
-`src/vogon/references/common.md`, "State-file entries".
+id with `.json`. It records every step done to the requirement, in order, and
+entries are appended and never edited. A change to `REQ-*.md` after it was
+drafted, including a withdrawal or a supersession, is a `changed` entry. The
+entries and their fields are defined in `lifecycle.md` "State file".
 
-Where no tracker holds approvals, a requirement is approved when the state
-file on the default branch has an `approved` entry after its latest `changed`
-entry; an `approved` entry that only an open pull request holds does not
-count. Where a tracker holds approvals, the state file holds no `approved`
-entry and the tracker item is the record. For every entry, the
-pull request, commit or tracker item it names counts over the entry: a skill
-checks it before acting and reports any difference
-(`src/vogon/references/common.md`, "Start of every skill" and "Approval of a
-requirement").
-
-## Domain fact, constraint and decision
-
-A fact is at `vogon/facts/FACT-<NUMBER>.md`, a constraint at
-`vogon/constraints/CON-<NUMBER>.md`, a decision at
-`vogon/decisions/DEC-<NUMBER>.md`, with no module in the id. A fact carries `as_of`, the date it was observed, so
-it can be checked again. A constraint carries `imposed_by` and `lifts_when`. A
-merged decision is never edited; a later decision supersedes it, and both
-files stay.
-
-## Test procedure
-
-Where `tests.md` keeps test procedures in the repository, each is at
-`vogon/requirements/<module>/TP-<MODULE>-<NUMBER>.md`, beside the requirements
-it verifies, which its `verifies` field lists. Where they are kept in the
-tracker or test manager, the item key is the id and VOGON writes no file.
+When an entry and the pull request, commit or tracker item it names differ, the
+pull request, commit or tracker item is correct, except for approvals
+(`src/vogon/references/common.md` "Start of every skill"). Where no tracker
+holds approvals, an approval is an `approved` entry on the default branch. Where
+a tracker holds approvals, the state file holds no `approved` entry and the
+tracker item alone records the approval (`lifecycle.md` "Approval").
 
 ## Identifiers
 
-An id is a type, an optional module, and a number:
+A file is named for its id alone, such as `REQ-PRN-12.md`, so that a changed
+title breaks no link. A record's history is its git history.
 
-```
-<TYPE>-<NUMBER>
-<TYPE>-<MODULE>-<NUMBER>
-```
-
-`TYPE` is `REQ`, `FACT`, `CON`, `DEC`, or `TP` for a test procedure. `MODULE`
-names the part of the system the record belongs to, in uppercase letters and
-digits; facts, constraints and decisions, and every record of a project
-without modules, omit it. The modules are listed in `vogon.yaml`, and a record may name
-only a listed module. `NUMBER` is compared numerically when ids are ordered. Numbers count separately per type and module.
-
-`vogon id <type> <module>` gives the next number from every branch and the
-history. Two branches can take the same id before either pushes, so a skill
-runs `vogon id --check` and renumbers before it opens its pull request
-(`src/vogon/references/common.md`, "Commands").
-
-Once merged, an id is permanent: never reused or renumbered, also after
-withdrawal. The file is named for the id alone, such as `REQ-PRN-12.md`, so
-that a changed title breaks no link. A record's history is its git history.
+`vogon id` takes the next number from every branch and the history. Two
+branches can take the same id before either pushes, so a skill runs
+`vogon id --check` and renumbers before it opens its pull request
+(`common.md` "Commands").

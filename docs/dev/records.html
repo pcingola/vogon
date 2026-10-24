@@ -546,30 +546,13 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#rules" class="md-nav__link">
+  <a href="#format" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Rules
+        Format
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Rules">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#status" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Status
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -582,23 +565,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Requirement">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#worked-example" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Worked example
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -606,28 +572,6 @@
     <span class="md-ellipsis">
       
         State file
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#domain-fact-constraint-and-decision" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Domain fact, constraint and decision
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#test-procedure" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Test procedure
       
     </span>
   </a>
@@ -783,30 +727,13 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#rules" class="md-nav__link">
+  <a href="#format" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Rules
+        Format
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Rules">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#status" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Status
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -819,23 +746,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Requirement">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#worked-example" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Worked example
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -843,28 +753,6 @@
     <span class="md-ellipsis">
       
         State file
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#domain-fact-constraint-and-decision" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Domain fact, constraint and decision
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#test-procedure" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Test procedure
       
     </span>
   </a>
@@ -900,10 +788,14 @@
 
 
 <h1 id="records">Records<a class="headerlink" href="#records" title="Permanent link">&para;</a></h1>
-<p><a href="vocabulary.html">Vocabulary</a> defines the four kinds of record.</p>
+<p><a href="vocabulary.html">Vocabulary</a> defines the four kinds of record. The rules a
+writing sub-agent and an evaluator apply to every record, including ids,
+paths, frontmatter fields and body blocks, are in
+<code>src/vogon/references/records.md</code>. Every record also follows
+<code>src/vogon/references/writing.md</code>.</p>
 <h2 id="layout">Layout<a class="headerlink" href="#layout" title="Permanent link">&para;</a></h2>
-<p>Records live in <code>vogon/</code>, in the host project's repository and in the VOGON
-project's alike.</p>
+<p>VOGON creates this layout under <code>vogon/</code> in a host project. This repository's
+<code>vogon/</code> holds VOGON's own constraints and decisions in the same format.</p>
 <table>
 <thead>
 <tr>
@@ -914,31 +806,31 @@ project's alike.</p>
 <tbody>
 <tr>
 <td><code>vogon/project/</code></td>
-<td><code>vogon.yaml</code>, the configuration, and the process files derived from the validation plan. See <a href="architecture.html#project-configuration-and-process-files">Architecture</a>. <code>checklists/</code> holds the project's own versions of the default checklists</td>
+<td><code>vogon.yaml</code> and the process files derived from the validation plan (<a href="architecture.html#project-configuration-and-process-files">Architecture</a>); <code>checklists/</code> holds the project's own versions of the default checklists</td>
 </tr>
 <tr>
 <td><code>vogon/requirements/&lt;module&gt;/</code></td>
-<td>Requirement records, one directory per module: each <code>REQ-&lt;MODULE&gt;-&lt;NUMBER&gt;.md</code> with its <a href="#state-file">state file</a> <code>REQ-&lt;MODULE&gt;-&lt;NUMBER&gt;.json</code> beside it, and <a href="#test-procedure">test procedures</a> kept in the repository</td>
+<td>Requirements <code>REQ-*.md</code>, each with its <a href="#state-file">state file</a> <code>REQ-*.json</code> beside it, and the test procedures kept in the repository. A project without modules uses <code>vogon/requirements/</code></td>
 </tr>
 <tr>
 <td><code>vogon/facts/</code></td>
-<td>Every <code>FACT-</code></td>
+<td>Domain facts</td>
 </tr>
 <tr>
 <td><code>vogon/constraints/</code></td>
-<td>Every <code>CON-</code></td>
+<td>Constraints</td>
 </tr>
 <tr>
 <td><code>vogon/decisions/</code></td>
-<td>Every <code>DEC-</code></td>
+<td>Decisions</td>
 </tr>
 <tr>
 <td><code>vogon/sources/</code></td>
-<td>Held copies of the documents records cite: the validation plan, checked summaries of meetings, mail and chat, and attached files with their markdown copies. See <a href="sources.html">Sources</a></td>
+<td>Held copies of the documents records cite (<a href="sources.html">Sources</a>)</td>
 </tr>
 <tr>
 <td><code>vogon/plans/</code></td>
-<td>Plans for code, approved by the developers before the code is written; <code>done/</code> holds the spent ones</td>
+<td>Plans for code, which the developers are asked to approve before the code is written; <code>done/</code> holds the spent ones</td>
 </tr>
 <tr>
 <td><code>vogon/documents/&lt;release&gt;/</code></td>
@@ -950,50 +842,29 @@ project's alike.</p>
 </tr>
 <tr>
 <td><code>vogon/tmp/</code></td>
-<td>Working files deleted before the skill finishes: downloaded transcripts, mail and chat, draft test procedures, draft release documents and the release checkout. Gitignored</td>
+<td>Working files deleted before the skill finishes, such as downloaded transcripts and draft documents. Gitignored</td>
 </tr>
 </tbody>
 </table>
-<p>A record's identity is its id, not its path. Requirements are grouped by
-module; facts, constraints and decisions are flat, because one is often cited
-by several modules.</p>
-<h2 id="rules">Rules<a class="headerlink" href="#rules" title="Permanent link">&para;</a></h2>
-<p>The rules a writing sub-agent and an evaluator apply to every record are in
-<code>src/vogon/references/records.md</code>: how a sentence is classified, the id and
-file name, each frontmatter field, the body blocks of each type and the
-suggested lengths. Every record also follows the writing standard,
-<code>src/vogon/references/writing.md</code>.</p>
-<p>A sentence often states two kinds of record. "The test manager reports
-coverage from the link between a test issue and a requirement issue, so
-maintain that link from the test source" is a fact and a requirement, written
-as two records; the requirement names the fact in <code>depends_on</code>.</p>
-<p>YAML frontmatter is read by the skills and scripts, and the markdown body by
-people. No field and no body line states that a record was approved or
-signed: approvals are in the <a href="#state-file">state file</a>.</p>
-<p><code>source</code> names every held document that states the record, not only the one
-it was drafted from, strongest <code>authority</code> first (<a href="sources.html#authority">Sources</a>).
-A path in <code>source</code> asserts that the document says this, so only a passage that
-was read is cited.</p>
-<p><code>references</code> names the documents that say how the record is realised, such as
-the schema a decision settles. <code>source</code> names what the record came from;
-<code>references</code> names what elaborates it.</p>
-<h3 id="status">Status<a class="headerlink" href="#status" title="Permanent link">&para;</a></h3>
-<p><code>status</code> records whether the project is committed to the statement: <code>active</code>,
-<code>withdrawn</code> or <code>{superseded_by: &lt;id&gt;}</code>. A record is never deleted. Build
-progress is in the state file and the passing tests.</p>
+<p>Requirements are grouped by module. Facts, constraints and decisions are
+flat, because one is often cited by several modules.</p>
+<h2 id="format">Format<a class="headerlink" href="#format" title="Permanent link">&para;</a></h2>
+<p>YAML frontmatter is read by the skills and the commands, and the markdown
+body by people. Approval is not a field and not a status:
+<code>src/vogon/references/lifecycle.md</code> "Approval" states where an approval is
+recorded.</p>
+<p><code>source</code> names the held documents a record came from, and <code>references</code> the
+documents that say how it is realised, such as the schema a decision settles.
+A path in <code>source</code> asserts that the document says what the record says, so
+only a passage that was read is cited.</p>
+<p><code>status</code> records whether the project is committed to the statement. A record
+is never deleted: a withdrawn or superseded record keeps its file and its id.
+Build progress is in the state file and the passing tests.</p>
+<p>A fact carries <code>as_of</code>, the date it was observed, so that it can be checked
+again.</p>
 <h2 id="requirement">Requirement<a class="headerlink" href="#requirement" title="Permanent link">&para;</a></h2>
-<p>At <code>vogon/requirements/&lt;module&gt;/REQ-&lt;MODULE&gt;-&lt;NUMBER&gt;.md</code>.</p>
-<p>The requirement adds <code>verification</code>, the four risk fields (<code>gxp_impact</code>,
-<code>gxp_impact_reason</code>, <code>risk</code>, <code>risk_reason</code>), and the body blocks
-<code>**Requirement.**</code>, <code>**Out of scope.**</code> and <code>**Acceptance criteria.**</code>.
-<code>**Out of scope.**</code> names what the requirement does not cover, so that nobody
-builds or tests it. The
-risk method and levels come from <code>requirements.md</code> where the validation plan
-states them. Each expected value in the acceptance criteria is worked out from
-the requirement and its sources, never read off a run of the code, because a
-value taken from the code makes the test that asserts it unable to fail. The
-acceptance criteria are approved with the requirement.</p>
-<h3 id="worked-example">Worked example<a class="headerlink" href="#worked-example" title="Permanent link">&para;</a></h3>
+<p><code>**Out of scope.**</code> names what the requirement does not cover, so that nobody
+builds or tests it. The acceptance criteria are approved with the requirement.</p>
 <pre><code class="language-markdown">---
 id: REQ-PRN-12
 type: requirement
@@ -1030,48 +901,23 @@ barcode that a scanner reads as `S-2026-00417`.
 </code></pre>
 <h2 id="state-file">State file<a class="headerlink" href="#state-file" title="Permanent link">&para;</a></h2>
 <p>Each requirement has a state file beside its markdown file, named for the same
-id with <code>.json</code>. It records every step done to the requirement, in order.
-Entries are appended and never edited or removed. A withdrawal is the
-record's <code>status</code>, not a step. Every entry and its fields are defined in
-<code>src/vogon/references/common.md</code>, "State-file entries".</p>
-<p>Where no tracker holds approvals, a requirement is approved when the state
-file on the default branch has an <code>approved</code> entry after its latest <code>changed</code>
-entry; an <code>approved</code> entry that only an open pull request holds does not
-count. Where a tracker holds approvals, the state file holds no <code>approved</code>
-entry and the tracker item is the record. For every entry, the
-pull request, commit or tracker item it names counts over the entry: a skill
-checks it before acting and reports any difference
-(<code>src/vogon/references/common.md</code>, "Start of every skill" and "Approval of a
-requirement").</p>
-<h2 id="domain-fact-constraint-and-decision">Domain fact, constraint and decision<a class="headerlink" href="#domain-fact-constraint-and-decision" title="Permanent link">&para;</a></h2>
-<p>A fact is at <code>vogon/facts/FACT-&lt;NUMBER&gt;.md</code>, a constraint at
-<code>vogon/constraints/CON-&lt;NUMBER&gt;.md</code>, a decision at
-<code>vogon/decisions/DEC-&lt;NUMBER&gt;.md</code>, with no module in the id. A fact carries <code>as_of</code>, the date it was observed, so
-it can be checked again. A constraint carries <code>imposed_by</code> and <code>lifts_when</code>. A
-merged decision is never edited; a later decision supersedes it, and both
-files stay.</p>
-<h2 id="test-procedure">Test procedure<a class="headerlink" href="#test-procedure" title="Permanent link">&para;</a></h2>
-<p>Where <code>tests.md</code> keeps test procedures in the repository, each is at
-<code>vogon/requirements/&lt;module&gt;/TP-&lt;MODULE&gt;-&lt;NUMBER&gt;.md</code>, beside the requirements
-it verifies, which its <code>verifies</code> field lists. Where they are kept in the
-tracker or test manager, the item key is the id and VOGON writes no file.</p>
+id with <code>.json</code>. It records every step done to the requirement, in order, and
+entries are appended and never edited. A change to <code>REQ-*.md</code> after it was
+drafted, including a withdrawal or a supersession, is a <code>changed</code> entry. The
+entries and their fields are defined in <code>lifecycle.md</code> "State file".</p>
+<p>When an entry and the pull request, commit or tracker item it names differ, the
+pull request, commit or tracker item is correct, except for approvals
+(<code>src/vogon/references/common.md</code> "Start of every skill"). Where no tracker
+holds approvals, an approval is an <code>approved</code> entry on the default branch. Where
+a tracker holds approvals, the state file holds no <code>approved</code> entry and the
+tracker item alone records the approval (<code>lifecycle.md</code> "Approval").</p>
 <h2 id="identifiers">Identifiers<a class="headerlink" href="#identifiers" title="Permanent link">&para;</a></h2>
-<p>An id is a type, an optional module, and a number:</p>
-<pre><code>&lt;TYPE&gt;-&lt;NUMBER&gt;
-&lt;TYPE&gt;-&lt;MODULE&gt;-&lt;NUMBER&gt;
-</code></pre>
-<p><code>TYPE</code> is <code>REQ</code>, <code>FACT</code>, <code>CON</code>, <code>DEC</code>, or <code>TP</code> for a test procedure. <code>MODULE</code>
-names the part of the system the record belongs to, in uppercase letters and
-digits; facts, constraints and decisions, and every record of a project
-without modules, omit it. The modules are listed in <code>vogon.yaml</code>, and a record may name
-only a listed module. <code>NUMBER</code> is compared numerically when ids are ordered. Numbers count separately per type and module.</p>
-<p><code>vogon id &lt;type&gt; &lt;module&gt;</code> gives the next number from every branch and the
-history. Two branches can take the same id before either pushes, so a skill
-runs <code>vogon id --check</code> and renumbers before it opens its pull request
-(<code>src/vogon/references/common.md</code>, "Commands").</p>
-<p>Once merged, an id is permanent: never reused or renumbered, also after
-withdrawal. The file is named for the id alone, such as <code>REQ-PRN-12.md</code>, so
-that a changed title breaks no link. A record's history is its git history.</p>
+<p>A file is named for its id alone, such as <code>REQ-PRN-12.md</code>, so that a changed
+title breaks no link. A record's history is its git history.</p>
+<p><code>vogon id</code> takes the next number from every branch and the history. Two
+branches can take the same id before either pushes, so a skill runs
+<code>vogon id --check</code> and renumbers before it opens its pull request
+(<code>common.md</code> "Commands").</p>
 
 
 

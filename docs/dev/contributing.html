@@ -817,7 +817,7 @@
 </tr>
 <tr>
 <td><code>vogon/</code></td>
-<td>VOGON's own records: requirements, facts, constraints, decisions.</td>
+<td>VOGON's own constraints and decisions, in the record format of <a href="records.html">Records</a>.</td>
 </tr>
 <tr>
 <td><code>tmp/</code></td>
@@ -852,9 +852,9 @@ rebuilds and stages it when a commit touches <code>src/docs/</code>, <code>src/h
 link fail it. A hand edit inside <code>docs/</code>
 is overwritten by the next build.</p>
 <p>mkdocs and mkdocs-material are in the <code>dev</code> dependency group, run through
-<code>uv run --group dev</code>, and <code>uv.lock</code> fixes their versions. <code>uvx mkdocs</code>
-resolves a fresh version each time, and the rendered output is committed, so
-it is not used.</p>
+<code>uv run --group dev</code>, and <code>uv.lock</code> fixes their versions. <code>uvx mkdocs</code> is not
+used: it resolves a fresh version each time, and the rendered output is
+committed.</p>
 <h2 id="publishing">Publishing<a class="headerlink" href="#publishing" title="Permanent link">&para;</a></h2>
 <p>GitHub Pages, deploy from a branch: Settings → Pages → Source "Deploy from a
 branch", branch <code>main</code>, folder <code>/docs</code>.</p>
@@ -874,8 +874,8 @@ its theme CSS and JS into <code>docs/assets/</code>, which is unrelated to the t
 <code>./src/vogon</code>:</p>
 <pre><code>src/vogon/
 ├── .claude-plugin/plugin.json   name, version, description
-├── references/                  rules shared by the skills
-├── templates/                   templates of the host project's process files
+├── references/                  rules shared by the skills, one file per topic
+├── templates/                   templates of vogon.yaml and the process files
 └── skills/
     ├── init/                    SKILL.md
     ├── requirements/            SKILL.md, references/

@@ -84,18 +84,20 @@ prose that ships, including records.
 
 ## Records
 
-`vogon/` holds VOGON's own constraints and decisions, in the record format
-VOGON defines for host projects. `src/docs/dev/vocabulary.md` defines the four
-kinds of record and `dev/records.md` says how to write one. Each record is one
-file named for its id, and an id is never reused.
+`vogon/` holds VOGON's own constraints and decisions, in the record format VOGON
+defines for host projects. `src/docs/dev/vocabulary.md` defines the four kinds
+of record, `src/vogon/references/records.md` holds the rules for writing one,
+and `src/docs/dev/records.md` explains the layout and the format. Each record is
+one file named for its id, and an id is never reused.
 
 This repository has `vogon/constraints/` and `vogon/decisions/`. In a host
 project VOGON also creates `project/`, `requirements/<module>/`, `facts/`,
-`sources/` for held copies of cited documents, `plans/`,
-`documents/<release>/`, `logs/`, and the gitignored `tmp/`. Held
-documents are flat and named `YYYY-MM-DD_slug.ext` by the document's own date,
-never edited after filing; `dev/sources.md` has the rules. Records
-are visible rather than hidden under a dot-directory.
+`sources/` for held copies of cited documents, `plans/`, `documents/<release>/`,
+`logs/`, and the gitignored `tmp/`. Held documents are flat and named
+`YYYY-MM-DD_slug.ext` by the document's own date, never edited after filing; the
+rules are in `src/vogon/references/sources.md`, and `src/docs/dev/sources.md`
+gives their reasons. Records are visible rather than hidden under a
+dot-directory.
 
 A statement about the system belongs in `vogon/` when it is a constraint or a
 decision. It belongs in `src/docs/dev/` when it explains how the parts fit

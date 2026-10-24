@@ -832,35 +832,35 @@
 
 
 <h1 id="vocabulary">Vocabulary<a class="headerlink" href="#vocabulary" title="Permanent link">&para;</a></h1>
-<p>How to write a record is in <a href="records.html">Records</a>.</p>
 <p>Projects often keep four kinds of statement in one requirements list under one
 numbering. Most of those rows cannot be tested. VOGON keeps them as four kinds
 of record.</p>
 <h2 id="the-two-projects">The two projects<a class="headerlink" href="#the-two-projects" title="Permanent link">&para;</a></h2>
-<p>VOGON is one codebase installed into another, and both keep records in <code>vogon/</code>
-in the same format, so the two are named apart.</p>
-<p><strong>VOGON project</strong>: this repository. VOGON's own code, documentation and
-records.</p>
+<p>VOGON is one codebase installed into another, so the two are named apart.</p>
+<p><strong>VOGON project</strong>: this repository. VOGON's own code and documentation, and
+its constraints and decisions in <code>vogon/</code>.</p>
 <p><strong>Host project</strong>: a project VOGON is installed into, holding that project's
 own code, tests and records. <strong>User project</strong> means the same thing; host
 project is the term used in the documentation.</p>
-<p>A statement about <code>vogon/</code> applies to both unless it names one.</p>
 <h2 id="the-four-kinds-of-record">The four kinds of record<a class="headerlink" href="#the-four-kinds-of-record" title="Permanent link">&para;</a></h2>
 <p>Everything written down that the system will be built from is one of four
-things. Each has its own id namespace and its own file. A test procedure is
-also a record, of type <code>TP</code>, defined under Tests below.</p>
+kinds of record. Each has its own id namespace and its own file
+(<a href="records.html">Records</a>). Test procedures are records too, with the id prefix
+<code>TP</code>, but they describe how a requirement is verified and are defined under
+Tests below.</p>
 <p><strong>Requirement</strong>: something the system must do. Written as a MUST statement
 saying what has to be true and not how, so that a test could fail it. Ids are
 <code>REQ-&lt;MODULE&gt;-&lt;NUMBER&gt;</code>, or <code>REQ-&lt;NUMBER&gt;</code> in a project without modules.</p>
 <p><strong>Domain fact</strong>: something true whether or not this project exists. "A test
-issue in the test manager is linked to the requirement issue it verifies" is a
-fact; nobody on the project chose it and no test of ours can fail it. Prefix <code>FACT-</code>.</p>
+item in the test manager is linked to the tracker item of the requirement it
+verifies" is a fact; nobody on the project chose it and no project test can
+fail it. Prefix <code>FACT-</code>.</p>
 <p><strong>Constraint</strong>: a limit imposed from outside that design cannot trade away: a
 regulation, a company procedure, or a platform behaviour. "Approval cannot be
 performed by a machine account" is a constraint. Prefix <code>CON-</code>.</p>
 <p><strong>Decision</strong>: a choice made among options, recorded with what the options cost
-and what the choice commits us to. Choosing <em>not</em> to build something is a
-decision. Prefix <code>DEC-</code>.</p>
+and what the choice commits the project to. Choosing <em>not</em> to build something is
+a decision. Prefix <code>DEC-</code>.</p>
 <p>The checked summary or held document a record came from is a source
 (<a href="sources.html">Sources</a>). Records cite it; it is never a record itself.</p>
 <h2 id="verbs">Verbs<a class="headerlink" href="#verbs" title="Permanent link">&para;</a></h2>
@@ -889,7 +889,7 @@ binding, so an ordinary "must" or "should" in prose carries no weight.</p>
 </tr>
 <tr>
 <td><em>(no modal verb)</em></td>
-<td>A statement of fact, about the world or about something outside our control</td>
+<td>A statement of fact, about the world or about something outside the project's control</td>
 </tr>
 </tbody>
 </table>
@@ -942,7 +942,7 @@ unambiguous, testable, uniquely identified and traceable.</p>
 </tr>
 <tr>
 <td><strong>Validation</strong></td>
-<td>Producing evidence that you specified what the system should do, built to that, and verified it</td>
+<td>Producing evidence that the project specified what the system should do, built to that, and verified it</td>
 </tr>
 <tr>
 <td><strong>CSV / CSA</strong></td>
@@ -958,15 +958,15 @@ unambiguous, testable, uniquely identified and traceable.</p>
 </tr>
 <tr>
 <td><strong>Tracker</strong></td>
-<td>The issue tracker holding work items such as requirements, their priority and assignee, and where the project uses it for approval, their approval. For example Jira or GitHub Issues</td>
+<td>The issue tracker holding work items such as requirements, with their priority and assignee. Where the project approves in the tracker, it also holds the approvals. VOGON 0.1 is tested with Jira</td>
 </tr>
 <tr>
 <td><strong>Test manager</strong></td>
-<td>The system holding test cases, test runs and results, which produces the coverage and traceability reports. For example Xray. A project may have none</td>
+<td>The system holding test cases, test runs and results, which produces the coverage and traceability reports. VOGON 0.1 is tested with Xray. A project may have none</td>
 </tr>
 <tr>
 <td><strong>Repository host</strong></td>
-<td>The service holding the git repository and reviewing changes before they merge. For example GitHub</td>
+<td>The service holding the git repository and reviewing changes before they merge. VOGON 0.1 is tested with GitHub</td>
 </tr>
 <tr>
 <td><strong>Document system</strong></td>
@@ -999,9 +999,10 @@ unambiguous, testable, uniquely identified and traceable.</p>
 </table>
 <h2 id="who-signs-what">Who signs what<a class="headerlink" href="#who-signs-what" title="Permanent link">&para;</a></h2>
 <p>A validated system's documents are signed by roles named in the validation
-plan. The skills use the Product Owner role, <code>product_owner</code> in <code>vogon.yaml</code>,
-for the approval of requirements. Every other approval
-comes from the plan, as the project process files state it. <code>vogon.yaml</code> lists
+plan, as the project process files state them. The requirement approver is
+the role named in <code>requirements.md</code> "Approval", or the Product Owner
+(<code>product_owner</code> in <code>vogon.yaml</code>) when it names none
+(<code>src/vogon/references/lifecycle.md</code> "Requirement approver"). <code>vogon.yaml</code> lists
 the people who hold each role, so records and generated documents name the
 role and never the person. The roles below are common ones; a project uses the
 roles its plan names.</p>
@@ -1017,12 +1018,12 @@ roles its plan names.</p>
 <tr>
 <td><strong>System Owner</strong></td>
 <td>One named person on the IT side. Answers for the software for as long as it runs: available, supported, secure, and changed only through change control</td>
-<td>Signs the technical documents and chairs the change control board. Cannot be empty at release</td>
+<td>Signs the technical documents and chairs the change control board. Must be held by a named person at release</td>
 </tr>
 <tr>
 <td><strong>Business Process Owner</strong></td>
 <td>One named person from the business side who knows how the work is done and answers for that process</td>
-<td>Decides the finished system is fit to use. Cannot be empty at release</td>
+<td>Decides the finished system is fit to use. Must be held by a named person at release</td>
 </tr>
 <tr>
 <td><strong>IT Quality Manager</strong></td>
@@ -1052,7 +1053,7 @@ roles its plan names.</p>
 <tr>
 <td><strong>Product Owner</strong></td>
 <td>One named person who owns the backlog and decides what gets built next</td>
-<td>Approves the requirements, with <code>vogon:approve</code> or in the tracker. <code>vogon.yaml</code> lists the holders under <code>product_owner</code></td>
+<td>Approves the requirements where <code>requirements.md</code> names this role or no role, with <code>vogon:approve</code> or in the tracker. <code>vogon.yaml</code> lists the holders under <code>product_owner</code></td>
 </tr>
 <tr>
 <td><strong>Test Lead</strong></td>

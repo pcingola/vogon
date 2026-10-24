@@ -479,10 +479,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#scope-and-roles" class="md-nav__link">
+  <a href="#scope-and-systems" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Scope and roles
+        Scope and systems
       
     </span>
   </a>
@@ -512,10 +512,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-loop" class="md-nav__link">
+  <a href="#the-review-loop" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The loop
+        The review loop
       
     </span>
   </a>
@@ -545,10 +545,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#records" class="md-nav__link">
+  <a href="#sources-and-records" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Records
+        Sources and records
       
     </span>
   </a>
@@ -556,21 +556,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#approval-of-requirements" class="md-nav__link">
+  <a href="#requirement-lifecycle" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Approval of requirements
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#state-of-a-requirement" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        State of a requirement
+        Requirement lifecycle
       
     </span>
   </a>
@@ -815,10 +804,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#scope-and-roles" class="md-nav__link">
+  <a href="#scope-and-systems" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Scope and roles
+        Scope and systems
       
     </span>
   </a>
@@ -848,10 +837,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-loop" class="md-nav__link">
+  <a href="#the-review-loop" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The loop
+        The review loop
       
     </span>
   </a>
@@ -881,10 +870,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#records" class="md-nav__link">
+  <a href="#sources-and-records" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Records
+        Sources and records
       
     </span>
   </a>
@@ -892,21 +881,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#approval-of-requirements" class="md-nav__link">
+  <a href="#requirement-lifecycle" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Approval of requirements
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#state-of-a-requirement" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        State of a requirement
+        Requirement lifecycle
       
     </span>
   </a>
@@ -988,67 +966,40 @@
 <h1 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h1>
 <p>VOGON is a Claude Code plugin installed into a host project: the repository of
 a regulated (GxP) software project. It carries out the <a href="#skills">steps of the GxP
-process</a> that do not need a person. The plugin is a set of
-skills, the sub-agents they start, and scripts for the work that must give the
-same result every time: <code>vogon id</code> allocates record ids, <code>vogon approve</code>
-records an approval, and <code>vogon trace</code> builds the traceability matrix. All
-model work is done by Claude Code; the Python code calls no language model
+process</a> that do not need a person. The plugin is a set of skills,
+the sub-agents they start, and the commands <code>vogon id</code>, <code>vogon approve</code> and
+<code>vogon trace</code> for the work that must give the same result every time. Claude
+Code does all model work, and the Python code calls no language model, so
+every command is deterministic and VOGON holds no model credentials
 (<code>DEC-005</code>). The design follows the <a href="index.html#principles">principles</a>.</p>
-<p>The rules every skill applies are in <code>src/vogon/references/common.md</code>, and each
-skill's steps, loops, stops and outputs in <code>src/vogon/skills/&lt;skill&gt;/SKILL.md</code>.
-<a href="vocabulary.html">Vocabulary</a> defines the terms, and <a href="records.html">Records</a> the
-record format and the state file.</p>
-<h2 id="scope-and-roles">Scope and roles<a class="headerlink" href="#scope-and-roles" title="Permanent link">&para;</a></h2>
-<p>The host project is written in Python, tested with pytest and kept in git.
-Skills name each external system by its role, never by product, and reach it
-only through the system <code>vogon/project/vogon.yaml</code> names for that role, through
-the MCP connectors of the session.</p>
-<table>
-<thead>
-<tr>
-<th>Role</th>
-<th>Example system</th>
-<th>When no system is configured</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Repository host</td>
-<td>GitHub</td>
-<td>The skill tells the person and skips the steps that need it</td>
-</tr>
-<tr>
-<td>Tracker</td>
-<td>Jira, GitHub Issues</td>
-<td><code>vogon approve</code> records approvals</td>
-</tr>
-<tr>
-<td>Test manager</td>
-<td>Xray</td>
-<td><code>vogon trace</code> builds the matrix</td>
-</tr>
-<tr>
-<td>Document system</td>
-<td>The company's controlled document system</td>
-<td>Documents are kept in the repository, in <code>vogon/documents/&lt;release&gt;/</code></td>
-</tr>
-<tr>
-<td>Meetings, mail, chat</td>
-<td>Teams, Outlook, Slack</td>
-<td>The skill tells the person and skips that source</td>
-</tr>
-</tbody>
-</table>
-<p>A tracker holds approvals when <code>tracking.md</code> states an approval transition for
-the requirement item type. An approval recorded by <code>vogon approve</code> carries the
-approver's git identity, which the approver does not re-enter at approval, so
-it is not an electronic signature under 21 CFR Part 11. A tracker or test
-manager transition is one only when the workflow makes the approver re-enter
-their credentials at that transition; <code>vogon:init</code> reports each approval
+<p><code>src/vogon/references/common.md</code> holds the rules every skill applies and lists
+the topic file in <code>src/vogon/references/</code> that holds each other rule. Each
+skill's steps, loops and outputs are in <code>src/vogon/skills/&lt;skill&gt;/SKILL.md</code>.
+<a href="vocabulary.html">Vocabulary</a> defines the terms, and <a href="records.html">Records</a>
+describes the files under <code>vogon/</code>, including the state file.</p>
+<h2 id="scope-and-systems">Scope and systems<a class="headerlink" href="#scope-and-systems" title="Permanent link">&para;</a></h2>
+<p>Version 0.1 is developed and tested against one stack: a host project in
+Python with pytest, GitHub as repository host, Jira as tracker, Xray as test
+manager, and Claude Code. No abstraction layer is written before a second
+implementation exists (<code>DEC-004</code>).</p>
+<p>The host project's validation plan chooses its products, so a skill names
+each external system by its role: repository host, tracker, test manager,
+document system, meetings, mail and chat. It reaches a role only through the
+system <code>vogon/project/vogon.yaml</code> names for it. The rules are in
+<code>common.md</code> "Systems by role".</p>
+<p>VOGON never moves an item into a state that records approval or signature,
+because a signature requires the signer's own credentials (<code>CON-001</code>).
+<code>common.md</code> "Actions VOGON never takes" lists these actions and the two
+exceptions. An approval recorded by <code>vogon approve</code> carries the approver's
+git identity, which the approver does not re-enter. It is therefore not an
+electronic signature under 21 CFR Part 11. A tracker or test manager
+transition is an electronic signature only when the workflow makes the
+approver re-enter their credentials. <code>vogon:init</code> reports each approval
 transition that does not.</p>
-<p>VOGON never decides an approval and never signs (<code>CON-001</code>). A change to a live
-system is approved in the host project's own change control system, and its
-requirements, tests and documents go through the same skills (<code>DEC-026</code>).</p>
+<p>A change to a live system is recorded and approved in the host project's own
+change control system. VOGON writes no change record and no impact
+assessment, and the change's requirements, tests, code and release documents
+go through the same skills as the first release (<code>DEC-026</code>).</p>
 <h2 id="skills">Skills<a class="headerlink" href="#skills" title="Permanent link">&para;</a></h2>
 <p>One skill per task a person starts. Each runs in the main Claude Code session.</p>
 <table>
@@ -1066,7 +1017,7 @@ requirements, tests and documents go through the same skills (<code>DEC-026</cod
 <td>1</td>
 <td>Configure</td>
 <td><code>vogon:init</code></td>
-<td><code>vogon/project/vogon.yaml</code>, the validation plan in <code>vogon/sources/</code>, the <code>.gitignore</code> and <code>conftest.py</code> lines</td>
+<td><code>vogon/project/vogon.yaml</code>, the validation plan in <code>vogon/sources/</code>, the <code>.gitignore</code> lines, the <code>conftest.py</code> lines and the marker registration</td>
 <td>A person, on the pull request</td>
 </tr>
 <tr>
@@ -1080,7 +1031,7 @@ requirements, tests and documents go through the same skills (<code>DEC-026</cod
 <td>3</td>
 <td>Draft and check the records</td>
 <td><code>vogon:requirements</code></td>
-<td>Requirements with acceptance criteria and risk fields; facts, constraints and decisions</td>
+<td>Requirements with acceptance criteria and risk fields; facts, constraints and decisions; withdrawals and supersessions</td>
 <td></td>
 </tr>
 <tr>
@@ -1095,7 +1046,7 @@ requirements, tests and documents go through the same skills (<code>DEC-026</cod
 <td>Approve the requirements</td>
 <td><code>vogon:approve</code>, or the tracker</td>
 <td>An <code>approved</code> entry in <code>REQ-*.json</code>, or the tracker's approval transition where a tracker holds approvals</td>
-<td>Product Owner</td>
+<td>The requirement approver</td>
 </tr>
 <tr>
 <td>6</td>
@@ -1108,15 +1059,15 @@ requirements, tests and documents go through the same skills (<code>DEC-026</cod
 <td>7</td>
 <td>Choose a requirement</td>
 <td><code>vogon:next</code></td>
-<td>The ready and blocked lists; the tracker item assigned</td>
+<td>The ready and not-ready lists; the tracker item assigned</td>
 <td></td>
 </tr>
 <tr>
 <td>8</td>
 <td>Plan</td>
 <td><code>vogon:implement</code></td>
-<td>A checked plan, and a <code>planned</code> entry once approved</td>
-<td>A developer</td>
+<td>A checked plan, and a <code>planned</code> entry</td>
+<td>A developer, when asked</td>
 </tr>
 <tr>
 <td>9</td>
@@ -1136,147 +1087,138 @@ requirements, tests and documents go through the same skills (<code>DEC-026</cod
 </table>
 <p>Different requirements are at different steps at the same time. Step 6 comes
 before step 7 or after step 9, as <code>tests.md</code> states; a project that needs no
-test procedures skips it. A change to an approved requirement appends a
+test procedures skips it. A change to a requirement after step 4 appends a
 <code>changed</code> entry and returns the requirement to step 5.</p>
-<p>The default checklists are in <code>src/vogon/skills/requirements/references/</code>,
-<code>src/vogon/skills/tests/references/</code> and <code>src/vogon/skills/implement/references/</code>.
-A project replaces one with a file of the same name in
-<code>vogon/project/checklists/</code>.</p>
+<p>No step waits for an approval (principle 3). <code>vogon:tests</code> and
+<code>vogon:implement</code> work on a requirement that is not approved and report the
+missing approval (<code>lifecycle.md</code> "Missing approval"). <code>vogon:next</code> lists such
+a requirement as not ready, with the reason.</p>
+<p>The default checklists are in the <code>references/</code> directory of the
+<code>requirements</code>, <code>tests</code> and <code>implement</code> skills. Each is a separate file so
+that a project replaces one with a file of the same name in
+<code>vogon/project/checklists/</code> (<code>loop.md</code> "Project checklists").</p>
 <h2 id="start-of-a-skill">Start of a skill<a class="headerlink" href="#start-of-a-skill" title="Permanent link">&para;</a></h2>
-<p>Tasks happen weeks apart, by different developers, in any order, so a skill
-does not assume an earlier task ran. Every skill except <code>vogon:init</code> first
-reads the process files it needs, deriving any that is missing or outdated,
-then the requirements it concerns, their state files and the sources those
-link, and reports every difference. When a task was skipped, the skill does
-what still applies and reports the gap, such as code merged with no plan
+<p>Tasks happen weeks apart, by different developers, in any order, so a skill does
+not assume an earlier task ran. It reads the process files, requirements and
+state files it needs, does the steps that do not depend on a skipped task, and
+reports each skipped task and each difference, such as code merged with no plan
 (<code>common.md</code> "Start of every skill").</p>
-<h2 id="the-loop">The loop<a class="headerlink" href="#the-loop" title="Permanent link">&para;</a></h2>
-<p>Every skill that produces work runs it in a loop of rounds. The main agent, the
-session the skill runs in, coordinates and never writes the work. Its context
-holds the task, file paths and summaries of sub-agent logs, so it stays small
-over a long task. Sub-agents write and evaluate in their own contexts, each
-given every input it needs; independent units run in parallel. An evaluator
-never changes the work. The main agent judges the result and can overrule an
-evaluator, because it sees every evaluator's findings and the whole task, and
-each evaluator takes one perspective.</p>
-<p>The finding levels, the limit of 5 rounds and the log formats are in
-<code>common.md</code> "The loop"; each <code>SKILL.md</code> lists its writers and evaluators in its
-"Loops" table.</p>
+<h2 id="the-review-loop">The review loop<a class="headerlink" href="#the-review-loop" title="Permanent link">&para;</a></h2>
+<p>Every output a skill produces is checked by an evaluating sub-agent other than
+the agent that wrote it (principle 6). The main agent, the session the skill
+runs in, coordinates. Sub-agents write and evaluate in their own contexts,
+each given every input it needs, so the main agent's context holds only the
+task, file paths and summaries of logs and stays small over a long task. The
+main agent may write an output itself, and a different agent checks it before
+the next push or external write. An evaluator never changes the work. The
+main agent judges the result and can overrule an evaluator. Each evaluator
+takes one perspective, and the main agent sees every evaluator's findings and
+the whole task.</p>
+<p>The roles, the finding levels, the round limit and the log formats are in
+<code>src/vogon/references/loop.md</code>. Each <code>SKILL.md</code> lists its writers and
+evaluators in its "Loops" table.</p>
 <h2 id="stops-for-a-person">Stops for a person<a class="headerlink" href="#stops-for-a-person" title="Permanent link">&para;</a></h2>
-<p>A skill stops for an approval, a plan review, a finding that needs a choice, a
-gap in the validation plan, the tracker and test manager names read from example items, a
-developer's instruction during coding, and a missing input. Nothing else waits
-for confirmation. <code>common.md</code> "Stops for a person" states who each goes to.</p>
+<p>A skill stops only for the cases <code>common.md</code> "Stops for a person" lists.
+Nothing else waits for confirmation. A missing approval is not a stop: the
+skill reports it and continues, and only a person approves (principles 3 and
+4).</p>
 <h2 id="project-configuration-and-process-files">Project configuration and process files<a class="headerlink" href="#project-configuration-and-process-files" title="Permanent link">&para;</a></h2>
-<p><code>vogon/project/vogon.yaml</code> states the system for each role, the holders of each
-approval role, the modules and the options. <code>vogon:init</code> writes it from
-<code>src/vogon/templates/vogon.yaml</code>; it is YAML because the scripts read it.</p>
-<p>The validation plan is filed in <code>vogon/sources/</code> as the original and a markdown
-copy (<a href="sources.html">Sources</a>). It stays the host project's controlled document,
-and VOGON never edits either copy. The process files in <code>vogon/project/</code> are
-VOGON's reading of the plan: <code>tracking.md</code> (tracker and test manager item
-types, fields, approval transitions), <code>requirements.md</code> (requirement form, risk
-method, approver and timing), <code>tests.md</code> (test procedures, test environment,
-how the suite runs), <code>traceability.md</code>, <code>documents.md</code> (the documents VOGON
-drafts) and <code>release.md</code>.</p>
-<p>A skill derives a process file when it first needs it, and again when a newer
-plan is held. Each statement cites its plan section; the developer answers a
-gap, and the answer is recorded with their name and date. The procedure is in
-<code>src/vogon/references/process-files.md</code>, the topics in <code>src/vogon/templates/</code>.</p>
-<h2 id="records">Records<a class="headerlink" href="#records" title="Permanent link">&para;</a></h2>
+<p><code>vogon/project/vogon.yaml</code> names the system for each role, the holders of
+each approval role, the modules and the options. <code>vogon:init</code> writes it from
+<code>src/vogon/templates/vogon.yaml</code>. It is YAML because the commands read it.</p>
+<p>The validation plan is filed in <code>vogon/sources/</code> as the original and a
+markdown copy (<a href="sources.html">Sources</a>). It stays the host project's controlled
+document, and VOGON never edits either copy. The process files in
+<code>vogon/project/</code> are VOGON's reading of the plan: <code>tracking.md</code>,
+<code>requirements.md</code>, <code>tests.md</code>, <code>traceability.md</code>, <code>documents.md</code> and
+<code>release.md</code>. Their topics are in their templates in <code>src/vogon/templates/</code>.</p>
+<p>A skill derives a process file when it first needs it, and again when it is
+outdated (<code>process-files.md</code> "When to derive a file"). Each statement cites the
+plan section it rests on, so a reviewer can check it against the plan. A topic
+the plan does not state is asked of the developer, and the answer is recorded
+with their name and date. The procedure is in
+<code>src/vogon/references/process-files.md</code>.</p>
+<h2 id="sources-and-records">Sources and records<a class="headerlink" href="#sources-and-records" title="Permanent link">&para;</a></h2>
 <p>Records are markdown files under <code>vogon/</code> in the host repository
-(<a href="records.html">Records</a>). Each takes its id from <code>vogon id</code>, never from choosing
-a number. Two branches can take the same id before either pushes, so a skill
-runs <code>vogon id --check</code> and renumbers before it opens a pull request.</p>
-<p>Transcripts, mail and chat contain personal data, and some countries restrict
-keeping meeting transcripts, so they are downloaded to the gitignored
-<code>vogon/tmp/</code> and deleted after use; only a checked summary is committed to
-<code>vogon/sources/</code>. Attached and shared files are kept as the original and a
-markdown copy, and a long file is read only in a sub-agent's context. A
-requirement whose only source is code describes current behaviour, defects
-included, so the developer confirms it is intended
-(<code>src/vogon/skills/requirements/SKILL.md</code>, step 8).</p>
-<h2 id="approval-of-requirements">Approval of requirements<a class="headerlink" href="#approval-of-requirements" title="Permanent link">&para;</a></h2>
-<p>The Product Owner approves requirements; <code>vogon.yaml</code> lists the holders under
-<code>product_owner</code>. Where no tracker holds approvals, <code>vogon approve</code> records the
-approval on the Product Owner's explicit instruction. Where a tracker holds
-approvals, the Product Owner approves with the tracker's transition, and the
-tracker is the only record of the approval: a skill reads it from the item and
-nothing copies it into the repository. A skill reports requirement text in the
-tracker that differs from <code>REQ-*.md</code>, and the developer resolves it as a change
-to the requirement.</p>
-<p>Where no tracker holds approvals, a requirement is approved when <code>REQ-*.json</code>
-on the default branch has an <code>approved</code> entry after its latest <code>changed</code>
-entry. Where a tracker holds approvals, it is approved when its item is in the
-approved state through a transition dated after the latest <code>changed</code> entry. A
-skill changes an approved
-requirement only with the developer's agreement, and appends a <code>changed</code> entry,
-so it needs approval again (<code>common.md</code> "Approval of a requirement").</p>
-<h2 id="state-of-a-requirement">State of a requirement<a class="headerlink" href="#state-of-a-requirement" title="Permanent link">&para;</a></h2>
-<p><code>REQ-&lt;MODULE&gt;-&lt;NUMBER&gt;.json</code> records the steps done to the requirement
-(<a href="records.html#state-file">Records</a>; the entries are defined in
-<code>src/vogon/references/common.md</code> "State-file entries"). An entry other than <code>approved</code>
-points at the pull request, commit or tracker item that holds the step. That
-source is the evidence: a skill checks it before acting on an entry and reports
-a difference. An approval is decided by the state file on the default branch
-alone.</p>
+(<a href="records.html">Records</a>), drafted from held documents and checked summaries
+(<a href="sources.html">Sources</a>). A requirement whose only source is code describes
+current behaviour, defects included, so the developer confirms that the
+behaviour is intended (<code>src/vogon/skills/requirements/SKILL.md</code>, step 8).</p>
+<h2 id="requirement-lifecycle">Requirement lifecycle<a class="headerlink" href="#requirement-lifecycle" title="Permanent link">&para;</a></h2>
+<p>The rules for approval, change, withdrawal and supersession are in
+<code>src/vogon/references/lifecycle.md</code>.</p>
+<p>The requirement approver is the role named in the "Approval" section of
+<code>requirements.md</code>, because the validation plan sets who approves (principle
+2). When that section names no role, the requirement approver is the Product
+Owner.</p>
+<p>A requirement is approved in one of two places. Where <code>tracking.md</code> states an
+approval transition for the requirement item type, the tracker holds
+approvals: the requirement approver approves with that transition, the
+tracker item is the only record of the approval, and nothing copies it into
+the repository. Otherwise <code>vogon approve</code> records the approval in the state
+file, on the requirement approver's explicit instruction in their own
+session.</p>
+<p>A skill changes an approved requirement only with the developer's agreement.
+The change appends a <code>changed</code> entry, so the requirement needs approval
+again. A withdrawal or a supersession is such a change, made with
+<code>vogon:requirements</code>, and has no step of its own. The skill reports the tests,
+procedures, plans and records that name the old id and changes none of them,
+because changing them is work for <code>vogon:implement</code> and <code>vogon:tests</code>.</p>
 <h2 id="risk">Risk<a class="headerlink" href="#risk" title="Permanent link">&para;</a></h2>
 <p>Each requirement carries <code>gxp_impact</code> and <code>risk</code>, each with its reason, from
-the moment it is drafted, so a reader can challenge a value. The values and
-method are in <code>src/vogon/references/records.md</code>, overridden by
-<code>requirements.md</code> where the validation plan states them; <code>requirements.md</code> also
-states who approves them and when. Project-level risk documents the plan
-lists, such as a risk log or a data integrity risk assessment, are separate
-documents, approved by the roles the plan names.</p>
+the moment it is drafted, so a reader can challenge a value. The default
+values and method are in <code>src/vogon/references/records.md</code> "Requirement", and
+<code>requirements.md</code> replaces them where the validation plan states its own.
+Project-level risk documents the plan lists, such as a risk log or a data
+integrity risk assessment, are separate documents, approved by the roles the
+plan names.</p>
 <h2 id="tests">Tests<a class="headerlink" href="#tests" title="Permanent link">&para;</a></h2>
-<p>The pytest code is the test case. Each test names the requirements it verifies
-in <code>@pytest.mark.req("REQ-PRN-12")</code>, and, where procedures exist, its procedure
-in <code>@pytest.mark.procedure("&lt;id&gt;")</code>. The link is on the test because whoever
-changes a test edits its marker in the same edit (<code>DEC-006</code>). Requirement ids
-are not written in implementation code; commits name them. A test with no
-marker is allowed and is not evidence. VOGON writes tests from the
-requirement's intent, never from what the code does. It writes no mocks unless
-the project authorizes them, because needing a mock indicates a problem in the
-design.</p>
+<p>The pytest code is the test case. Each test names the requirements it
+verifies in <code>@pytest.mark.req</code>, and where procedures exist, its procedures in
+<code>@pytest.mark.procedure</code>. The link is on the test because whoever changes a
+test edits its marker in the same edit (<code>DEC-006</code>). The marker rules are in
+<code>src/vogon/references/markers.md</code>. A test with no <code>req</code> marker is allowed and
+verifies no requirement in the matrix.</p>
+<p>VOGON writes tests from the requirement's intent. An expected value is worked
+out from the requirement and its sources, because a value read off the code
+makes the test that asserts it unable to fail (<code>records.md</code> "Expected
+values"). A test uses a mock only where <code>tests.md</code> "Unit tests and formal
+tests" allows it.</p>
 <p>A test procedure is a document of numbered steps, each with its expected
 result. <code>tests.md</code> states whether the project needs procedures, whether they
 are written before development or generated from the tests, and who approves
 them. <code>vogon:tests</code> imposes no order of its own.</p>
 <h2 id="code-from-requirements">Code from requirements<a class="headerlink" href="#code-from-requirements" title="Permanent link">&para;</a></h2>
 <p><code>vogon:implement</code> has a sub-agent write a plan, <code>vogon/plans/plan_&lt;slug&gt;.md</code>,
-in the format of <code>src/vogon/skills/implement/references/plan-format.md</code>. No
-code is written before a developer approves the plan; the approval is recorded
-in the <code>planned</code> entry of each requirement's state file. The main agent then
-has each part written by its own sub-agent and checked against the test
-checklist and by a code reviewer that runs Claude Code's <code>code-review</code> skill
-and then the code checklist. VOGON has no code reviewer of its own. A
-developer's instruction that changes the plan sends it back for approval. All
-tests pass before the pull request is opened.</p>
+in the format of <code>src/vogon/skills/implement/references/plan-format.md</code>. The
+developers are asked to approve the plan before code is written. A developer
+may tell the skill to continue without approval; the <code>planned</code> entry then has
+no <code>approved_by</code>, and the pull request reports it. Each part of the plan is
+written by its own sub-agent and checked by a test checker and by a code
+reviewer that runs Claude Code's <code>code-review</code> skill and then the code
+checklist. VOGON has no code reviewer of its own.</p>
 <h2 id="traceability">Traceability<a class="headerlink" href="#traceability" title="Permanent link">&para;</a></h2>
 <p><code>vogon:init</code> adds lines to the host <code>conftest.py</code> that copy each test's <code>req</code>
-and <code>procedure</code> marker ids into the JUnit XML properties
-(<code>src/vogon/references/conftest.md</code>). A test run records the commit it tested
-as the suite name, and <code>vogon:release</code> reports a suite name that is not the
-release commit. Where and how the suite runs is the project's choice; a pytest
-run that names the suite this way is:</p>
+and <code>procedure</code> marker ids into the JUnit XML properties (<code>markers.md</code>).
+<code>tests.md</code> states how a test run is tied to the commit it tested. By default the
+suite name is the full commit hash. <code>vogon:release</code> reports a run that does not
+identify the release commit. Where and how the suite runs is the project's
+choice. A pytest run that names the suite this way is:</p>
 <pre><code>pytest --junitxml=results.xml -o junit_suite_name=$(git rev-parse HEAD)
 </code></pre>
-<p>A run on a working tree with uncommitted changes is reported, because the
-commit then does not identify the code tested.</p>
-<p>Where a test manager exists, VOGON uploads the JUnit XML unchanged and the test
-manager produces the traceability report (<code>DEC-003</code>). Where none exists, <code>vogon
-trace</code> joins the markers and results of one commit into the matrix, including
-every requirement with no test. It manages no test cases and records no
-approvals. The matrix is evidence, so it comes from this
-join or from the test manager, never from a model.</p>
+<p>Where a test manager is configured, VOGON uploads the JUnit XML unchanged and
+the test manager produces the traceability report, because it is a tool with
+its own validation (<code>DEC-003</code>). Where none is configured, <code>vogon trace</code> joins
+the markers and results of one commit into the matrix, including every
+requirement with no test. The matrix is evidence, so it comes from the test
+manager or from <code>vogon trace</code>, never from a model (principle 5).</p>
 <h2 id="release">Release<a class="headerlink" href="#release" title="Permanent link">&para;</a></h2>
 <p><code>vogon:release</code> takes a release commit, a release name and the JUnit XML of a
 test run on that commit. Sub-agents draft each document <code>documents.md</code> lists
-from a read-only checkout of that commit, citing what each statement rests on,
-and evaluators check them. The skill produces the matrix, files documents,
-matrix and results, reads the filed copies back and tells each approver what
-waits. A plan whose requirements all have a <code>released</code> entry moves to
-<code>vogon/plans/done/</code>.</p>
+from a read-only checkout of that commit, so every statement describes the
+code released, and each statement cites what it rests on. The skill files the
+documents, the matrix and the results, and tells each approver what waits for
+them. The steps are in <code>src/vogon/skills/release/SKILL.md</code>.</p>
 
 
 

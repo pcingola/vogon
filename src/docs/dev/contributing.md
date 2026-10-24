@@ -9,7 +9,7 @@
 | `src/docs/` | Documentation source, markdown. |
 | `src/html/` | Marketing page source: `index.html`, `img/`. |
 | `docs/` | Build output. Rendered HTML, served by GitHub Pages. Never edit. |
-| `vogon/` | VOGON's own records: requirements, facts, constraints, decisions. |
+| `vogon/` | VOGON's own constraints and decisions, in the record format of [Records](records.md). |
 | `tmp/` | Working notes and plans. Gitignored, local only. |
 | `assets/` | Brand originals. Never published. |
 | `.githooks/` | The pre-commit hook that rebuilds `docs/`. |
@@ -42,9 +42,9 @@ link fail it. A hand edit inside `docs/`
 is overwritten by the next build.
 
 mkdocs and mkdocs-material are in the `dev` dependency group, run through
-`uv run --group dev`, and `uv.lock` fixes their versions. `uvx mkdocs`
-resolves a fresh version each time, and the rendered output is committed, so
-it is not used.
+`uv run --group dev`, and `uv.lock` fixes their versions. `uvx mkdocs` is not
+used: it resolves a fresh version each time, and the rendered output is
+committed.
 
 ## Publishing
 
@@ -73,8 +73,8 @@ The repository is a Claude Code plugin marketplace.
 ```
 src/vogon/
 ├── .claude-plugin/plugin.json   name, version, description
-├── references/                  rules shared by the skills
-├── templates/                   templates of the host project's process files
+├── references/                  rules shared by the skills, one file per topic
+├── templates/                   templates of vogon.yaml and the process files
 └── skills/
     ├── init/                    SKILL.md
     ├── requirements/            SKILL.md, references/
