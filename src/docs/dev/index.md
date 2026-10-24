@@ -18,7 +18,6 @@ Documentation for people working on VOGON itself.
 - [Vocabulary](vocabulary.md)
 - [Records](records.md)
 - [Sources](sources.md)
-- [Development process](process/index.md)
 - [Marketing page](site.md)
 - [Contributing](contributing.md)
 

@@ -731,287 +731,6 @@
   
   
   
-    
-    
-    
-    
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Development process
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Development process
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="process/index.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Steps of the GxP process
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="process/setup.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Setting up a project
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="process/requirements.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Requirements from sources
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="process/approval.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Approving requirements
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="process/test_procedures.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Test procedures
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="process/planning.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Planning
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="process/implementation.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Code, tests and documentation
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="process/documents.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Release documents
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="site.html" class="md-nav__link">
         
@@ -1268,7 +987,7 @@
 
 <h1 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h1>
 <p>VOGON is a Claude Code plugin installed into a host project: the repository of
-a regulated (GxP) software project. It carries out the <a href="process/index.html">steps of the GxP
+a regulated (GxP) software project. It carries out the <a href="#skills">steps of the GxP
 process</a> that do not need a person. The plugin is a set of
 skills, the sub-agents they start, and scripts for the work that must give the
 same result every time: <code>vogon id</code> allocates record ids, <code>vogon approve</code>
@@ -1335,49 +1054,90 @@ requirements, tests and documents go through the same skills (<code>DEC-026</cod
 <table>
 <thead>
 <tr>
+<th>#</th>
+<th>Step</th>
 <th>Skill</th>
-<th>Does</th>
-<th>Process page</th>
+<th>Produces</th>
+<th>Approved by</th>
 </tr>
 </thead>
 <tbody>
 <tr>
+<td>1</td>
+<td>Configure</td>
 <td><code>vogon:init</code></td>
-<td>Writes <code>vogon.yaml</code>, files the validation plan, adds the <code>.gitignore</code> and <code>conftest.py</code> lines</td>
-<td><a href="process/setup.html">Setup</a></td>
+<td><code>vogon/project/vogon.yaml</code>, the validation plan in <code>vogon/sources/</code>, the <code>.gitignore</code> and <code>conftest.py</code> lines</td>
+<td>A person, on the pull request</td>
 </tr>
 <tr>
+<td>2</td>
+<td>File the sources</td>
 <td><code>vogon:requirements</code></td>
-<td>Drafts and checks records from meetings, mail, chat, documents and code; creates tracker items where a tracker is configured</td>
-<td><a href="process/requirements.html">Requirements from sources</a></td>
+<td>Checked summaries of meetings, mail and chat; filed documents with their markdown copies</td>
+<td></td>
 </tr>
 <tr>
-<td><code>vogon:approve</code></td>
-<td>Records the Product Owner's approval of the requirements they name, where no tracker holds approvals</td>
-<td><a href="process/approval.html">Approving requirements</a></td>
+<td>3</td>
+<td>Draft and check the records</td>
+<td><code>vogon:requirements</code></td>
+<td>Requirements with acceptance criteria and risk fields; facts, constraints and decisions</td>
+<td></td>
 </tr>
 <tr>
-<td><code>vogon:next</code></td>
-<td>Lists ready and blocked requirements, assigns the chosen one in the tracker</td>
-<td><a href="process/planning.html">Planning</a></td>
+<td>4</td>
+<td>Send the requirements for approval</td>
+<td><code>vogon:requirements</code></td>
+<td>The pull request with <code>REQ-*.md</code> and <code>REQ-*.json</code>; tracker items where a tracker is configured</td>
+<td></td>
 </tr>
 <tr>
+<td>5</td>
+<td>Approve the requirements</td>
+<td><code>vogon:approve</code>, or the tracker</td>
+<td>An <code>approved</code> entry in <code>REQ-*.json</code>, or the tracker's approval transition where a tracker holds approvals</td>
+<td>Product Owner</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Write the test procedures</td>
 <td><code>vogon:tests</code></td>
-<td>Writes the test procedures of approved requirements, as <code>tests.md</code> states</td>
-<td><a href="process/test_procedures.html">Test procedures</a></td>
+<td>Test procedures, where <code>tests.md</code> requires them</td>
+<td>The roles <code>tests.md</code> names</td>
 </tr>
 <tr>
+<td>7</td>
+<td>Choose a requirement</td>
+<td><code>vogon:next</code></td>
+<td>The ready and blocked lists; the tracker item assigned</td>
+<td></td>
+</tr>
+<tr>
+<td>8</td>
+<td>Plan</td>
 <td><code>vogon:implement</code></td>
-<td>Writes the plan, then the code, tests and documentation</td>
-<td><a href="process/planning.html">Planning</a>, <a href="process/implementation.html">Code, tests and documentation</a></td>
+<td>A checked plan, and a <code>planned</code> entry once approved</td>
+<td>A developer</td>
 </tr>
 <tr>
+<td>9</td>
+<td>Write the code, tests and documentation</td>
+<td><code>vogon:implement</code></td>
+<td>Checked code, tests and documentation, all tests passing, in one pull request</td>
+<td>A person, on the repository host</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Release</td>
 <td><code>vogon:release</code></td>
-<td>Drafts the validation documents of a release commit, produces the matrix, files the evidence</td>
-<td><a href="process/documents.html">Release documents</a></td>
+<td>The documents <code>documents.md</code> lists, the traceability matrix and the results, filed</td>
+<td>The roles <code>documents.md</code> names</td>
 </tr>
 </tbody>
 </table>
+<p>Different requirements are at different steps at the same time. Step 6 comes
+before step 7 or after step 9, as <code>tests.md</code> states; a project that needs no
+test procedures skips it. A change to an approved requirement appends a
+<code>changed</code> entry and returns the requirement to step 5.</p>
 <p>The default checklists are in <code>src/vogon/skills/requirements/references/</code>,
 <code>src/vogon/skills/tests/references/</code> and <code>src/vogon/skills/implement/references/</code>.
 A project replaces one with a file of the same name in
@@ -1444,8 +1204,7 @@ approvals, the Product Owner approves with the tracker's transition, and the
 tracker is the only record of the approval: a skill reads it from the item and
 nothing copies it into the repository. A skill reports requirement text in the
 tracker that differs from <code>REQ-*.md</code>, and the developer resolves it as a change
-to the requirement. The procedure is on
-<a href="process/approval.html">Approving requirements</a>.</p>
+to the requirement.</p>
 <p>Where no tracker holds approvals, a requirement is approved when <code>REQ-*.json</code>
 on the default branch has an <code>approved</code> entry after its latest <code>changed</code>
 entry. Where a tracker holds approvals, it is approved when its item is in the

@@ -28,15 +28,6 @@ nav:
       - Vocabulary: dev/vocabulary.md
       - Records: dev/records.md
       - Sources: dev/sources.md
-      - Development process:
-          - dev/process/index.md
-          - Setting up a project: dev/process/setup.md
-          - Requirements from sources: dev/process/requirements.md
-          - Approving requirements: dev/process/approval.md
-          - Test procedures: dev/process/test_procedures.md
-          - Planning: dev/process/planning.md
-          - Code, tests and documentation: dev/process/implementation.md
-          - Release documents: dev/process/documents.md
       - Marketing page: dev/site.md
       - Contributing: dev/contributing.md
 

@@ -49,4 +49,4 @@ Claude Code keeps the downloaded plugin files in a cache under
 ## Set up a host project
 
 Ask Claude Code to set up VOGON. It runs the `vogon:init` skill.
-[Setting up a project](../dev/process/setup.md) describes what setup does.
+[Architecture](../dev/architecture.md#skills) describes what setup does.

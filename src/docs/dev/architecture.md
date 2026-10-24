@@ -2,7 +2,7 @@
 
 VOGON is a Claude Code plugin installed into a host project: the repository of
 a regulated (GxP) software project. It carries out the [steps of the GxP
-process](process/index.md) that do not need a person. The plugin is a set of
+process](#skills) that do not need a person. The plugin is a set of
 skills, the sub-agents they start, and scripts for the work that must give the
 same result every time: `vogon id` allocates record ids, `vogon approve`
 records an approval, and `vogon trace` builds the traceability matrix. All
@@ -45,15 +45,23 @@ requirements, tests and documents go through the same skills (`DEC-026`).
 
 One skill per task a person starts. Each runs in the main Claude Code session.
 
-| Skill | Does | Process page |
-| --- | --- | --- |
-| `vogon:init` | Writes `vogon.yaml`, files the validation plan, adds the `.gitignore` and `conftest.py` lines | [Setup](process/setup.md) |
-| `vogon:requirements` | Drafts and checks records from meetings, mail, chat, documents and code; creates tracker items where a tracker is configured | [Requirements from sources](process/requirements.md) |
-| `vogon:approve` | Records the Product Owner's approval of the requirements they name, where no tracker holds approvals | [Approving requirements](process/approval.md) |
-| `vogon:next` | Lists ready and blocked requirements, assigns the chosen one in the tracker | [Planning](process/planning.md) |
-| `vogon:tests` | Writes the test procedures of approved requirements, as `tests.md` states | [Test procedures](process/test_procedures.md) |
-| `vogon:implement` | Writes the plan, then the code, tests and documentation | [Planning](process/planning.md), [Code, tests and documentation](process/implementation.md) |
-| `vogon:release` | Drafts the validation documents of a release commit, produces the matrix, files the evidence | [Release documents](process/documents.md) |
+| # | Step | Skill | Produces | Approved by |
+| --- | --- | --- | --- | --- |
+| 1 | Configure | `vogon:init` | `vogon/project/vogon.yaml`, the validation plan in `vogon/sources/`, the `.gitignore` and `conftest.py` lines | A person, on the pull request |
+| 2 | File the sources | `vogon:requirements` | Checked summaries of meetings, mail and chat; filed documents with their markdown copies | |
+| 3 | Draft and check the records | `vogon:requirements` | Requirements with acceptance criteria and risk fields; facts, constraints and decisions | |
+| 4 | Send the requirements for approval | `vogon:requirements` | The pull request with `REQ-*.md` and `REQ-*.json`; tracker items where a tracker is configured | |
+| 5 | Approve the requirements | `vogon:approve`, or the tracker | An `approved` entry in `REQ-*.json`, or the tracker's approval transition where a tracker holds approvals | Product Owner |
+| 6 | Write the test procedures | `vogon:tests` | Test procedures, where `tests.md` requires them | The roles `tests.md` names |
+| 7 | Choose a requirement | `vogon:next` | The ready and blocked lists; the tracker item assigned | |
+| 8 | Plan | `vogon:implement` | A checked plan, and a `planned` entry once approved | A developer |
+| 9 | Write the code, tests and documentation | `vogon:implement` | Checked code, tests and documentation, all tests passing, in one pull request | A person, on the repository host |
+| 10 | Release | `vogon:release` | The documents `documents.md` lists, the traceability matrix and the results, filed | The roles `documents.md` names |
+
+Different requirements are at different steps at the same time. Step 6 comes
+before step 7 or after step 9, as `tests.md` states; a project that needs no
+test procedures skips it. A change to an approved requirement appends a
+`changed` entry and returns the requirement to step 5.
 
 The default checklists are in `src/vogon/skills/requirements/references/`,
 `src/vogon/skills/tests/references/` and `src/vogon/skills/implement/references/`.
@@ -137,8 +145,7 @@ approvals, the Product Owner approves with the tracker's transition, and the
 tracker is the only record of the approval: a skill reads it from the item and
 nothing copies it into the repository. A skill reports requirement text in the
 tracker that differs from `REQ-*.md`, and the developer resolves it as a change
-to the requirement. The procedure is on
-[Approving requirements](process/approval.md).
+to the requirement.
 
 Where no tracker holds approvals, a requirement is approved when `REQ-*.json`
 on the default branch has an `approved` entry after its latest `changed`
