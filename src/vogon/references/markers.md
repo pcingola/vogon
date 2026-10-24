@@ -10,10 +10,9 @@
 
 ## Changes in the host project
 
-The changes below copy the marker ids into the JUnit XML properties.
-`vogon:init` makes each change the host project lacks and skips one whose
-lines are present. Every other skill that writes or reads markers reports
-each missing change and tells the developer to run `vogon:init`.
+`vogon:init` makes each change the host project lacks. Every other skill that
+writes or reads markers reports each missing change and tells the developer
+to run `vogon:init`.
 
 ### conftest.py
 
@@ -29,16 +28,12 @@ def pytest_collection_modifyitems(items):
                     item.user_properties.append((name, value))
 ```
 
-If that `conftest.py` already defines `pytest_collection_modifyitems`, do not
-define it twice: add the `for item in items:` loop at the end of the existing
-function, and add `items` to its parameters if it lacks it.
+If that `conftest.py` already defines `pytest_collection_modifyitems`, add the
+`for item in items:` loop at the end of the existing function, and add `items`
+to its parameters if it lacks it.
 
 ### Marker registration
 
-The pytest configuration is `pyproject.toml`, `pytest.ini`, `setup.cfg` or
-`tox.ini`. Add to its `markers` list `req: requirement ids the test verifies`
-and `procedure: test procedure ids the test follows` when any of these holds:
-
-- `addopts` contains `--strict-markers`, `--strict` or `-W error`;
-- `strict_markers` or `strict` is set true;
-- `filterwarnings` contains `error`.
+Where the pytest configuration requires markers to be registered, add to its
+`markers` list `req: requirement ids the test verifies` and
+`procedure: test procedure ids the test follows`.

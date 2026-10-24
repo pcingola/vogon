@@ -3,8 +3,6 @@
 # vogon:init writes this file from this template. It holds configuration
 # only. How the project works comes from its validation plan, through the
 # process files in vogon/project/*.md.
-#
-# Remove a key that does not apply. Do not write a placeholder such as N/A.
 
 # The system that fills each role, by product name. Each role is optional:
 # omit a role the project does not have.
@@ -18,9 +16,9 @@ systems:
   # chat: <product>
 
 # The holders of each approval role, under the plan's role names, as git
-# identities "Name <email>". The role that approves requirements is named in
-# vogon/project/requirements.md "Approval"; when it names none, it is
-# product_owner.
+# identities "Name <email>". vogon/project/requirements.md "Approval" names
+# the requirement approver. When that section names no role, the requirement
+# approver is product_owner.
 roles:
   product_owner:
     - Alice Smith <alice@example.com>
@@ -33,8 +31,3 @@ roles:
 # name only a listed module. A project without modules omits the key.
 modules:
   - PRN
-
-# Project options.
-options:
-  # Commit the loop logs in vogon/logs/.
-  commit_logs: false

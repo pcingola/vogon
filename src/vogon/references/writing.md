@@ -1,8 +1,7 @@
 # Writing standard (every step that writes prose)
 
 Applies to records, plans, documents, summaries, test names and docstrings,
-commit messages, pull request descriptions and every tracker field. Each item
-below is a rule the text meets or fails.
+commit messages, pull request descriptions and every tracker field.
 
 ## The reader
 
@@ -26,10 +25,12 @@ act on it without asking a question.
       from an input file given to the step: a record, a held document, the
       plan, a test, a test result, or code the step lists as an input.
       That holds for definitions, reasons and consequences as well.
-- [ ] A statement no input supports is not written. A cited passage says what
-      the text says it does.
+- [ ] A cited passage says what the text says it does.
 - [ ] An unsupported statement found in a revision is fixed by deleting it or
       by citing the input that states it, never by adding a new explanation.
+
+## Style
+
 - [ ] No sentence that could be deleted without changing what the reader
       understands.
 - [ ] The weight of a fact is left to the reader. No word or phrase from the

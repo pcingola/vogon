@@ -71,20 +71,12 @@ its `source` documents in the order of this table, strongest first.
       committed. The recording is not downloaded.
 - [ ] Each meeting, mail thread or chat channel is held as one summary, with
       `kind: summary` and `authority: informal`.
-- [ ] Every statement of the summary is supported by the downloaded source. A
-      statement the source does not make is a defect in the summary.
-- [ ] The summary keeps every requirement, fact, constraint, decision and
-      unanswered question in the source that concerns the requirements, with
-      the values given and who stated each.
+- [ ] The summary keeps each requirement, fact, constraint, decision and
+      unanswered question about the project's requirements that the source
+      contains, with the values given and who stated each.
 - [ ] A statement proposed and then rejected or changed later in the same
       source is summarised as it ended.
 - [ ] The summary holds nothing personal: no personal remarks, no health or
       HR matters, no opinions about people.
 - [ ] The downloaded files in `vogon/tmp/` are deleted before the skill
       commits.
-
-## Attached and shared files
-
-- [ ] A file attached to a mail, posted in a chat, shared in a meeting or
-      named by the developer is filed as the original and its markdown copy,
-      and kept.

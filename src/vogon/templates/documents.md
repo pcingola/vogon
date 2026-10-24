@@ -6,12 +6,12 @@ derived_on: <yyyy-mm-dd>
 
 # Documents
 
-<!-- Derived with the procedure in ${CLAUDE_PLUGIN_ROOT}/references/process-files.md. The writing sub-agent deletes every comment. -->
+<!-- Derived with the procedure in ${CLAUDE_PLUGIN_ROOT}/references/process-files.md. Delete every comment in the derived file. -->
 
 ## Documents VOGON drafts
 
-<!-- Each document VOGON drafts, with its template, its format, its approvers and the location where it is filed and signed. Cite the plan section. -->
+<!-- Each document VOGON drafts, with its template, its format, its approvers and the location where it is filed and signed. -->
 
 ## Documents left to the project
 
-<!-- The documents the plan lists that VOGON does not draft. Cite the plan section. -->
+<!-- The documents the plan lists that VOGON does not draft. -->

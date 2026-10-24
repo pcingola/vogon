@@ -6,16 +6,16 @@ derived_on: <yyyy-mm-dd>
 
 # Traceability
 
-<!-- Derived with the procedure in ${CLAUDE_PLUGIN_ROOT}/references/process-files.md. The writing sub-agent deletes every comment. -->
+<!-- Derived with the procedure in ${CLAUDE_PLUGIN_ROOT}/references/process-files.md. Delete every comment in the derived file. -->
 
 ## Producer and input
 
-<!-- Who produces the traceability matrix, and from what: the test manager, or the join of test markers and JUnit XML results by vogon trace. Cite the plan section. -->
+<!-- Who produces the traceability matrix, and from what: the test manager, or the join of test markers and JUnit XML results by vogon trace. -->
 
 ## What the matrix links
 
-<!-- What the matrix links, such as requirement, test procedure, test and result. Cite the plan section. -->
+<!-- What the matrix links, such as requirement, test procedure, test and result. -->
 
 ## Approval
 
-<!-- Where the matrix is approved and by whom. Cite the plan section. -->
+<!-- Where the matrix is approved and by whom. -->

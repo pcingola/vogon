@@ -1,13 +1,9 @@
 # Records
 
-Rules for writing and evaluating requirements, domain facts, constraints,
-decisions and test procedures in `vogon/`.
-
 ## Classifying a sentence
 
-Classify each statement of a checked summary (`loop.md`), a held document or
-the code by these rules, in this order. The first rule that matches gives the
-kind.
+Classify each statement of a summary, a held document or the code by
+these rules, in this order. The first rule that matches gives the kind.
 
 1. A test could be written that the system fails: **requirement**.
 2. True whether or not anything is built: **domain fact**.
@@ -19,8 +15,7 @@ kind.
 
 - [ ] A statement that is two kinds of record is written as two records. The
       one that rests on the other names it in `depends_on`.
-- [ ] A statement made in two sources is one record citing both.
-- [ ] Records are drafted from checked summaries, markdown copies of held
+- [ ] Records are drafted from summaries, markdown copies of held
       documents and the code, never from a downloaded transcript, mail or
       chat.
 
@@ -49,7 +44,7 @@ kind.
 - [ ] `id`, `type`, `title` and `status` are present. `type` is
       `requirement`, `fact`, `constraint`, `decision` or `test_procedure`.
 - [ ] `title` is one line naming what the record is, in the words someone
-      would search for. Not a question, not an allusion.
+      would search for.
 - [ ] `modules` lists every module the record belongs to, including the
       module in the id.
 - [ ] `status` is `active`, `withdrawn`, or `{superseded_by: <id>}`. A
@@ -57,10 +52,9 @@ kind.
 - [ ] `source` lists every held document that states the record, by the path
       of its markdown file in `vogon/sources/`, strongest `authority` first:
       `regulation`, `standard`, `procedure`, `project`, `informal`. The
-      authority table in `references/sources.md` says what each may support.
-- [ ] Each document in `source` was read at the passage that supports the
-      record. Where documents disagree, both are listed and the body states
-      the difference. Where only a meeting, mail or chat supports a claim, the
+      `sources.md` "Authority" says what each may support.
+- [ ] Where documents disagree, both are listed and the body states the
+      difference. Where only a meeting, mail or chat supports a claim, the
       body says so.
 - [ ] A record the project originated itself has no `source`.
 - [ ] `depends_on` lists the records this one rests on, by id. A fact has
@@ -68,7 +62,6 @@ kind.
 - [ ] `references` lists the documents, by path from the repository root,
       that say how the record is realised. Absent where none does. Each path
       resolves.
-- [ ] `tags` is optional and free-form.
 - [ ] `reviewed_by` and `reviewed_on` are absent until a person has read the
       record in detail. A sub-agent does not add them.
 - [ ] No frontmatter key and no body line states that the record was
@@ -78,19 +71,16 @@ kind.
 ## Body of every record
 
 - [ ] Starts with `# <id>: <title>`.
-- [ ] States the statement in one sentence with no rationale in it, then a
+- [ ] Gives the statement in one sentence with no rationale in it, then a
       short paragraph saying what it means and what it does not cover.
 - [ ] An optional example is marked `**Example.**`, uses concrete values, and
       states no requirement of its own.
-- [ ] Suggested body lengths: requirement 300 words, fact 200, constraint
-      200, decision 600. A record well over its length usually states two
-      things and is split.
 
 ## Requirement
 
 - [ ] `verification` is `inspection`, `analysis`, `demonstration` or `test`.
 - [ ] `gxp_impact` is `patient safety`, `product quality`, `data integrity` or
-      `none`: what a failure of the requirement would damage.
+      `none`.
 - [ ] `gxp_impact_reason` says what a failure would damage, and how.
 - [ ] `risk` is `high`, `medium` or `low`, from the severity of a failure, its
       probability and how likely it is to be detected.
@@ -99,7 +89,7 @@ kind.
 - [ ] Where `vogon/project/requirements.md` states another risk method or
       other levels, the risk fields follow it.
 - [ ] `**Requirement.**` is one sentence using MUST or MUST NOT, saying what
-      has to be true and not how. A test can fail it.
+      has to be true and not how.
 - [ ] `**Out of scope.**` states behaviour a reader might expect that the
       requirement does not require. Absent where there is none.
 - [ ] `**Acceptance criteria.**` is present and states what must be tested.
@@ -113,7 +103,6 @@ kind.
 
 ## Constraint
 
-- [ ] The body says what it forbids or forces.
 - [ ] `imposed_by` names the regulation, numbered procedure, standard or
       platform behaviour that imposes it. It is not a path.
 - [ ] `lifts_when` is the condition under which it stops applying, or

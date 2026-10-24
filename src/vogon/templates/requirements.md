@@ -6,20 +6,20 @@ derived_on: <yyyy-mm-dd>
 
 # Requirements
 
-<!-- Derived with the procedure in ${CLAUDE_PLUGIN_ROOT}/references/process-files.md. The writing sub-agent deletes every comment. -->
+<!-- Derived with the procedure in ${CLAUDE_PLUGIN_ROOT}/references/process-files.md. Delete every comment in the derived file. -->
 
 ## Requirement form
 
-<!-- The form a requirement takes, such as a user story, and what its text must contain. Cite the plan section. -->
+<!-- The form a requirement takes, such as a user story, and what its text must contain. -->
 
 ## Risk fields and method
 
-<!-- The risk assessment each requirement carries, its method and levels, and where it is recorded. Cite the plan section. -->
+<!-- The risk assessment each requirement carries, its method and levels, and where it is recorded. -->
 
 ## Approval
 
-<!-- Who approves a requirement and its risk assessment, and at which point, such as before development or after user acceptance testing. Cite the plan section. -->
+<!-- Who approves a requirement and its risk assessment, and at which point, such as before development or after user acceptance testing. -->
 
 ## Change to an approved requirement
 
-<!-- The steps the plan requires when an approved requirement changes, such as a new approval. Cite the plan section. -->
+<!-- The steps the plan requires when an approved requirement changes, such as a new approval. -->
