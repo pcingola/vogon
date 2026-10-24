@@ -58,7 +58,7 @@ vogon/
 │   ├── docs/        SOURCE — documentation, markdown (user/, dev/)
 │   └── html/        SOURCE — marketing page: index.html, img/, .nojekyll
 ├── docs/            OUTPUT — rendered HTML. generated. never hand-edited.
-├── vogon/           RECORDS — VOGON's own requirements, facts, constraints, decisions
+├── vogon/           RECORDS — VOGON's own constraints and decisions
 ├── tmp/             working notes: plans, brainstorming. gitignored, local only.
 ├── assets/          brand originals + their dark twins, 46 MB. never published.
 ├── .claude-plugin/  marketplace.json: the marketplace listing the plugin
@@ -84,38 +84,38 @@ prose that ships, including records.
 
 ## Records
 
-`vogon/` holds VOGON's own requirements, domain facts, constraints and decisions,
-in the same format VOGON defines for the projects it is installed into. Four
-kinds of record, four id namespaces, one file per record named for its id, and
-an id that is never reused. `src/docs/dev/vocabulary.md` says what the four
-words mean, `dev/records.md` says how to write one.
+`vogon/` holds VOGON's own constraints and decisions, in the record format
+VOGON defines for host projects. `src/docs/dev/vocabulary.md` defines the four
+kinds of record and `dev/records.md` says how to write one. Each record is one
+file named for its id, and an id is never reused.
 
-The layout inside `vogon/` is the layout VOGON creates in a host project:
-`requirements/<module>/`, `facts/`, `constraints/`, `decisions/`, `sources/`
-for held copies of cited documents, and `out/` for generated output. Held
+This repository has `vogon/constraints/` and `vogon/decisions/`. In a host
+project VOGON also creates `project/`, `requirements/<module>/`, `facts/`,
+`sources/` for held copies of cited documents, `plans/`,
+`documents/<release>/`, `logs/`, and the gitignored `tmp/`. Held
 documents are flat and named `YYYY-MM-DD_slug.ext` by the document's own date,
 never edited after filing; `dev/sources.md` has the rules. Records
-are visible rather than hidden under a dot-directory; `.vogon/` holds tool
-state only and is gitignored.
+are visible rather than hidden under a dot-directory.
 
-A statement about the system belongs in `vogon/` when it is a requirement, a
-fact, a constraint or a decision. It belongs in `src/docs/dev/` when it
-explains how the parts fit together. The record says what must hold; the
-documentation says how to read the records.
+A statement about the system belongs in `vogon/` when it is a constraint or a
+decision. It belongs in `src/docs/dev/` when it explains how the parts fit
+together. The record says what must hold; the documentation says how to read
+the records.
 
 ## Version 0.1 assumes one stack
 
-Python, GitHub, Jira, Xray, and Claude Code as the coding agent. Nothing is
-abstracted over an alternative, and no interface is written before a second
-implementation exists. The reasoning is in `vogon/decisions/DEC-004.md`.
+VOGON 0.1 is developed and tested against Python, GitHub, Jira, Xray, and
+Claude Code as the coding agent. No abstraction layer is written before a
+second implementation exists. The skills reach each external system by its
+role, because the host project's validation plan chooses the products. The
+reasoning is in `vogon/decisions/DEC-004.md`.
 
 Two consequences hold everywhere. VOGON never performs an approval or a
 signature transition, because a signature requires the signer's own
 credentials (`vogon/constraints/CON-001.md`). The Python code in `src/vogon`
 never calls a language model API and depends on no model client library. All
 model work, including drafting, reviewing and subagents, is done by Claude Code
-running the skills, and the Python code checks the result
-(`vogon/decisions/DEC-005.md`).
+running the skills (`vogon/decisions/DEC-005.md`).
 
 ## Plans
 
