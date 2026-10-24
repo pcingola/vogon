@@ -1451,9 +1451,9 @@ both cases is on <a href="process/approval.html">Approving requirements</a>.</p>
 requirement only with the developer's agreement, and appends a <code>changed</code> entry,
 so it needs approval again (<code>common.md</code> "Approval of a requirement").</p>
 <h2 id="state-of-a-requirement">State of a requirement<a class="headerlink" href="#state-of-a-requirement" title="Permanent link">&para;</a></h2>
-<p><code>REQ-&lt;MODULE&gt;-&lt;NUMBER&gt;.json</code> records the steps done to the requirement:
-drafted, approved, changed, planned, test procedures written, implemented,
-released (<a href="records.html#state-file">Records</a>). An entry other than <code>approved</code>
+<p><code>REQ-&lt;MODULE&gt;-&lt;NUMBER&gt;.json</code> records the steps done to the requirement
+(<a href="records.html#state-file">Records</a>; the entries are defined in
+<code>src/vogon/references/common.md</code> "State-file entries"). An entry other than <code>approved</code>
 points at the pull request, commit or tracker item that holds the step. That
 source is the evidence: a skill checks it before acting on an entry and reports
 a difference. An approval is decided by the state file on the default branch
@@ -1485,8 +1485,8 @@ them. <code>vogon:tests</code> imposes no order of its own.</p>
 in the format of <code>src/vogon/skills/implement/references/plan-format.md</code>. No
 code is written before a developer approves the plan; the approval is recorded
 in the <code>planned</code> entry of each requirement's state file. The main agent then
-has each part written by its own sub-agent and checked by the
-test checklist, and a code reviewer that runs Claude Code's <code>code-review</code> skill
+has each part written by its own sub-agent and checked against the test
+checklist and by a code reviewer that runs Claude Code's <code>code-review</code> skill
 and then the code checklist. VOGON has no code reviewer of its own. A
 developer's instruction that changes the plan sends it back for approval. All
 tests pass before the pull request is opened.</p>

@@ -95,8 +95,8 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
       holds it, word for word. If a value cannot be placed in one block or
       field, record nothing for the requirement and report it to the
       developer with both texts.
-   3. Append an `approved` entry to `REQ-*.json` as Outputs and `common.md`
-      "State-file entries" state.
+   3. Append an `approved` entry to `REQ-*.json` as `common.md` "State-file
+      entries" states.
    4. If the approver is not listed in `vogon.yaml` under the role
       `tracking.md` names for the transition, report it.
 6. Report each tracker item that left the approved state after an approval
@@ -147,19 +147,8 @@ derived in step 1 goes through the loop in `process-files.md`.
 | Branch and pull request on the repository host | The changed records, with the description in step 7 of "A tracker holds approvals", and any process file derived, per `process-files.md` | A tracker holds approvals |
 | `vogon/logs/` main log | Entries as `common.md` states | Always |
 
-An `approved` entry has these fields:
-
-- `step`: `approved`.
-- `by`: the approver as `Name <email>`. Without a tracker, the git identity
-  `vogon approve` reads. With a tracker, the user who performed the
-  transition, as the tracker records them.
-- `date`: the date of the approval, `yyyy-mm-dd`. With a tracker, the date of
-  the transition.
-- `via`: `vogon approve` without a tracker; the tracker's name from
-  `vogon.yaml` with a tracker.
-
-Entries follow `common.md` "State-file entries". The skill writes nothing to
-the tracker.
+The `approved` entry is defined in `common.md` "State-file entries". The
+skill writes nothing to the tracker.
 
 ## Reference files
 

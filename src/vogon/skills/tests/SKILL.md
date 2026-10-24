@@ -94,7 +94,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
     each procedure with the requirements it verifies and states the loops,
     rounds and open findings as `common.md` states.
 11. Append a `test_procedures_written` entry to each requirement's
-    `REQ-*.json`, commit and push to the same branch.
+    `REQ-*.json`, as `common.md` "State-file entries" states, commit and push to the same branch.
 12. Tell the roles `tests.md` names for approval, from `vogon.yaml`, that the
     procedures wait for their approval, and where: the pull request, or the
     items in the tracker or test manager. Name the same roles in the pull
@@ -129,7 +129,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
 | Test procedure, kept in the repository | `vogon/requirements/<module>/TP-<MODULE>-<NUMBER>.md` | Markdown with YAML frontmatter, as step 7 states |
 | Test procedure, kept in the tracker or test manager | An item in that system, created as `tracking.md` states; its key is the id | The system's item, linked to the requirement's item |
 | `procedure` marker, after development | The test files the procedures were generated from | `@pytest.mark.procedure("<procedure id>")` |
-| State entry | `REQ-*.json` `steps` | `{"step": "test_procedures_written", "date": "<yyyy-mm-dd>", "pr": <number>}` |
+| State entry | `REQ-*.json` `steps` | `test_procedures_written`, as `common.md` "State-file entries" states |
 | Pull request | Repository host | The procedures, the marker changes and the state entries |
 | Sub-agent logs and main log | `vogon/logs/` | As `common.md` states |
 

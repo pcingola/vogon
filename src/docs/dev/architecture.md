@@ -147,9 +147,9 @@ so it needs approval again (`common.md` "Approval of a requirement").
 
 ## State of a requirement
 
-`REQ-<MODULE>-<NUMBER>.json` records the steps done to the requirement:
-drafted, approved, changed, planned, test procedures written, implemented,
-released ([Records](records.md#state-file)). An entry other than `approved`
+`REQ-<MODULE>-<NUMBER>.json` records the steps done to the requirement
+([Records](records.md#state-file); the entries are defined in
+`src/vogon/references/common.md` "State-file entries"). An entry other than `approved`
 points at the pull request, commit or tracker item that holds the step. That
 source is the evidence: a skill checks it before acting on an entry and reports
 a difference. An approval is decided by the state file on the default branch
@@ -188,8 +188,8 @@ them. `vogon:tests` imposes no order of its own.
 in the format of `src/vogon/skills/implement/references/plan-format.md`. No
 code is written before a developer approves the plan; the approval is recorded
 in the `planned` entry of each requirement's state file. The main agent then
-has each part written by its own sub-agent and checked by the
-test checklist, and a code reviewer that runs Claude Code's `code-review` skill
+has each part written by its own sub-agent and checked against the test
+checklist and by a code reviewer that runs Claude Code's `code-review` skill
 and then the code checklist. VOGON has no code reviewer of its own. A
 developer's instruction that changes the plan sends it back for approval. All
 tests pass before the pull request is opened.

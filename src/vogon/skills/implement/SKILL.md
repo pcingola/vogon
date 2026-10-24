@@ -57,7 +57,8 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
    sub-agent and through step 4 again. Write no code before a developer
    explicitly approves the plan. On that approval:
    commit the plan on the working branch, push the branch, and append a
-   `planned` entry to each requirement's state file (see Outputs). Commit and
+   `planned` entry to each requirement's state file (`common.md` "State-file
+   entries"). Commit and
    push the state files.
 6. Follow the plan. For each part, start a writing sub-agent that writes the
    part's code, tests and documentation. Give it the plan, the part's number,
@@ -91,8 +92,8 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
     pull request, push to it instead of opening another. The description names the plan and
     the requirements, states the test run and its result, and states the loops
     run, their rounds and the findings left open, as `common.md` states.
-11. Append an `implemented` entry to each requirement's state file (see
-    Outputs). Commit and push it on the same branch. Tell the developer that a
+11. Append an `implemented` entry to each requirement's state file (`common.md`
+    "State-file entries"). Commit and push it on the same branch. Tell the developer that a
     person approves the pull request on the repository host.
 
 ### Steering by the developer
@@ -142,24 +143,11 @@ Without instructions, the skill runs the plan to the end.
 | --- | --- | --- |
 | `vogon/plans/plan_<slug>.md` | Markdown, in the format of `plan-format.md` | Plan writer |
 | Host project code, tests and documentation | As the plan states, in the project's conventions | Part writers |
-| `vogon/requirements/<module>/REQ-*.json` | Appended `steps` entries, below | Main agent |
+| `vogon/requirements/<module>/REQ-*.json` | `planned` and `implemented` entries, as `common.md` "State-file entries" states | Main agent |
 | `vogon/logs/<yyyymmdd_hhmmss>_<task>.log.md`, main log | As `common.md` states | Each sub-agent, main agent |
 | Repository host | A working branch with the plan commit, the code commits and the state-file commits; one pull request | Main agent |
 
 And any process file derived, per `process-files.md`.
-
-State-file entries, appended to the `steps` list of each `REQ-*.json` as
-`common.md` "State-file entries" states:
-
-```json
-{"step": "planned", "date": "<yyyy-mm-dd>", "commit": "<plan commit>", "plan": "vogon/plans/plan_<slug>.md", "approved_by": "<Name> <email>"}
-{"step": "implemented", "date": "<yyyy-mm-dd>", "pr": <number>, "commit": "<last code commit>"}
-```
-
-`approved_by` is the git identity of the approving developer, from
-`git config user.name` and `git config user.email` in their session. Dates come
-from `date '+%Y-%m-%d'`. A plan approved again after a change gets a new
-`planned` entry.
 
 ## Reference files
 

@@ -98,9 +98,8 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
     description lists the documents, where each is filed, the unmet
     preconditions, the results-file findings, and the loops run as `common.md`
     states.
-13. Append to the state file of each requirement in the release:
-    `{"step": "released", "date": "<yyyy-mm-dd>", "commit": "<release commit>", "release": "<release>", "pr": <number>}`.
-    Take the date from `date '+%Y-%m-%d'`.
+13. Append a `released` entry to the state file of each requirement in the
+    release, as `common.md` "State-file entries" states.
 14. Read the plan path from the `planned` entries of the requirements in the
     release. Move each plan whose named requirements all have a `released`
     entry from `vogon/plans/` to `vogon/plans/done/` with `git mv`. Commit the
@@ -140,7 +139,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
 | `traceability-matrix.md` beside the documents | Output of `vogon trace`, unchanged | `vogon trace` |
 | Test manager's traceability report beside the documents | As the test manager gives it | Test manager |
 | JUnit XML beside the documents | The input file, unchanged | Main agent |
-| `vogon/requirements/<module>/REQ-*.json` | Appended `steps` entry `{"step": "released", "date", "commit", "release", "pr"}` | Main agent |
+| `vogon/requirements/<module>/REQ-*.json` | A `released` entry, as `common.md` "State-file entries" states | Main agent |
 | `vogon/plans/done/plan_<slug>.md` | Each plan whose requirements are all released, moved with `git mv` in step 14 | Main agent |
 | `vogon/logs/<yyyymmdd_hhmmss>_<task>.log.md` | One per sub-agent run, as `common.md` states | Each sub-agent |
 | `vogon/logs/` main log | One entry per sub-agent run and decision | Main agent |

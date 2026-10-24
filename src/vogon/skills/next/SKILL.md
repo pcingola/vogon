@@ -58,7 +58,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
    - Work in progress. An open pull request works on the requirement when
      its title, its description or one of its commits names the requirement
      id. A pushed branch that is not merged works on the requirement when it
-     holds a `planned` entry for it. A `planned` entry names no pull request.
+     holds a `planned` entry for it.
 4. Classify each requirement that is not implemented.
    - Ready: approved, the approval not stale, no open pull request or
      pushed branch works on it, and every record in `depends_on` is satisfied. A requirement in

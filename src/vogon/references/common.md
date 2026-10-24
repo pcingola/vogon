@@ -53,17 +53,46 @@ Append each entry to a `REQ-*.json` once and never edit it. Where the entry
 records a pull request, open the pull request first, then append the entry
 with its `pr`, commit and push to the same branch.
 
-- `drafted`: `{"step": "drafted", "date": "<yyyy-mm-dd>", "pr": <number>}`,
-  with `"issue": "<tracker key>"` where `vogon:requirements` created a tracker
-  item.
-- `changed`: `{"step": "changed", "date": "<yyyy-mm-dd>", "pr": <number>}`,
-  naming the pull request that changed `REQ-*.md`, with `"issue": "<tracker
-  key>"` where `vogon:requirements` created the requirement's first tracker
-  item with this change. That entry is also written for a requirement that
-  is not approved.
-- The other entries are defined by the skill that writes them: `approved` by
-  `vogon:approve`, `planned` and `implemented` by `vogon:implement`,
-  `test_procedures_written` by `vogon:tests`, `released` by `vogon:release`.
+A state file is `{"id": "<requirement id>", "steps": [<entry>, ...]}`.
+Every entry has `step` and `date`, `yyyy-mm-dd`, taken from
+`date '+%Y-%m-%d'` unless the entry states otherwise. `pr` is a pull request
+number, `commit` a commit hash, and a person is `Name <email>`.
+
+```json
+{"step": "drafted", "date": "<yyyy-mm-dd>", "pr": <number>, "issue": "<tracker key>"}
+{"step": "changed", "date": "<yyyy-mm-dd>", "pr": <number>, "issue": "<tracker key>"}
+{"step": "approved", "date": "<yyyy-mm-dd>", "by": "<Name> <email>", "via": "<vogon approve or tracker name>"}
+{"step": "planned", "date": "<yyyy-mm-dd>", "commit": "<plan commit>", "plan": "vogon/plans/plan_<slug>.md", "approved_by": "<Name> <email>"}
+{"step": "test_procedures_written", "date": "<yyyy-mm-dd>", "pr": <number>}
+{"step": "implemented", "date": "<yyyy-mm-dd>", "pr": <number>, "commit": "<last code commit>"}
+{"step": "released", "date": "<yyyy-mm-dd>", "commit": "<release commit>", "release": "<release>", "pr": <number>}
+```
+
+- `drafted`: written by `vogon:requirements` for each new requirement. `pr`
+  is the pull request that adds it. `issue` only where the skill created a
+  tracker item.
+- `changed`: written by `vogon:requirements`, or any skill that changes
+  `REQ-*.md` with the developer's agreement. `pr` is the pull request that
+  changes `REQ-*.md`. `issue` only where `vogon:requirements` created the
+  requirement's first tracker item with this change; that entry is also
+  written for a requirement that is not approved.
+- `approved`: written by `vogon:approve`. It names no pull request or
+  commit. Without a tracker, `by` is the git identity `vogon approve` reads,
+  `date` the day it runs, and `via` is `vogon approve`. With a tracker, `by`
+  is the user who performed the transition, as the tracker records them,
+  `date` the date of the transition, and `via` the tracker's name from
+  `vogon.yaml`.
+- `planned`: written by `vogon:implement` when a developer approves the
+  plan. It names no pull request. `commit` is the commit that holds the plan,
+  and `approved_by` the approving developer's identity from
+  `git config user.name` and `git config user.email` in their session. A plan
+  approved again after a change gets a new entry.
+- `test_procedures_written`: written by `vogon:tests`. `pr` is the pull
+  request the skill opens.
+- `implemented`: written by `vogon:implement` after it opens the pull
+  request. `commit` is the last code commit.
+- `released`: written by `vogon:release`. `release` is the release name, and
+  `pr` the release pull request.
 
 ## The loop
 

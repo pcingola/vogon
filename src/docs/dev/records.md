@@ -113,27 +113,9 @@ barcode that a scanner reads as `S-2026-00417`.
 
 Each requirement has a state file beside its markdown file, named for the same
 id with `.json`. It records every step done to the requirement, in order.
-Entries are appended and never edited or removed. The fields of each entry are
-in `src/vogon/references/common.md`, "State-file entries", and the skill that
-writes it.
-
-```json
-{
-  "id": "REQ-PRN-12",
-  "steps": [
-    {"step": "drafted", "date": "2026-09-15", "pr": 230},
-    {"step": "approved", "date": "2026-09-18", "by": "Alice Smith <alice@example.com>", "via": "vogon approve"},
-    {"step": "planned", "date": "2026-09-22", "commit": "a12f9c0", "plan": "vogon/plans/plan_REQ-PRN-12.md", "approved_by": "Bob Jones <bob@example.com>"},
-    {"step": "implemented", "date": "2026-09-25", "pr": 241, "commit": "b77d031"},
-    {"step": "released", "date": "2026-10-02", "pr": 252, "commit": "c4e8a10", "release": "1.2"}
-  ]
-}
-```
-
-The steps are `drafted`, `approved`, `changed`, `planned`,
-`test_procedures_written`, `implemented` and `released`. A withdrawal is the
-record's `status`, not a step. An `approved` entry names no pull
-request or commit, and a `planned` entry names a commit and no pull request.
+Entries are appended and never edited or removed. A withdrawal is the
+record's `status`, not a step. Every entry and its fields are defined in
+`src/vogon/references/common.md`, "State-file entries".
 
 A requirement is approved when the state file on the default branch has an
 `approved` entry after its latest `changed` entry; an `approved` entry that
