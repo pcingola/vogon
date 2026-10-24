@@ -21,9 +21,6 @@ uv sync
 git config core.hooksPath .githooks
 ```
 
-`core.hooksPath` points git at the hooks committed in `.githooks/`. It is a
-local setting, so it is set once per clone.
-
 `pyproject.toml` exists for development only: it holds the dev dependency
 group.
 
@@ -38,8 +35,7 @@ make clean    # rm -rf docs/
 `docs/` is committed because Pages serves it from git. `.githooks/pre-commit`
 rebuilds and stages it when a commit touches `src/docs/`, `src/html/` or
 `mkdocs.yml`. A failed build aborts the commit, and `--strict` makes a broken
-link fail it. A hand edit inside `docs/`
-is overwritten by the next build.
+link fail it.
 
 mkdocs and mkdocs-material are in the `dev` dependency group, run through
 `uv run --group dev`, and `uv.lock` fixes their versions. `uvx mkdocs` is not
@@ -80,12 +76,10 @@ src/vogon/
     ├── requirements/            SKILL.md, references/
     ├── approve/                 SKILL.md
     ├── next/                    SKILL.md
-    ├── tests/                   SKILL.md, references/
+    ├── tests/                   SKILL.md
     ├── implement/               SKILL.md, references/
     └── release/                 SKILL.md
 ```
-
-[Architecture](architecture.md) describes the skills.
 
 The version is in `plugin.json` and nowhere else. There is no wheel and no
 PyPI release.

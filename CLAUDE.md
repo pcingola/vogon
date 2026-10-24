@@ -92,8 +92,8 @@ one file named for its id, and an id is never reused.
 
 This repository has `vogon/constraints/` and `vogon/decisions/`. In a host
 project VOGON also creates `project/`, `requirements/<module>/`, `facts/`,
-`sources/` for held copies of cited documents, `plans/`, `documents/<release>/`,
-`logs/`, and the gitignored `tmp/`. Held documents are flat and named
+`sources/` for held copies of cited documents, `plans/`, `documents/<release>/`
+and the gitignored `tmp/`. Held documents are flat and named
 `YYYY-MM-DD_slug.ext` by the document's own date, never edited after filing; the
 rules are in `src/vogon/references/sources.md`, and `src/docs/dev/sources.md`
 gives their reasons. Records are visible rather than hidden under a

@@ -788,9 +788,8 @@
 
 
 <h1 id="records">Records<a class="headerlink" href="#records" title="Permanent link">&para;</a></h1>
-<p><a href="vocabulary.html">Vocabulary</a> defines the four kinds of record. The rules a
-writing sub-agent and an evaluator apply to every record, including ids,
-paths, frontmatter fields and body blocks, are in
+<p><a href="vocabulary.html">Vocabulary</a> defines the four kinds of record. The rules for
+every record, including ids, paths, frontmatter fields and body blocks, are in
 <code>src/vogon/references/records.md</code>. Every record also follows
 <code>src/vogon/references/writing.md</code>.</p>
 <h2 id="layout">Layout<a class="headerlink" href="#layout" title="Permanent link">&para;</a></h2>
@@ -806,7 +805,7 @@ paths, frontmatter fields and body blocks, are in
 <tbody>
 <tr>
 <td><code>vogon/project/</code></td>
-<td><code>vogon.yaml</code> and the process files derived from the validation plan (<a href="architecture.html#project-configuration-and-process-files">Architecture</a>); <code>checklists/</code> holds the project's own versions of the default checklists</td>
+<td><code>vogon.yaml</code> and the process files derived from the validation plan (<code>src/vogon/references/process-files.md</code>); <code>checklists/</code> holds the project's own versions of the default checklists</td>
 </tr>
 <tr>
 <td><code>vogon/requirements/&lt;module&gt;/</code></td>
@@ -830,19 +829,15 @@ paths, frontmatter fields and body blocks, are in
 </tr>
 <tr>
 <td><code>vogon/plans/</code></td>
-<td>Plans for code, which the developers are asked to approve before the code is written; <code>done/</code> holds the spent ones</td>
+<td>Plans for code; <code>done/</code> holds the plans whose requirements have all been released</td>
 </tr>
 <tr>
 <td><code>vogon/documents/&lt;release&gt;/</code></td>
 <td>Drafted documents for one release, where the project has no document system</td>
 </tr>
 <tr>
-<td><code>vogon/logs/</code></td>
-<td>Loop logs. Gitignored unless the project commits them</td>
-</tr>
-<tr>
 <td><code>vogon/tmp/</code></td>
-<td>Working files deleted before the skill finishes, such as downloaded transcripts and draft documents. Gitignored</td>
+<td>Working files, such as downloaded transcripts and draft documents. Gitignored</td>
 </tr>
 </tbody>
 </table>
@@ -853,18 +848,12 @@ flat, because one is often cited by several modules.</p>
 body by people. Approval is not a field and not a status:
 <code>src/vogon/references/lifecycle.md</code> "Approval" states where an approval is
 recorded.</p>
-<p><code>source</code> names the held documents a record came from, and <code>references</code> the
-documents that say how it is realised, such as the schema a decision settles.
-A path in <code>source</code> asserts that the document says what the record says, so
-only a passage that was read is cited.</p>
-<p><code>status</code> records whether the project is committed to the statement. A record
-is never deleted: a withdrawn or superseded record keeps its file and its id.
-Build progress is in the state file and the passing tests.</p>
-<p>A fact carries <code>as_of</code>, the date it was observed, so that it can be checked
-again.</p>
+<p><code>source</code> lists the held documents a record came from. Each path in it asserts
+that the document says what the record says, so only a passage that was read
+is cited.</p>
+<p><code>status</code> records whether the project is committed to the statement. Build
+progress is in the state file and the passing tests.</p>
 <h2 id="requirement">Requirement<a class="headerlink" href="#requirement" title="Permanent link">&para;</a></h2>
-<p><code>**Out of scope.**</code> names what the requirement does not cover, so that nobody
-builds or tests it. The acceptance criteria are approved with the requirement.</p>
 <pre><code class="language-markdown">---
 id: REQ-PRN-12
 type: requirement
@@ -901,16 +890,11 @@ barcode that a scanner reads as `S-2026-00417`.
 </code></pre>
 <h2 id="state-file">State file<a class="headerlink" href="#state-file" title="Permanent link">&para;</a></h2>
 <p>Each requirement has a state file beside its markdown file, named for the same
-id with <code>.json</code>. It records every step done to the requirement, in order, and
-entries are appended and never edited. A change to <code>REQ-*.md</code> after it was
-drafted, including a withdrawal or a supersession, is a <code>changed</code> entry. The
+id with <code>.json</code>. It records every step done to the requirement, in order. The
 entries and their fields are defined in <code>lifecycle.md</code> "State file".</p>
 <p>When an entry and the pull request, commit or tracker item it names differ, the
-pull request, commit or tracker item is correct, except for approvals
-(<code>src/vogon/references/common.md</code> "Start of every skill"). Where no tracker
-holds approvals, an approval is an <code>approved</code> entry on the default branch. Where
-a tracker holds approvals, the state file holds no <code>approved</code> entry and the
-tracker item alone records the approval (<code>lifecycle.md</code> "Approval").</p>
+linked item is correct. For approvals, <code>lifecycle.md</code> "Approval" states which
+record holds them (<code>src/vogon/references/common.md</code> "Start of every skill").</p>
 <h2 id="identifiers">Identifiers<a class="headerlink" href="#identifiers" title="Permanent link">&para;</a></h2>
 <p>A file is named for its id alone, such as <code>REQ-PRN-12.md</code>, so that a changed
 title breaks no link. A record's history is its git history.</p>

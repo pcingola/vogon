@@ -67,8 +67,7 @@ Every figure is click-to-enlarge. Wrap it in `<div class="zoomfig"
 role="button" tabindex="0">` and the lightbox picks it up, captioned from the
 image's `data-ref`. The footer REJECTED stamp is one of these.
 
-The lightbox fits a figure whole and never enlarges it past its own pixels, so
-a 1200px figure stops at 1200px on a wide monitor instead of being blurred by upscaling.
+The lightbox fits a figure whole and never enlarges it past its own pixels.
 Portrait figures are the exception: VGN-PROC-001 is a tall chart containing
 body text, and fitted to the dialog height it is unreadable. A figure taller
 than it is wide is sized to the dialog width instead, capped at 1.5× its own

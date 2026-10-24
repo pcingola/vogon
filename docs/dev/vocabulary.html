@@ -540,10 +540,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#compliance-terms" class="md-nav__link">
+  <a href="#systems" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Compliance terms
+        Systems
       
     </span>
   </a>
@@ -771,10 +771,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#compliance-terms" class="md-nav__link">
+  <a href="#systems" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Compliance terms
+        Systems
       
     </span>
   </a>
@@ -861,7 +861,7 @@ performed by a machine account" is a constraint. Prefix <code>CON-</code>.</p>
 <p><strong>Decision</strong>: a choice made among options, recorded with what the options cost
 and what the choice commits the project to. Choosing <em>not</em> to build something is
 a decision. Prefix <code>DEC-</code>.</p>
-<p>The checked summary or held document a record came from is a source
+<p>The reviewed summary or held document a record came from is a source
 (<a href="sources.html">Sources</a>). Records cite it; it is never a record itself.</p>
 <h2 id="verbs">Verbs<a class="headerlink" href="#verbs" title="Permanent link">&para;</a></h2>
 <p><a href="https://www.rfc-editor.org/rfc/rfc2119">RFC 2119</a> as clarified by
@@ -880,12 +880,8 @@ binding, so an ordinary "must" or "should" in prose carries no weight.</p>
 <td>A requirement. Binding. The only form a requirement record is written in</td>
 </tr>
 <tr>
-<td><strong>SHOULD</strong>, <strong>SHOULD NOT</strong></td>
-<td>A recommendation. Not binding, and not a requirement</td>
-</tr>
-<tr>
-<td><strong>MAY</strong></td>
-<td>Permission</td>
+<td><strong>SHOULD</strong>, <strong>MAY</strong></td>
+<td>Not used in a record. A statement in this form is not a requirement</td>
 </tr>
 <tr>
 <td><em>(no modal verb)</em></td>
@@ -899,7 +895,7 @@ result import with no build identifier" is the requirement beside it.</p>
 <p>VOGON writes MUST, not "shall". ISO/IEC/IEEE 29148 uses "shall"; GAMP 5, EU
 Annex 11 and 21 CFR Part 11 prescribe no modal verb, only that a requirement be
 unambiguous, testable, uniquely identified and traceable.</p>
-<h2 id="compliance-terms">Compliance terms<a class="headerlink" href="#compliance-terms" title="Permanent link">&para;</a></h2>
+<h2 id="systems">Systems<a class="headerlink" href="#systems" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -908,54 +904,6 @@ unambiguous, testable, uniquely identified and traceable.</p>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td><strong>GxP</strong></td>
-<td>The umbrella label for regulations covering work a regulator relies on</td>
-</tr>
-<tr>
-<td><strong>ICH</strong></td>
-<td>The body that writes the guidelines the FDA, EMA and others adopt</td>
-</tr>
-<tr>
-<td><strong>ISPE</strong></td>
-<td>A pharmaceutical engineering industry association</td>
-</tr>
-<tr>
-<td><strong>GAMP 5</strong></td>
-<td>ISPE's guide to validating a computerised system so an inspector accepts it. Second Edition, 2022. A guide, not a law</td>
-</tr>
-<tr>
-<td><strong>GAMP category 5</strong></td>
-<td>Custom-written software, the category with the most scrutiny</td>
-</tr>
-<tr>
-<td><strong>21 CFR Part 11</strong></td>
-<td>The US regulation on electronic records and electronic signatures</td>
-</tr>
-<tr>
-<td><strong>EU Annex 11</strong></td>
-<td>The European counterpart to Part 11</td>
-</tr>
-<tr>
-<td><strong>ALCOA+</strong></td>
-<td>A checklist of properties regulated data must have: attributable, legible, contemporaneous, original, accurate, plus complete, consistent, enduring, available</td>
-</tr>
-<tr>
-<td><strong>Validation</strong></td>
-<td>Producing evidence that the project specified what the system should do, built to that, and verified it</td>
-</tr>
-<tr>
-<td><strong>CSV / CSA</strong></td>
-<td>The two names for validating software in this industry; CSA is the FDA's more recent risk-based framing</td>
-</tr>
-<tr>
-<td><strong>URS</strong></td>
-<td>User Requirements Specification: the controlled document holding approved requirements</td>
-</tr>
-<tr>
-<td><strong>RTM</strong></td>
-<td>Requirements Traceability Matrix: requirement to design to test to result, for every requirement</td>
-</tr>
 <tr>
 <td><strong>Tracker</strong></td>
 <td>The issue tracker holding work items such as requirements, with their priority and assignee. Where the project approves in the tracker, it also holds the approvals. VOGON 0.1 is tested with Jira</td>
@@ -1000,12 +948,10 @@ unambiguous, testable, uniquely identified and traceable.</p>
 <h2 id="who-signs-what">Who signs what<a class="headerlink" href="#who-signs-what" title="Permanent link">&para;</a></h2>
 <p>A validated system's documents are signed by roles named in the validation
 plan, as the project process files state them. The requirement approver is
-the role named in <code>requirements.md</code> "Approval", or the Product Owner
-(<code>product_owner</code> in <code>vogon.yaml</code>) when it names none
-(<code>src/vogon/references/lifecycle.md</code> "Requirement approver"). <code>vogon.yaml</code> lists
-the people who hold each role, so records and generated documents name the
-role and never the person. The roles below are common ones; a project uses the
-roles its plan names.</p>
+defined in <code>src/vogon/references/lifecycle.md</code> "Requirement approver".
+<code>vogon.yaml</code> lists the people who hold each role, so records and generated
+documents name the role and never the person. The roles below are common ones;
+a project uses the roles its plan names.</p>
 <table>
 <thead>
 <tr>
@@ -1016,41 +962,6 @@ roles its plan names.</p>
 </thead>
 <tbody>
 <tr>
-<td><strong>System Owner</strong></td>
-<td>One named person on the IT side. Answers for the software for as long as it runs: available, supported, secure, and changed only through change control</td>
-<td>Signs the technical documents and chairs the change control board. Must be held by a named person at release</td>
-</tr>
-<tr>
-<td><strong>Business Process Owner</strong></td>
-<td>One named person from the business side who knows how the work is done and answers for that process</td>
-<td>Decides the finished system is fit to use. Must be held by a named person at release</td>
-</tr>
-<tr>
-<td><strong>IT Quality Manager</strong></td>
-<td>One named person outside the build team. Checks that the validation process was followed: documents exist, were approved before use, and agree with each other</td>
-<td>Signs the validation plan and the summary report. Must be independent of the people building the system</td>
-</tr>
-<tr>
-<td><strong>Business Quality Manager</strong></td>
-<td>One named person outside the build team, on the business side. Checks that the process the system supports still complies</td>
-<td>Signs alongside the IT Quality Manager, under the same independence rule</td>
-</tr>
-<tr>
-<td><strong>Change control board</strong></td>
-<td>A standing group that meets after release. For each proposed change it decides whether the change is allowed and what has to be re-tested before it ships</td>
-<td>The mechanism by which a validated system is allowed to change. Required once the system is live</td>
-</tr>
-<tr>
-<td><strong>Validation lead</strong></td>
-<td>One named person who writes the validation plan and the summary report and assembles the evidence into a package someone can audit</td>
-<td>Author, not approver</td>
-</tr>
-<tr>
-<td><strong>Subject Matter Expert</strong></td>
-<td>Anyone who knows the domain or the technology well enough to write or review a document. Not an appointment</td>
-<td>Writes and reviews documents. Never approves them, because an approver may not be the author</td>
-</tr>
-<tr>
 <td><strong>Product Owner</strong></td>
 <td>One named person who owns the backlog and decides what gets built next</td>
 <td>Approves the requirements where <code>requirements.md</code> names this role or no role, with <code>vogon:approve</code> or in the tracker. <code>vogon.yaml</code> lists the holders under <code>product_owner</code></td>
@@ -1058,22 +969,10 @@ roles its plan names.</p>
 <tr>
 <td><strong>Test Lead</strong></td>
 <td>One of the engineers, named to review the test procedures</td>
-<td>Approves the test procedures and test documents the validation plan assigns to this role, as <code>tests.md</code> and <code>documents.md</code> state. Never approves test procedures they wrote</td>
-</tr>
-<tr>
-<td><strong>Code reviewer</strong></td>
-<td>Any engineer other than the author of a change</td>
-<td>Approves the change on the repository host before it merges</td>
+<td>Approves the test procedures and test documents the validation plan assigns to this role, as <code>tests.md</code> and <code>documents.md</code> state</td>
 </tr>
 </tbody>
 </table>
-<p>The approver of a document answers for it and may not be its author. One
-person may hold several roles, provided Quality is independent of the people
-building the system and nobody approves their own work.</p>
-<p>An electronic signature is not a typed name or a pasted image. The signer
-re-enters their own credentials, and what is stored against that version of
-that record is their printed name, the date and time, and what the signature
-means: authored, reviewed or approved. It cannot be moved onto a later edit.</p>
 <h2 id="where-these-terms-come-from">Where these terms come from<a class="headerlink" href="#where-these-terms-come-from" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>ISO/IEC/IEEE 29148:2018</strong>, the requirements engineering standard:

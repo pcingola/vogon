@@ -40,7 +40,7 @@ performed by a machine account" is a constraint. Prefix `CON-`.
 and what the choice commits the project to. Choosing *not* to build something is
 a decision. Prefix `DEC-`.
 
-The checked summary or held document a record came from is a source
+The reviewed summary or held document a record came from is a source
 ([Sources](sources.md)). Records cite it; it is never a record itself.
 
 ## Verbs
@@ -52,8 +52,7 @@ binding, so an ordinary "must" or "should" in prose carries no weight.
 | Word | Means |
 | --- | --- |
 | **MUST**, **MUST NOT** | A requirement. Binding. The only form a requirement record is written in |
-| **SHOULD**, **SHOULD NOT** | A recommendation. Not binding, and not a requirement |
-| **MAY** | Permission |
+| **SHOULD**, **MAY** | Not used in a record. A statement in this form is not a requirement |
 | *(no modal verb)* | A statement of fact, about the world or about something outside the project's control |
 
 "Results imported into the test manager sometimes arrive without a build
@@ -64,22 +63,10 @@ VOGON writes MUST, not "shall". ISO/IEC/IEEE 29148 uses "shall"; GAMP 5, EU
 Annex 11 and 21 CFR Part 11 prescribe no modal verb, only that a requirement be
 unambiguous, testable, uniquely identified and traceable.
 
-## Compliance terms
+## Systems
 
 | Term | What it is |
 | --- | --- |
-| **GxP** | The umbrella label for regulations covering work a regulator relies on |
-| **ICH** | The body that writes the guidelines the FDA, EMA and others adopt |
-| **ISPE** | A pharmaceutical engineering industry association |
-| **GAMP 5** | ISPE's guide to validating a computerised system so an inspector accepts it. Second Edition, 2022. A guide, not a law |
-| **GAMP category 5** | Custom-written software, the category with the most scrutiny |
-| **21 CFR Part 11** | The US regulation on electronic records and electronic signatures |
-| **EU Annex 11** | The European counterpart to Part 11 |
-| **ALCOA+** | A checklist of properties regulated data must have: attributable, legible, contemporaneous, original, accurate, plus complete, consistent, enduring, available |
-| **Validation** | Producing evidence that the project specified what the system should do, built to that, and verified it |
-| **CSV / CSA** | The two names for validating software in this industry; CSA is the FDA's more recent risk-based framing |
-| **URS** | User Requirements Specification: the controlled document holding approved requirements |
-| **RTM** | Requirements Traceability Matrix: requirement to design to test to result, for every requirement |
 | **Tracker** | The issue tracker holding work items such as requirements, with their priority and assignee. Where the project approves in the tracker, it also holds the approvals. VOGON 0.1 is tested with Jira |
 | **Test manager** | The system holding test cases, test runs and results, which produces the coverage and traceability reports. VOGON 0.1 is tested with Xray. A project may have none |
 | **Repository host** | The service holding the git repository and reviewing changes before they merge. VOGON 0.1 is tested with GitHub |
@@ -97,34 +84,15 @@ unambiguous, testable, uniquely identified and traceable.
 
 A validated system's documents are signed by roles named in the validation
 plan, as the project process files state them. The requirement approver is
-the role named in `requirements.md` "Approval", or the Product Owner
-(`product_owner` in `vogon.yaml`) when it names none
-(`src/vogon/references/lifecycle.md` "Requirement approver"). `vogon.yaml` lists
-the people who hold each role, so records and generated documents name the
-role and never the person. The roles below are common ones; a project uses the
-roles its plan names.
+defined in `src/vogon/references/lifecycle.md` "Requirement approver".
+`vogon.yaml` lists the people who hold each role, so records and generated
+documents name the role and never the person. The roles below are common ones;
+a project uses the roles its plan names.
 
 | Role | What this person normally does | Formal role in validation |
 | --- | --- | --- |
-| **System Owner** | One named person on the IT side. Answers for the software for as long as it runs: available, supported, secure, and changed only through change control | Signs the technical documents and chairs the change control board. Must be held by a named person at release |
-| **Business Process Owner** | One named person from the business side who knows how the work is done and answers for that process | Decides the finished system is fit to use. Must be held by a named person at release |
-| **IT Quality Manager** | One named person outside the build team. Checks that the validation process was followed: documents exist, were approved before use, and agree with each other | Signs the validation plan and the summary report. Must be independent of the people building the system |
-| **Business Quality Manager** | One named person outside the build team, on the business side. Checks that the process the system supports still complies | Signs alongside the IT Quality Manager, under the same independence rule |
-| **Change control board** | A standing group that meets after release. For each proposed change it decides whether the change is allowed and what has to be re-tested before it ships | The mechanism by which a validated system is allowed to change. Required once the system is live |
-| **Validation lead** | One named person who writes the validation plan and the summary report and assembles the evidence into a package someone can audit | Author, not approver |
-| **Subject Matter Expert** | Anyone who knows the domain or the technology well enough to write or review a document. Not an appointment | Writes and reviews documents. Never approves them, because an approver may not be the author |
 | **Product Owner** | One named person who owns the backlog and decides what gets built next | Approves the requirements where `requirements.md` names this role or no role, with `vogon:approve` or in the tracker. `vogon.yaml` lists the holders under `product_owner` |
-| **Test Lead** | One of the engineers, named to review the test procedures | Approves the test procedures and test documents the validation plan assigns to this role, as `tests.md` and `documents.md` state. Never approves test procedures they wrote |
-| **Code reviewer** | Any engineer other than the author of a change | Approves the change on the repository host before it merges |
-
-The approver of a document answers for it and may not be its author. One
-person may hold several roles, provided Quality is independent of the people
-building the system and nobody approves their own work.
-
-An electronic signature is not a typed name or a pasted image. The signer
-re-enters their own credentials, and what is stored against that version of
-that record is their printed name, the date and time, and what the signature
-means: authored, reviewed or approved. It cannot be moved onto a later edit.
+| **Test Lead** | One of the engineers, named to review the test procedures | Approves the test procedures and test documents the validation plan assigns to this role, as `tests.md` and `documents.md` state |
 
 ## Where these terms come from
 

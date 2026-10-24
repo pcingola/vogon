@@ -1,8 +1,7 @@
 # Records
 
-[Vocabulary](vocabulary.md) defines the four kinds of record. The rules a
-writing sub-agent and an evaluator apply to every record, including ids,
-paths, frontmatter fields and body blocks, are in
+[Vocabulary](vocabulary.md) defines the four kinds of record. The rules for
+every record, including ids, paths, frontmatter fields and body blocks, are in
 `src/vogon/references/records.md`. Every record also follows
 `src/vogon/references/writing.md`.
 
@@ -13,16 +12,15 @@ VOGON creates this layout under `vogon/` in a host project. This repository's
 
 | Path | Holds |
 | --- | --- |
-| `vogon/project/` | `vogon.yaml` and the process files derived from the validation plan ([Architecture](architecture.md#project-configuration-and-process-files)); `checklists/` holds the project's own versions of the default checklists |
+| `vogon/project/` | `vogon.yaml` and the process files derived from the validation plan (`src/vogon/references/process-files.md`); `checklists/` holds the project's own versions of the default checklists |
 | `vogon/requirements/<module>/` | Requirements `REQ-*.md`, each with its [state file](#state-file) `REQ-*.json` beside it, and the test procedures kept in the repository. A project without modules uses `vogon/requirements/` |
 | `vogon/facts/` | Domain facts |
 | `vogon/constraints/` | Constraints |
 | `vogon/decisions/` | Decisions |
 | `vogon/sources/` | Held copies of the documents records cite ([Sources](sources.md)) |
-| `vogon/plans/` | Plans for code, which the developers are asked to approve before the code is written; `done/` holds the spent ones |
+| `vogon/plans/` | Plans for code; `done/` holds the plans whose requirements have all been released |
 | `vogon/documents/<release>/` | Drafted documents for one release, where the project has no document system |
-| `vogon/logs/` | Loop logs. Gitignored unless the project commits them |
-| `vogon/tmp/` | Working files deleted before the skill finishes, such as downloaded transcripts and draft documents. Gitignored |
+| `vogon/tmp/` | Working files, such as downloaded transcripts and draft documents. Gitignored |
 
 Requirements are grouped by module. Facts, constraints and decisions are
 flat, because one is often cited by several modules.
@@ -34,22 +32,14 @@ body by people. Approval is not a field and not a status:
 `src/vogon/references/lifecycle.md` "Approval" states where an approval is
 recorded.
 
-`source` names the held documents a record came from, and `references` the
-documents that say how it is realised, such as the schema a decision settles.
-A path in `source` asserts that the document says what the record says, so
-only a passage that was read is cited.
+`source` lists the held documents a record came from. Each path in it asserts
+that the document says what the record says, so only a passage that was read
+is cited.
 
-`status` records whether the project is committed to the statement. A record
-is never deleted: a withdrawn or superseded record keeps its file and its id.
-Build progress is in the state file and the passing tests.
-
-A fact carries `as_of`, the date it was observed, so that it can be checked
-again.
+`status` records whether the project is committed to the statement. Build
+progress is in the state file and the passing tests.
 
 ## Requirement
-
-`**Out of scope.**` names what the requirement does not cover, so that nobody
-builds or tests it. The acceptance criteria are approved with the requirement.
 
 ```markdown
 ---
@@ -90,17 +80,12 @@ barcode that a scanner reads as `S-2026-00417`.
 ## State file
 
 Each requirement has a state file beside its markdown file, named for the same
-id with `.json`. It records every step done to the requirement, in order, and
-entries are appended and never edited. A change to `REQ-*.md` after it was
-drafted, including a withdrawal or a supersession, is a `changed` entry. The
+id with `.json`. It records every step done to the requirement, in order. The
 entries and their fields are defined in `lifecycle.md` "State file".
 
 When an entry and the pull request, commit or tracker item it names differ, the
-pull request, commit or tracker item is correct, except for approvals
-(`src/vogon/references/common.md` "Start of every skill"). Where no tracker
-holds approvals, an approval is an `approved` entry on the default branch. Where
-a tracker holds approvals, the state file holds no `approved` entry and the
-tracker item alone records the approval (`lifecycle.md` "Approval").
+linked item is correct. For approvals, `lifecycle.md` "Approval" states which
+record holds them (`src/vogon/references/common.md` "Start of every skill").
 
 ## Identifiers
 

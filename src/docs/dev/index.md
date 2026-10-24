@@ -1,7 +1,5 @@
 # Developer guide
 
-Documentation for people working on VOGON itself.
-
 ## Principles
 
 1. VOGON helps and gets out of the way. It does not impose heavy workflows or

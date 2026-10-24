@@ -2,8 +2,7 @@
 
 A record cites the documents it came from, and those documents are held in
 `vogon/sources/` so that the citation can be checked years later. The filing
-rules a writing sub-agent and an evaluator apply are in
-`src/vogon/references/sources.md`.
+rules are in `src/vogon/references/sources.md`.
 
 ## Location and name
 
@@ -35,13 +34,13 @@ support that.
 
 ## Meetings, mail and chat
 
-A meeting, mail thread or chat channel is held only as a checked summary. A
+A meeting, mail thread or chat channel is held only as a reviewed summary. A
 transcript holds personal remarks and discussion unrelated to the project,
 and the meeting system keeps it under its own retention rule. The downloaded
 transcript and messages are therefore kept in the gitignored `vogon/tmp/` and
 deleted before the skill commits.
 
-The summary is checked against the download before the download is deleted,
+The summary is reviewed against the download before the download is deleted,
 because a statement the source did not make cannot be found afterwards. A
 requirement drafted from a summary is binding once the requirement approver
 approves it; the meeting is only where it came from.

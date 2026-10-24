@@ -768,8 +768,7 @@
 <h1 id="sources">Sources<a class="headerlink" href="#sources" title="Permanent link">&para;</a></h1>
 <p>A record cites the documents it came from, and those documents are held in
 <code>vogon/sources/</code> so that the citation can be checked years later. The filing
-rules a writing sub-agent and an evaluator apply are in
-<code>src/vogon/references/sources.md</code>.</p>
+rules are in <code>src/vogon/references/sources.md</code>.</p>
 <h2 id="location-and-name">Location and name<a class="headerlink" href="#location-and-name" title="Permanent link">&para;</a></h2>
 <p>The directory is flat. A document's kind is in its frontmatter, not its
 directory, because a record cites a meeting summary and a standard the same
@@ -791,12 +790,12 @@ says what the original says and nothing shows it.</p>
 specific document says something, and a document edited after the fact cannot
 support that.</p>
 <h2 id="meetings-mail-and-chat">Meetings, mail and chat<a class="headerlink" href="#meetings-mail-and-chat" title="Permanent link">&para;</a></h2>
-<p>A meeting, mail thread or chat channel is held only as a checked summary. A
+<p>A meeting, mail thread or chat channel is held only as a reviewed summary. A
 transcript holds personal remarks and discussion unrelated to the project,
 and the meeting system keeps it under its own retention rule. The downloaded
 transcript and messages are therefore kept in the gitignored <code>vogon/tmp/</code> and
 deleted before the skill commits.</p>
-<p>The summary is checked against the download before the download is deleted,
+<p>The summary is reviewed against the download before the download is deleted,
 because a statement the source did not make cannot be found afterwards. A
 requirement drafted from a summary is binding once the requirement approver
 approves it; the meeting is only where it came from.</p>

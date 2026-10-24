@@ -837,8 +837,6 @@
 <pre><code class="language-sh">uv sync
 git config core.hooksPath .githooks
 </code></pre>
-<p><code>core.hooksPath</code> points git at the hooks committed in <code>.githooks/</code>. It is a
-local setting, so it is set once per clone.</p>
 <p><code>pyproject.toml</code> exists for development only: it holds the dev dependency
 group.</p>
 <h2 id="building-the-site">Building the site<a class="headerlink" href="#building-the-site" title="Permanent link">&para;</a></h2>
@@ -849,8 +847,7 @@ make clean    # rm -rf docs/
 <p><code>docs/</code> is committed because Pages serves it from git. <code>.githooks/pre-commit</code>
 rebuilds and stages it when a commit touches <code>src/docs/</code>, <code>src/html/</code> or
 <code>mkdocs.yml</code>. A failed build aborts the commit, and <code>--strict</code> makes a broken
-link fail it. A hand edit inside <code>docs/</code>
-is overwritten by the next build.</p>
+link fail it.</p>
 <p>mkdocs and mkdocs-material are in the <code>dev</code> dependency group, run through
 <code>uv run --group dev</code>, and <code>uv.lock</code> fixes their versions. <code>uvx mkdocs</code> is not
 used: it resolves a fresh version each time, and the rendered output is
@@ -881,11 +878,10 @@ its theme CSS and JS into <code>docs/assets/</code>, which is unrelated to the t
     ├── requirements/            SKILL.md, references/
     ├── approve/                 SKILL.md
     ├── next/                    SKILL.md
-    ├── tests/                   SKILL.md, references/
+    ├── tests/                   SKILL.md
     ├── implement/               SKILL.md, references/
     └── release/                 SKILL.md
 </code></pre>
-<p><a href="architecture.html">Architecture</a> describes the skills.</p>
 <p>The version is in <code>plugin.json</code> and nowhere else. There is no wheel and no
 PyPI release.</p>
 <p>Each release is tagged <code>v&lt;version&gt;</code>, with the version read from <code>plugin.json</code>,
