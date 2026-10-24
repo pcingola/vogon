@@ -2,10 +2,7 @@
 
 Rules for filing a held document in `vogon/sources/`: a summary of a meeting,
 mail thread or chat channel, the validation plan, or a file attached to a
-mail, posted in a chat, shared in a meeting or named by the developer. A
-writing sub-agent applies them to what it files; an evaluating sub-agent
-reports each item a filed document fails. Every summary also follows
-`references/writing.md`.
+mail, posted in a chat, shared in a meeting or named by the developer.
 
 ## Location and name
 
@@ -43,10 +40,9 @@ reports each item a filed document fails. Every summary also follows
 - [ ] `participants`: on a summary only. Who was present at the meeting, as
       the meeting system lists them, or who wrote the mail or chat messages
       summarised.
-- [ ] `retrieved_from`: the system and the item's id in it, such as the
-      meeting's id in the meeting system or the message a file was attached
-      to, or a URL.
-- [ ] No other field, and no placeholder value in place of an absent field.
+- [ ] `retrieved_from`: a URL, or the system and the item's id in it, such
+      as a meeting id or the id of the message a file was attached to.
+- [ ] No other field.
 
 ## Authority
 
@@ -56,17 +52,17 @@ its `source` documents in the order of this table, strongest first.
 | `authority` | What it is | What a record may do with it |
 | --- | --- | --- |
 | `regulation` | A law or a regulator's binding requirement | Support a constraint. Cannot be traded away |
-| `standard` | A published standard or industry guide | Support a constraint or a requirement, and be argued with on the record |
+| `standard` | A published standard or industry guide | Support a constraint or a requirement. A record may disagree with it and state why |
 | `procedure` | A controlled procedure of the organisation | Support a constraint or a requirement |
 | `project` | A document produced by this project or a neighbouring one | Support a requirement or a decision |
 | `informal` | A summary of a meeting, mail or chat, or a deck someone wrote | Support a requirement. Never the only support for a domain fact |
 
-## A held document is never edited
+## Changes to a held document
 
 - [ ] A file already in `vogon/sources/` is not changed, including for a
       typo. A corrected or reissued document is a new file with its own date.
-- [ ] Records citing the earlier file keep citing it, or are changed in a
-      separate, deliberate edit.
+- [ ] Records that cite the earlier file keep citing it until a separate
+      change updates them.
 
 ## Meetings, mail and chat
 
@@ -78,19 +74,17 @@ its `source` documents in the order of this table, strongest first.
 - [ ] Every statement of the summary is supported by the downloaded source. A
       statement the source does not make is a defect in the summary.
 - [ ] The summary keeps every requirement, fact, constraint, decision and
-      unanswered question the source states that bears on requirements, with
+      unanswered question in the source that concerns the requirements, with
       the values given and who stated each.
 - [ ] A statement proposed and then rejected or changed later in the same
       source is summarised as it ended.
 - [ ] The summary holds nothing personal: no personal remarks, no health or
       HR matters, no opinions about people.
-- [ ] The summary is written in its own words, not the source's.
-- [ ] Records are drafted from the checked summary. The download is deleted
-      before the skill commits.
+- [ ] The downloaded files in `vogon/tmp/` are deleted before the skill
+      commits.
 
 ## Attached and shared files
 
 - [ ] A file attached to a mail, posted in a chat, shared in a meeting or
       named by the developer is filed as the original and its markdown copy,
       and kept.
-- [ ] Its date is the file's own date.

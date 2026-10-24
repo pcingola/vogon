@@ -1,14 +1,13 @@
 # Records
 
 Rules for writing and evaluating requirements, domain facts, constraints,
-decisions and test procedures in `vogon/`. A writing sub-agent applies them to
-what it drafts; an evaluating sub-agent reports each item a record fails.
-Every record also follows `references/writing.md`.
+decisions and test procedures in `vogon/`.
 
 ## Classifying a sentence
 
-Apply to each statement of a checked summary, a held document or the code, in
-this order. The first match wins.
+Classify each statement of a checked summary (`loop.md`), a held document or
+the code by these rules, in this order. The first rule that matches gives the
+kind.
 
 1. A test could be written that the system fails: **requirement**.
 2. True whether or not anything is built: **domain fact**.
@@ -35,9 +34,12 @@ this order. The first match wins.
       digits and is a module listed in `vogon/project/vogon.yaml`.
 - [ ] The file is named for the id alone and sits at
       `vogon/requirements/<module>/` (requirements and test procedures),
-      `vogon/facts/`, `vogon/constraints/` or `vogon/decisions/`.
-- [ ] An id is never reused or renumbered, also after withdrawal. A record is
-      never deleted: it is set to `withdrawn` or to `{superseded_by: <id>}`.
+      `vogon/facts/`, `vogon/constraints/` or `vogon/decisions/`. In a
+      project without modules, requirements and test procedures sit in
+      `vogon/requirements/`.
+- [ ] Once an id is on the default branch, it is never renumbered and never
+      reused, including after withdrawal. A record is never deleted: it is set to
+      `withdrawn` or to `{superseded_by: <id>}`.
 - [ ] A withdrawn record states the reason for the withdrawal in its body.
 - [ ] A merged decision is never edited. A later decision supersedes it, and
       both files stay.
@@ -56,8 +58,8 @@ this order. The first match wins.
       of its markdown file in `vogon/sources/`, strongest `authority` first:
       `regulation`, `standard`, `procedure`, `project`, `informal`. The
       authority table in `references/sources.md` says what each may support.
-- [ ] Each document in `source` was read at the passage, not listed for its
-      title. Where documents disagree, both are listed and the body states
+- [ ] Each document in `source` was read at the passage that supports the
+      record. Where documents disagree, both are listed and the body states
       the difference. Where only a meeting, mail or chat supports a claim, the
       body says so.
 - [ ] A record the project originated itself has no `source`.
@@ -70,16 +72,16 @@ this order. The first match wins.
 - [ ] `reviewed_by` and `reviewed_on` are absent until a person has read the
       record in detail. A sub-agent does not add them.
 - [ ] No frontmatter key and no body line states that the record was
-      approved or signed. Approvals are in the requirement's state file.
-- [ ] A field or block with nothing to say is absent.
+      approved or signed. `lifecycle.md` "Approval" states where approvals
+      are recorded.
 
 ## Body of every record
 
 - [ ] Starts with `# <id>: <title>`.
 - [ ] States the statement in one sentence with no rationale in it, then a
       short paragraph saying what it means and what it does not cover.
-- [ ] The example, where there is one, is marked `**Example.**`, is concrete,
-      and is illustration.
+- [ ] An optional example is marked `**Example.**`, uses concrete values, and
+      states no requirement of its own.
 - [ ] Suggested body lengths: requirement 300 words, fact 200, constraint
       200, decision 600. A record well over its length usually states two
       things and is split.
@@ -101,9 +103,7 @@ this order. The first match wins.
 - [ ] `**Out of scope.**` states behaviour a reader might expect that the
       requirement does not require. Absent where there is none.
 - [ ] `**Acceptance criteria.**` is present and states what must be tested.
-- [ ] Every expected value in the acceptance criteria is stated as a value
-      and is worked out from the requirement and its sources, never read off
-      a run of the code.
+      Its expected values follow "Expected values".
 
 ## Domain fact
 
@@ -124,17 +124,27 @@ this order. The first match wins.
 - [ ] The body has `**Context.**`, `**Options.**` with what each costs,
       `**Decision.**`, `**Consequences.**` including the bad ones, and
       `**Example.**` of the decision applied.
-- [ ] It states the choice, not the mechanism.
+- [ ] It states what was chosen and leaves the implementation to `references`.
 
 ## Test procedure
 
-Only where `vogon/project/tests.md` keeps test procedures in the repository.
-Where they are kept in the tracker, the tracker key is the id and no file is
-written.
+The rules below apply when `vogon/project/tests.md` keeps test procedures in
+the repository. Where they are kept in the tracker or the test
+manager, the item key is the id and no file is written.
 
 - [ ] At `vogon/requirements/<module>/TP-<MODULE>-<NUMBER>.md`, beside the
       requirements it verifies, with its id from `vogon id TP <module>`.
-- [ ] `verifies` lists the requirement ids.
-- [ ] The body is numbered steps, each with its expected result.
-- [ ] Each expected result is worked out from the requirement and its
-      sources, never read off a run of the code.
+- [ ] The frontmatter is `id`, `type: test_procedure`, `title`, `modules`,
+      `status: active` and `verifies`, the requirement ids. A draft has no
+      `id` field until the id is allocated.
+- [ ] The body is numbered steps. Each step has one action and its expected
+      result.
+- [ ] Each expected result follows "Expected values".
+
+## Expected values
+
+Applies to acceptance criteria, test procedure steps and tests.
+
+- [ ] An expected value is stated as a value.
+- [ ] It is worked out from the requirement and its sources. It is never read
+      off a run of the code, and never taken from the code or a test.

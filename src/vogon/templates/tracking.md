@@ -1,17 +1,12 @@
 ---
 plan_source: vogon/sources/<yyyy-mm-dd>_<slug>.md   # the held plan's markdown copy; omitted where no plan is held
-plan_version: <the version the plan states on itself>   # omitted where no plan is held
+plan_version: <the version printed in the plan>   # omitted where no plan is held
 derived_on: <yyyy-mm-dd>
 ---
 
 # Tracking
 
-<!-- Derived from the validation plan as ${CLAUDE_PLUGIN_ROOT}/references/process-files.md
-states. Write each topic as statements. End each statement with the plan
-section it rests on: (plan §<number> <heading>). Where the plan states nothing
-on a topic, or no plan is held, write nothing and report the gap; the developer's answer is
-recorded as: Not stated in the plan. Answered by <Name> <email> on
-<yyyy-mm-dd>: <answer>. Delete these comments. -->
+<!-- Derived with the procedure in ${CLAUDE_PLUGIN_ROOT}/references/process-files.md. The writing sub-agent deletes every comment. -->
 
 ## Controlled and exempt work types
 
@@ -19,7 +14,7 @@ recorded as: Not stated in the plan. Answered by <Name> <email> on
 
 ## Item types
 
-<!-- The tracker item type that holds a requirement, a defect and a test procedure, by its name in the tracker as the developer confirmed it. Cite the plan section. -->
+<!-- For a requirement, a defect and a test procedure, the tracker item type that holds it, by its name in the tracker as the developer confirmed it. Cite the plan section. -->
 
 ## Fields
 
@@ -39,7 +34,7 @@ recorded as: Not stated in the plan. Answered by <Name> <email> on
 
 ## Test manager item types
 
-<!-- Only where vogon.yaml names a test manager. The test manager item type that holds a test and a test procedure, by its name in the test manager as the developer confirmed it. Cite the plan section. -->
+<!-- Only where vogon.yaml names a test manager. For a test and a test procedure, the test manager item type that holds it, by its name in the test manager as the developer confirmed it. Cite the plan section. -->
 
 ## Test manager fields
 

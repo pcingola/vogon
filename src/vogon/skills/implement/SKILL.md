@@ -1,162 +1,133 @@
 ---
 name: implement
-description: Plans approved requirements, then writes and checks their code, tests and docs, and opens the pull request. TRIGGER when: user says implement REQ-*, plan REQ-*, write the automated tests for REQ-*, or names vogon/plans/plan_*.md.
+description: Plans requirements, then writes and checks their code, tests and docs, and opens the pull request. TRIGGER when: user says implement REQ-*, plan REQ-*, write the automated tests for REQ-*, or names vogon/plans/plan_*.md.
 ---
 
 # vogon:implement
 
-Turns one or more approved requirements into code, tests and documentation. A
-writing sub-agent writes a plan, the developers approve it, and the main agent
-then has each part of the plan written and checked, runs the project's test
-suite, and opens the pull request. Use it when a developer asks to implement or
-plan requirements, or names an existing plan.
+Turns one or more requirements into code, tests and documentation. A writing
+sub-agent writes a plan, the developers are asked to approve it, and the main
+agent then has each part of the plan written and checked, runs the project's
+test suite, and opens the pull request. Use it when a developer asks to
+implement or plan requirements, or names an existing plan.
 
-Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-skill reads, the loop, sub-agent prompts, systems by role, actions never taken, stops and commands.
+Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first.
 
 ## Inputs
 
 - One or more requirement ids, or the path of an existing plan in
   `vogon/plans/`. A plan names its requirements.
+- `vogon/project/requirements.md`: the requirement approver.
 - `vogon/project/tests.md`, for test procedures and its topic "Running the
-  test suite". Derive it first if it is missing, as `common.md` states.
-- `vogon/project/tracking.md`, where `common.md` "Approval of a requirement"
-  requires it.
+  test suite".
+- `vogon/project/tracking.md`, where `vogon.yaml` names a tracker.
 - The test procedures of the requirements, where `tests.md` keeps them.
 - The host project's code, tests and documentation.
-- The checklists `test-checklist.md` and `code-checklist.md`, read as
-  `common.md` "Project checklists" states.
+- The checklists `test-checklist.md` and `code-checklist.md` (`loop.md`
+  "Project checklists").
 
 ## Steps
 
-1. If requirement ids were given and a pushed branch that is not merged
-   holds a `planned` entry for one of them, report it and take that branch
-   and its plan as if the plan had been given. If a plan was given and the
-   plan or its `planned` entries are on a pushed branch that is not merged,
-   check out that branch as the working branch. Otherwise create a working
-   branch from the default branch. Every later commit is on it. Do the start-of-skill reads in `common.md`. A requirement that is not
-   approved, as `common.md` "Approval of a requirement" defines it, is not
-   planned: report it, name the Product Owner as the role that approves it, and continue
-   with the others. If none remain, stop. Where `tests.md` says test
-   procedures are written before the tests and a requirement has none, report
-   the gap.
-2. If no plan was given, go to step 3. If a plan was given and each
-   requirement's state file has a `planned` entry for that plan whose commit
-   holds the plan as it is now, go to step 6. Otherwise the plan is stale or
-   not approved: start the plan writer with that plan to revise it, then go
-   to step 4.
-3. Start a writing sub-agent, the plan writer, to write
+1. Choose the working branch:
+   - Requirement ids given, and a pushed branch that is not merged holds a
+     `planned` entry for one of them: report that branch, and take it and its
+     plan as if the plan had been given.
+   - Plan given, and the plan or its `planned` entries are on a pushed branch
+     that is not merged: check out that branch as the working branch.
+   - Otherwise: create a working branch (`common.md` "Working branch").
+2. Do the steps of `common.md` "Start of every skill", with the process files
+   the Inputs name. Report each requirement that is not approved or whose
+   approval is stale, in the session and in the plan's Summary
+   (`lifecycle.md` "Missing approval"). Plan it with the others. When `tests.md` requires test
+   procedures before the tests, report each requirement that has none.
+3. If no plan was given, start a writing sub-agent, the plan writer, to write
    `vogon/plans/plan_<slug>.md` in the format of
    `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/plan-format.md`. Give it
    the requirements, their state files, the test procedures, the code it
-   touches and `tests.md`.
-4. Start the plan evaluators (see Loops) and run the loop as `common.md`
-   states. A question only a developer can answer goes to the
-   developer running the skill, and the answer goes to the writing sub-agent.
-5. Stop for the developers' review of the plan. Tell them the plan path and
-   the findings left open. A change a developer asks for goes to the writing
-   sub-agent and through step 4 again. Write no code before a developer
-   explicitly approves the plan. On that approval:
-   commit the plan on the working branch, push the branch, and append a
-   `planned` entry to each requirement's state file (`common.md` "State-file
-   entries"). Commit and
-   push the state files.
+   touches and `tests.md`. If a plan was given, compare it with the plan in
+   the commit of each requirement's `planned` entry:
+   - every requirement has such an entry and the plan is unchanged: report
+     each entry with no `approved_by`, and go to step 6;
+   - otherwise the plan has changed: give it to the plan writer to revise.
+4. Start the plan evaluators (Loops) and run the review loop (`loop.md`). Ask
+   the developer each question only a developer can answer before the plan
+   is presented; the plan writer records the answer under Decisions.
+5. Present the plan to the developers and ask them to approve it. Tell them
+   the plan path and the findings left open. Write no code before a
+   developer answers. A developer approves the plan, asks for a change, or
+   tells the skill to continue without approval.
+   - A change goes to the plan writer and through step 4 again.
+   - On approval, or on the instruction to continue: commit the plan on the
+     working branch, push the branch, and append a `planned` entry to each
+     requirement's state file (`lifecycle.md` "State file"). Commit and push
+     the state files.
 6. Follow the plan. For each part, start a writing sub-agent that writes the
    part's code, tests and documentation. Give it the plan, the part's number,
-   the requirements and their acceptance criteria, the test procedures, and the code the part
-   touches. Start parts that do not depend on each other in parallel. The
-   sub-agent writes each test and its expected values from the requirement and
-   its acceptance criteria, never from a run of the code, and marks each test
-   with its requirements and procedures as `plan-format.md` states. It calls
-   only the interfaces the plan names. Where the part needs an interface the
-   plan does not name, the sub-agent reports it and does not invent one; the
-   plan is changed through steps 4 and 5.
-7. When a part is written, start its evaluators (see Loops) and run the loop
-   for that part.
-8. Read each writing sub-agent's log and output against the plan. Send back
-   work that leaves its part, does less than its part, or changes what the
-   plan does not name. Log each decision in the main log.
-9. Run the project's test suite as `tests.md` topic "Running the test suite"
-   states. Where that topic states nothing, it is a gap: ask the developer and
-   record the answer as `process-files.md` states. Give each failure to the writing
-   sub-agent of the part it concerns. The sub-agent fixes the code. It does not
-   delete, skip or weaken a test, or mark it as an expected failure, to make
-   the run pass. It changes an expected value only when the value does not
-   follow from the requirement, and cites the requirement text in its log.
-   Where the requirement itself is wrong, the sub-agent reports it; the
-   requirement is corrected and approved again before the test changes. The part's evaluators check the
-   changed part again. Repeat until all tests pass; the round limit in
-   `common.md` applies.
-10. Commit the code, tests and documentation on the working branch. Each
-    commit message names the requirements it implements. Push, and open the
-    pull request on the repository host. If the branch already has an open
-    pull request, push to it instead of opening another. The description names the plan and
-    the requirements, states the test run and its result, and states the loops
-    run, their rounds and the findings left open, as `common.md` states.
-11. Append an `implemented` entry to each requirement's state file (`common.md`
-    "State-file entries"). Commit and push it on the same branch. Tell the developer that a
-    person approves the pull request on the repository host.
+   the requirements and their acceptance criteria, the test procedures, and
+   the code the part touches. Start parts that do not depend on each other in
+   parallel. The sub-agent works out each expected value (`records.md`
+   "Expected values") and marks each test (`markers.md`). It
+   calls only the interfaces the plan names. Where the part needs an
+   interface the plan does not name, the sub-agent reports it and does not
+   invent one; the plan is changed through steps 4 and 5.
+7. When a part is written, start its evaluators (Loops) and run the review
+   loop for that part.
+8. Read each writing sub-agent's log and output against the plan. Return work
+   to its writer when it changes files outside its part, omits something its
+   part lists, or changes something the plan does not name. Log each
+   decision in the main log.
+9. Run the test suite with the command in `tests.md` "Running the test
+   suite". When that topic is empty, ask the developer and record the answer
+   (`process-files.md` step 6). Give each failure to the writing sub-agent of
+   the part it concerns. The sub-agent fixes the code, and changes a test only
+   where `test-checklist.md` allows it. Where the requirement
+   itself is wrong, the sub-agent reports it.
+   - With the developer's agreement, the requirement is changed
+     (`lifecycle.md` "Change to an approved requirement"). The test follows
+     the changed text. Report that the requirement needs approval again.
+   - Without that agreement, the test stays on the current text, and the
+     finding is reported.
+   The part's evaluators check the changed part again. Repeat until all tests
+   pass or the round limit is reached (`loop.md` "Levels and stop rules").
+10. Commit the code, tests and documentation on the working branch, with
+    commit messages that name the requirements (`markers.md`). Push, and
+    open the pull request on the repository host. The description names the
+    plan and the requirements, states the test run and its result, and
+    reports a plan that is not approved.
+11. Append an `implemented` entry to each requirement's state file
+    (`lifecycle.md` "State file"). Commit and push it on the same branch.
 
-### Steering by the developer
+### Instructions from the developer
 
-The developer may steer while code is written, or leave the skill to run.
-Without instructions, the skill runs the plan to the end.
-
-- Stop: the main agent stops starting sub-agents, lets running ones finish,
-  and reports the state of each part.
-- Review each part: after each part's loop, stop and show the part to the
-  developer. The next part starts when the developer says so.
-- An instruction about a part, such as a data structure to use or an approach
-  to drop: pass it to the sub-agents it concerns and log it in the main log
-  with the developer's words. An instruction that changes what the plan states
-  goes to the plan's writing sub-agent, and the changed plan goes through
-  steps 4 and 5 again before the work it changes continues. Work the change
-  does not touch continues.
+An instruction that changes what the plan states goes to the plan writer, and
+the changed plan goes through steps 4 and 5 again before the work it changes
+continues.
 
 ## Loops
 
 | Writing sub-agent | Produces | Evaluators | Checklist or perspective |
 | --- | --- | --- | --- |
-| Plan writer | `vogon/plans/plan_<slug>.md` | Plan against the requirements | Every acceptance criterion is covered by a part and a test; no part goes beyond the requirements; the plan follows `plan-format.md` |
-| | | Plan against the code | The paths, modules and interfaces the plan names exist or are created by a part; the parts fit the code as it is; the plan reuses existing code; it lists the existing tests the change breaks; it states what happens to stored data; it names the data integrity and security risks; test conventions match the project's |
+| Plan writer | `vogon/plans/plan_<slug>.md` | Plan against the requirements | The format of `plan-format.md`, and its rules on criterion coverage and on nothing beyond the requirements |
+| | | Plan against the code | The rules of `plan-format.md` on paths and interfaces, the fit with the code as it is, reuse, broken tests, stored data, data integrity and security risks, and test conventions |
 | Part writer, one per part | The part's code, tests and documentation | Test checker | `test-checklist.md` |
 | | | Code reviewer (a sub-agent running Claude Code's `code-review` skill on the part's diff, without `--fix`) | Claude Code's code review, then `code-checklist.md`. VOGON has no code reviewer of its own |
 
-## Stops for a person
-
-- A plan: the developers review it, and a developer approves it before any
-  code is written.
-- An instruction from the developer while code is written, if the developer
-  gives one.
-- A finding that needs a choice: the developer running the skill, before the
-  pull request is opened. A finding on an approved requirement goes to the
-  Product Owner, as a change that needs approval again.
-- An approval: the pull request, approved by a person on the repository host.
-- A gap in the validation plan while `tests.md` or `tracking.md` is derived,
-  and confirmation of the tracker and test manager names read from an example
-  item: the developer.
-- A required input the developer did not give, such as the requirement ids
-  or the plan: the developer.
-
 ## Outputs
 
-| Path or system | Format | Written by |
-| --- | --- | --- |
-| `vogon/plans/plan_<slug>.md` | Markdown, in the format of `plan-format.md` | Plan writer |
-| Host project code, tests and documentation | As the plan states, in the project's conventions | Part writers |
-| `vogon/requirements/<module>/REQ-*.json` | `planned` and `implemented` entries, as `common.md` "State-file entries" states | Main agent |
-| `vogon/logs/<yyyymmdd_hhmmss>_<task>.log.md`, main log | As `common.md` states | Each sub-agent, main agent |
-| Repository host | A working branch with the plan commit, the code commits and the state-file commits; one pull request | Main agent |
-
-And any process file derived, per `process-files.md`.
+| Path or system | Format |
+| --- | --- |
+| `vogon/plans/plan_<slug>.md` | Markdown, in the format of `plan-format.md` |
+| Host project code, tests and documentation | As the plan states, in the project's conventions |
+| `vogon/requirements/<module>/REQ-*.json` | `planned` and `implemented` entries |
+| Repository host | A working branch with the plan commit, the code commits and the state-file commits; one pull request |
 
 ## Reference files
 
 | Sub-agent | Reads |
 | --- | --- |
+| Main agent | `${CLAUDE_PLUGIN_ROOT}/references/common.md`, `${CLAUDE_PLUGIN_ROOT}/references/loop.md`, `${CLAUDE_PLUGIN_ROOT}/references/lifecycle.md`, `${CLAUDE_PLUGIN_ROOT}/references/process-files.md` |
 | Every sub-agent | `${CLAUDE_PLUGIN_ROOT}/references/writing.md` |
-| Plan writer, plan evaluators | `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/plan-format.md`, `${CLAUDE_PLUGIN_ROOT}/references/conftest.md` |
-| Part writer | `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/plan-format.md`, `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/test-checklist.md`, `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/code-checklist.md` |
-| Test checker | `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/test-checklist.md` |
-| Code reviewer | `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/code-checklist.md` |
-
-Each checklist is replaced by the project's version as `common.md` "Project checklists" states.
+| Plan writer, plan evaluators | `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/plan-format.md`, `${CLAUDE_PLUGIN_ROOT}/references/markers.md` |
+| Part writer | `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/plan-format.md`, `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/test-checklist.md`, `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/code-checklist.md`, `${CLAUDE_PLUGIN_ROOT}/references/records.md`, `${CLAUDE_PLUGIN_ROOT}/references/markers.md` |
+| Test checker | `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/test-checklist.md`, `${CLAUDE_PLUGIN_ROOT}/references/records.md`, `${CLAUDE_PLUGIN_ROOT}/references/markers.md` |
+| Code reviewer | `${CLAUDE_PLUGIN_ROOT}/skills/implement/references/code-checklist.md`, `${CLAUDE_PLUGIN_ROOT}/references/markers.md` |

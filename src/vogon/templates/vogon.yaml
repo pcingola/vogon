@@ -7,25 +7,23 @@
 # Remove a key that does not apply. Do not write a placeholder such as N/A.
 
 # The system that fills each role, by product name. Each role is optional:
-# omit a role the project does not have. The products below are examples.
+# omit a role the project does not have.
 systems:
-  repository_host: GitHub
-  # tracker: Jira               # or GitHub Issues
-  # test_manager: Xray          # omit where there is none: vogon trace builds the matrix
-  # document_system: <the project's controlled document system>
-  #                             # omit where there is none: documents stay in the repository
-  # meetings: Teams             # or Google Meet
-  # mail: Outlook               # or Gmail
-  # chat: Teams                 # or Slack
+  repository_host: <product>
+  # tracker: <product>
+  # test_manager: <product>      # omit where there is none: vogon trace builds the matrix
+  # document_system: <product>   # omit where there is none: documents stay in the repository
+  # meetings: <product>
+  # mail: <product>
+  # chat: <product>
 
-# The people who hold each approval role, as git identities "Name <email>".
-# vogon approve reads product_owner: it warns, and still records the approval,
-# when the approver is not listed.
+# The holders of each approval role, under the plan's role names, as git
+# identities "Name <email>". The role that approves requirements is named in
+# vogon/project/requirements.md "Approval"; when it names none, it is
+# product_owner.
 roles:
   product_owner:
     - Alice Smith <alice@example.com>
-  # Add the other roles the validation plan names, under the plan's own role
-  # names, for example:
   # test_lead:
   #   - Bob Jones <bob@example.com>
   # platform_lead:
@@ -38,9 +36,5 @@ modules:
 
 # Project options.
 options:
-  # Commit the loop logs in vogon/logs/. Off by default, because the logs of
-  # the meeting, mail and chat loops quote their content.
+  # Commit the loop logs in vogon/logs/.
   commit_logs: false
-  # Allow mocks and mocking libraries in tests. Off unless the project
-  # authorizes them.
-  mocks_authorized: false

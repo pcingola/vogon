@@ -2,224 +2,81 @@
 
 Every VOGON skill reads this file before it starts.
 
+## Topic files
+
+Each topic has one file in `${CLAUDE_PLUGIN_ROOT}/references/`. A skill cites
+the file and section of each rule it applies.
+
+| File | Holds |
+| --- | --- |
+| `lifecycle.md` | The requirement approver; approval, change, withdrawal and supersession of a requirement; the `REQ-*.json` state file |
+| `records.md` | The format, ids and paths of records and test procedures; expected values |
+| `sources.md` | Held documents in `vogon/sources/` |
+| `process-files.md` | Deriving `vogon/project/*.md` from the validation plan |
+| `loop.md` | The review loop, logs, sub-agent prompts |
+| `markers.md` | Requirement ids in tests, commits and code; the host `conftest.py` lines |
+| `writing.md` | The writing standard for all prose a skill or sub-agent writes |
+
 ## Start of every skill
 
 1. Read `vogon/project/vogon.yaml`. If it does not exist, run `vogon:init`
    first.
-2. Read the project process files in `vogon/project/` that the skill needs.
-   Derive a missing file, and regenerate a file whose plan version is older
-   than the held validation plan, before the task, as
-   `${CLAUDE_PLUGIN_ROOT}/references/process-files.md` states.
+2. For each file in `vogon/project/` the skill needs, derive it if it is
+   missing or outdated (`process-files.md`). Read it.
 3. Read the requirements the task concerns, their `REQ-*.json` state files,
-   and the pull requests, commits and tracker items those files link. The
-   linked source counts over the state file, except an approval, which
-   "Approval of a requirement" decides. Report every difference.
-4. Do not assume that an earlier task ran. Tasks happen weeks apart, by
-   different developers, in any order. When one was skipped, do what still
-   applies and report the gap with the real dates, such as code merged with
-   no plan.
-5. Report every requirement changed since its latest approval, as "Approval
-   of a requirement" defines it. It needs approval again.
+   and the pull requests, commits and tracker items those files link. When a
+   pull request, commit or tracker item differs from the state file, the pull
+   request, commit or tracker item is correct, except for approvals
+   (`lifecycle.md` "Approval"). Report every difference.
+4. Do not assume that an earlier task ran. When one was skipped, do the steps
+   of the current task that do not depend on it. Report the skipped task with
+   the real dates, for example code merged with no plan.
+5. Report every requirement that needs approval again (`lifecycle.md`).
 
-## Approval of a requirement
+## Working branch
 
-- A tracker holds approvals when `tracking.md` states an approval transition
-  for the requirement item type. Otherwise `vogon approve` records them.
-  Whenever `vogon.yaml` names a tracker, read `tracking.md` to decide which
-  applies.
-- Where no tracker holds approvals, a requirement is approved when
-  `REQ-*.json` on the default branch has an `approved` entry after its latest
-  `changed` entry, if any. `vogon approve` writes that entry. Report an
-  `approved` entry that only an open pull request holds.
-- Where a tracker holds approvals, the tracker is the only record of them.
-  Read the requirement's item, by the `issue` key in `REQ-*.json`, through
-  the tracker. The requirement is approved when the item is in the approved
-  state and the transition `tracking.md` names as its approval is dated after
-  the latest `changed` entry, if any. No skill writes an `approved` entry or
-  copies an approval or text from the tracker into the repository. A
-  requirement with no `issue` key has not been sent to the tracker and is not
-  approved.
-- Where a tracker holds approvals and the requirement text in the item
-  differs from `REQ-*.md`, report the difference. The developer resolves it
-  as a change to the requirement.
-- A skill never changes an approved requirement without the agreement of the
-  developer running it. With that agreement it changes `REQ-*.md`, appends a
-  `changed` entry to `REQ-*.json` in the same pull request, and the pull
-  request lists the requirement as needing approval again.
-
-## Project checklists
-
-A skill's default checklists are in the skill's `references/` directory. Where
-the project has its own version at `vogon/project/checklists/<file name>`,
-read that file in place of the default.
-
-## State-file entries
-
-Append each entry to a `REQ-*.json` once and never edit it. Where the entry
-records a pull request, open the pull request first, then append the entry
-with its `pr`, commit and push to the same branch.
-
-A state file is `{"id": "<requirement id>", "steps": [<entry>, ...]}`.
-Every entry has `step` and `date`, `yyyy-mm-dd`, taken from
-`date '+%Y-%m-%d'` unless the entry states otherwise. `pr` is a pull request
-number, `commit` a commit hash, and a person is `Name <email>`.
-
-```json
-{"step": "drafted", "date": "<yyyy-mm-dd>", "pr": <number>, "issue": "<tracker key>"}
-{"step": "changed", "date": "<yyyy-mm-dd>", "pr": <number>, "issue": "<tracker key>"}
-{"step": "approved", "date": "<yyyy-mm-dd>", "by": "<Name> <email>", "via": "vogon approve"}
-{"step": "planned", "date": "<yyyy-mm-dd>", "commit": "<plan commit>", "plan": "vogon/plans/plan_<slug>.md", "approved_by": "<Name> <email>"}
-{"step": "test_procedures_written", "date": "<yyyy-mm-dd>", "pr": <number>}
-{"step": "implemented", "date": "<yyyy-mm-dd>", "pr": <number>, "commit": "<last code commit>"}
-{"step": "released", "date": "<yyyy-mm-dd>", "commit": "<release commit>", "release": "<release>", "pr": <number>}
-```
-
-- `drafted`: written by `vogon:requirements` for each new requirement. `pr`
-  is the pull request that adds it. `issue` only where the skill created a
-  tracker item.
-- `changed`: written by `vogon:requirements`, or any skill that changes
-  `REQ-*.md` with the developer's agreement. `pr` is the pull request that
-  changes `REQ-*.md`. `issue` only where `vogon:requirements` created the
-  requirement's first tracker item with this change; that entry is also
-  written for a requirement that is not approved.
-- `approved`: written by `vogon approve`, only where no tracker holds
-  approvals. It names no pull request or commit. `by` is the git identity
-  `vogon approve` reads, `date` the day it runs, and `via` is
-  `vogon approve`.
-- `planned`: written by `vogon:implement` when a developer approves the
-  plan. It names no pull request. `commit` is the commit that holds the plan,
-  and `approved_by` the approving developer's identity from
-  `git config user.name` and `git config user.email` in their session. A plan
-  approved again after a change gets a new entry.
-- `test_procedures_written`: written by `vogon:tests`. `pr` is the pull
-  request the skill opens.
-- `implemented`: written by `vogon:implement` after it opens the pull
-  request. `commit` is the last code commit.
-- `released`: written by `vogon:release`. `release` is the release name, and
-  `pr` the release pull request.
-
-## The loop
-
-Every skill that produces work runs it in a loop of rounds. A round is one
-pass of writing, evaluating and judging.
-
-- The main agent is the session the skill runs in. It starts sub-agents,
-  reads their logs, judges the work and decides whether another round runs.
-  It never writes the work. It can override an evaluator, because it sees the
-  requirements and every round.
-- A sub-agent does one task: write, check, review or judge. It runs in its
-  own context and is given every input it needs. Independent units of work
-  run in parallel.
-- A writing sub-agent produces or revises the work on the working branch. It
-  changes only the output files its prompt names. A revision fixes the
-  findings it was given and changes nothing else.
-- Every loop has at least one evaluating sub-agent. An evaluator takes one
-  perspective, such as one checklist, consistency with the code, or a reading
-  as the Product Owner. It reports findings, each with its evidence, and
-  never changes the work.
-- An evaluator applies every item of its checklist to the whole of every file
-  it is given, in every round. It goes through a table row by row, applying
-  every item to a row before the next row.
-- A finding is a failure against the evaluator's checklist or perspective. A
-  better wording, or content no item asks for, is not a finding.
-- A finding says what fails, not a rewrite, precisely enough that the writing
-  sub-agent can fix it without asking a question.
-
-A judge sub-agent assigns each finding a level if the loop has one;
-otherwise the main agent does. The main agent can change a level.
-
-| Level | Meaning | Effect |
-| --- | --- | --- |
-| high | The work fails its purpose, is wrong, or leads the reader to a wrong conclusion | Always fixed. Another round runs. A flaw in structure or concept means the work is rewritten. |
-| medium | The reader reaches the right conclusion but has to reread or guess | Fixed in the next round if the fix is small. Never starts a round on its own. |
-| low | Wording | Fixed only together with other changes. Never starts a round. |
-
-Stop rules:
-
-- An open high finding means another round. Open medium and low findings
-  alone do not.
-- The main agent may run a round for an error it sees itself. It may stop
-  before round 5 when the same high finding stays open across rounds; it
-  then reports the error as after 5 rounds.
-- After 5 rounds, stop and report an error that states each finding still
-  open and why it was not resolved.
-- A finding that needs a choice the loop cannot make goes to the person the
-  skill names for it, with its evidence. The loop continues with the rest of
-  the work.
-- Never edit a checklist, a project process file or `vogon.yaml` to clear a
-  finding.
-
-Logs:
-
-- Each sub-agent run writes its own log to
-  `vogon/logs/<yyyymmdd_hhmmss>_<task>.log.md` with its full output:
-  findings, decisions, what it changed. Its first lines state what it found
-  or changed and why.
-- An evaluator's log lists its findings one per line, as
-  `<file>:<line> | <item> | <what fails>`, or states `No findings.`
-- A writing sub-agent's log on a revision states, for each finding, the
-  change made or why it could not be made.
-- The main agent writes one entry in the main log in `vogon/logs/` for each
-  sub-agent run and each decision, immediately after it:
-  `- yyyymmdd hh:MM: <decision>. <what happened>. <why>.` Take the timestamp
-  from `date`; never estimate it. The entry quotes the text concerned and
-  cites the sub-agent log it rests on.
-- `vogon/logs/` is gitignored unless `options.commit_logs` in `vogon.yaml`
-  is true, because the logs of the meeting, mail and chat loops quote their
-  content. When it is true, every commit a skill makes includes the logs the
-  skill wrote.
-- Every pull request a skill opens states in its description which loops ran,
-  how many rounds each took, and the findings left open.
-
-## Sub-agent prompts
-
-Every sub-agent prompt names:
-
-- the task;
-- the reference files to read, as absolute paths with `${CLAUDE_PLUGIN_ROOT}`
-  expanded, including `${CLAUDE_PLUGIN_ROOT}/references/writing.md`;
-- the inputs: records, documents and code;
-- the checklist it applies;
-- the output files;
-- the path of its log;
-- the logs of earlier rounds.
-
-Sub-agents do not commit or push; the skill does. A sub-agent that reads a
-long file, such as an attached or shared file, reads it itself, so the file
-never enters the main agent's context.
+- A skill that writes to the repository creates a working branch from the
+  default branch before its first write. Every commit of the run goes on it.
+- A skill that ran `vogon:init` continues on init's working branch. Its
+  commits go in init's pull request.
+- When a skill must open a pull request and its branch has no commit, it
+  first makes an empty commit whose message names the requirements or the
+  release.
 
 ## Systems by role
 
-- Reach a role (tracker, test manager, document system, repository host,
-  meetings, mail, chat) only through the system `vogon.yaml` names for it.
-  Never use another connected server for that role, even one that offers the
-  same operations.
-- A role with no system in `vogon.yaml` is not configured. Where a
-  replacement exists, use it: with no test manager, `vogon trace` builds the
-  matrix; with no document system, documents are kept in the repository under
-  `vogon/documents/<release>/`; with no tracker holding approvals,
-  `vogon approve` records them. Where no replacement exists, tell the person
-  and skip the part of the task that needs the role.
-- In records and documents, name a role. Never name the person holding it or
-  the product filling it.
+The roles are the keys of `systems` in `vogon.yaml`: `repository_host`,
+`tracker`, `test_manager`, `document_system`, `meetings`, `mail` and `chat`.
+
+- Reach a role only through the system `vogon.yaml` names for it. Never use
+  another connected server for that role, even one that offers the same
+  operations.
+- A role with no system in `vogon.yaml` is not configured:
+
+| Role not configured | What the skill does |
+| --- | --- |
+| Test manager | `vogon trace` builds the traceability matrix |
+| Document system | Documents are kept in the repository in `vogon/documents/<release>/` |
+| Any other role | Report that the role is not configured, and skip the steps that use it |
 
 ## Actions VOGON never takes
 
-- Never transition an issue, a test issue or a document into a state that
-  records approval or signature, in any system.
+- Never move a tracker item, a test manager item or a document into a state
+  that records approval or signature, in any system.
 - Never approve a pull request, and never merge one past the repository
   host's review rule.
 - Never sign, or record a signature, in the document system.
-- These hold when the person asks for them and when the permissions would
-  allow them. Tell the person which role gives the approval and in which
-  system, and stop.
+- These rules hold even when the person asks for the action and the
+  permissions allow it. Tell the person which role gives the approval and in
+  which system, and do not take the action.
 - When a system refuses such a call, do not look for another tool or route to
   the same result.
 
 Two exceptions, each only on an explicit instruction from the person in their
 own session:
 
-- `vogon:approve` records the Product Owner's approval with `vogon approve`.
+- `vogon:approve` runs `vogon approve` to record the approval of the
+  requirement approver (`lifecycle.md`).
 - `vogon:implement` records a developer's approval of a plan in the `planned`
   entry of each requirement's state file.
 
@@ -227,28 +84,19 @@ own session:
 
 A skill stops for a person only for:
 
-- an approval: tell the role holder what is waiting and where;
-- a finding that needs a choice: it goes to the developer running the skill,
-  before the requirement is created or the pull request is opened; only a
-  finding on a requirement the Product Owner already approved goes back to
-  the Product Owner, as a change that needs approval again;
-- a plan for code, which the developers review and approve before any code
-  is written;
-- an instruction from the developer while code is written, if the developer
-  gives one;
-- a gap in the validation plan while a project process file is derived: the
-  developer answers, and the file records the answer with their name and the
-  date;
-- the tracker and test manager names read from example items while a project
-  process file is derived: the developer confirms them;
+- a finding that needs a choice: ask the developer running the skill before
+  the requirement is created or the pull request is opened;
+- a finding that an approved requirement is wrong: ask the developer to agree
+  to a change (`lifecycle.md` "Change to an approved requirement");
+- a plan for code: the developers are asked to approve it. A developer
+  approves it, asks for a change, or tells the skill to continue without
+  approval;
+- a gap in the validation plan, or confirmation of the names read from
+  example tracker and test manager items, while a process file is derived (`process-files.md`);
 - a required input the developer did not give: ask for it.
 
-Nothing else waits for confirmation.
-
-## Writing
-
-All prose a skill or sub-agent writes follows
-`${CLAUDE_PLUGIN_ROOT}/references/writing.md`.
+Nothing else waits for confirmation. A missing approval is reported, and the
+skill continues.
 
 ## Commands
 
@@ -257,6 +105,6 @@ no other commands.
 
 | Command | Does |
 | --- | --- |
-| `vogon id <type> <module>` | Prints the next unused record id, read from the working tree, every local and remote branch and the history after `git fetch`. With `--check`, reports each id new on the branch that the default branch or another local or remote branch also uses; the skill renumbers it before opening its pull request. |
-| `vogon approve <id>...` | Appends to each `REQ-*.json` an `approved` entry with the approver's git identity and the date. Warns, and still records, when `vogon.yaml` does not list the user as Product Owner. |
-| `vogon trace <results.xml>` | Joins the `req` and `procedure` markers and the results of one commit's JUnit XML into the traceability matrix: each requirement, its procedures and tests, their results, the commit, and every requirement with no test. |
+| `vogon id <type> <module>` | Prints the next unused record id, read from the working tree, every local and remote branch and the history after `git fetch`. With `--check`, reports each id added on the current branch that the default branch or another branch also uses. The skill renumbers each reported id before it opens its pull request: it takes a new id from `vogon id`, renames the file and changes every reference to the old id on the branch. |
+| `vogon approve --role <key> <id>...` | Appends to each `REQ-*.json` an `approved` entry with the approver's git identity and the date. Warns, and still records, when `vogon.yaml` does not list the user under `roles.<key>`. `<key>` defaults to `product_owner`. |
+| `vogon trace <results.xml>` | Reads the `req` and `procedure` properties and the results from the JUnit XML of one commit, and writes the traceability matrix: each requirement, its procedures and tests, their results, the commit, and every requirement with no test. |

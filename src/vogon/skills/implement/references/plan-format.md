@@ -4,7 +4,7 @@ The format of a plan for code, `vogon/plans/plan_<slug>.md`. The slug names
 the requirements or the feature, such as `plan_REQ-PRN-12.md`. The plan is a
 checklist of the parts to build and the tests that verify each part. It refers
 to the requirements and the code by id and path, and does not restate them. The
-developers approve it before any code is written.
+developers are asked to approve it before code is written.
 
 ## Sections, in this order
 
@@ -21,8 +21,7 @@ Omit a section only when nothing in it applies.
    as paths without line numbers, and the records the plan rests on, such as a
    decision or a constraint, by id.
 5. **Decisions.** One line per design choice the requirements leave open, in
-   the form "X, because Y". Name the rejected alternative when the rejection is
-   not evident.
+   the form "X, because Y". Name the rejected alternative.
 6. **Parts.** The checklist. One entry per part, each a unit one writing
    sub-agent builds. Each entry states:
    - what the part builds, in one or two sentences;
@@ -36,8 +35,8 @@ Omit a section only when nothing in it applies.
    - the parts it depends on, by number. A part with no dependency on another
      part can be built in parallel with it.
 7. **Verification.** How the project runs its test suite, as `tests.md` topic
-   "Running the test suite" states, and the manual checks a person makes where a part has
-   a visible surface that no test covers.
+   "Running the test suite" states, and the manual checks a person makes
+   where a part has a visible surface that no test covers.
 
 ## Rules
 
@@ -46,6 +45,8 @@ Omit a section only when nothing in it applies.
   exists only to support another part, and says which.
 - Nothing in the plan goes beyond the requirements. A part that builds what no
   requirement asks for is removed.
+- The paths, modules and interfaces the plan names exist or are created by a
+  part, and the parts fit the code as it is.
 - The plan reuses existing code and does not write a second version of it.
 - The plan lists the existing tests the change breaks, and what changes in
   each.
@@ -55,16 +56,12 @@ Omit a section only when nothing in it applies.
   risks it carries for them.
 - Tests follow the host project's existing test conventions: framework, layout
   and style.
-- Each test names its requirements in `@pytest.mark.req("<id>", ...)` and,
-  where procedures exist, its procedures in
-  `@pytest.mark.procedure("<id>", ...)`. Where the host project lacks a change
-  that `${CLAUDE_PLUGIN_ROOT}/references/conftest.md` states, the plan
-  reports it as that file states and adds no part for it.
-- Requirement ids are not written in implementation code. Commits name them.
-- The plan describes design, not code. A code block of a few lines is allowed
+- Each test names its requirements and procedures in pytest markers
+  (`${CLAUDE_PLUGIN_ROOT}/references/markers.md`). When the host project
+  lacks the `conftest.py` lines or the marker registration of that file, the plan reports it and adds no part for it.
+- The plan describes the design in prose. A code block of a few lines is allowed
   only where prose cannot state an interface or a data structure.
-- The plan is finished or it is not. It holds no TBD, no open question and no
-  choice left to the reader ("either X or Y"). A question the code, the
-  records or the requirements answer is answered in the plan. A question only
-  a developer can answer is asked before the plan is presented for approval,
-  and the answer is written into Decisions.
+- The plan leaves no choice to the reader ("either X or Y"). A question the
+  code, the records or the requirements answer is answered in the plan. A
+  question only a developer can answer is asked before the plan is presented
+  for approval, and the answer is written into Decisions.

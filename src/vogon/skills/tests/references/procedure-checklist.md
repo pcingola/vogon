@@ -10,9 +10,9 @@ requirement or its source the finding rests on.
    step. Name each criterion no step covers.
 2. Each step has one action and one expected result. A step with two actions,
    or with no expected result, is a finding.
-3. Each expected value comes from the requirement or its sources. A value
-   that appears in neither, or that is taken from the code, a test or a run of
-   the code, is a finding. Quote the value and say where it appears.
+3. Each expected value is worked out
+   (`${CLAUDE_PLUGIN_ROOT}/references/records.md` "Expected values"). Quote a
+   failing value and say where it appears.
 4. A tester can carry out each step in the formal test environment that
    `tests.md` names, from the procedure alone: every input, precondition and
    location the step needs is stated, and nothing in it depends on the
