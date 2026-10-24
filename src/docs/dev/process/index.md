@@ -9,7 +9,7 @@ in order. Different requirements are at different steps at the same time.
 | 2 | [File the sources](requirements.md) | Checked summaries of meetings, mail and chat; filed documents with their markdown copies | `vogon:requirements` | |
 | 3 | [Draft and check the records](requirements.md) | Requirements with acceptance criteria and risk fields; facts, constraints and decisions | `vogon:requirements` | |
 | 4 | [Send the requirements for approval](requirements.md) | The pull request with `REQ-*.md` and `REQ-*.json`; tracker items where a tracker is configured | `vogon:requirements` | |
-| 5 | [Approve the requirements](approval.md) | An `approved` entry in `REQ-*.json` | `vogon:approve` | Product Owner |
+| 5 | [Approve the requirements](approval.md) | An `approved` entry in `REQ-*.json`, or the tracker's approval transition where a tracker holds approvals | `vogon:approve` | Product Owner |
 | 6 | [Write the test procedures](test_procedures.md) | Test procedures, where `tests.md` requires them | `vogon:tests` | The roles `tests.md` names |
 | 7 | [Choose a requirement](planning.md) | The ready and blocked lists; the tracker item assigned | `vogon:next` | |
 | 8 | [Plan](planning.md) | A checked plan, and a `planned` entry once approved | `vogon:implement` | A developer |

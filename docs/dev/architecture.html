@@ -1353,7 +1353,7 @@ requirements, tests and documents go through the same skills (<code>DEC-026</cod
 </tr>
 <tr>
 <td><code>vogon:approve</code></td>
-<td>Records the Product Owner's approval of the requirements they name, or syncs approvals from the tracker</td>
+<td>Records the Product Owner's approval of the requirements they name, where no tracker holds approvals</td>
 <td><a href="process/approval.html">Approving requirements</a></td>
 </tr>
 <tr>
@@ -1440,14 +1440,17 @@ included, so the developer confirms it is intended
 <p>The Product Owner approves requirements; <code>vogon.yaml</code> lists the holders under
 <code>product_owner</code>. Where no tracker holds approvals, <code>vogon approve</code> records the
 approval on the Product Owner's explicit instruction. Where a tracker holds
-approvals, the Product Owner approves with the tracker's transition, and
-<code>vogon:approve</code> copies the approval and the approved text into <code>REQ-*.json</code> and
-<code>REQ-*.md</code> through a pull request. A skill works from a requirement's text only
-once its approval is synced, and reports a tracker approval not yet synced and
-an <code>approved</code> entry whose tracker item no longer shows approval. The procedure for
-both cases is on <a href="process/approval.html">Approving requirements</a>.</p>
-<p>A requirement is approved when <code>REQ-*.json</code> on the default branch has an
-<code>approved</code> entry after its latest <code>changed</code> entry. A skill changes an approved
+approvals, the Product Owner approves with the tracker's transition, and the
+tracker is the only record of the approval: a skill reads it from the item and
+nothing copies it into the repository. A skill reports requirement text in the
+tracker that differs from <code>REQ-*.md</code>, and the developer resolves it as a change
+to the requirement. The procedure is on
+<a href="process/approval.html">Approving requirements</a>.</p>
+<p>Where no tracker holds approvals, a requirement is approved when <code>REQ-*.json</code>
+on the default branch has an <code>approved</code> entry after its latest <code>changed</code>
+entry. Where a tracker holds approvals, it is approved when its item is in the
+approved state through a transition dated after the latest <code>changed</code> entry. A
+skill changes an approved
 requirement only with the developer's agreement, and appends a <code>changed</code> entry,
 so it needs approval again (<code>common.md</code> "Approval of a requirement").</p>
 <h2 id="state-of-a-requirement">State of a requirement<a class="headerlink" href="#state-of-a-requirement" title="Permanent link">&para;</a></h2>

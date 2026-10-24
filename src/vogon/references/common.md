@@ -27,15 +27,21 @@ Every VOGON skill reads this file before it starts.
   for the requirement item type. Otherwise `vogon approve` records them.
   Whenever `vogon.yaml` names a tracker, read `tracking.md` to decide which
   applies.
-- A requirement is approved when `REQ-*.json` on the default branch has an
-  `approved` entry after its latest `changed` entry, if any. `vogon approve`
-  writes that entry, or, where a tracker holds approvals, `vogon:approve`
-  copies it from the tracker with the approved text. Report an `approved`
-  entry that only an open pull request holds.
-- Where a tracker holds approvals, also read the item's status. Report an
-  approval the tracker shows that `REQ-*.json` does not yet hold, naming
-  `vogon:approve`, and an `approved` entry whose tracker item no longer shows
-  approval.
+- Where no tracker holds approvals, a requirement is approved when
+  `REQ-*.json` on the default branch has an `approved` entry after its latest
+  `changed` entry, if any. `vogon approve` writes that entry. Report an
+  `approved` entry that only an open pull request holds.
+- Where a tracker holds approvals, the tracker is the only record of them.
+  Read the requirement's item, by the `issue` key in `REQ-*.json`, through
+  the tracker. The requirement is approved when the item is in the approved
+  state and the transition `tracking.md` names as its approval is dated after
+  the latest `changed` entry, if any. No skill writes an `approved` entry or
+  copies an approval or text from the tracker into the repository. A
+  requirement with no `issue` key has not been sent to the tracker and is not
+  approved.
+- Where a tracker holds approvals and the requirement text in the item
+  differs from `REQ-*.md`, report the difference. The developer resolves it
+  as a change to the requirement.
 - A skill never changes an approved requirement without the agreement of the
   developer running it. With that agreement it changes `REQ-*.md`, appends a
   `changed` entry to `REQ-*.json` in the same pull request, and the pull
@@ -61,7 +67,7 @@ number, `commit` a commit hash, and a person is `Name <email>`.
 ```json
 {"step": "drafted", "date": "<yyyy-mm-dd>", "pr": <number>, "issue": "<tracker key>"}
 {"step": "changed", "date": "<yyyy-mm-dd>", "pr": <number>, "issue": "<tracker key>"}
-{"step": "approved", "date": "<yyyy-mm-dd>", "by": "<Name> <email>", "via": "<vogon approve or tracker name>"}
+{"step": "approved", "date": "<yyyy-mm-dd>", "by": "<Name> <email>", "via": "vogon approve"}
 {"step": "planned", "date": "<yyyy-mm-dd>", "commit": "<plan commit>", "plan": "vogon/plans/plan_<slug>.md", "approved_by": "<Name> <email>"}
 {"step": "test_procedures_written", "date": "<yyyy-mm-dd>", "pr": <number>}
 {"step": "implemented", "date": "<yyyy-mm-dd>", "pr": <number>, "commit": "<last code commit>"}
@@ -76,12 +82,10 @@ number, `commit` a commit hash, and a person is `Name <email>`.
   changes `REQ-*.md`. `issue` only where `vogon:requirements` created the
   requirement's first tracker item with this change; that entry is also
   written for a requirement that is not approved.
-- `approved`: written by `vogon:approve`. It names no pull request or
-  commit. Without a tracker, `by` is the git identity `vogon approve` reads,
-  `date` the day it runs, and `via` is `vogon approve`. With a tracker, `by`
-  is the user who performed the transition, as the tracker records them,
-  `date` the date of the transition, and `via` the tracker's name from
-  `vogon.yaml`.
+- `approved`: written by `vogon approve`, only where no tracker holds
+  approvals. It names no pull request or commit. `by` is the git identity
+  `vogon approve` reads, `date` the day it runs, and `via` is
+  `vogon approve`.
 - `planned`: written by `vogon:implement` when a developer approves the
   plan. It names no pull request. `commit` is the commit that holds the plan,
   and `approved_by` the approving developer's identity from

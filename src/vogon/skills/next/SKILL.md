@@ -44,10 +44,11 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
    `superseded_by`.
 3. Check each remaining requirement against the sources it links, as
    `common.md` states.
-   - Approval. Decide whether the requirement is approved, has a tracker
-     approval not yet synced, or needs approval again because a `changed`
-     entry follows its latest approval, as `common.md` "Approval of a requirement" states. The approval
-     is stale in the last case.
+   - Approval. Decide whether the requirement is approved, not approved, or
+     needs approval again because a `changed` entry follows its latest
+     approval, as `common.md` "Approval of a requirement" states. Where a
+     tracker holds approvals, read the approval from the tracker item. The
+     approval is stale in the last case.
    - Implemented. The requirement is implemented when an `implemented` step
      links a merged pull request or a commit on the default branch, and the
      step is dated on or after the latest approval. An `implemented` step
@@ -71,8 +72,8 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
    - Blocked: any condition of ready fails. Give each failing condition as a
      reason, from the data:
      - no approval;
-     - approval not synced; run `vogon:approve`; or, where an open pull
-       request holds the sync, sync pull request `<number>` not merged;
+     - not sent to the tracker, where a tracker holds approvals and
+       `REQ-*.json` has no `issue` key;
      - approval stale: `REQ-*.md` changed after the approval of `<date>`;
      - depends on `<id>`, not implemented; or depends on `<id>`, withdrawn or
        superseded;

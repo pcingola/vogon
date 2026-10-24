@@ -1,16 +1,17 @@
 ---
 name: approve
-description: Records the Product Owner's approval of named requirements in REQ-*.json, or syncs approvals from the tracker. TRIGGER when: user says "approve REQ-...", "approve the last 10 requirements", "sync approvals from the tracker".
+description: Records the Product Owner's approval of named requirements in REQ-*.json, in a project where no tracker holds approvals. TRIGGER when: user says "approve REQ-...", "approve the last 10 requirements".
 ---
 
 # vogon:approve
 
-Records approvals of requirements in their `REQ-*.json` state files. Where no
-tracker holds approvals, the Product Owner approves in their own Claude Code
-session, and the skill records the approval with `vogon approve`. Where a
-tracker holds approvals, the skill copies each approval and the approved text
-from the tracker into the repository. Use it when the Product Owner gives an
-approval instruction, or to bring the state files up to date with the tracker.
+Records the Product Owner's approval of requirements in their `REQ-*.json`
+state files, where no tracker holds approvals. The Product Owner approves in
+their own Claude Code session, and the skill records the approval with
+`vogon approve`. Where a tracker holds approvals, the approval is the
+tracker's transition, and this skill records nothing: it tells the Product
+Owner to approve in the tracker. Use it when the Product Owner gives an
+approval instruction.
 
 Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-skill reads, the loop, sub-agent prompts, systems by role, actions never taken, stops and commands.
 
@@ -19,29 +20,24 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
 - The person's instruction in this session.
 - `vogon/project/vogon.yaml`: the tracker, the repository host and the Product
   Owner list.
-- `vogon/project/tracking.md`, when `vogon.yaml` names a tracker: the item type
-  that holds a requirement, the fields that hold its text, and the transition
-  that records its approval.
+- `vogon/project/tracking.md`, when `vogon.yaml` names a tracker: whether the
+  tracker holds approvals, and the transition that records one.
 - The requirements concerned, `vogon/requirements/<module>/REQ-*.md` and
   `REQ-*.json`.
-- Where a tracker holds approvals, each requirement's tracker item, read
-  through the tracker, with its transition history and field history.
 
 ## Steps
 
 1. Do the start-of-skill reads in `common.md`. Read `tracking.md` only when
    `vogon.yaml` names a tracker. Before anything is derived or written, create
    a working branch from the default branch when `tracking.md` is missing or
-   older than the held plan, or when a tracker holds approvals, as `common.md`
-   "Approval of a requirement" states. Every later commit of the run goes on
-   it. Then derive a missing file, as
-   `${CLAUDE_PLUGIN_ROOT}/references/process-files.md` states.
+   older than the held plan. Every later commit of the run goes on it. Then
+   derive a missing file, as `${CLAUDE_PLUGIN_ROOT}/references/process-files.md`
+   states.
 2. Where a tracker holds approvals, as `common.md` "Approval of a requirement"
-   states, follow "A tracker holds approvals". Otherwise follow "No tracker
-   holds approvals". Never follow both in one run.
-
-### No tracker holds approvals
-
+   states, record nothing. Tell the Product Owner to approve each requirement
+   in the tracker with the transition `tracking.md` names, list the
+   requirements that are not approved as `common.md` defines it, with their
+   tracker keys, and go to step 8.
 3. Check the instruction. Act only on an explicit instruction from the person
    in this session that names the requirements, by id or as a set that
    resolves to them, such as "approve the last 10 requirements, then push".
@@ -69,48 +65,10 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/common.md` first. It holds the start-of-s
    rejected, report the rejection; never force the push. Where step 1 created
    a working branch, open a pull request for it, as `process-files.md` step 7
    states.
-8. Write one main log entry for the resolution and one for the recording, as
-   `common.md` states.
-
-### A tracker holds approvals
-
-3. If the person asks the skill to approve a requirement, do not record it.
-   Tell the Product Owner to approve it in the tracker with the transition
-   `tracking.md` names, and continue with the sync.
-4. Select the requirements: those the person names, or every `REQ-*.json`
-   with an entry that has an `issue` field. Report each active requirement
-   with no such entry: it has not been sent to the tracker.
-5. For each selected requirement, read its tracker item. For each transition
-   that `tracking.md` names as the approval of a requirement, that is dated
-   after the latest `changed` entry of `REQ-*.json`, if any, and that has no
-   `approved` entry with the same date and approver, on the default branch
-   or in an open pull request:
-   1. Take the approved text: the values of the fields `tracking.md` names
-      for the requirement text, the acceptance criteria and the risk fields,
-      as they were at the time of the transition. If the field history does
-      not show them at that time, record nothing for the requirement and
-      report it.
-   2. If the approved text differs from `REQ-*.md`, replace each block or
-      frontmatter field of `REQ-*.md` with the value of the tracker field that
-      holds it, word for word. If a value cannot be placed in one block or
-      field, record nothing for the requirement and report it to the
-      developer with both texts.
-   3. Append an `approved` entry to `REQ-*.json` as `common.md` "State-file
-      entries" states.
-   4. If the approver is not listed in `vogon.yaml` under the role
-      `tracking.md` names for the transition, report it.
-6. Report each tracker item that left the approved state after an approval
-   entry was recorded for it. Leave the entry as `common.md` "State-file
-   entries" states.
-7. If any file changed, commit the changed `REQ-*.md` and `REQ-*.json` files
-   on the working branch step 1 created, and open a pull request on the
-   repository host.
-   The description lists each requirement synced with its tracker key,
-   approver and date, quotes each text copied from the tracker with the text
-   it replaced, states that no loop ran on the records, and lists every
-   report from steps 4 to 6. A person merges it.
-8. Write one main log entry per requirement synced or reported, as
-   `common.md` states.
+8. Where step 1 derived a process file and no pull request is open for the
+   working branch, push it and open one, as `process-files.md` step 7 states.
+   Write one main log entry for the resolution and one for the recording, or
+   one for the report of step 2, as `common.md` states.
 
 ## Loops
 
@@ -123,15 +81,13 @@ derived in step 1 goes through the loop in `process-files.md`.
 
 ## Stops for a person
 
-- An approval. Where no tracker holds approvals and the instruction names no
-  requirements, tell the Product Owner which requirements wait for approval.
-  Where a tracker holds approvals, tell the Product Owner which tracker items
-  wait for the approval transition.
+- An approval. Where the instruction names no requirements, tell the Product
+  Owner which requirements wait for approval. Where a tracker holds
+  approvals, tell the Product Owner which tracker items wait for the approval
+  transition.
 - An instruction with more than one reading: report the readings and the
   candidate ids to the Product Owner who gave it. It is not an approval until
   it names one set.
-- Tracker text that cannot be placed in `REQ-*.md`: report it to the
-  developer running the skill, with both texts.
 - A gap in the validation plan, or tracker and test manager names read from
   an example item, while `tracking.md` is derived: the developer running the skill answers or
   confirms, as `process-files.md` states.
@@ -140,15 +96,14 @@ derived in step 1 goes through the loop in `process-files.md`.
 
 | Path or system | Format | When |
 | --- | --- | --- |
-| `vogon/requirements/<module>/REQ-*.json` | An `approved` entry appended to `steps` | When an approval is recorded or synced |
-| `vogon/requirements/<module>/REQ-*.md` | Blocks and frontmatter fields replaced with the approved text from the tracker | A tracker holds approvals |
+| `vogon/requirements/<module>/REQ-*.json` | An `approved` entry appended to `steps` | No tracker holds approvals |
 | Commit pushed to the current branch on the repository host | The changed state files | No tracker holds approvals and no process file derived |
 | Branch and pull request on the repository host | The changed state files and the process file derived, per `process-files.md` | No tracker holds approvals and a process file derived |
-| Branch and pull request on the repository host | The changed records, with the description in step 7 of "A tracker holds approvals", and any process file derived, per `process-files.md` | A tracker holds approvals |
+| Branch and pull request on the repository host | The process file derived, per `process-files.md` | A tracker holds approvals and a process file derived |
 | `vogon/logs/` main log | Entries as `common.md` states | Always |
 
 The `approved` entry is defined in `common.md` "State-file entries". The
-skill writes nothing to the tracker.
+skill writes nothing to the tracker and nothing from it.
 
 ## Reference files
 

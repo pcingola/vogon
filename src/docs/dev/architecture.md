@@ -49,7 +49,7 @@ One skill per task a person starts. Each runs in the main Claude Code session.
 | --- | --- | --- |
 | `vogon:init` | Writes `vogon.yaml`, files the validation plan, adds the `.gitignore` and `conftest.py` lines | [Setup](process/setup.md) |
 | `vogon:requirements` | Drafts and checks records from meetings, mail, chat, documents and code; creates tracker items where a tracker is configured | [Requirements from sources](process/requirements.md) |
-| `vogon:approve` | Records the Product Owner's approval of the requirements they name, or syncs approvals from the tracker | [Approving requirements](process/approval.md) |
+| `vogon:approve` | Records the Product Owner's approval of the requirements they name, where no tracker holds approvals | [Approving requirements](process/approval.md) |
 | `vogon:next` | Lists ready and blocked requirements, assigns the chosen one in the tracker | [Planning](process/planning.md) |
 | `vogon:tests` | Writes the test procedures of approved requirements, as `tests.md` states | [Test procedures](process/test_procedures.md) |
 | `vogon:implement` | Writes the plan, then the code, tests and documentation | [Planning](process/planning.md), [Code, tests and documentation](process/implementation.md) |
@@ -133,15 +133,18 @@ included, so the developer confirms it is intended
 The Product Owner approves requirements; `vogon.yaml` lists the holders under
 `product_owner`. Where no tracker holds approvals, `vogon approve` records the
 approval on the Product Owner's explicit instruction. Where a tracker holds
-approvals, the Product Owner approves with the tracker's transition, and
-`vogon:approve` copies the approval and the approved text into `REQ-*.json` and
-`REQ-*.md` through a pull request. A skill works from a requirement's text only
-once its approval is synced, and reports a tracker approval not yet synced and
-an `approved` entry whose tracker item no longer shows approval. The procedure for
-both cases is on [Approving requirements](process/approval.md).
+approvals, the Product Owner approves with the tracker's transition, and the
+tracker is the only record of the approval: a skill reads it from the item and
+nothing copies it into the repository. A skill reports requirement text in the
+tracker that differs from `REQ-*.md`, and the developer resolves it as a change
+to the requirement. The procedure is on
+[Approving requirements](process/approval.md).
 
-A requirement is approved when `REQ-*.json` on the default branch has an
-`approved` entry after its latest `changed` entry. A skill changes an approved
+Where no tracker holds approvals, a requirement is approved when `REQ-*.json`
+on the default branch has an `approved` entry after its latest `changed`
+entry. Where a tracker holds approvals, it is approved when its item is in the
+approved state through a transition dated after the latest `changed` entry. A
+skill changes an approved
 requirement only with the developer's agreement, and appends a `changed` entry,
 so it needs approval again (`common.md` "Approval of a requirement").
 

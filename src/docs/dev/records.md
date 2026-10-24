@@ -117,9 +117,11 @@ Entries are appended and never edited or removed. A withdrawal is the
 record's `status`, not a step. Every entry and its fields are defined in
 `src/vogon/references/common.md`, "State-file entries".
 
-A requirement is approved when the state file on the default branch has an
-`approved` entry after its latest `changed` entry; an `approved` entry that
-only an open pull request holds does not count. For every other entry, the
+Where no tracker holds approvals, a requirement is approved when the state
+file on the default branch has an `approved` entry after its latest `changed`
+entry; an `approved` entry that only an open pull request holds does not
+count. Where a tracker holds approvals, the state file holds no `approved`
+entry and the tracker item is the record. For every entry, the
 pull request, commit or tracker item it names counts over the entry: a skill
 checks it before acting and reports any difference
 (`src/vogon/references/common.md`, "Start of every skill" and "Approval of a

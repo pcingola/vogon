@@ -918,7 +918,7 @@
 <h1 id="approving-requirements">Approving requirements<a class="headerlink" href="#approving-requirements" title="Permanent link">&para;</a></h1>
 <p>Step 5 of the <a href="index.html">steps</a>. The Product Owner approves each requirement,
 with its acceptance criteria and risk fields, when <code>requirements.md</code> states.
-VOGON records the approval and never gives it
+VOGON never gives an approval
 (<a href="../architecture.html#approval-of-requirements">Architecture</a>). The steps are in
 <code>src/vogon/skills/approve/SKILL.md</code>.</p>
 <p>Where no tracker holds approvals, the Product Owner gives an explicit
@@ -928,11 +928,11 @@ requirements, then push". <code>vogon:approve</code> resolves it to ids, runs
 different sets of ids records nothing. The approval is not an electronic
 signature (<a href="../architecture.html#scope-and-roles">Architecture</a>).</p>
 <p>Where a tracker holds approvals, the Product Owner approves each item with the
-tracker's approval transition, and may edit the text first. <code>vogon:approve</code>
-does not record an approval itself. It copies each approval made after the
-latest change, with the text as it stood at that transition, into
-<code>REQ-*.json</code> and <code>REQ-*.md</code>, in a pull request that a person merges. The
-approval counts once it is on the default branch.</p>
+tracker's approval transition. The approval stays in the tracker: skills read
+it from the item, and <code>vogon:approve</code> records nothing and tells the Product
+Owner to use the transition. Text the Product Owner edits in the tracker is
+reported as a difference from <code>REQ-*.md</code>, and the developer resolves it as a
+change to the requirement.</p>
 
 
 
